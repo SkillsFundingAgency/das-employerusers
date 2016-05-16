@@ -19,13 +19,14 @@ namespace SFA.DAS.EmployerUsers.Web
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                         "~/Scripts/modernizr-*"));
 
-            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js",
-                      "~/Scripts/respond.js"));
+            bundles.Add(new ScriptBundle("~/bundles/scripts").Include(
+                "~/assets/javascripts/govuk-template.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/assets/stylesheets/govuk-template.css",
+                      "~/assets/stylesheets/fonts.css",
+                      "~/Content/Site.css",
+                      "~/Content/Dashboard.css"));
         }
     }
 }
