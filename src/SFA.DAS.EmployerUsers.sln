@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "SFA.DAS.EmployerUsers", "SFA.DAS.EmployerUsers\SFA.DAS.EmployerUsers.ccproj", "{69ECC3F8-055D-4341-B7AA-03688C0109B8}"
 EndProject
@@ -17,6 +17,16 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{22D47948-6411-4B2A-A6AD-AA60013CA1DA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Web.UnitTests", "SFA.DAS.EmployerUsers.Web.UnitTests\SFA.DAS.EmployerUsers.Web.UnitTests.csproj", "{A63AE672-0953-48DB-BD96-47E496A5FD37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Domain", "SFA.DAS.EmployerUsers.Domain\SFA.DAS.EmployerUsers.Domain.csproj", "{2686243C-201A-45C1-ADBC-99B05BD83D73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Data", "SFA.DAS.EmployerUsers.Data\SFA.DAS.EmployerUsers.Data.csproj", "{1A771FBF-CACD-4ACA-9C7D-44095616BDBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.ApplicationLayer", "SFA.DAS.EmployerUsers.ApplicationLayer\SFA.DAS.EmployerUsers.ApplicationLayer.csproj", "{2243A091-EE5A-4641-B02E-D7BA560C0086}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests", "SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests\SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.csproj", "{884664CA-3E6B-4DED-BC05-5A7F198375BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Data.UnitTests", "SFA.DAS.EmployerUsers.Data.UnitTests\SFA.DAS.EmployerUsers.Data.UnitTests.csproj", "{8082BC59-8C78-40A4-A6AC-566BD5B95FD5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,11 +46,33 @@ Global
 		{A63AE672-0953-48DB-BD96-47E496A5FD37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A63AE672-0953-48DB-BD96-47E496A5FD37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A63AE672-0953-48DB-BD96-47E496A5FD37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2686243C-201A-45C1-ADBC-99B05BD83D73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2686243C-201A-45C1-ADBC-99B05BD83D73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2686243C-201A-45C1-ADBC-99B05BD83D73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2686243C-201A-45C1-ADBC-99B05BD83D73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A771FBF-CACD-4ACA-9C7D-44095616BDBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A771FBF-CACD-4ACA-9C7D-44095616BDBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A771FBF-CACD-4ACA-9C7D-44095616BDBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A771FBF-CACD-4ACA-9C7D-44095616BDBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2243A091-EE5A-4641-B02E-D7BA560C0086}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2243A091-EE5A-4641-B02E-D7BA560C0086}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2243A091-EE5A-4641-B02E-D7BA560C0086}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2243A091-EE5A-4641-B02E-D7BA560C0086}.Release|Any CPU.Build.0 = Release|Any CPU
+		{884664CA-3E6B-4DED-BC05-5A7F198375BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{884664CA-3E6B-4DED-BC05-5A7F198375BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{884664CA-3E6B-4DED-BC05-5A7F198375BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{884664CA-3E6B-4DED-BC05-5A7F198375BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8082BC59-8C78-40A4-A6AC-566BD5B95FD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8082BC59-8C78-40A4-A6AC-566BD5B95FD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8082BC59-8C78-40A4-A6AC-566BD5B95FD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8082BC59-8C78-40A4-A6AC-566BD5B95FD5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A63AE672-0953-48DB-BD96-47E496A5FD37} = {22D47948-6411-4B2A-A6AD-AA60013CA1DA}
+		{884664CA-3E6B-4DED-BC05-5A7F198375BC} = {22D47948-6411-4B2A-A6AD-AA60013CA1DA}
+		{8082BC59-8C78-40A4-A6AC-566BD5B95FD5} = {22D47948-6411-4B2A-A6AD-AA60013CA1DA}
 	EndGlobalSection
 EndGlobal

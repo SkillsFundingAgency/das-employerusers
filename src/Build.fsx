@@ -240,13 +240,18 @@ Target "Building Unit Tests" (fun _ ->
 
 Target "Run NUnit Tests" (fun _ ->
 
-
     trace "Run NUnit Tests"
-    let testDlls = !! ("./*.UnitTests/bin/" + testDirectory + "/*.UnitTests.dll") 
 
+    let mutable shouldRunTests = false
+
+    let testDlls = !! ("./*.UnitTests/bin/" + testDirectory + "/*.UnitTests.dll") 
     
     for testDll in testDlls do
-        [testDll] |> Fake.Testing.NUnit3.NUnit3 (fun p ->
+        shouldRunTests <- true
+
+    if shouldRunTests then
+        !! ("./*.UnitTests/bin/" + testDirectory + "/*.UnitTests.dll")  |>
+            Fake.Testing.NUnit3.NUnit3 (fun p ->
             {p with
                 ToolPath = nUnitToolPath;
                 ShadowCopy = false;
@@ -273,13 +278,19 @@ Target "Building Integration Tests" (fun _ ->
 
 )
 
-Target "Run Integration Tests" (fun _ ->
+Target "Run Acceptance Tests" (fun _ ->
 
-    trace "Run Integration Tests"
+    trace "Run Acceptance Tests"
+    
+    let mutable shouldRunTests = false
+
     let testDlls = !! ("./**/bin/" + testDirectory + "/*.AcceptanceTests.dll") 
-        
+    
     for testDll in testDlls do
-        [testDll] |> Fake.Testing.NUnit3.NUnit3 (fun p ->
+        shouldRunTests <- true
+    
+    if shouldRunTests then
+        !! ("./**/bin/" + testDirectory + "/*.AcceptanceTests.dll")  |> Fake.Testing.NUnit3.NUnit3 (fun p ->
             {p with
                 ToolPath = nUnitToolPath;
                 StopOnError = false;
@@ -319,7 +330,7 @@ Target "Compile Views" (fun _ ->
 Target "Clean Project" (fun _ ->
 
     trace "Clean Project"
-    trace (@".\" + projectName + "\*.csproj")
+    
     !! (@".\" + projectName + "\*.csproj")
       |> myBuildConfig "" "Clean"
       |> Log "AppBuild-Output: "
@@ -329,7 +340,7 @@ Target "Clean Project" (fun _ ->
 Target "Build Project" (fun _ ->
 
     trace "Building Project"
-    trace (@".\" + projectName + "\*.csproj")
+    
     !! (@".\" + projectName + "\*.csproj")
       |> myBuildConfig "" "Rebuild"
       |> Log "AppBuild-Output: "
@@ -415,7 +426,7 @@ Target "Create Nuget Package" (fun _ ->
     ==>"Build Acceptance Solution"
     ==>"Cleaning Integration Tests"
     ==>"Building Integration Tests"
-    //==>"Run Integration Tests"
+    //==>"Run Acceptance Tests"
 
 "Set Solution Name"
    ==>"Update Assembly Info Version Numbers"
