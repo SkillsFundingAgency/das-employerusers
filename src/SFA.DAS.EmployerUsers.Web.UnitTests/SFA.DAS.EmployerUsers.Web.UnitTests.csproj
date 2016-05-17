@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="AccountOrchestratorTests\WhenRegistering.cs" />
     <Compile Include="AuthenticationTests\UserServiceTests\UserServiceTestBase.cs" />
+    <Compile Include="AuthenticationTests\UserServiceTests\WhenCheckingUserIsActive.cs" />
     <Compile Include="AuthenticationTests\UserServiceTests\WhenPreAuthenticating.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

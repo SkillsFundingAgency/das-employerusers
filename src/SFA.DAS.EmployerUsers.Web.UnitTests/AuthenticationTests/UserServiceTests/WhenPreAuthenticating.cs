@@ -37,7 +37,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.AuthenticationTests.UserServiceTes
         }
 
         [Test]
-        public async Task ThenIsShouldSetTheReturnUrlToTheCorrectFormat()
+        public async Task ThenItShouldSetTheReturnUrlToTheCorrectFormat()
         {
             // Act
             await _userService.PreAuthenticateAsync(_preAuthenticationContext);

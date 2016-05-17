@@ -7,6 +7,7 @@ using IdentityServer3.Core.Services;
 using IdentityServer3.Core.Services.Default;
 using MediatR;
 using Microsoft.Owin;
+using SFA.DAS.EmployerUsers.ApplicationLayer.Queries.IsUserActive;
 
 namespace SFA.DAS.EmployerUsers.Web.Authentication
 {
@@ -36,9 +37,9 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
             context.AuthenticateResult = new AuthenticateResult(url, (IEnumerable<Claim>)null);
             return Task.FromResult(0);
         }
-        public override Task IsActiveAsync(IsActiveContext context)
+        public override async Task IsActiveAsync(IsActiveContext context)
         {
-            return base.IsActiveAsync(context);
+            context.IsActive = await _mediator.SendAsync(new IsUserActiveQuery());
         }
         public override Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
