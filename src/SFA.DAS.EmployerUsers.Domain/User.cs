@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MediatR;
 
-namespace SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser
+namespace SFA.DAS.EmployerUsers.Domain
 {
-    public class RegisterUserCommand : IRequest
+    public class User
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

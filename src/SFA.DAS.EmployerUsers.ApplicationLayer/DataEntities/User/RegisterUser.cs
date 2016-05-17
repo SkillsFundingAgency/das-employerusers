@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.EmployerUsers.ApplicationLayer
+namespace SFA.DAS.EmployerUsers.ApplicationLayer.DataEntities.User
 {
-    public class Class1
+    public class RegisterUser
     {
     }
 }
