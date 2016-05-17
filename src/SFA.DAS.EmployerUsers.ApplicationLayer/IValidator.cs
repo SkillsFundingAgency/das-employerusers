@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.EmployerUsers.ApplicationLayer.Commands.Validators
+﻿namespace SFA.DAS.EmployerUsers.ApplicationLayer
 {
     public interface IValidator<T>
     {

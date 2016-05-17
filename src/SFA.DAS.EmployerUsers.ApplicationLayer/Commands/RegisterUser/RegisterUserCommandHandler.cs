@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.Validators;
 using SFA.DAS.EmployerUsers.Data.User;
 using SFA.DAS.EmployerUsers.Domain;
 
@@ -18,17 +17,19 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser
 
         protected override void HandleCore(RegisterUserCommand message)
         {
-            if (_registerUserCommandValidator.Validate(message))
+            if (!_registerUserCommandValidator.Validate(message))
             {
-                var registerUser = new User
-                {
-                    Email = message.Email,
-                    FirstName = message.FirstName,
-                    LastName = message.LastName,
-                    Password = message.Password
-                };
-                _userRepository.Create(registerUser);
+                throw new InvalidRequestException(new [] {"NotValid"});
             }
+
+            var registerUser = new User
+            {
+                Email = message.Email,
+                FirstName = message.FirstName,
+                LastName = message.LastName,
+                Password = message.Password
+            };
+            _userRepository.Create(registerUser);
         }
     }
     

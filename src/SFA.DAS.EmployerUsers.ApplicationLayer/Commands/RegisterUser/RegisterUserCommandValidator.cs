@@ -1,6 +1,4 @@
-﻿using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.Validators;
-
-namespace SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser
+﻿namespace SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser
 {
     public class RegisterUserCommandValidator : IValidator<RegisterUserCommand>
     {

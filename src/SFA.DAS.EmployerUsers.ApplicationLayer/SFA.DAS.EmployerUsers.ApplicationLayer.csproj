@@ -48,8 +48,9 @@
     <Compile Include="Commands\RegisterUser\RegisterUserCommand.cs" />
     <Compile Include="Commands\RegisterUser\RegisterUserCommandHandler.cs" />
     <Compile Include="Commands\RegisterUser\RegisterUserCommandValidator.cs" />
-    <Compile Include="Commands\Validators\IValidator.cs" />
     <Compile Include="DataEntities\User\RegisterUser.cs" />
+    <Compile Include="InvalidRequestException.cs" />
+    <Compile Include="IValidator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

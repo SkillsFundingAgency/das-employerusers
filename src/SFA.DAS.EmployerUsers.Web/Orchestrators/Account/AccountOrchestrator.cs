@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators.Account
         {
 
             _mediator.Send(new RegisterUserCommand());
-
+            
             return new ConfirmationViewModel();
         }
     }

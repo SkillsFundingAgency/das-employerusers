@@ -1,7 +1,6 @@
 ﻿using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser;
-using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.Validators;
 using SFA.DAS.EmployerUsers.Data.User;
 using SFA.DAS.EmployerUsers.Domain;
 
@@ -25,7 +24,7 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUser.Register
         public void ThenTheCommandIsHandledAndValidatorCalled()
         {
             //Act
-            _registerUserCommandHandler.Handle(new RegisterUserCommand());
+            Assert.Throws<InvalidRequestException>(() => _registerUserCommandHandler.Handle(new RegisterUserCommand()));
 
             //Assert
             _registerUserCommandValidator.Verify(x=>x.Validate(It.IsAny<RegisterUserCommand>()));
@@ -56,16 +55,28 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUser.Register
         }
 
         [Test]
+        
         public void ThenTheUserIsNotCreatedIfTheCommandIsInvalid()
         {
             //Arrange
             _registerUserCommandValidator.Setup(x => x.Validate(It.IsAny<RegisterUserCommand>())).Returns(false);
-            
-            //Act
-            _registerUserCommandHandler.Handle(new RegisterUserCommand());
 
+            //Act
+            Assert.Throws<InvalidRequestException>(() => _registerUserCommandHandler.Handle(new RegisterUserCommand()));
+            
             //Assert
             _userRepository.Verify(x => x.Create(It.IsAny<User>()), Times.Never);
         }
+
+        [Test]
+        public void ThenAnExceptionIsThrownIfTheCommandIsInvalid()
+        {
+            //Arrange
+            _registerUserCommandValidator.Setup(x => x.Validate(It.IsAny<RegisterUserCommand>())).Returns(false);
+
+
+            Assert.Throws<InvalidRequestException>(()=> _registerUserCommandHandler.Handle(new RegisterUserCommand()));
+        }
+        
     }
 }

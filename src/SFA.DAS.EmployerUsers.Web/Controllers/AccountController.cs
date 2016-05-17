@@ -9,6 +9,11 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 {
     public class AccountController : Controller
     {
+        public AccountController()
+        {
+            
+        }
+
         [HttpGet]
         public async Task<ActionResult> Register()
         {
