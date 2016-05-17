@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.Validators;
 using SFA.DAS.EmployerUsers.Data.User;
 using SFA.DAS.EmployerUsers.Domain;
 
@@ -30,4 +31,5 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser
             }
         }
     }
+    
 }

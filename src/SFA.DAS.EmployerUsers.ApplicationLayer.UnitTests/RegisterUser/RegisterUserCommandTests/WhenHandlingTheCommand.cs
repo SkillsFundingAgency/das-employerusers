@@ -1,12 +1,13 @@
 ﻿using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser;
+using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.Validators;
 using SFA.DAS.EmployerUsers.Data.User;
 using SFA.DAS.EmployerUsers.Domain;
 
-namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.Commands
+namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUser.RegisterUserCommandTests
 {
-    public class WhenRegisteringAUser
+    public class WhenHandlingTheCommand
     {
         private RegisterUserCommandHandler _registerUserCommandHandler;
         private Mock<IValidator<RegisterUserCommand>> _registerUserCommandValidator;
