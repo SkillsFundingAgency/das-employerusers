@@ -216,7 +216,7 @@
     </Compile>
     <Compile Include="Models\ConfirmationViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
-    <Compile Include="Orchestrators\Account\AccountOrchestrator.cs" />
+    <Compile Include="Orchestrators\AccountOrchestrator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="WebRole.cs" />
@@ -291,6 +291,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Account\Confirm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

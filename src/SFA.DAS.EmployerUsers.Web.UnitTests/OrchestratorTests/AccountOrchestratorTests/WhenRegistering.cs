@@ -5,9 +5,9 @@ using NUnit.Framework;
 using SFA.DAS.EmployerUsers.ApplicationLayer;
 using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Web.Models;
-using SFA.DAS.EmployerUsers.Web.Orchestrators.Account;
+using SFA.DAS.EmployerUsers.Web.Orchestrators;
 
-namespace SFA.DAS.EmployerUsers.Web.UnitTests.AccountOrchestratorTests
+namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestratorTests
 {
     public class WhenRegistering
     {

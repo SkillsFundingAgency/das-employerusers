@@ -4,18 +4,23 @@ using SFA.DAS.EmployerUsers.ApplicationLayer;
 using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Web.Models;
 
-namespace SFA.DAS.EmployerUsers.Web.Orchestrators.Account
+namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 {
     public class AccountOrchestrator
     {
         private readonly IMediator _mediator;
-        
+
+        public AccountOrchestrator()
+        {
+            
+        }
+
         public AccountOrchestrator(IMediator mediator)
         {
             _mediator = mediator;
         }
 
-        public async Task<bool> Register(RegisterViewModel registerUserViewModel)
+        public virtual async Task<bool> Register(RegisterViewModel registerUserViewModel)
         {
             try
             {
