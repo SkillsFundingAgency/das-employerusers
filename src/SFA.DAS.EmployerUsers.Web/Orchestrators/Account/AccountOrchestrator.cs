@@ -19,8 +19,16 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators.Account
 
         public ConfirmationViewModel Register(RegisterViewModel registerUserViewModel)
         {
-
-            _mediator.Send(new RegisterUserCommand());
+            
+            _mediator.Send(new RegisterUserCommand
+            {
+                FirstName = registerUserViewModel.FirstName,
+                LastName = registerUserViewModel.LastName,
+                Email = registerUserViewModel.Email,
+                ConfirmEmail = registerUserViewModel.ConfirmEmail,
+                Password = registerUserViewModel.Password,
+                ConfirmPassword = registerUserViewModel.ConfirmPassword
+            });
             
             return new ConfirmationViewModel();
         }

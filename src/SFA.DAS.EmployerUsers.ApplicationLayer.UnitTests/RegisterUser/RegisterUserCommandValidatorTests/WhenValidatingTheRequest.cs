@@ -27,21 +27,28 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUser.Register
                 Email = "test",
                 FirstName = "Testing",
                 LastName = "Tester",
-                Password = "p$24234AAA"
+                Password = "p$24234AAA",
+                ConfirmPassword = "p$24234AAA",
+                ConfirmEmail = "test"
             });
 
             //Assert
             Assert.IsTrue(actual);
         }
 
-        [TestCase("", "", "", "")]
-        [TestCase(" ", " ", " ", " ")]
-        [TestCase("aaa", "", "", "")]
-        [TestCase("", "aaa", "", "")]
-        [TestCase("", "", "aaa", "")]
-        [TestCase("", "", "aaa", "aaa")]
-        [TestCase("", "aaa", "aaa", "aaa")]
-        public void ThenFalseIsReturnedIfThereAreMissingFields(string firstName, string lastName, string email, string password)
+        [TestCase("", "", "", "", "", "")]
+        [TestCase(" ", " ", " ", " ", " ", " ")]
+        [TestCase("aaa", "", "", "", "", "")]
+        [TestCase("", "aaa", "", "", "", "")]
+        [TestCase("", "", "aaa", "", "", "")]
+        [TestCase("", "", "aaa", "aaa", "", "")]
+        [TestCase("", "aaa", "aaa", "aaa", "", "")]
+        [TestCase("aaa", "aaa", "aaa", "aaa", "", "")]
+        [TestCase("aaa", "aaa", "aaa", "aaa", "aaa", "")]
+        [TestCase("aaa", "aaa", "aaa", "aaa", "", "aaa")]
+        [TestCase("aaa", "aaa", "aaa", "aaa", "bbb", "bbb")]
+        [TestCase("aaa", "aaa", "aaa", "aaa", "aaa", "AAA")]
+        public void ThenFalseIsReturnedIfThereAreMissingFields(string firstName, string lastName, string email, string password, string confirmEmail, string confirmPassword)
         {
             //Arrange
             var registerUserCommand = new RegisterUserCommand
@@ -49,7 +56,9 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUser.Register
                 FirstName = firstName,
                 LastName = lastName,
                 Email = email,
-                Password = password
+                Password = password,
+                ConfirmEmail = confirmEmail,
+                ConfirmPassword = confirmPassword
             };
 
             //Act

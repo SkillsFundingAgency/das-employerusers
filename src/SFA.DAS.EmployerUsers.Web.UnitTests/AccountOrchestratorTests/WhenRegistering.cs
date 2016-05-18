@@ -30,19 +30,36 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.AccountOrchestratorTests
 
             //Assert
             Assert.IsNotNull(actual);
+            Assert.IsAssignableFrom<ConfirmationViewModel>(actual);
         }
 
         [Test]
         public void ThenTheRegisterUserCommandIsPassedOntoTheMediator()
         {
             //Arrange
-            var registerUserViewModel = new RegisterViewModel();
+            var confirmEmail = "test@test.com";
+            var email = "test@test.com";
+            var password = "password";
+            var confirmPassword = "password";
+            var lastName = "tester";
+            var firstName = "test";
+
+            var registerUserViewModel = new RegisterViewModel
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                Email = email,
+                ConfirmEmail = confirmEmail,
+                Password = password,
+                ConfirmPassword = confirmPassword
+            };
 
             //Act
             _accountOrchestrator.Register(registerUserViewModel);
 
             //Assert
-            _mediator.Verify(x=>x.Send(It.IsAny<RegisterUserCommand>()),Times.Once);
+            _mediator.Verify(x=>x.Send(It.Is<RegisterUserCommand>(p=>p.Email.Equals(email) && p.FirstName.Equals(firstName) && p.LastName.Equals(lastName) && p.Password.Equals(password) && p.ConfirmPassword.Equals(confirmPassword) && p.ConfirmEmail.Equals(confirmEmail))),Times.Once);
         }
+        
     }
 }

@@ -43,7 +43,9 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUser.Register
                     FirstName = firstName,
                     LastName = lastName,
                     Email = emailAddress,
-                    Password = password
+                    ConfirmEmail = emailAddress,
+                    Password = password,
+                    ConfirmPassword = password
             };
             _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(true);
 
