@@ -9,10 +9,8 @@ using IdentityServer3.Core.Services;
 using IdentityServer3.Core.Services.Default;
 using MediatR;
 using Microsoft.Owin;
-using SFA.DAS.EmployerUsers.ApplicationLayer;
 using SFA.DAS.EmployerUsers.ApplicationLayer.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.ApplicationLayer.Queries.IsUserActive;
-using SFA.DAS.EmployerUsers.Domain;
 
 namespace SFA.DAS.EmployerUsers.Web.Authentication
 {
