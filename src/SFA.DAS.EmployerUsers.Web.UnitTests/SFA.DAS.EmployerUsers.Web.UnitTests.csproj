@@ -62,6 +62,7 @@
     <Compile Include="AccountOrchestratorTests\WhenRegistering.cs" />
     <Compile Include="AuthenticationTests\UserServiceTests\UserServiceTestBase.cs" />
     <Compile Include="AuthenticationTests\UserServiceTests\WhenCheckingUserIsActive.cs" />
+    <Compile Include="AuthenticationTests\UserServiceTests\WhenGettingProfileData.cs" />
     <Compile Include="AuthenticationTests\UserServiceTests\WhenPreAuthenticating.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -73,6 +74,10 @@
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.ApplicationLayer\SFA.DAS.EmployerUsers.ApplicationLayer.csproj">
       <Project>{2243A091-EE5A-4641-B02E-D7BA560C0086}</Project>
       <Name>SFA.DAS.EmployerUsers.ApplicationLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.EmployerUsers.Domain\SFA.DAS.EmployerUsers.Domain.csproj">
+      <Project>{2686243C-201A-45C1-ADBC-99B05BD83D73}</Project>
+      <Name>SFA.DAS.EmployerUsers.Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.Web\SFA.DAS.EmployerUsers.Web.csproj">
       <Project>{0B267087-A640-4075-90CA-44B7A12C1B85}</Project>

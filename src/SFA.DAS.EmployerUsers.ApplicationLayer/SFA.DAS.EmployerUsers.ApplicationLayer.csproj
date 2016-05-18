@@ -49,8 +49,8 @@
     <Compile Include="Commands\RegisterUser\RegisterUserCommandHandler.cs" />
     <Compile Include="Commands\RegisterUser\RegisterUserCommandValidator.cs" />
     <Compile Include="DataEntities\User\RegisterUser.cs" />
-    <Compile Include="KnownClaims.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queries\GetUserById\GetUserByIdQuery.cs" />
     <Compile Include="Queries\IsUserActive\IsUserActiveQuery.cs" />
   </ItemGroup>
   <ItemGroup>

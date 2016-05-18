@@ -306,6 +306,10 @@
       <Project>{2243A091-EE5A-4641-B02E-D7BA560C0086}</Project>
       <Name>SFA.DAS.EmployerUsers.ApplicationLayer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.EmployerUsers.Domain\SFA.DAS.EmployerUsers.Domain.csproj">
+      <Project>{2686243C-201A-45C1-ADBC-99B05BD83D73}</Project>
+      <Name>SFA.DAS.EmployerUsers.Domain</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

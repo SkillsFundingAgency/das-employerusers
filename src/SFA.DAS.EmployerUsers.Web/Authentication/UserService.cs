@@ -3,13 +3,16 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using IdentityServer3.Core;
 using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services;
 using IdentityServer3.Core.Services.Default;
 using MediatR;
 using Microsoft.Owin;
 using SFA.DAS.EmployerUsers.ApplicationLayer;
+using SFA.DAS.EmployerUsers.ApplicationLayer.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.ApplicationLayer.Queries.IsUserActive;
+using SFA.DAS.EmployerUsers.Domain;
 
 namespace SFA.DAS.EmployerUsers.Web.Authentication
 {
@@ -51,15 +54,31 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
             context.IsActive = await _mediator.SendAsync(new IsUserActiveQuery { UserId = userId });
         }
 
-        public override Task GetProfileDataAsync(ProfileDataRequestContext context)
+        public override async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
-            return base.GetProfileDataAsync(context);
+            var userId = GetUserId(context.Subject);
+
+            var user = await _mediator.SendAsync(new GetUserByIdQuery {UserId = userId });
+            if (user == null)
+            {
+                return;
+            }
+
+            var claims = new List<Claim>
+            {
+                new Claim(Constants.ClaimTypes.Id, user.Id),
+                new Claim(Constants.ClaimTypes.Email, user.Email),
+                new Claim(Constants.ClaimTypes.GivenName, user.FirstName),
+                new Claim(Constants.ClaimTypes.FamilyName, user.LastName),
+                new Claim(Constants.ClaimTypes.Name, $"{user.FirstName} {user.LastName}")
+            };
+            context.IssuedClaims = claims;
         }
 
 
         private string GetUserId(ClaimsPrincipal subject)
         {
-            var claim = subject?.Claims.FirstOrDefault(c => c.Type.Equals(KnownClaims.UserId));
+            var claim = subject?.Claims.FirstOrDefault(c => c.Type.Equals(Constants.ClaimTypes.Id));
             return claim?.Value;
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
+using IdentityServer3.Core;
 using IdentityServer3.Core.Models;
 using Moq;
 using NUnit.Framework;
@@ -18,7 +19,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.AuthenticationTests.UserServiceTes
 
             _principal = new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
-                new Claim("sub","xyz")
+                new Claim(Constants.ClaimTypes.Id,"xyz")
             }));
 
             _isActiveContext = new IsActiveContext(_principal, new Client());
