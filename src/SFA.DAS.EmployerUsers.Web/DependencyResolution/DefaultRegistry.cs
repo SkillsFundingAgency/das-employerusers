@@ -15,7 +15,11 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Web;
 using MediatR;
+using SFA.DAS.EmployerUsers.Domain.Data;
+using SFA.DAS.EmployerUsers.Infrastructure.Data;
+using StructureMap.Web.Pipeline;
 
 namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
 {
@@ -24,22 +28,21 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
 
     public class DefaultRegistry : Registry
     {
-        #region Constructors and Destructors
-
         public DefaultRegistry()
         {
             Scan(
                 scan =>
                 {
-                    scan.AssembliesFromApplicationBaseDirectory(a => a.GetName().Name.StartsWith("SFA.DAS.EmployerUsers"));
+                    scan.AssembliesFromApplicationBaseDirectory(a => a.GetName().Name.StartsWith("SFA.DAS.EmployerUsers")
+                        && !a.GetName().Name.Equals("SFA.DAS.EmployerUsers.Infrastructure"));
                     scan.RegisterConcreteTypesAgainstTheFirstInterface();
                 });
+
+            For<IUserRepository>().Use<FileSystemUserRepository>();
 
             For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => ctx.GetInstance(t));
             For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => ctx.GetAllInstances(t));
             For<IMediator>().Use<Mediator>();
         }
-
-        #endregion
     }
 }

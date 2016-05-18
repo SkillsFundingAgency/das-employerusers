@@ -237,3 +237,6 @@ _Pvt_Extensions
 **/tools/**/*.*
 !**/tools/nuget/**/*.*
 **/*.orig
+
+# App specific
+**/App_Data/**/*.*
