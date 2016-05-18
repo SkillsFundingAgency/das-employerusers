@@ -7,7 +7,7 @@ using MediatR;
 
 namespace SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser
 {
-    public class RegisterUserCommand : IRequest
+    public class RegisterUserCommand : IAsyncRequest
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

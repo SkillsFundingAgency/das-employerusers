@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Data.User;
@@ -24,14 +25,14 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUser.Register
         public void ThenTheCommandIsHandledAndValidatorCalled()
         {
             //Act
-            Assert.Throws<InvalidRequestException>(() => _registerUserCommandHandler.Handle(new RegisterUserCommand()));
+            Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(new RegisterUserCommand()));
 
             //Assert
             _registerUserCommandValidator.Verify(x=>x.Validate(It.IsAny<RegisterUserCommand>()));
         }
 
         [Test]
-        public void ThenTheUserIsCreatedIfTheCommandIsValid()
+        public async Task ThenTheUserIsCreatedIfTheCommandIsValid()
         {
             //Arrange
             var firstName = "Test";
@@ -50,7 +51,7 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUser.Register
             _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(true);
 
             //Act
-            _registerUserCommandHandler.Handle(registerUserCommand);
+            await _registerUserCommandHandler.Handle(registerUserCommand);
 
             //Assert
             _userRepository.Verify(v=>v.Create(It.Is<User>(x=> x.FirstName.Equals(firstName) && x.LastName.Equals(lastName) && x.Email.Equals(emailAddress) && x.Password.Equals(password))));
@@ -64,7 +65,7 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUser.Register
             _registerUserCommandValidator.Setup(x => x.Validate(It.IsAny<RegisterUserCommand>())).Returns(false);
 
             //Act
-            Assert.Throws<InvalidRequestException>(() => _registerUserCommandHandler.Handle(new RegisterUserCommand()));
+            Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(new RegisterUserCommand()));
             
             //Assert
             _userRepository.Verify(x => x.Create(It.IsAny<User>()), Times.Never);
@@ -77,7 +78,7 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUser.Register
             _registerUserCommandValidator.Setup(x => x.Validate(It.IsAny<RegisterUserCommand>())).Returns(false);
 
 
-            Assert.Throws<InvalidRequestException>(()=> _registerUserCommandHandler.Handle(new RegisterUserCommand()));
+            Assert.ThrowsAsync<InvalidRequestException>(async ()=> await _registerUserCommandHandler.Handle(new RegisterUserCommand()));
         }
         
     }

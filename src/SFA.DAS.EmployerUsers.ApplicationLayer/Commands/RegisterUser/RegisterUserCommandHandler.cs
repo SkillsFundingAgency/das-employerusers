@@ -1,10 +1,11 @@
-﻿using MediatR;
+﻿using System.Threading.Tasks;
+using MediatR;
 using SFA.DAS.EmployerUsers.Data.User;
 using SFA.DAS.EmployerUsers.Domain;
 
 namespace SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser
 {
-    public class RegisterUserCommandHandler : RequestHandler<RegisterUserCommand>
+    public class RegisterUserCommandHandler : AsyncRequestHandler<RegisterUserCommand>
     {
         private readonly IUserRepository _userRepository;
         private readonly IValidator<RegisterUserCommand> _registerUserCommandValidator;
@@ -14,8 +15,8 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser
             _userRepository = userRepository;
             _registerUserCommandValidator = registerUserCommandValidator;
         }
-
-        protected override void HandleCore(RegisterUserCommand message)
+        
+        protected override async Task HandleCore(RegisterUserCommand message)
         {
             if (!_registerUserCommandValidator.Validate(message))
             {
@@ -29,7 +30,8 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser
                 LastName = message.LastName,
                 Password = message.Password
             };
-            _userRepository.Create(registerUser);
+
+            await _userRepository.Create(registerUser);
         }
     }
     

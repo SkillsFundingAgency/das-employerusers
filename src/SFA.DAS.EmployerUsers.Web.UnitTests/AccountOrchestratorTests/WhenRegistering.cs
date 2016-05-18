@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Threading.Tasks;
+using MediatR;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser;
@@ -20,13 +21,13 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.AccountOrchestratorTests
         }
 
         [Test]
-        public void ThenTheConfirmationViewModelIsReturned()
+        public async Task ThenTheConfirmationViewModelIsReturned()
         {
             //Arrange
             var registerUserViewModel = new RegisterViewModel();
 
             //Act
-            var actual = _accountOrchestrator.Register(registerUserViewModel);
+            var actual = await _accountOrchestrator.Register(registerUserViewModel);
 
             //Assert
             Assert.IsNotNull(actual);
@@ -34,7 +35,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.AccountOrchestratorTests
         }
 
         [Test]
-        public void ThenTheRegisterUserCommandIsPassedOntoTheMediator()
+        public async Task ThenTheRegisterUserCommandIsPassedOntoTheMediator()
         {
             //Arrange
             var confirmEmail = "test@test.com";
@@ -55,10 +56,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.AccountOrchestratorTests
             };
 
             //Act
-            _accountOrchestrator.Register(registerUserViewModel);
+            await _accountOrchestrator.Register(registerUserViewModel);
 
             //Assert
-            _mediator.Verify(x=>x.Send(It.Is<RegisterUserCommand>(p=>p.Email.Equals(email) && p.FirstName.Equals(firstName) && p.LastName.Equals(lastName) && p.Password.Equals(password) && p.ConfirmPassword.Equals(confirmPassword) && p.ConfirmEmail.Equals(confirmEmail))),Times.Once);
+            _mediator.Verify(x=>x.SendAsync(It.Is<RegisterUserCommand>(p=>p.Email.Equals(email) && p.FirstName.Equals(firstName) && p.LastName.Equals(lastName) && p.Password.Equals(password) && p.ConfirmPassword.Equals(confirmPassword) && p.ConfirmEmail.Equals(confirmEmail))),Times.Once);
         }
         
     }

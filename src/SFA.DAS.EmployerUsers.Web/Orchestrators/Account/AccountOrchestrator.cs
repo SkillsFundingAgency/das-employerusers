@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using MediatR;
 using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser;
@@ -17,10 +18,10 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators.Account
             _mediator = mediator;
         }
 
-        public ConfirmationViewModel Register(RegisterViewModel registerUserViewModel)
+        public async Task<ConfirmationViewModel> Register(RegisterViewModel registerUserViewModel)
         {
             
-            _mediator.Send(new RegisterUserCommand
+            await _mediator.SendAsync(new RegisterUserCommand
             {
                 FirstName = registerUserViewModel.FirstName,
                 LastName = registerUserViewModel.LastName,
@@ -30,6 +31,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators.Account
                 ConfirmPassword = registerUserViewModel.ConfirmPassword
             });
             
+
             return new ConfirmationViewModel();
         }
     }
