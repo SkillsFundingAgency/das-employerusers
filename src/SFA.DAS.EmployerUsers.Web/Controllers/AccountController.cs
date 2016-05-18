@@ -17,7 +17,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [HttpGet]
         public async Task<ActionResult> Register()
         {
-            return await Task.Run<ActionResult>(() => View());
+            return await Task.Run<ActionResult>(() => View(true));
         }
 
         [HttpPost]
@@ -32,7 +32,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                     return RedirectToAction("Confirm");
                 }
 
-                return View("Register");
+                return View("Register",false);
             });
         }
 

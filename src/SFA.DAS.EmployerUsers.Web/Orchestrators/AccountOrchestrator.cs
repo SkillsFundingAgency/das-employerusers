@@ -15,6 +15,11 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
     {
         private readonly IMediator _mediator;
 
+        public AccountOrchestrator()
+        {
+            
+        }
+
         public AccountOrchestrator(IMediator mediator)
         {
             _mediator = mediator;

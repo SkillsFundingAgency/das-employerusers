@@ -1,5 +1,16 @@
-﻿<h1 class="heading-large">Register</h1>
+﻿@model bool
 
+
+<h1 class="heading-large">Register</h1>
+
+@if (!Model)
+{
+    <div class="error" style="margin-bottom: 10px;">
+        <p class="error-message">
+            Invalid Details
+        </p>
+    </div>
+}
 
 <form method="post">
     <fieldset>
