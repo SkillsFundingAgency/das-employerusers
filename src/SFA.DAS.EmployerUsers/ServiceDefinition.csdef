@@ -4,7 +4,8 @@
     <Sites>
       <Site name="Web">
         <Bindings>
-          <Binding name="Endpoint2" endpointName="Endpoint2" />
+          <Binding name="Endpoint1" endpointName="HttpIn" />
+          <Binding name="Endpoint1" endpointName="HttpsIn" />
         </Bindings>
       </Site>
     </Sites>
@@ -12,10 +13,11 @@
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
     </ConfigurationSettings>
     <Endpoints>
-      <InputEndpoint name="Endpoint2" protocol="https" port="443" certificate="Certificate1" />
+      <InputEndpoint name="HttpIn" protocol="http" port="80" />
+      <InputEndpoint name="HttpsIn" protocol="https" port="443" />
     </Endpoints>
     <Certificates>
-      <Certificate name="Certificate1" storeLocation="LocalMachine" storeName="My" />
+      <Certificate name="WebSslCert" storeLocation="LocalMachine" storeName="My" />
     </Certificates>
   </WebRole>
 </ServiceDefinition>
