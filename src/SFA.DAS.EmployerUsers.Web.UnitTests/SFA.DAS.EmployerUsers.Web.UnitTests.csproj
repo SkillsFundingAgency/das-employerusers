@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="IdentityServer3">
+      <HintPath>..\packages\IdentityServer3.2.5.0\lib\net45\IdentityServer3.dll</HintPath>
+    </Reference>
     <Reference Include="MediatR, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MediatR.2.0.2\lib\net45\MediatR.dll</HintPath>
       <Private>True</Private>
@@ -37,6 +40,9 @@
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin">
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
     <Reference Include="Moq, Version=4.2.1510.2205, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\packages\Moq.4.2.1510.2205\lib\net40\Moq.dll</HintPath>
@@ -82,7 +88,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\AccountControllerTests\WhenRegistering.cs" />
-    <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenRegistering.cs" />
+  <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenRegistering.cs" />
+<Compile Include="AuthenticationTests\UserServiceTests\UserServiceTestBase.cs" />
+   
+    <Compile Include="AuthenticationTests\UserServiceTests\WhenCheckingUserIsActive.cs" />
+    <Compile Include="AuthenticationTests\UserServiceTests\WhenGettingProfileData.cs" />
+    <Compile Include="AuthenticationTests\UserServiceTests\WhenPreAuthenticating.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -93,6 +104,10 @@
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.ApplicationLayer\SFA.DAS.EmployerUsers.ApplicationLayer.csproj">
       <Project>{2243A091-EE5A-4641-B02E-D7BA560C0086}</Project>
       <Name>SFA.DAS.EmployerUsers.ApplicationLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.EmployerUsers.Domain\SFA.DAS.EmployerUsers.Domain.csproj">
+      <Project>{2686243C-201A-45C1-ADBC-99B05BD83D73}</Project>
+      <Name>SFA.DAS.EmployerUsers.Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.Web\SFA.DAS.EmployerUsers.Web.csproj">
       <Project>{0B267087-A640-4075-90CA-44B7A12C1B85}</Project>

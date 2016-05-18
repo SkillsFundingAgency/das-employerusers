@@ -230,6 +230,8 @@
     <Compile Include="App_Start\Startup.RelyingParty.cs" />
     <Compile Include="App_Start\StructuremapMvc.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Authentication\IdentityServerServiceFactoryExtensions.cs" />
+    <Compile Include="Authentication\UserService.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="DependencyResolution\ControllerConvention.cs" />
@@ -330,6 +332,10 @@
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.ApplicationLayer\SFA.DAS.EmployerUsers.ApplicationLayer.csproj">
       <Project>{2243A091-EE5A-4641-B02E-D7BA560C0086}</Project>
       <Name>SFA.DAS.EmployerUsers.ApplicationLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.EmployerUsers.Domain\SFA.DAS.EmployerUsers.Domain.csproj">
+      <Project>{2686243C-201A-45C1-ADBC-99B05BD83D73}</Project>
+      <Name>SFA.DAS.EmployerUsers.Domain</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

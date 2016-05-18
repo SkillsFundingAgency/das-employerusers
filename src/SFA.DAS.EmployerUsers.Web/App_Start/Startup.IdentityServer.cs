@@ -7,6 +7,7 @@ using IdentityServer3.Core.Configuration;
 using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services.InMemory;
 using Owin;
+using SFA.DAS.EmployerUsers.Web.Authentication;
 
 namespace SFA.DAS.EmployerUsers.Web
 {
@@ -19,9 +20,10 @@ namespace SFA.DAS.EmployerUsers.Web
             app.Map("/identity", idsrvApp =>
             {
                 var factory = new IdentityServerServiceFactory()
-                    .UseInMemoryUsers(GetUsers())
+                    .UseDasUserService()
                     .UseInMemoryClients(GetClients())
-                    .UseInMemoryScopes(GetScopes());
+                    .UseInMemoryScopes(GetScopes())
+                    .RegisterDasServices();
 
                 //factory.ConfigureDefaultViewService<CustomIdsViewService>(new DefaultViewServiceOptions());
 

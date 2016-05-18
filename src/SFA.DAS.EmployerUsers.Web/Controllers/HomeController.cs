@@ -2,6 +2,7 @@
 
 namespace SFA.DAS.EmployerUsers.Web.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         public ActionResult Index()
