@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser;
 
 namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUser.RegisterUserCommandValidatorTests
