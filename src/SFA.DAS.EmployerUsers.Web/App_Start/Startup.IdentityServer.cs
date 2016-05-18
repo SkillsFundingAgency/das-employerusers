@@ -22,7 +22,8 @@ namespace SFA.DAS.EmployerUsers.Web
                 var factory = new IdentityServerServiceFactory()
                     .UseDasUserService()
                     .UseInMemoryClients(GetClients())
-                    .UseInMemoryScopes(GetScopes());
+                    .UseInMemoryScopes(GetScopes())
+                    .RegisterDasServices();
 
                 //factory.ConfigureDefaultViewService<CustomIdsViewService>(new DefaultViewServiceOptions());
 

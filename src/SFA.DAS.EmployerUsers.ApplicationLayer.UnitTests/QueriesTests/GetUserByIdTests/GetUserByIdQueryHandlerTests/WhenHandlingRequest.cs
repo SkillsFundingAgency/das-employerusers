@@ -7,8 +7,8 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.ApplicationLayer.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.ApplicationLayer.Queries.IsUserActive;
-using SFA.DAS.EmployerUsers.Data.User;
 using SFA.DAS.EmployerUsers.Domain;
+using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.QueriesTests.GetUserByIdTests.GetUserByIdQueryHandlerTests
 {
