@@ -38,5 +38,46 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.AuthenticationTests.UserServiceTes
             // Assert
             Assert.AreEqual(isActive, _isActiveContext.IsActive);
         }
+
+        [Test]
+        public async Task ThenItShouldSendQueryWithUserSubClaimAsId()
+        {
+            // Act
+            await _userService.IsActiveAsync(_isActiveContext);
+
+            // Assert
+            _mediator.Verify(m => m.SendAsync(It.Is<IsUserActiveQuery>((q) => q.UserId.Equals("xyz"))), Times.Once());
+        }
+
+        [Test]
+        public async Task ThenIsShouldReturnFalseIfSubjectIsNull()
+        {
+            // Arrange
+            _isActiveContext.Subject = null;
+
+            // Act
+            await _userService.IsActiveAsync(_isActiveContext);
+
+            // Assert
+            Assert.IsFalse(_isActiveContext.IsActive);
+        }
+
+        [Test]
+        public async Task ThenIsShouldReturnFalseIfSubjectHasNoSubClaim()
+        {
+            // Arrange
+            var principal = new ClaimsPrincipal(new ClaimsIdentity(new[]
+            {
+                new Claim("notsub","xyz")
+            }));
+            var isActiveContext = new IsActiveContext(principal, new Client());
+
+            // Act
+            await _userService.IsActiveAsync(isActiveContext);
+
+            // Assert
+            Assert.IsFalse(isActiveContext.IsActive);
+        }
+
     }
 }
