@@ -1,5 +1,16 @@
-﻿<h1 class="heading-large">Register</h1>
+﻿@model SFA.DAS.EmployerUsers.Web.Models.RegisterViewModel
 
+
+<h1 class="heading-large">Register</h1>
+
+@if (!Model.Valid)
+{
+    <div class="error" style="margin-bottom: 10px;">
+        <p class="error-message">
+            Invalid Details
+        </p>
+    </div>
+}
 
 <form method="post">
     <fieldset>
@@ -7,19 +18,19 @@
 
         <div class="form-group">
             <label class="form-label" for="firstname">First Name</label>
-            <input class="form-control" id="firstname" name="FirstName">
+            <input class="form-control" id="firstname" name="FirstName" value="@Model.FirstName">
         </div>
         <div class="form-group">
             <label class="form-label" for="lastname">Last Name</label>
-            <input class="form-control" id="lastname" name="LastName">
+            <input class="form-control" id="lastname" name="LastName"  value="@Model.LastName">
         </div>
         <div class="form-group">
             <label class="form-label" for="email-address">Email address</label>
-            <input class="form-control" id="email-address" name="Email" type="text">
+            <input class="form-control" id="email-address" name="Email" type="text" value="@Model.Email">
         </div>
         <div class="form-group">
             <label class="form-label" for="confirm-email-address">Confirm Email address</label>
-            <input class="form-control" id="confirm-email-address" name="ConfirmEmail" type="text">
+            <input class="form-control" id="confirm-email-address" name="ConfirmEmail" type="text"  value="@Model.ConfirmEmail">
         </div>
         <div class="form-group">
             <label class="form-label" for="password">Password</label>

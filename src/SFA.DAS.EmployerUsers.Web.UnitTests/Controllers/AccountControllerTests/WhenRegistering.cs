@@ -65,7 +65,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             var actualViewResult = actual as ViewResult;
             Assert.IsNotNull(actualViewResult);
             Assert.AreEqual("Register", actualViewResult.ViewName);
-
+            Assert.IsAssignableFrom<RegisterViewModel>(actualViewResult.Model);
+            var actualModel = actualViewResult.Model as RegisterViewModel;
+            Assert.IsNotNull(actualModel);
+            Assert.IsFalse(actualModel.Valid);
         }
     }
 }
