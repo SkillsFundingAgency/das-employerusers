@@ -61,10 +61,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-<ProjectReference Include="..\SFA.DAS.EmployerUsers.Data\SFA.DAS.EmployerUsers.Data.csproj">
-      <Project>{1A771FBF-CACD-4ACA-9C7D-44095616BDBC}</Project>
-      <Name>SFA.DAS.EmployerUsers.Data</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.Domain\SFA.DAS.EmployerUsers.Domain.csproj">
       <Project>{2686243C-201A-45C1-ADBC-99B05BD83D73}</Project>
       <Name>SFA.DAS.EmployerUsers.Domain</Name>
