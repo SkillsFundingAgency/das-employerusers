@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using MediatR;
+using SFA.DAS.EmployerUsers.ApplicationLayer;
 using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Web.Models;
 
@@ -18,21 +19,28 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators.Account
             _mediator = mediator;
         }
 
-        public async Task<ConfirmationViewModel> Register(RegisterViewModel registerUserViewModel)
+        public async Task<bool> Register(RegisterViewModel registerUserViewModel)
         {
-            
-            await _mediator.SendAsync(new RegisterUserCommand
+            try
             {
-                FirstName = registerUserViewModel.FirstName,
-                LastName = registerUserViewModel.LastName,
-                Email = registerUserViewModel.Email,
-                ConfirmEmail = registerUserViewModel.ConfirmEmail,
-                Password = registerUserViewModel.Password,
-                ConfirmPassword = registerUserViewModel.ConfirmPassword
-            });
-            
+                await _mediator.SendAsync(new RegisterUserCommand
+                {
+                    FirstName = registerUserViewModel.FirstName,
+                    LastName = registerUserViewModel.LastName,
+                    Email = registerUserViewModel.Email,
+                    ConfirmEmail = registerUserViewModel.ConfirmEmail,
+                    Password = registerUserViewModel.Password,
+                    ConfirmPassword = registerUserViewModel.ConfirmPassword
+                });
 
-            return new ConfirmationViewModel();
+
+                return true;
+            }
+            catch (InvalidRequestException)
+            {
+                return false;
+            }
+            
         }
     }
 }

@@ -2,6 +2,7 @@
 using MediatR;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.EmployerUsers.ApplicationLayer;
 using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators.Account;
@@ -21,7 +22,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.AccountOrchestratorTests
         }
 
         [Test]
-        public async Task ThenTheConfirmationViewModelIsReturned()
+        public async Task ThenABooleanValueIsReturned()
         {
             //Arrange
             var registerUserViewModel = new RegisterViewModel();
@@ -31,7 +32,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.AccountOrchestratorTests
 
             //Assert
             Assert.IsNotNull(actual);
-            Assert.IsAssignableFrom<ConfirmationViewModel>(actual);
+            Assert.IsAssignableFrom<bool>(actual);
         }
 
         [Test]
@@ -56,10 +57,25 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.AccountOrchestratorTests
             };
 
             //Act
-            await _accountOrchestrator.Register(registerUserViewModel);
+            var actual = await _accountOrchestrator.Register(registerUserViewModel);
 
             //Assert
             _mediator.Verify(x=>x.SendAsync(It.Is<RegisterUserCommand>(p=>p.Email.Equals(email) && p.FirstName.Equals(firstName) && p.LastName.Equals(lastName) && p.Password.Equals(password) && p.ConfirmPassword.Equals(confirmPassword) && p.ConfirmEmail.Equals(confirmEmail))),Times.Once);
+            Assert.IsTrue(actual);
+        }
+
+        [Test]
+        public async Task ThenFalseIsReturnedWhenTheRegisterUserCommandHandlerThrowsAnException()
+        {
+            //Arrange
+            _mediator.Setup(x => x.SendAsync(It.IsAny<RegisterUserCommand>())).ThrowsAsync(new InvalidRequestException(new [] {"Something"}));
+
+            //Act
+            var actual = await _accountOrchestrator.Register(new RegisterViewModel());
+
+            //Assert
+            Assert.IsFalse(actual);
+
         }
         
     }
