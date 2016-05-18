@@ -6,14 +6,14 @@ using SFA.DAS.EmployerUsers.Web.Models;
 
 namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 {
-    public class AccountOrchestrator
+    public interface IOrchestrator
+    {
+        
+    }
+
+    public class AccountOrchestrator : IOrchestrator
     {
         private readonly IMediator _mediator;
-
-        public AccountOrchestrator()
-        {
-            
-        }
 
         public AccountOrchestrator(IMediator mediator)
         {

@@ -8,12 +8,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
     public class AccountController : Controller
     {
         private readonly AccountOrchestrator _accountOrchestrator;
-
-        public AccountController()
-        {
-            
-        }
-
+        
         public AccountController(AccountOrchestrator accountOrchestrator)
         {
             _accountOrchestrator = accountOrchestrator;

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "SFA.DAS.EmployerUsers", "SFA.DAS.EmployerUsers\SFA.DAS.EmployerUsers.ccproj", "{69ECC3F8-055D-4341-B7AA-03688C0109B8}"
 EndProject
@@ -25,6 +25,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests", "SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests\SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.csproj", "{884664CA-3E6B-4DED-BC05-5A7F198375BC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Data.UnitTests", "SFA.DAS.EmployerUsers.Data.UnitTests\SFA.DAS.EmployerUsers.Data.UnitTests.csproj", "{8082BC59-8C78-40A4-A6AC-566BD5B95FD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Infrastructure", "SFA.DAS.EmployerUsers.Infrastructure\SFA.DAS.EmployerUsers.Infrastructure.csproj", "{A38872C3-513F-4FD4-8917-E5BA21D5E3A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,6 +62,10 @@ Global
 		{8082BC59-8C78-40A4-A6AC-566BD5B95FD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8082BC59-8C78-40A4-A6AC-566BD5B95FD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8082BC59-8C78-40A4-A6AC-566BD5B95FD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A38872C3-513F-4FD4-8917-E5BA21D5E3A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A38872C3-513F-4FD4-8917-E5BA21D5E3A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A38872C3-513F-4FD4-8917-E5BA21D5E3A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A38872C3-513F-4FD4-8917-E5BA21D5E3A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
