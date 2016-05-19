@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\ActivateUser\ActivateUserCommand.cs" />
+    <Compile Include="Commands\ActivateUser\ActivateUserCommandHandler.cs" />
+    <Compile Include="Commands\ActivateUser\ActivateUserCommandValidator.cs" />
     <Compile Include="Commands\RegisterUser\RegisterUserCommand.cs" />
     <Compile Include="Commands\RegisterUser\RegisterUserCommandHandler.cs" />
     <Compile Include="Commands\RegisterUser\RegisterUserCommandValidator.cs" />

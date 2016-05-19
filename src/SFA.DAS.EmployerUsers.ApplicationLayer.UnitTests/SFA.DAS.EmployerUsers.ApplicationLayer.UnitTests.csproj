@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActivateUserTests\ActivateUserCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegisterUserTests\RegisterUserCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="RegisterUserTests\RegisterUserCommandValidatorTests\WhenValidatingTheRequest.cs" />

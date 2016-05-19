@@ -19,5 +19,10 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
         {
             return Task.FromResult<object>(null);
         }
+
+        public Task Update(User user)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

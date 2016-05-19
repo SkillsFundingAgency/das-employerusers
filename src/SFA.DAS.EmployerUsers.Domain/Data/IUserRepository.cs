@@ -6,5 +6,6 @@ namespace SFA.DAS.EmployerUsers.Domain.Data
     {
         Task<Domain.User> GetById(string id);
         Task Create(Domain.User registerUser);
+        Task Update(Domain.User user);
     }
 }
