@@ -23,27 +23,24 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUserTests.Reg
                 FirstName = "Testing",
                 LastName = "Tester",
                 Password = "p$24234AAA",
-                ConfirmPassword = "p$24234AAA",
-                ConfirmEmail = "test"
+                ConfirmPassword = "p$24234AAA"
             });
 
             //Assert
             Assert.IsTrue(actual);
         }
 
-        [TestCase("", "", "", "", "", "")]
-        [TestCase(" ", " ", " ", " ", " ", " ")]
-        [TestCase("aaa", "", "", "", "", "")]
-        [TestCase("", "aaa", "", "", "", "")]
-        [TestCase("", "", "aaa", "", "", "")]
-        [TestCase("", "", "aaa", "aaa", "", "")]
-        [TestCase("", "aaa", "aaa", "aaa", "", "")]
-        [TestCase("aaa", "aaa", "aaa", "aaa", "", "")]
-        [TestCase("aaa", "aaa", "aaa", "aaa", "aaa", "")]
-        [TestCase("aaa", "aaa", "aaa", "aaa", "", "aaa")]
-        [TestCase("aaa", "aaa", "aaa", "aaa", "bbb", "bbb")]
-        [TestCase("aaa", "aaa", "aaa", "aaa", "aaa", "AAA")]
-        public void ThenFalseIsReturnedIfThereAreMissingFields(string firstName, string lastName, string email, string password, string confirmEmail, string confirmPassword)
+        [TestCase("", "", "", "", "")]
+        [TestCase(" ", " ", " ", " ",  " ")]
+        [TestCase("aaa", "", "", "",  "")]
+        [TestCase("", "aaa", "", "",  "")]
+        [TestCase("", "", "aaa", "",  "")]
+        [TestCase("", "", "aaa", "aaa", "")]
+        [TestCase("", "aaa", "aaa", "aaa", "")]
+        [TestCase("aaa", "aaa", "aaa", "aaa", "")]
+        [TestCase("aaa", "aaa", "aaa", "aaa", "bbb")]
+        [TestCase("aaa", "aaa", "aaa", "aaa", "AAA")]
+        public void ThenFalseIsReturnedIfThereAreMissingFields(string firstName, string lastName, string email, string password, string confirmPassword)
         {
             //Arrange
             var registerUserCommand = new RegisterUserCommand
@@ -52,7 +49,6 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUserTests.Reg
                 LastName = lastName,
                 Email = email,
                 Password = password,
-                ConfirmEmail = confirmEmail,
                 ConfirmPassword = confirmPassword
             };
 

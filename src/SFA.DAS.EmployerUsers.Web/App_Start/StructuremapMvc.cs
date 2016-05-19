@@ -15,42 +15,38 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using SFA.DAS.EmployerUsers.Web.App_Start;
-
+using System.Web.Mvc;
+using Microsoft.Web.Infrastructure.DynamicModuleHelper;
+using SFA.DAS.EmployerUsers.Web;
+using SFA.DAS.EmployerUsers.Web.DependencyResolution;
+using StructureMap;
 using WebActivatorEx;
 
 [assembly: PreApplicationStartMethod(typeof(StructuremapMvc), "Start")]
 [assembly: ApplicationShutdownMethod(typeof(StructuremapMvc), "End")]
 
-namespace SFA.DAS.EmployerUsers.Web.App_Start {
-	using System.Web.Mvc;
-
-    using Microsoft.Web.Infrastructure.DynamicModuleHelper;
-
-	using SFA.DAS.EmployerUsers.Web.DependencyResolution;
-
-    using StructureMap;
-    
-	public static class StructuremapMvc {
-        #region Public Properties
+namespace SFA.DAS.EmployerUsers.Web
+{
+    public static class StructuremapMvc
+    {
 
         public static StructureMapDependencyScope StructureMapDependencyScope { get; set; }
+        internal static IContainer Container { get; private set; }
 
-        #endregion
-		
-		#region Public Methods and Operators
-		
-		public static void End() {
+
+        public static void End()
+        {
             StructureMapDependencyScope.Dispose();
         }
-		
-        public static void Start() {
-            IContainer container = IoC.Initialize();
-            StructureMapDependencyScope = new StructureMapDependencyScope(container);
+
+        public static void Start()
+        {
+            Container = IoC.Initialize();
+
+            StructureMapDependencyScope = new StructureMapDependencyScope(Container);
             DependencyResolver.SetResolver(StructureMapDependencyScope);
             DynamicModuleUtility.RegisterModule(typeof(StructureMapScopeModule));
         }
-
-        #endregion
+        
     }
 }

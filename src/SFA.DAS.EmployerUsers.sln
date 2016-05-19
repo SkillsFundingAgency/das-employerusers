@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "SFA.DAS.EmployerUsers", "SFA.DAS.EmployerUsers\SFA.DAS.EmployerUsers.ccproj", "{69ECC3F8-055D-4341-B7AA-03688C0109B8}"
 EndProject
@@ -27,6 +27,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Data.UnitTests", "SFA.DAS.EmployerUsers.Data.UnitTests\SFA.DAS.EmployerUsers.Data.UnitTests.csproj", "{8082BC59-8C78-40A4-A6AC-566BD5B95FD5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Infrastructure", "SFA.DAS.EmployerUsers.Infrastructure\SFA.DAS.EmployerUsers.Infrastructure.csproj", "{A38872C3-513F-4FD4-8917-E5BA21D5E3A6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PreReqs", "PreReqs", "{A039E788-E2DC-42F6-8D3A-421A337D4546}"
+	ProjectSection(SolutionItems) = preProject
+		DasIDPCert.pfx = DasIDPCert.pfx
+		DevInstall.ps1 = DevInstall.ps1
+		localhost.pfx = localhost.pfx
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

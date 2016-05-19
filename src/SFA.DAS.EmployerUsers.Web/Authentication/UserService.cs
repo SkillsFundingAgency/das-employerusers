@@ -17,16 +17,11 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
     public class UserService : UserServiceBase
     {
         private readonly IMediator _mediator;
-        private readonly OwinContext _owinContext;
-
-        public UserService(IMediator mediator)
+        private readonly IOwinContext _owinContext;
+        
+        public UserService(OwinEnvironmentService owinEnvironment, IMediator mediator)
         {
             _mediator = mediator;
-        }
-
-        public UserService(OwinEnvironmentService owinEnvironment, IMediator mediator)
-            : this(mediator)
-        {
             _owinContext = new OwinContext(owinEnvironment.Environment);
         }
 

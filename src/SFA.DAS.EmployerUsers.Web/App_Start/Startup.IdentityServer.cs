@@ -7,15 +7,16 @@ using IdentityServer3.Core.Configuration;
 using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services.InMemory;
 using Owin;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 
 namespace SFA.DAS.EmployerUsers.Web
 {
 	public partial class Startup
 	{
-	    private void ConfigureIdentityServer(IAppBuilder app)
+	    private void ConfigureIdentityServer(IAppBuilder app, IdentityServerConfiguration configuration)
 	    {
-            AntiForgeryConfig.UniqueClaimTypeIdentifier = Constants.ClaimTypes.Subject;
+            AntiForgeryConfig.UniqueClaimTypeIdentifier = Constants.ClaimTypes.Id;
 
             app.Map("/identity", idsrvApp =>
             {
@@ -23,14 +24,14 @@ namespace SFA.DAS.EmployerUsers.Web
                     .UseDasUserService()
                     .UseInMemoryClients(GetClients())
                     .UseInMemoryScopes(GetScopes())
-                    .RegisterDasServices();
+                    .RegisterDasServices(StructuremapMvc.Container);
 
                 //factory.ConfigureDefaultViewService<CustomIdsViewService>(new DefaultViewServiceOptions());
 
                 idsrvApp.UseIdentityServer(new IdentityServerOptions
                 {
-                    SiteName = "Digital Apprentice Service",
-                    SigningCertificate = LoadCertificate(),
+                    SiteName = "Digital Apprenticeship Service",
+                    SigningCertificate = LoadCertificate(configuration),
 
                     Factory = factory,
 
@@ -43,22 +44,21 @@ namespace SFA.DAS.EmployerUsers.Web
         }
 
 
-        private X509Certificate2 LoadCertificate()
+        private X509Certificate2 LoadCertificate(IdentityServerConfiguration configuration)
         {
-            return new X509Certificate2(string.Format(@"{0}\bin\das.pfx", AppDomain.CurrentDomain.BaseDirectory), "idsrv3test");
+            var storeLocation = (StoreLocation)Enum.Parse(typeof (StoreLocation), configuration.CertificateStore);
+            var store = new X509Store(storeLocation);
+            store.Open(OpenFlags.ReadOnly);
+            try
+            {
+                var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, configuration.CertificateThumbprint, false);
+                return certificates.Count > 0 ? certificates[0] : null;
+            }
+            finally
+            {
+                store.Close();
+            }
         }
-	    private List<InMemoryUser> GetUsers()
-	    {
-	        return new List<InMemoryUser>
-	        {
-	            new InMemoryUser
-	            {
-	                Username = "test",
-	                Password = "password",
-	                Subject = "4117c08d-8cf7-4960-b99b-903f627c4d53"
-	            }
-	        };
-	    }
         private List<Client> GetClients()
         {
             var self = new Client

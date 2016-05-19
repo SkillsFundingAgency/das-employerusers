@@ -39,7 +39,6 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         public async Task ThenTheRegisterUserCommandIsPassedOntoTheMediator()
         {
             //Arrange
-            var confirmEmail = "test@test.com";
             var email = "test@test.com";
             var password = "password";
             var confirmPassword = "password";
@@ -51,7 +50,6 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
                 FirstName = firstName,
                 LastName = lastName,
                 Email = email,
-                ConfirmEmail = confirmEmail,
                 Password = password,
                 ConfirmPassword = confirmPassword
             };
@@ -60,7 +58,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _accountOrchestrator.Register(registerUserViewModel);
 
             //Assert
-            _mediator.Verify(x=>x.SendAsync(It.Is<RegisterUserCommand>(p=>p.Email.Equals(email) && p.FirstName.Equals(firstName) && p.LastName.Equals(lastName) && p.Password.Equals(password) && p.ConfirmPassword.Equals(confirmPassword) && p.ConfirmEmail.Equals(confirmEmail))),Times.Once);
+            _mediator.Verify(x=>x.SendAsync(It.Is<RegisterUserCommand>(p=>p.Email.Equals(email) && p.FirstName.Equals(firstName) && p.LastName.Equals(lastName) && p.Password.Equals(password) && p.ConfirmPassword.Equals(confirmPassword))),Times.Once);
             Assert.IsTrue(actual);
         }
 

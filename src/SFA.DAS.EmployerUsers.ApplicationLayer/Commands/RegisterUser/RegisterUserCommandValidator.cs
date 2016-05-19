@@ -6,15 +6,11 @@
         {
             if (string.IsNullOrWhiteSpace(item?.Email) || string.IsNullOrWhiteSpace(item.FirstName) ||
                 string.IsNullOrWhiteSpace(item.LastName) || string.IsNullOrWhiteSpace(item.Password) ||
-                string.IsNullOrWhiteSpace(item.ConfirmPassword) || string.IsNullOrWhiteSpace(item.ConfirmEmail))
+                string.IsNullOrWhiteSpace(item.ConfirmPassword))
             {
                 return false;
             }
-
-            if (!item.ConfirmEmail.ToLower().Equals(item.Email.ToLower()))
-            {
-                return false;
-            }
+            
 
             if (!item.ConfirmPassword.Equals(item.Password))
             {

@@ -1,5 +1,7 @@
 ﻿using Microsoft.Owin;
 using Owin;
+using SFA.DAS.Configuration;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 
 [assembly: OwinStartup(typeof(SFA.DAS.EmployerUsers.Web.Startup))]
 namespace SFA.DAS.EmployerUsers.Web
@@ -8,8 +10,18 @@ namespace SFA.DAS.EmployerUsers.Web
     {
         public void Configuration(IAppBuilder app)
         {
-            ConfigureIdentityServer(app);
-            ConfigureRelyingParty(app);
+            var configurationService = StructuremapMvc.Container.GetInstance<IConfigurationService>();
+            configurationService.Get<EmployerUsersConfiguration>().ContinueWith((task) =>
+            {
+                if (task.Exception != null)
+                {
+                    throw task.Exception;
+                }
+
+                var configuration = task.Result;
+                ConfigureIdentityServer(app, configuration.IdentityServer);
+                ConfigureRelyingParty(app);
+            }).Wait();
         }
     }
 }
