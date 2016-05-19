@@ -15,23 +15,21 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
         private const string DatabaseName = "EmployerUsers";
         private const string CollectionName = "User";
 
-        private readonly DocumentClient _client;
+        private readonly IConfigurationService _configurationService;
 
         public DocumentDbUserRepository(IConfigurationService configurationService)
         {
-            var cfgTask = configurationService.Get<EmployerUsersConfiguration>();
-            cfgTask.Wait();
-            var configuration = cfgTask.Result;
-
-            _client = new DocumentClient(new Uri(configuration.DataStorage.DocumentDbUri), configuration.DataStorage.DocumentDbAccessToken);
+            _configurationService = configurationService;
         }
 
         public async Task<User> GetById(string id)
         {
             try
             {
+                var client = await GetClient();
+
                 var documentUri = UriFactory.CreateDocumentUri(DatabaseName, CollectionName, id);
-                var document = await _client.ReadDocumentAsync(documentUri);
+                var document = await client.ReadDocumentAsync(documentUri);
 
                 DocumentDbUser documentDbUser = (dynamic)document.Resource;
                 return documentDbUser.ToDomainUser();
@@ -48,11 +46,19 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
 
         public async Task Create(User registerUser)
         {
+            var client = await GetClient();
+
             registerUser.Id = Guid.NewGuid().ToString();
 
             var collectionId = UriFactory.CreateDocumentCollectionUri(DatabaseName, CollectionName);
             var documentDbUser = DocumentDbUser.FromDomainUser(registerUser);
-            await _client.CreateDocumentAsync(collectionId, documentDbUser, null, true);
+            await client.CreateDocumentAsync(collectionId, documentDbUser, null, true);
+        }
+
+        private async Task<DocumentClient> GetClient()
+        {
+            var configuration = await _configurationService.Get<EmployerUsersConfiguration>();
+            return new DocumentClient(new Uri(configuration.DataStorage.DocumentDbUri), configuration.DataStorage.DocumentDbAccessToken);
         }
     }
 }
