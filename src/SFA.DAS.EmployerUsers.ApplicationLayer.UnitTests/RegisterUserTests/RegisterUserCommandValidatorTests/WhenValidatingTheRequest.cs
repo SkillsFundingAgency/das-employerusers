@@ -62,5 +62,16 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUserTests.Reg
             //Assert
             Assert.IsFalse(actual);
         }
+
+        [Test]
+        public void ThenFalseIsReturnedIfNullIsPassed()
+        {
+            //Act
+            var actual = _validator.Validate(null);
+
+            //Assert
+            Assert.IsFalse(actual);
+
+        }
     }
 }

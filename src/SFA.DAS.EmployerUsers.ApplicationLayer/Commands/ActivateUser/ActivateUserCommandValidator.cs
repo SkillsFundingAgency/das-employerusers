@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerUsers.ApplicationLayer.Commands.ActivateUser
 {
@@ -10,7 +6,17 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.Commands.ActivateUser
     {
         public bool Validate(ActivateUserCommand item)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(item?.AccessCode) || string.IsNullOrEmpty(item.UserId))
+            {
+                return false;
+            }
+
+            if (!item.AccessCode.Equals(item.User.AccessCode,StringComparison.CurrentCultureIgnoreCase))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

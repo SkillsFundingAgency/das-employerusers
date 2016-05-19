@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.Commands.ActivateUser
 
         protected override async Task HandleCore(ActivateUserCommand message)
         {
-            var result = _activateUserCommandValidator.Validate(new ActivateUserCommand());
+            var result = _activateUserCommandValidator.Validate(message);
 
             if (!result)
             {

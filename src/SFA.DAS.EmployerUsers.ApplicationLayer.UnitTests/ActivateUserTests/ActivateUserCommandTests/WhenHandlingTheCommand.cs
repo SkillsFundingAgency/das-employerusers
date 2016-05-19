@@ -26,13 +26,16 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.ActivateUserTests.Act
         public async Task ThenActivateUserCommandValidatorIsCalled()
         {
             //Arrange
-            _activateUserCommandValidator.Setup(x => x.Validate(It.IsAny<ActivateUserCommand>())).Returns(true);
+            var accessCode = "123DSAD";
+            var userId = Guid.NewGuid().ToString();
+            var activateUserCommand = new ActivateUserCommand {AccessCode = accessCode, UserId = userId};
+            _activateUserCommandValidator.Setup(x => x.Validate(activateUserCommand)).Returns(true);
 
             //Act
-            await _activateUserCommand.Handle(new ActivateUserCommand());
+            await _activateUserCommand.Handle(activateUserCommand);
 
             //Assert
-            _activateUserCommandValidator.Verify(x=>x.Validate(It.IsAny<ActivateUserCommand>()),Times.Once);
+            _activateUserCommandValidator.Verify(x=>x.Validate(It.Is<ActivateUserCommand>(c=>c.UserId == userId && c.AccessCode == accessCode)),Times.Once);
         }
 
         [Test]
