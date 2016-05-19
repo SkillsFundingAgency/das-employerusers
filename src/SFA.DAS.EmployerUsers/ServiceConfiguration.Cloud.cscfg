@@ -4,10 +4,11 @@
     <Instances count="1" />
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="StorageConnectionString" value="__StorageConnectionString__" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="WebSslCert" thumbprint="55A2FE842CF496C2EC899D149ED0D15063BAD3D8" thumbprintAlgorithm="sha1" />
-      <Certificate name="DasIDPCert" thumbprint="0A50DD180EEF0FB3B347061F62F08F8EC424F465" thumbprintAlgorithm="sha1" />
+      <Certificate name="DasIDPCert" thumbprint="C0ADAB0D15F856216B7BBDA548DA47CFAB871CEF" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
 </ServiceConfiguration>
