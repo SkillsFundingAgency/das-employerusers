@@ -8,5 +8,11 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         {
             return View();
         }
+
+        [Authorize]
+        public ActionResult Test()
+        {
+            return Content("You're in");
+        }
     }
 }

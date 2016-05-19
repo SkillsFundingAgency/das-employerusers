@@ -23,7 +23,7 @@ namespace SFA.DAS.EmployerUsers.Web
                     .UseDasUserService()
                     .UseInMemoryClients(GetClients())
                     .UseInMemoryScopes(GetScopes())
-                    .RegisterDasServices();
+                    .RegisterDasServices(StructuremapMvc.Container);
 
                 //factory.ConfigureDefaultViewService<CustomIdsViewService>(new DefaultViewServiceOptions());
 
