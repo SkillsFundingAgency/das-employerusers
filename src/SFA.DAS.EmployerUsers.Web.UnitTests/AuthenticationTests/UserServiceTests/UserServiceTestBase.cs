@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.AuthenticationTests.UserServiceTes
 
             _mediator = new Mock<IMediator>();
 
-            _userService = new UserService(new OwinContext(_owinEnvironmentService.Environment), _mediator.Object);
+            _userService = new UserService(_owinEnvironmentService, _mediator.Object);
         }
     }
 }
