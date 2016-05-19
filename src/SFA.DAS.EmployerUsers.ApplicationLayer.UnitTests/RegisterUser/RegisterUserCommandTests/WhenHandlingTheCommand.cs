@@ -44,7 +44,6 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUser.Register
                     FirstName = firstName,
                     LastName = lastName,
                     Email = emailAddress,
-                    ConfirmEmail = emailAddress,
                     Password = password,
                     ConfirmPassword = password
             };

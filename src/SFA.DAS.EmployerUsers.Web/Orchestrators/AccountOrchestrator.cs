@@ -34,7 +34,6 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     FirstName = registerUserViewModel.FirstName,
                     LastName = registerUserViewModel.LastName,
                     Email = registerUserViewModel.Email,
-                    ConfirmEmail = registerUserViewModel.ConfirmEmail,
                     Password = registerUserViewModel.Password,
                     ConfirmPassword = registerUserViewModel.ConfirmPassword
                 });
