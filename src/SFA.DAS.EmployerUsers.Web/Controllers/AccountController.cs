@@ -15,6 +15,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [HttpGet]
+        [Route("identity/employer/login")]
+        public Task<ActionResult> Login()
+        {
+            return Task.FromResult<ActionResult>(View());
+        }
+
+        [HttpGet]
         public async Task<ActionResult> Register()
         {
             return await Task.Run<ActionResult>(() => View(new RegisterViewModel {Valid = true}));
