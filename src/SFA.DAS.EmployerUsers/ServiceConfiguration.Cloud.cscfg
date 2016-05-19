@@ -7,6 +7,7 @@
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="WebSslCert" thumbprint="55A2FE842CF496C2EC899D149ED0D15063BAD3D8" thumbprintAlgorithm="sha1" />
+      <Certificate name="DasIDPCert" thumbprint="0A50DD180EEF0FB3B347061F62F08F8EC424F465" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
 </ServiceConfiguration>

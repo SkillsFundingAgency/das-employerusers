@@ -42,6 +42,7 @@ namespace SFA.DAS.EmployerUsers.Web
         public static void Start()
         {
             Container = IoC.Initialize();
+
             StructureMapDependencyScope = new StructureMapDependencyScope(Container);
             DependencyResolver.SetResolver(StructureMapDependencyScope);
             DynamicModuleUtility.RegisterModule(typeof(StructureMapScopeModule));

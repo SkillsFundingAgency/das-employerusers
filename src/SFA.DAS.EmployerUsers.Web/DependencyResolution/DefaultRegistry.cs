@@ -17,6 +17,9 @@
 
 using System.Web;
 using MediatR;
+using Microsoft.Owin;
+using SFA.DAS.Configuration;
+using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Data;
 using StructureMap.Web.Pipeline;
@@ -37,6 +40,10 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
                         && !a.GetName().Name.Equals("SFA.DAS.EmployerUsers.Infrastructure"));
                     scan.RegisterConcreteTypesAgainstTheFirstInterface();
                 });
+
+            var configurationService = new ConfigurationService(new AzureTableStorageConfigurationRepository(),
+                new ConfigurationOptions("SFA.DAS.EmployerUsers.Web", null, "1.0"));
+            For<IConfigurationService>().Use(configurationService);
 
             For<IUserRepository>().Use<FileSystemUserRepository>();
 

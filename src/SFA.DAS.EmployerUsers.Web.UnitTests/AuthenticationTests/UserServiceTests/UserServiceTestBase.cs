@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using IdentityServer3.Core.Services;
 using MediatR;
+using Microsoft.Owin;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Web.Authentication;
@@ -26,7 +27,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.AuthenticationTests.UserServiceTes
 
             _mediator = new Mock<IMediator>();
 
-            _userService = new UserService(_owinEnvironmentService, _mediator.Object);
+            _userService = new UserService(new OwinContext(_owinEnvironmentService.Environment), _mediator.Object);
         }
     }
 }
