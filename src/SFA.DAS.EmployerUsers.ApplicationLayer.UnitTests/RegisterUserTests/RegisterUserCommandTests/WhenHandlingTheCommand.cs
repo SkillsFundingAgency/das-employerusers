@@ -5,7 +5,7 @@ using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
-namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUser.RegisterUserCommandTests
+namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUserTests.RegisterUserCommandTests
 {
     public class WhenHandlingTheCommand
     {

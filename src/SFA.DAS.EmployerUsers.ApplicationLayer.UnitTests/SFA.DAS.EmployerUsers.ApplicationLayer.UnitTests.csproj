@@ -54,8 +54,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegisterUser\RegisterUserCommandTests\WhenHandlingTheCommand.cs" />
-    <Compile Include="RegisterUser\RegisterUserCommandValidatorTests\WhenValidatingTheRequest.cs" />
+    <Compile Include="RegisterUserTests\RegisterUserCommandTests\WhenHandlingTheCommand.cs" />
+    <Compile Include="RegisterUserTests\RegisterUserCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="QueriesTests\GetUserByIdTests\GetUserByIdQueryHandlerTests\WhenHandlingRequest.cs" />
     <Compile Include="QueriesTests\IsUserActiveTests\IsUserActiveQueryHandlerTests\WhenHandlingRequest.cs" />
   </ItemGroup>

@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser;
 
-namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUser.RegisterUserCommandValidatorTests
+namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUserTests.RegisterUserCommandValidatorTests
 {
     public class WhenValidatingTheRequest
     {
