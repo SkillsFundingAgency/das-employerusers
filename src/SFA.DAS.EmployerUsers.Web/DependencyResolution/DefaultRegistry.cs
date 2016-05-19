@@ -15,6 +15,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
 using System.Web;
 using MediatR;
 using Microsoft.Owin;
@@ -41,11 +42,22 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
                     scan.RegisterConcreteTypesAgainstTheFirstInterface();
                 });
 
+
+            string environmentVariable = Environment.GetEnvironmentVariable("DASENV");
+            var environment = string.IsNullOrEmpty(environmentVariable) ? "Dev" : environmentVariable;
+
             var configurationService = new ConfigurationService(new AzureTableStorageConfigurationRepository(),
-                new ConfigurationOptions("SFA.DAS.EmployerUsers.Web", null, "1.0"));
+                new ConfigurationOptions("SFA.DAS.EmployerUsers.Web", environment, "1.0"));
             For<IConfigurationService>().Use(configurationService);
 
-            For<IUserRepository>().Use<FileSystemUserRepository>();
+            if (environment == "Dev")
+            {
+                For<IUserRepository>().Use<FileSystemUserRepository>();
+            }
+            else
+            {
+                For<IUserRepository>().Use<DocumentDbUserRepository>();
+            }
 
             For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => ctx.GetInstance(t));
             For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => ctx.GetAllInstances(t));
