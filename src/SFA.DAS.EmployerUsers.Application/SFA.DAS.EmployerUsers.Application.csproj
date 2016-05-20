@@ -59,6 +59,9 @@
     <Compile Include="Queries\GetUserById\GetUserByIdQueryHandler.cs" />
     <Compile Include="Queries\IsUserActive\IsUserActiveQuery.cs" />
     <Compile Include="Queries\IsUserActive\IsUserActiveQueryHandler.cs" />
+    <Compile Include="Services\Password\IPasswordService.cs" />
+    <Compile Include="Services\Password\PasswordService.cs" />
+    <Compile Include="Services\Password\SecuredPassword.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
