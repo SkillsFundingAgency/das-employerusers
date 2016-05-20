@@ -4,9 +4,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.PasswordTests.PasswordServiceTests
 {
@@ -14,16 +16,27 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.PasswordTest
     {
         private Mock<IPasswordProfileRepository> _passwordProfileRepo;
         private PasswordService _passwordService;
+        private Mock<IConfigurationService> _configurationService;
 
         [SetUp]
         public void Arrange()
         {
+            _configurationService = new Mock<IConfigurationService>();
+            _configurationService.Setup(s => s.Get<EmployerUsersConfiguration>())
+                .Returns(Task.FromResult<EmployerUsersConfiguration>(new EmployerUsersConfiguration
+                {
+                    Password = new PasswordConfiguration
+                    {
+                        ActiveProfileId = "XYZ"
+                    }
+                }));
+
             _passwordProfileRepo = new Mock<IPasswordProfileRepository>();
             _passwordProfileRepo.Setup(r => r.GetAllAsync()).Returns(Task.FromResult<IEnumerable<PasswordProfile>>(new[]
             {
                 new PasswordProfile
                 {
-                    Id = "XXX",
+                    Id = "XYZ",
                     Key = Convert.ToBase64String(Encoding.Unicode.GetBytes("SystemKey")),
                     WorkFactor = 1,
                     SaltLength = 16,
@@ -31,7 +44,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.PasswordTest
                 }
             }));
 
-            _passwordService = new PasswordService(_passwordProfileRepo.Object);
+            _passwordService = new PasswordService(_configurationService.Object, _passwordProfileRepo.Object);
         }
 
         [Test]
@@ -53,7 +66,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.PasswordTest
             // Assert
             Assert.IsNotEmpty(actual.HashedPassword);
             Assert.IsNotEmpty(actual.Salt);
-            Assert.AreEqual("XXX", actual.ProfileId);
+            Assert.AreEqual("XYZ", actual.ProfileId);
         }
     }
 }

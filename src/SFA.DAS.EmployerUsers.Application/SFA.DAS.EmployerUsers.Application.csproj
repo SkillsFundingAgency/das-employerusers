@@ -35,6 +35,14 @@
       <HintPath>..\packages\MediatR.2.0.2\lib\net45\MediatR.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SFA.DAS.Configuration, Version=1.0.0.3985, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Configuration.1.0.0.3985\lib\net45\SFA.DAS.Configuration.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -70,6 +78,10 @@
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.Domain\SFA.DAS.EmployerUsers.Domain.csproj">
       <Project>{2686243C-201A-45C1-ADBC-99B05BD83D73}</Project>
       <Name>SFA.DAS.EmployerUsers.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.EmployerUsers.Infrastructure\SFA.DAS.EmployerUsers.Infrastructure.csproj">
+      <Project>{A38872C3-513F-4FD4-8917-E5BA21D5E3A6}</Project>
+      <Name>SFA.DAS.EmployerUsers.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

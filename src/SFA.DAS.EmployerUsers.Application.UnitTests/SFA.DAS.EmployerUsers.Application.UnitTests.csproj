@@ -39,8 +39,16 @@
       <HintPath>..\packages\Moq.4.2.1510.2205\lib\net40\Moq.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="nunit.framework, Version=3.2.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.2.1\lib\net45\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SFA.DAS.Configuration, Version=1.0.0.3985, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Configuration.1.0.0.3985\lib\net45\SFA.DAS.Configuration.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -63,6 +71,7 @@
     <Compile Include="ServicesTests\PasswordTests\PasswordServiceTests\WhenGenerating.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +82,10 @@
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.Domain\SFA.DAS.EmployerUsers.Domain.csproj">
       <Project>{2686243C-201A-45C1-ADBC-99B05BD83D73}</Project>
       <Name>SFA.DAS.EmployerUsers.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.EmployerUsers.Infrastructure\SFA.DAS.EmployerUsers.Infrastructure.csproj">
+      <Project>{A38872C3-513F-4FD4-8917-E5BA21D5E3A6}</Project>
+      <Name>SFA.DAS.EmployerUsers.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

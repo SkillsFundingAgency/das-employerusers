@@ -4,17 +4,21 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 
 namespace SFA.DAS.EmployerUsers.Application.Services.Password
 {
     public class PasswordService : IPasswordService
     {
+        private readonly IConfigurationService _configurationService;
         private readonly IPasswordProfileRepository _passwordProfileRepo;
 
-        public PasswordService(IPasswordProfileRepository passwordProfileRepo)
+        public PasswordService(IConfigurationService configurationService, IPasswordProfileRepository passwordProfileRepo)
         {
+            _configurationService = configurationService;
             _passwordProfileRepo = passwordProfileRepo;
         }
 
@@ -47,9 +51,10 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Password
             throw new NotImplementedException();
         }
 
-        private Task<PasswordProfile> GetActivePasswordProfile()
+        private async Task<PasswordProfile> GetActivePasswordProfile()
         {
-            return GetPasswordProfile("XXX");
+            var configuration = await _configurationService.Get<EmployerUsersConfiguration>();
+            return await GetPasswordProfile(configuration.Password.ActiveProfileId);
         }
         private async Task<PasswordProfile> GetPasswordProfile(string id)
         {

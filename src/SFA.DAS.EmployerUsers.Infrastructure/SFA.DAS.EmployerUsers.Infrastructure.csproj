@@ -58,6 +58,7 @@
     <Compile Include="Data\DocumentDbUser.cs" />
     <Compile Include="Data\DocumentDbUserRepository.cs" />
     <Compile Include="Data\FileSystemUserRepository.cs" />
+    <Compile Include="Data\InMemoryPasswordProfileRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
