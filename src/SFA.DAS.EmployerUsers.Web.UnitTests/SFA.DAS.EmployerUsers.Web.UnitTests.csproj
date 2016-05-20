@@ -87,6 +87,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AccountControllerTests\WhenEnteringMyAccessCode.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenRegistering.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenEnteringMyAccessCode.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenRegistering.cs" />
