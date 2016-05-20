@@ -6,6 +6,7 @@ using SFA.DAS.EmployerUsers.Web.Orchestrators;
 
 namespace SFA.DAS.EmployerUsers.Web.Controllers
 {
+    [RoutePrefix("identity/employer")]
     public class AccountController : Controller
     {
         private readonly AccountOrchestrator _accountOrchestrator;
@@ -16,19 +17,21 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [HttpGet]
-        [Route("identity/employer/login")]
+        [Route("login")]
         public Task<ActionResult> Login()
         {
             return Task.FromResult<ActionResult>(View());
         }
 
         [HttpGet]
+        [Route("register")]
         public async Task<ActionResult> Register()
         {
             return await Task.Run<ActionResult>(() => View(new RegisterViewModel {Valid = true}));
         }
 
         [HttpPost]
+        [Route("register")]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
             return await Task.Run<ActionResult>(() =>
@@ -50,6 +53,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
         [HttpPost]
         [Authorize]
+        [Route("confirm")]
         public async Task<ActionResult> Confirm(AccessCodeViewModel accessCodeViewModel)
         {
             return await Task.Run<ActionResult>(() =>
@@ -67,6 +71,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
         [Authorize]
         [HttpGet]
+        [Route("confirm")]
         public async Task<ActionResult> Confirm()
         {
             return await Task.Run<ActionResult>(() => View("Confirm", new AccessCodeViewModel {Valid = true}));

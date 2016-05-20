@@ -1,1 +1,31 @@
-﻿<h1 class="heading-large">Login</h1>
+﻿@{
+    ViewBag.Title = "GOV.UK DAS ALPHA - Sign In";
+}
+
+
+<h1 class="heading-large">Sign in</h1>
+
+<p>
+    Sign in or <a href="@Url.Action("Register","Account")">create an account</a> to manage your apprenticeship levy account.
+</p>
+
+<form action="">
+    <fieldset>
+        <legend class="visuallyhidden">email address and password to sign in</legend>
+        <div class="form-group">
+            <label class="form-label" for="email-address">
+                Email address
+
+            </label>
+            <input class="form-control" id="email-address" type="text">
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <input class="form-control" id="password" type="password">
+        </div>
+    </fieldset>
+    <button type="submit" class="button" href="#">Sign In</button>
+</form>
+<p style="padding-top:20px">
+    <a href="#">Forgotten your password?</a>
+</p>
