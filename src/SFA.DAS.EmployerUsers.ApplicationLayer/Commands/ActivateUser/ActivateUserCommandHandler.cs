@@ -18,6 +18,8 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.Commands.ActivateUser
 
         protected override async Task HandleCore(ActivateUserCommand message)
         {
+            var user = await _userRepository.GetById(message.UserId);
+            message.User = user;
             var result = _activateUserCommandValidator.Validate(message);
 
             if (!result)
@@ -25,7 +27,6 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.Commands.ActivateUser
                 throw new InvalidRequestException(new[] { "NotValid" });
             }
 
-            var user = await _userRepository.GetById(message.UserId);
             user.IsActive = true;
 
             await _userRepository.Update(user); 

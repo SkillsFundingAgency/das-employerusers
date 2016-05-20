@@ -117,7 +117,7 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.ActivateUserTests.Act
                 AccessCode = accessCode
             };
             _userRepository.Setup(x => x.GetById(userId)).ReturnsAsync(user);
-            _activateUserCommandValidator.Setup(x => x.Validate(It.IsAny<ActivateUserCommand>())).Returns(true);
+            _activateUserCommandValidator.Setup(x => x.Validate(It.Is<ActivateUserCommand>(p=>p.AccessCode==accessCode && p.UserId==userId && p.User.AccessCode == accessCode))).Returns(true);
 
             //Act
             await _activateUserCommand.Handle(activateUserCommand);
