@@ -49,13 +49,13 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
         private void AddEnvironmentSpecificRegistrations()
         {
             var environmentVariable = Environment.GetEnvironmentVariable("DASENV");
-            var environment = string.IsNullOrEmpty(environmentVariable) ? "Dev" : environmentVariable;
+            var environment = string.IsNullOrEmpty(environmentVariable) ? "DEV" : environmentVariable.ToUpper();
 
             var configurationService = new ConfigurationService(new AzureTableStorageConfigurationRepository(),
                 new ConfigurationOptions("SFA.DAS.EmployerUsers.Web", environment, "1.0"));
             For<IConfigurationService>().Use(configurationService);
 
-            if (environment == "Dev")
+            if (environment == "DEV")
             {
                 AddDevelopmentRegistrations();
             }
