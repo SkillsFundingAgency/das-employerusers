@@ -16,6 +16,8 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public string Salt { get; set; }
+        public string PasswordProfileId { get; set; }
         public bool IsActive { get; set; }
 
         internal static DocumentDbUser FromDomainUser(User user)
@@ -27,7 +29,9 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
                 FirstName = user.FirstName,
                 IsActive = user.IsActive,
                 LastName = user.LastName,
-                Password = user.Password
+                Password = user.Password,
+                Salt = user.Salt,
+                PasswordProfileId = user.PasswordProfileId
             };
         }
 
@@ -35,13 +39,14 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
         {
             return new User
             {
-
                 Id = Id,
                 Email = Email,
                 FirstName = FirstName,
                 IsActive = IsActive,
                 LastName = LastName,
-                Password = Password
+                Password = Password,
+                Salt = Salt,
+                PasswordProfileId = PasswordProfileId
             };
         }
     }
