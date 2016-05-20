@@ -44,7 +44,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
 
             registerUser.Id = Guid.NewGuid().ToString();
 
-            var path = Path.Combine(_directory, registerUser.Id + ".json");
+            var path = GetUserFilePath(registerUser);
             using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write))
             using (var writer = new StreamWriter(stream))
             {
@@ -55,9 +55,19 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
             }
         }
 
-        public Task Update(User user)
+        public async Task Update(User user)
         {
-            throw new NotImplementedException();
+            var path = GetUserFilePath(user);
+
+            File.Delete(path);
+
+            await Create(user);
+
+        }
+
+        private string GetUserFilePath(User registerUser)
+        {
+            return Path.Combine(_directory, registerUser.Id + ".json");
         }
     }
 }

@@ -49,6 +49,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult> Confirm(AccessCodeViewModel accessCodeViewModel)
         {
             return await Task.Run<ActionResult>(() =>
@@ -64,6 +65,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             });
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult> Confirm()
         {

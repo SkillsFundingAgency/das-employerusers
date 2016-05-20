@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
@@ -53,7 +54,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
             await _registerUserCommandHandler.Handle(registerUserCommand);
 
             //Assert
-            _userRepository.Verify(v=>v.Create(It.Is<User>(x=> x.FirstName.Equals(firstName) && x.LastName.Equals(lastName) && x.Email.Equals(emailAddress) && x.Password.Equals(password))));
+            _userRepository.Verify(v=>v.Create(It.Is<User>(x=> x.FirstName.Equals(firstName) && x.LastName.Equals(lastName) && x.Email.Equals(emailAddress) && x.Password.Equals(password) && x.AccessCode.Equals("ABC123ZXY",StringComparison.InvariantCultureIgnoreCase))));
         }
 
         [Test]

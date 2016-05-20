@@ -28,7 +28,8 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
                 Email = message.Email,
                 FirstName = message.FirstName,
                 LastName = message.LastName,
-                Password = message.Password
+                Password = message.Password,
+                AccessCode = "ABC123ZXY"
             };
 
             await _userRepository.Create(registerUser);
