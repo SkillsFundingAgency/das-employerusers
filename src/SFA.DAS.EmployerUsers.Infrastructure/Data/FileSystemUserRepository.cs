@@ -54,5 +54,10 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
                 writer.Close();
             }
         }
+
+        public Task Update(User user)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

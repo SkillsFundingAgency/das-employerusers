@@ -87,10 +87,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AccountControllerTests\WhenEnteringMyAccessCode.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenRegistering.cs" />
-  <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenRegistering.cs" />
-<Compile Include="AuthenticationTests\UserServiceTests\UserServiceTestBase.cs" />
-   
+    <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenEnteringMyAccessCode.cs" />
+    <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenRegistering.cs" />
+    <Compile Include="AuthenticationTests\UserServiceTests\UserServiceTestBase.cs" />
     <Compile Include="AuthenticationTests\UserServiceTests\WhenCheckingUserIsActive.cs" />
     <Compile Include="AuthenticationTests\UserServiceTests\WhenGettingProfileData.cs" />
     <Compile Include="AuthenticationTests\UserServiceTests\WhenPreAuthenticating.cs" />

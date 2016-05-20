@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser;
 
-namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUser.RegisterUserCommandValidatorTests
+namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUserTests.RegisterUserCommandValidatorTests
 {
     public class WhenValidatingTheRequest
     {
@@ -57,6 +57,17 @@ namespace SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.RegisterUser.Register
 
             //Assert
             Assert.IsFalse(actual);
+        }
+
+        [Test]
+        public void ThenFalseIsReturnedIfNullIsPassed()
+        {
+            //Act
+            var actual = _validator.Validate(null);
+
+            //Assert
+            Assert.IsFalse(actual);
+
         }
     }
 }

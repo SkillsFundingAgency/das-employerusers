@@ -1,1 +1,24 @@
-﻿
+﻿@model SFA.DAS.EmployerUsers.Web.Models.AccessCodeViewModel
+
+<h1 class="heading-large">Register</h1>
+
+@if (!Model.Valid)
+{
+    <div class="error" style="margin-bottom: 10px;">
+        <p class="error-message">
+            Invalid Code
+        </p>
+    </div>
+}
+
+<form method="post">
+    <fieldset>
+        <legend class="visuallyhidden">Access code for user registration</legend>
+
+        <div class="form-group">
+            <label class="form-label" for="AccessCode">Access Code</label>
+            <input class="form-control" id="AccessCode" name="AccessCode">
+        </div>
+    </fieldset>
+    <button type="submit" class="button">Activate Account</button>
+</form>

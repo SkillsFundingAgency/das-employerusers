@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.EmployerUsers.ApplicationLayer;
+using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Web.Models;
 
@@ -38,6 +40,25 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     ConfirmPassword = registerUserViewModel.ConfirmPassword
                 });
 
+
+                return true;
+            }
+            catch (InvalidRequestException)
+            {
+                return false;
+            }
+            
+        }
+
+        public virtual async Task<bool> ActivateUser(AccessCodeViewModel accessCodeviewModel)
+        {
+            try
+            {
+                await _mediator.SendAsync(new ActivateUserCommand
+                {
+                    AccessCode = accessCodeviewModel.AccessCode,
+                    UserId = accessCodeviewModel.UserId
+                });
 
                 return true;
             }

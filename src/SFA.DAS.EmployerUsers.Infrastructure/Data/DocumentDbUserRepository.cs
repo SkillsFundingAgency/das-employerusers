@@ -60,5 +60,10 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
             var configuration = await _configurationService.Get<EmployerUsersConfiguration>();
             return new DocumentClient(new Uri(configuration.DataStorage.DocumentDbUri), configuration.DataStorage.DocumentDbAccessToken);
         }
+
+        public Task Update(User user)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
