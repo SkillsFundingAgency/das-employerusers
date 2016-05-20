@@ -4,7 +4,7 @@ using IdentityServer3.Core;
 using IdentityServer3.Core.Models;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.EmployerUsers.ApplicationLayer.Queries.IsUserActive;
+using SFA.DAS.EmployerUsers.Application.Queries.IsUserActive;
 
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.AuthenticationTests.UserServiceTests
 {

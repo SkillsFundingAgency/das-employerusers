@@ -2,8 +2,8 @@
 using MediatR;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.EmployerUsers.ApplicationLayer;
-using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser;
+using SFA.DAS.EmployerUsers.Application;
+using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.EmployerUsers.ApplicationLayer;
-using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.ActivateUser;
-using SFA.DAS.EmployerUsers.ApplicationLayer.Commands.RegisterUser;
+using SFA.DAS.EmployerUsers.Application;
+using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
+using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Web.Models;
 
 namespace SFA.DAS.EmployerUsers.Web.Orchestrators

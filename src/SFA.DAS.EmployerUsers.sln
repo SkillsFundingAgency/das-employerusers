@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "SFA.DAS.EmployerUsers", "SFA.DAS.EmployerUsers\SFA.DAS.EmployerUsers.ccproj", "{69ECC3F8-055D-4341-B7AA-03688C0109B8}"
 EndProject
@@ -20,9 +20,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Web.U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Domain", "SFA.DAS.EmployerUsers.Domain\SFA.DAS.EmployerUsers.Domain.csproj", "{2686243C-201A-45C1-ADBC-99B05BD83D73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.ApplicationLayer", "SFA.DAS.EmployerUsers.ApplicationLayer\SFA.DAS.EmployerUsers.ApplicationLayer.csproj", "{2243A091-EE5A-4641-B02E-D7BA560C0086}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Application", "SFA.DAS.EmployerUsers.Application\SFA.DAS.EmployerUsers.Application.csproj", "{2243A091-EE5A-4641-B02E-D7BA560C0086}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests", "SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests\SFA.DAS.EmployerUsers.ApplicationLayer.UnitTests.csproj", "{884664CA-3E6B-4DED-BC05-5A7F198375BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Application.UnitTests", "SFA.DAS.EmployerUsers.Application.UnitTests\SFA.DAS.EmployerUsers.Application.UnitTests.csproj", "{884664CA-3E6B-4DED-BC05-5A7F198375BC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Data.UnitTests", "SFA.DAS.EmployerUsers.Data.UnitTests\SFA.DAS.EmployerUsers.Data.UnitTests.csproj", "{8082BC59-8C78-40A4-A6AC-566BD5B95FD5}"
 EndProject

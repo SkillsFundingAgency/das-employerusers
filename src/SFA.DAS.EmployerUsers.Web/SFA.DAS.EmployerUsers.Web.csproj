@@ -337,9 +337,9 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.EmployerUsers.ApplicationLayer\SFA.DAS.EmployerUsers.ApplicationLayer.csproj">
+    <ProjectReference Include="..\SFA.DAS.EmployerUsers.Application\SFA.DAS.EmployerUsers.Application.csproj">
       <Project>{2243A091-EE5A-4641-B02E-D7BA560C0086}</Project>
-      <Name>SFA.DAS.EmployerUsers.ApplicationLayer</Name>
+      <Name>SFA.DAS.EmployerUsers.Application</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.Domain\SFA.DAS.EmployerUsers.Domain.csproj">
       <Project>{2686243C-201A-45C1-ADBC-99B05BD83D73}</Project>
