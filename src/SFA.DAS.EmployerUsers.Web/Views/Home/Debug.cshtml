@@ -1,0 +1,35 @@
+﻿@model System.Collections.IDictionary
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Debug</title>
+</head>
+<body>
+<div>
+    <h2>Environment Variables</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var key in Model.Keys)
+        {
+            <tr>
+                <td>@key</td>
+                <td>@Model[key]</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

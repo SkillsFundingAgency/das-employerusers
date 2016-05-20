@@ -15,6 +15,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
 using System.Web;
 using MediatR;
 using Microsoft.Owin;
@@ -41,12 +42,40 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
                     scan.RegisterConcreteTypesAgainstTheFirstInterface();
                 });
 
+            AddEnvironmentSpecificRegistrations();
+            AddMediatrRegistrations();
+        }
+
+        private void AddEnvironmentSpecificRegistrations()
+        {
+            var environmentVariable = Environment.GetEnvironmentVariable("DASENV");
+            var environment = string.IsNullOrEmpty(environmentVariable) || environmentVariable == "__DASENV__" 
+                                ? "DEV" : environmentVariable.ToUpper();
+
             var configurationService = new ConfigurationService(new AzureTableStorageConfigurationRepository(),
-                new ConfigurationOptions("SFA.DAS.EmployerUsers.Web", null, "1.0"));
+                new ConfigurationOptions("SFA.DAS.EmployerUsers.Web", environment, "1.0"));
             For<IConfigurationService>().Use(configurationService);
 
+            if (environment == "DEV")
+            {
+                AddDevelopmentRegistrations();
+            }
+            else
+            {
+                AddProductionRegistrations();
+            }
+        }
+        private void AddDevelopmentRegistrations()
+        {
             For<IUserRepository>().Use<FileSystemUserRepository>();
+        }
+        private void AddProductionRegistrations()
+        {
+            For<IUserRepository>().Use<DocumentDbUserRepository>();
+        }
 
+        private void AddMediatrRegistrations()
+        {
             For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => ctx.GetInstance(t));
             For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => ctx.GetAllInstances(t));
             For<IMediator>().Use<Mediator>();

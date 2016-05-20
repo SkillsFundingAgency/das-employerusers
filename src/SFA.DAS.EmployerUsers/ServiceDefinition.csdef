@@ -21,5 +21,10 @@
       <Certificate name="WebSslCert" storeLocation="LocalMachine" storeName="My" />
       <Certificate name="DasIDPCert" storeLocation="LocalMachine" storeName="My" />
     </Certificates>
+    <Runtime>
+      <Environment>
+        <Variable name="DASENV" value="__DASENV__" />
+      </Environment>
+    </Runtime>
   </WebRole>
 </ServiceDefinition>
