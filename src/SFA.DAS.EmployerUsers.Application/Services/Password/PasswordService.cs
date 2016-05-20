@@ -30,25 +30,41 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Password
             var salt = new byte[profile.SaltLength];
             rng.GetBytes(salt);
 
-            var saltedPassword = salt.Concat(Encoding.Unicode.GetBytes(plainText)).ToArray();
-
-            var hasher = new HMACSHA256(Convert.FromBase64String(profile.Key));
-            var hash = hasher.ComputeHash(saltedPassword);
-
-            var pbkdf2 = new Rfc2898DeriveBytes(Convert.ToBase64String(hash), salt, profile.WorkFactor);
-            var password = pbkdf2.GetBytes(profile.StorageLength);
+            var password = SecurePassword(plainText, salt, profile);
 
             return new SecuredPassword
             {
-                HashedPassword = Convert.ToBase64String(password),
+                HashedPassword = password,
                 Salt = Convert.ToBase64String(salt),
                 ProfileId = profile.Id
             };
         }
 
-        public Task<bool> VerifyAsync(string hashedPassword, string salt, string profileId)
+        public async Task<bool> VerifyAsync(string plainTextPassword, string hashedPassword, string salt, string profileId)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(plainTextPassword))
+            {
+                throw new ArgumentNullException(nameof(plainTextPassword));
+            }
+            if (string.IsNullOrEmpty(hashedPassword))
+            {
+                throw new ArgumentNullException(nameof(hashedPassword));
+            }
+            if (string.IsNullOrEmpty(salt))
+            {
+                throw new ArgumentNullException(nameof(salt));
+            }
+            if (string.IsNullOrEmpty(profileId))
+            {
+                throw new ArgumentNullException(nameof(profileId));
+            }
+
+            var profile = await GetPasswordProfile(profileId);
+
+            var password = SecurePassword(plainTextPassword, Convert.FromBase64String(salt), profile);
+
+            Console.WriteLine(password);
+            return password == hashedPassword;
         }
 
         private async Task<PasswordProfile> GetActivePasswordProfile()
@@ -60,6 +76,19 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Password
         {
             var profiles = await _passwordProfileRepo.GetAllAsync();
             return profiles.SingleOrDefault(pp => pp.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private string SecurePassword(string plainText, byte[] salt, PasswordProfile profile)
+        {
+            var saltedPassword = salt.Concat(Encoding.Unicode.GetBytes(plainText)).ToArray();
+
+            var hasher = new HMACSHA256(Convert.FromBase64String(profile.Key));
+            var hash = hasher.ComputeHash(saltedPassword);
+
+            var pbkdf2 = new Rfc2898DeriveBytes(Convert.ToBase64String(hash), salt, profile.WorkFactor);
+            var password = pbkdf2.GetBytes(profile.StorageLength);
+
+            return Convert.ToBase64String(password);
         }
     }
 }
