@@ -4,6 +4,12 @@
     {
         public IdentityServerConfiguration IdentityServer { get; set; }
         public DataStorageConfiguration DataStorage { get; set; }
+        public PasswordConfiguration Password { get; set; }
+    }
+
+    public class PasswordConfiguration
+    {
+        public string ActiveProfileId { get; set; }
     }
 
     public class DataStorageConfiguration

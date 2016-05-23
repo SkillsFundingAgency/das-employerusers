@@ -49,19 +49,11 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
 
         private void AddEnvironmentSpecificRegistrations()
         {
-            //var environmentVariable = Environment.GetEnvironmentVariable("DASENV");
-            //var environment = string.IsNullOrEmpty(environmentVariable) || environmentVariable == "__DASENV__" 
-            //                    ? "DEV" : environmentVariable.ToUpper();
-
             var environment = RoleEnvironment.IsEmulated ? "DEV" : "CLOUD_DEV";
-
 
             var configurationService = new ConfigurationService(new AzureTableStorageConfigurationRepository(),
                 new ConfigurationOptions("SFA.DAS.EmployerUsers.Web", environment, "1.0"));
             For<IConfigurationService>().Use(configurationService);
-
-            
-
 
             if (environment == "DEV")
             {
@@ -75,10 +67,12 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
         private void AddDevelopmentRegistrations()
         {
             For<IUserRepository>().Use<FileSystemUserRepository>();
+            For<IPasswordProfileRepository>().Use<InMemoryPasswordProfileRepository>();
         }
         private void AddProductionRegistrations()
         {
             For<IUserRepository>().Use<DocumentDbUserRepository>();
+            For<IPasswordProfileRepository>().Use<InMemoryPasswordProfileRepository>();
         }
 
         private void AddMediatrRegistrations()
