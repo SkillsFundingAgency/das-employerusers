@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
+using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 
@@ -14,12 +15,14 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
     {
         private AccountOrchestrator _accountOrchestrator;
         private Mock<IMediator> _mediator;
+        private Mock<IOwinWrapper> _owinWrapper;
 
         [SetUp]
         public void Arrange()
         {
             _mediator = new Mock<IMediator>();
-            _accountOrchestrator = new AccountOrchestrator(_mediator.Object);
+            _owinWrapper = new Mock<IOwinWrapper>();
+            _accountOrchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object);
         }
 
 
