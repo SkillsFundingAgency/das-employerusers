@@ -84,6 +84,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
                 var json = await reader.ReadToEndAsync();
                 reader.Close();
 
+                return JsonConvert.DeserializeObject<User>(json);
             }
         }
     }

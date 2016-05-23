@@ -65,9 +65,12 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
             var documentDbUser = DocumentDbUser.FromDomainUser(registerUser);
             await client.CreateDocumentAsync(collectionId, documentDbUser, null, true);
         }
-        public Task Update(User user)
+        public async Task Update(User user)
         {
-            throw new NotImplementedException();
+            var client = await GetClient();
+            var collectionId = UriFactory.CreateDocumentCollectionUri(DatabaseName, CollectionName);
+            var documentDbUser = DocumentDbUser.FromDomainUser(user);
+            await client.ReplaceDocumentAsync(collectionId, documentDbUser);
         }
 
         private async Task<DocumentClient> GetClient()
@@ -75,11 +78,6 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
             var configuration = await _configurationService.Get<EmployerUsersConfiguration>();
             return new DocumentClient(new Uri(configuration.DataStorage.DocumentDbUri), configuration.DataStorage.DocumentDbAccessToken);
         }
-
-        public Task Update(User user)
-            var client = await GetClient();
-            var collectionId = UriFactory.CreateDocumentCollectionUri(DatabaseName, CollectionName);
-            var documentDbUser = DocumentDbUser.FromDomainUser(user);
-            await client.ReplaceDocumentAsync(collectionId, documentDbUser);
+        
     }
 }

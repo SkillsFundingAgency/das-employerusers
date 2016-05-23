@@ -4,6 +4,7 @@ using MediatR;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
+using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 
@@ -11,9 +12,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 {
     public class WhenLoggingIn
     {
+        private Mock<IMediator> _mediator;
+        private Mock<IOwinWrapper> _owinWrapper;
         private AccountOrchestrator _orchestrator;
         private LoginViewModel _model;
-        private Mock<IMediator> _mediator;
 
         [SetUp]
         public void Arrange()
@@ -22,7 +24,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             _mediator.Setup(m => m.SendAsync(It.IsAny<AuthenticateUserCommand>()))
                 .Returns(Task.FromResult(new Domain.User {Email = "unit.tests@test.local" }));
 
-            _orchestrator = new AccountOrchestrator(_mediator.Object);
+            _owinWrapper = new Mock<IOwinWrapper>();
+
+            _orchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object);
 
             _model = new LoginViewModel
             {
