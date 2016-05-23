@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
+using IdentityServer3.Core.Extensions;
 using MediatR;
+using Microsoft.Owin;
 using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
+using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
 
 namespace SFA.DAS.EmployerUsers.Web.Orchestrators
@@ -12,15 +15,17 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
     public class AccountOrchestrator : IOrchestrator
     {
         private readonly IMediator _mediator;
+        private readonly IOwinWrapper _owinWrapper;
 
         public AccountOrchestrator()
         {
             
         }
 
-        public AccountOrchestrator(IMediator mediator)
+        public AccountOrchestrator(IMediator mediator, IOwinWrapper owinWrapper)
         {
             _mediator = mediator;
+            _owinWrapper = owinWrapper;
         }
 
         public virtual async Task<bool> Login(LoginViewModel loginViewModel)
@@ -60,6 +65,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 });
 
 
+                SignInUser(registerUserViewModel);
+
                 return true;
             }
             catch (InvalidRequestException)
@@ -86,6 +93,11 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 return false;
             }
             
+        }
+
+        public virtual void SignInUser(RegisterViewModel registerUserViewModel)
+        {
+            _owinWrapper.IssueLoginCookie(registerUserViewModel.Email, $"{registerUserViewModel.FirstName} {registerUserViewModel.LastName}");
         }
     }
 }

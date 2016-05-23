@@ -1,9 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using IdentityServer3.Core.Extensions;
+using IdentityServer3.Core.Models;
 using MediatR;
+using Microsoft.Owin;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
+using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 
@@ -13,12 +18,17 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
     {
         private AccountOrchestrator _accountOrchestrator;
         private Mock<IMediator> _mediator;
+        private Mock<IOwinWrapper> _owinWrapper;
+        private Mock<AccountOrchestrator> _mockAccountController;
 
         [SetUp]
         public void Arrange()
         {
             _mediator = new Mock<IMediator>();
-            _accountOrchestrator = new AccountOrchestrator(_mediator.Object);
+            _owinWrapper = new Mock<IOwinWrapper>();
+            
+            _accountOrchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object);
+            
         }
 
         [Test]
@@ -60,6 +70,28 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             //Assert
             _mediator.Verify(x=>x.SendAsync(It.Is<RegisterUserCommand>(p=>p.Email.Equals(email) && p.FirstName.Equals(firstName) && p.LastName.Equals(lastName) && p.Password.Equals(password) && p.ConfirmPassword.Equals(confirmPassword))),Times.Once);
             Assert.IsTrue(actual);
+        }
+
+        [Test]
+        public async Task ThenTheUserIsSignedInOnSuccessfulRegistration()
+        {
+            //Arrange
+
+            var emailAddress = "test@test.com";
+            var registerUserViewModel = new RegisterViewModel
+            {
+                FirstName = "test",
+                LastName = "tester",
+                Email = emailAddress,
+                Password = "password",
+                ConfirmPassword = "password"
+            };
+
+            //Act
+            await _accountOrchestrator.Register(registerUserViewModel);
+
+            //Assert
+            _owinWrapper.Verify(x=>x.IssueLoginCookie(emailAddress,"test tester"),Times.Once);
         }
 
         [Test]

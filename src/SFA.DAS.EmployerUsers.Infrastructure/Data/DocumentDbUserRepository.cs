@@ -76,5 +76,10 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
             return new DocumentClient(new Uri(configuration.DataStorage.DocumentDbUri), configuration.DataStorage.DocumentDbAccessToken);
         }
 
+        public Task Update(User user)
+            var client = await GetClient();
+            var collectionId = UriFactory.CreateDocumentCollectionUri(DatabaseName, CollectionName);
+            var documentDbUser = DocumentDbUser.FromDomainUser(user);
+            await client.ReplaceDocumentAsync(collectionId, documentDbUser);
     }
 }

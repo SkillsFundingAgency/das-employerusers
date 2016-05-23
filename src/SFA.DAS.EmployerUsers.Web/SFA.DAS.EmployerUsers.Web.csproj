@@ -239,6 +239,8 @@
     <Compile Include="App_Start\StructuremapMvc.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Authentication\IdentityServerServiceFactoryExtensions.cs" />
+    <Compile Include="Authentication\IOWinWrapper.cs" />
+    <Compile Include="Authentication\OwinWrapper.cs" />
     <Compile Include="Authentication\UserService.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AccountController.cs" />

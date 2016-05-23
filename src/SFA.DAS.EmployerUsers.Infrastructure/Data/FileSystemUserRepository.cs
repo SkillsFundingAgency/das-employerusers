@@ -51,7 +51,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
 
             registerUser.Id = Guid.NewGuid().ToString();
 
-            var path = Path.Combine(_directory, registerUser.Id + ".json");
+            var path = GetUserFilePath(registerUser);
             using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write))
             using (var writer = new StreamWriter(stream))
             {
@@ -61,14 +61,22 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
                 writer.Close();
             }
         }
-        public Task Update(User user)
+        public async Task Update(User user)
         {
-            throw new NotImplementedException();
+            var path = GetUserFilePath(user);
+
+            File.Delete(path);
+
+            await Create(user);
+
         }
 
 
-
-        private async Task<User> ReadUser(string path)
+		private string GetUserFilePath(User registerUser)
+        {
+            return Path.Combine(_directory, registerUser.Id + ".json");
+        }
+		private async Task<User> ReadUser(string path)
         {
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
             using (var reader = new StreamReader(stream))
@@ -76,7 +84,6 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
                 var json = await reader.ReadToEndAsync();
                 reader.Close();
 
-                return JsonConvert.DeserializeObject<User>(json);
             }
         }
     }
