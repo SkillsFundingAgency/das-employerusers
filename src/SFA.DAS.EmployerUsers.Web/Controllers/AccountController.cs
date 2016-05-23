@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using IdentityServer3.Core;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 
@@ -58,7 +61,11 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         {
             return await Task.Run<ActionResult>(() =>
             {
-                var result = _accountOrchestrator.ActivateUser(new AccessCodeViewModel {AccessCode = accessCodeViewModel.AccessCode, UserId = accessCodeViewModel.UserId});
+                var claimsIdentity = User.Identity as ClaimsIdentity;
+                var idClaim = claimsIdentity?.Claims.FirstOrDefault(c => c.Type == Constants.ClaimTypes.Id);
+                var id = idClaim?.Value;
+
+                var result = _accountOrchestrator.ActivateUser(new AccessCodeViewModel {AccessCode = accessCodeViewModel.AccessCode, UserId = id});
 
                 if (result.Result)
                 {
@@ -69,8 +76,9 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             });
         }
 
-        [Authorize]
+        
         [HttpGet]
+        [Authorize]
         [Route("confirm")]
         public async Task<ActionResult> Confirm()
         {

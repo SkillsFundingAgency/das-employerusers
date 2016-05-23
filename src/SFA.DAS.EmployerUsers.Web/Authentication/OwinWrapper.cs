@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
             env.IssueLoginCookie(new AuthenticatedLogin
             {
                 Subject = id,
-                Name = displayName,
+                Name = displayName
             });
         }
     }

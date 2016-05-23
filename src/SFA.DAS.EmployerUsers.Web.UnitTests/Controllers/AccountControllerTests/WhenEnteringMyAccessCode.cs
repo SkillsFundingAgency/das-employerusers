@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
+using IdentityServer3.Core;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Web.Controllers;
@@ -20,8 +23,17 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         [SetUp]
         public void Arrange()
         {
+            var httpContext = new Mock<HttpContextBase>();
+            httpContext.Setup(c => c.User).Returns(new ClaimsPrincipal(new ClaimsIdentity(new[]
+            {
+                new Claim(Constants.ClaimTypes.Id, "myid"),
+            })));
+            var controllerContext = new Mock<ControllerContext>();
+            controllerContext.Setup(c => c.HttpContext).Returns(httpContext.Object);
+
             _accountOrchestrator = new Mock<AccountOrchestrator>();
             _accountController = new AccountController(_accountOrchestrator.Object);
+            _accountController.ControllerContext = controllerContext.Object;
         }
 
         [Test]
@@ -89,7 +101,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         {
             //Act
             var accessCode = "myCode";
-            var userId = Guid.NewGuid().ToString();
+            var userId = "myid";
             var accessCodeViewModel = new AccessCodeViewModel {AccessCode = accessCode, UserId = userId};
             await _accountController.Confirm(accessCodeViewModel);
 
