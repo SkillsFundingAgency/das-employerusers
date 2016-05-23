@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         {
             _mediator = new Mock<IMediator>();
             _owinWrapper = new Mock<IOwinWrapper>();
-            _accountOrchestrator = new AccountOrchestrator(_mediator.Object);
+            _accountOrchestrator = new AccountOrchestrator(_mediator.Object,_owinWrapper.Object);
         }
 
 

@@ -26,20 +26,20 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public async Task ThenTheAccountOrchestratorRegisterIsCalled()
         {
             //Arrange
-            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>(), It.IsAny<IOwinContext>())).ReturnsAsync(true);
+            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>())).ReturnsAsync(true);
 
             //Act
             await _accountController.Register(new RegisterViewModel());
 
             //Assert
-            _accountOrchestator.Verify(x=>x.Register(It.IsAny<RegisterViewModel>(), It.IsAny<IOwinContext>()));
+            _accountOrchestator.Verify(x=>x.Register(It.IsAny<RegisterViewModel>()));
         }
 
         [Test]
         public async Task ThenTheConfirmViewIsReturnedWhenTheOrchestratorReturnsTrue()
         {
             //Arrange
-            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>(), It.IsAny<IOwinContext>())).ReturnsAsync(true);
+            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>())).ReturnsAsync(true);
 
             //Act
             var actual = await _accountController.Register(new RegisterViewModel());
@@ -56,7 +56,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public async Task ThenTheRegisterViewIsReturnedWhenTheOrchestratorReturnsFalse()
         {
             //Arrange
-            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>(), It.IsAny<IOwinContext>())).ReturnsAsync(false);
+            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>())).ReturnsAsync(false);
 
             //Act
             var actual = await _accountController.Register(new RegisterViewModel());

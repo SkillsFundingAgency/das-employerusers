@@ -26,6 +26,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.AuthenticationTests.UserServiceTes
 
         }
 
+        [Ignore("This is ignored as at present we are accepting everyone if they exist/have registered")]
         [TestCase(true)]
         [TestCase(false)]
         public async Task ThenItShouldSetContextIsActiveToResultOfQuery(bool isActive)
@@ -40,6 +41,8 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.AuthenticationTests.UserServiceTes
             Assert.AreEqual(isActive, _isActiveContext.IsActive);
         }
 
+
+        [Ignore("This is ignored as at present we are accepting everyone if they exist/have registered")]
         [Test]
         public async Task ThenItShouldSendQueryWithUserSubClaimAsId()
         {

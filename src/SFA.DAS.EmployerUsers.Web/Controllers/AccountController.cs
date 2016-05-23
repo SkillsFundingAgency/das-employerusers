@@ -37,10 +37,10 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         public async Task<ActionResult> Login(string id, LoginViewModel model)
         {
 
-            var success = await _accountOrchestrator.Login(model, Request.GetOwinContext());
+            var success = await _accountOrchestrator.Login(model);
             if (success)
             {
-                var signinMessage = Request.GetOwinContext().Environment.GetSignInMessage(id);
+                var signinMessage = _owinWrapper.GetSignInMessage(id);
                 return Redirect(signinMessage.ReturnUrl);
             }
             return View(true);
@@ -57,7 +57,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("identity/employer/register")]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            var actual = await _accountOrchestrator.Register(model, Request.GetOwinContext());
+            var actual = await _accountOrchestrator.Register(model);
 
             if (actual)
             {

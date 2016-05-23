@@ -22,12 +22,13 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             
         }
 
-        public AccountOrchestrator(IMediator mediator)
+        public AccountOrchestrator(IMediator mediator, IOwinWrapper owinWrapper)
         {
             _mediator = mediator;
+            _owinWrapper = owinWrapper;
         }
 
-        public virtual async Task<bool> Login(LoginViewModel loginViewModel, IOwinContext owinContext)
+        public virtual async Task<bool> Login(LoginViewModel loginViewModel)
         {
             try
             {
@@ -40,16 +41,9 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 {
                     return false;
                 }
-
-
-                var env = owinContext.Environment;
-                env.IssueLoginCookie(new IdentityServer3.Core.Models.AuthenticatedLogin
-                {
-                    Subject = user.Id,
-                    Name = $"{user.FirstName} {user.LastName}",
-                });
-                env.RemovePartialLoginCookie();
-
+                
+                _owinWrapper.IssueLoginCookie(user.Id, $"{user.FirstName} {user.LastName}");
+                
                 return true;
             }
             catch (Exception)
@@ -59,7 +53,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
         }
 
-        public virtual async Task<bool> Register(RegisterViewModel registerUserViewModel, IOwinContext owinContext)
+        public virtual async Task<bool> Register(RegisterViewModel registerUserViewModel)
         {
             try
             {
@@ -74,13 +68,15 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     ConfirmPassword = registerUserViewModel.ConfirmPassword
                 });
 
-                var env = owinContext.Environment;
-                env.IssueLoginCookie(new IdentityServer3.Core.Models.AuthenticatedLogin
-                {
-                    Subject = userId,
-                    Name = $"{registerUserViewModel.FirstName} {registerUserViewModel.LastName}",
-                });
-                env.RemovePartialLoginCookie();
+
+                _owinWrapper.IssueLoginCookie(userId, $"{registerUserViewModel.FirstName} {registerUserViewModel.LastName}");
+                //var env = owinContext.Environment;
+                //env.IssueLoginCookie(new IdentityServer3.Core.Models.AuthenticatedLogin
+                //{
+                //    Subject = userId,
+                //    Name = $"{registerUserViewModel.FirstName} {registerUserViewModel.LastName}",
+                //});
+                _owinWrapper.RemovePartialLoginCookie();
 
                 return true;
             }

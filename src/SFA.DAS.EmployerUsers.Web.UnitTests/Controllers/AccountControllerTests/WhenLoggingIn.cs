@@ -58,7 +58,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public async Task ThenItShouldReturnARedirectIfSuccessful()
         {
             // Arrange
-            _orchestrator.Setup(o => o.Login(It.IsAny<Models.LoginViewModel>(), It.IsAny<IOwinContext>())).Returns(Task.FromResult(true));
+            _orchestrator.Setup(o => o.Login(It.IsAny<Models.LoginViewModel>())).Returns(Task.FromResult(true));
 
             // Act
             var actual = await _controller.Login(Id, new Models.LoginViewModel());
