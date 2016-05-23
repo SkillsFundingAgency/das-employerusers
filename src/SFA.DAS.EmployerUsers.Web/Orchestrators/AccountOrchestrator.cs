@@ -42,6 +42,9 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     return false;
                 }
 
+                _owinWrapper.IssueLoginCookie(user.Email, $"{user.FirstName} {user.LastName}");
+                _owinWrapper.RemovePartialLoginCookie();
+
                 return true;
             }
             catch (Exception)

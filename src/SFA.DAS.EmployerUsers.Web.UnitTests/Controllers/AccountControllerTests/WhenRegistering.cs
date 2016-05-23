@@ -18,7 +18,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         {
             _accountOrchestator = new Mock<AccountOrchestrator>();
             
-            _accountController = new AccountController(_accountOrchestator.Object);    
+            _accountController = new AccountController(_accountOrchestator.Object, null);    
         }
 
         [Test]

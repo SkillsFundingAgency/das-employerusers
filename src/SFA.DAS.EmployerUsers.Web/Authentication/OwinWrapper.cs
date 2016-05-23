@@ -14,6 +14,10 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
             _owinContext = owinContext;
         }
 
+        public SignInMessage GetSignInMessage(string id)
+        {
+            return _owinContext.Environment.GetSignInMessage(id);
+        }
         public void IssueLoginCookie(string id, string displayName)
         {
             var env = _owinContext.Environment;
@@ -22,6 +26,10 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
                 Subject = id,
                 Name = displayName,
             });
+        }
+        public void RemovePartialLoginCookie()
+        {
+            _owinContext.Environment.RemovePartialLoginCookie();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Mvc;
+using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 
@@ -9,28 +10,31 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
     public class AccountController : Controller
     {
         private readonly AccountOrchestrator _accountOrchestrator;
-        
-        public AccountController(AccountOrchestrator accountOrchestrator)
+        private readonly IOwinWrapper _owinWrapper;
+
+        public AccountController(AccountOrchestrator accountOrchestrator, IOwinWrapper owinWrapper)
         {
             _accountOrchestrator = accountOrchestrator;
+            _owinWrapper = owinWrapper;
         }
 
         [HttpGet]
         [Route("login")]
-        public Task<ActionResult> Login()
+        public Task<ActionResult> Login(string id)
         {
             return Task.FromResult<ActionResult>(View(false));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("identity/employer/login")]
-        public async Task<ActionResult> Login(LoginViewModel model)
+        [Route("login")]
+        public async Task<ActionResult> Login(string id, LoginViewModel model)
         {
             var success = await _accountOrchestrator.Login(model);
             if (success)
             {
-                return Redirect("sdjhkjfhsk");
+                var signinMessage = _owinWrapper.GetSignInMessage(id);
+                return Redirect(signinMessage.ReturnUrl);
             }
             return View(true);
         }
