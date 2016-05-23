@@ -43,6 +43,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 }
                 
                 _owinWrapper.IssueLoginCookie(user.Id, $"{user.FirstName} {user.LastName}");
+                _owinWrapper.RemovePartialLoginCookie();
                 
                 return true;
             }
