@@ -35,16 +35,18 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
             context.AuthenticateResult = new AuthenticateResult(url, (IEnumerable<Claim>)null);
             return Task.FromResult(0);
         }
-        public override async Task IsActiveAsync(IsActiveContext context)
+        public override Task IsActiveAsync(IsActiveContext context)
         {
             var userId = GetUserId(context.Subject);
             if (string.IsNullOrEmpty(userId))
             {
                 context.IsActive = false;
-                return;
+                return Task.FromResult<object>(null);
             }
 
-            context.IsActive = await _mediator.SendAsync(new IsUserActiveQuery { UserId = userId });
+            context.IsActive = true;
+            return Task.FromResult<object>(null);
+            //context.IsActive = await _mediator.SendAsync(new IsUserActiveQuery { UserId = userId });
         }
 
         public override async Task GetProfileDataAsync(ProfileDataRequestContext context)
@@ -72,6 +74,10 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
         private string GetUserId(ClaimsPrincipal subject)
         {
             var claim = subject?.Claims.FirstOrDefault(c => c.Type.Equals(Constants.ClaimTypes.Id));
+            if (claim == null)
+            {
+                claim = subject?.Claims.FirstOrDefault(c => c.Type.Equals(Constants.ClaimTypes.Subject));
+            }
             return claim?.Value;
         }
     }

@@ -26,7 +26,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             _owinWrapper = new Mock<IOwinWrapper>();
 
-            _orchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object);
+            _orchestrator = new AccountOrchestrator(_mediator.Object);
 
             _model = new LoginViewModel
             {
@@ -39,7 +39,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         public async Task ThenItShouldReturnTrueWhenCommandReturnsUser()
         {
             // Act
-            var actual = await _orchestrator.Login(_model);
+            var actual = await _orchestrator.Login(_model, null);
 
             // Assert
             Assert.IsTrue(actual);
@@ -53,7 +53,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
                 .Returns(Task.FromResult<Domain.User>(null));
 
             // Act
-            var actual = await _orchestrator.Login(_model);
+            var actual = await _orchestrator.Login(_model, null);
 
             // Assert
             Assert.IsFalse(actual);
@@ -67,7 +67,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
                 .ThrowsAsync(new Exception("Testing"));
 
             // Act
-            var actual = await _orchestrator.Login(_model);
+            var actual = await _orchestrator.Login(_model, null);
 
             // Assert
             Assert.IsFalse(actual);

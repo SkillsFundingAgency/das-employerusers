@@ -22,13 +22,12 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             
         }
 
-        public AccountOrchestrator(IMediator mediator, IOwinWrapper owinWrapper)
+        public AccountOrchestrator(IMediator mediator)
         {
             _mediator = mediator;
-            _owinWrapper = owinWrapper;
         }
 
-        public virtual async Task<bool> Login(LoginViewModel loginViewModel)
+        public virtual async Task<bool> Login(LoginViewModel loginViewModel, IOwinContext owinContext)
         {
             try
             {
@@ -42,8 +41,14 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     return false;
                 }
 
-                _owinWrapper.IssueLoginCookie(user.Email, $"{user.FirstName} {user.LastName}");
-                _owinWrapper.RemovePartialLoginCookie();
+
+                var env = owinContext.Environment;
+                env.IssueLoginCookie(new IdentityServer3.Core.Models.AuthenticatedLogin
+                {
+                    Subject = user.Id,
+                    Name = $"{user.FirstName} {user.LastName}",
+                });
+                env.RemovePartialLoginCookie();
 
                 return true;
             }
@@ -54,7 +59,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
         }
 
-        public virtual async Task<bool> Register(RegisterViewModel registerUserViewModel)
+        public virtual async Task<bool> Register(RegisterViewModel registerUserViewModel, IOwinContext owinContext)
         {
             try
             {
@@ -69,7 +74,13 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     ConfirmPassword = registerUserViewModel.ConfirmPassword
                 });
 
-                SignInUser(userId, $"{registerUserViewModel.FirstName} {registerUserViewModel.LastName}");
+                var env = owinContext.Environment;
+                env.IssueLoginCookie(new IdentityServer3.Core.Models.AuthenticatedLogin
+                {
+                    Subject = userId,
+                    Name = $"{registerUserViewModel.FirstName} {registerUserViewModel.LastName}",
+                });
+                env.RemovePartialLoginCookie();
 
                 return true;
             }
@@ -97,11 +108,6 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 return false;
             }
             
-        }
-
-        private void SignInUser(string id, string displayName)
-        {
-            _owinWrapper.IssueLoginCookie(id, displayName);
         }
     }
 }

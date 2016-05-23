@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Mvc;
 using IdentityServer3.Core.Models;
+using Microsoft.Owin;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Web.Authentication;
@@ -57,7 +58,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public async Task ThenItShouldReturnARedirectIfSuccessful()
         {
             // Arrange
-            _orchestrator.Setup(o => o.Login(It.IsAny<Models.LoginViewModel>())).Returns(Task.FromResult(true));
+            _orchestrator.Setup(o => o.Login(It.IsAny<Models.LoginViewModel>(), It.IsAny<IOwinContext>())).Returns(Task.FromResult(true));
 
             // Act
             var actual = await _controller.Login(Id, new Models.LoginViewModel());

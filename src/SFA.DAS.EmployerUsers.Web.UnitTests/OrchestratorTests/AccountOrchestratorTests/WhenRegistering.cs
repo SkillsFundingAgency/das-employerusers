@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             _mediator = new Mock<IMediator>();
             _owinWrapper = new Mock<IOwinWrapper>();
             
-            _accountOrchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object);
+            _accountOrchestrator = new AccountOrchestrator(_mediator.Object);
             
         }
 
@@ -39,7 +39,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var registerUserViewModel = new RegisterViewModel();
 
             //Act
-            var actual = await _accountOrchestrator.Register(registerUserViewModel);
+            var actual = await _accountOrchestrator.Register(registerUserViewModel, null);
 
             //Assert
             Assert.IsNotNull(actual);
@@ -66,7 +66,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             };
 
             //Act
-            var actual = await _accountOrchestrator.Register(registerUserViewModel);
+            var actual = await _accountOrchestrator.Register(registerUserViewModel, null);
 
             //Assert
             _mediator.Verify(x=>x.SendAsync(It.Is<RegisterUserCommand>(p=> !string.IsNullOrEmpty(p.Id) && p.Email.Equals(email) && p.FirstName.Equals(firstName) && p.LastName.Equals(lastName) && p.Password.Equals(password) && p.ConfirmPassword.Equals(confirmPassword))),Times.Once);
@@ -88,7 +88,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             };
 
             //Act
-            await _accountOrchestrator.Register(registerUserViewModel);
+            await _accountOrchestrator.Register(registerUserViewModel, null);
 
             //Assert
             _owinWrapper.Verify(x=>x.IssueLoginCookie(It.IsAny<string>(),"test tester"),Times.Once);
@@ -101,7 +101,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             _mediator.Setup(x => x.SendAsync(It.IsAny<RegisterUserCommand>())).ThrowsAsync(new InvalidRequestException(new [] {"Something"}));
 
             //Act
-            var actual = await _accountOrchestrator.Register(new RegisterViewModel());
+            var actual = await _accountOrchestrator.Register(new RegisterViewModel(), null);
 
             //Assert
             Assert.IsFalse(actual);

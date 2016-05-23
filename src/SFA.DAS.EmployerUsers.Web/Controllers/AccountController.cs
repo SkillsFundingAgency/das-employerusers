@@ -2,15 +2,17 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using IdentityServer3.Core;
+using IdentityServer3.Core.Extensions;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 
 namespace SFA.DAS.EmployerUsers.Web.Controllers
 {
-    [RoutePrefix("identity/employer")]
+    //[RoutePrefix("identity/employer")]
     public class AccountController : Controller
     {
         private readonly AccountOrchestrator _accountOrchestrator;
@@ -23,7 +25,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [HttpGet]
-        [Route("login")]
+        [Route("identity/employer/login")]
         public Task<ActionResult> Login(string id)
         {
             return Task.FromResult<ActionResult>(View(false));
@@ -31,49 +33,47 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("login")]
+        [Route("identity/employer/login")]
         public async Task<ActionResult> Login(string id, LoginViewModel model)
         {
-            var success = await _accountOrchestrator.Login(model);
+
+            var success = await _accountOrchestrator.Login(model, Request.GetOwinContext());
             if (success)
             {
-                var signinMessage = _owinWrapper.GetSignInMessage(id);
+                var signinMessage = Request.GetOwinContext().Environment.GetSignInMessage(id);
                 return Redirect(signinMessage.ReturnUrl);
             }
             return View(true);
         }
 
         [HttpGet]
-        [Route("register")]
+        [Route("identity/employer/register")]
         public async Task<ActionResult> Register()
         {
             return await Task.Run<ActionResult>(() => View(new RegisterViewModel {Valid = true}));
         }
 
         [HttpPost]
-        [Route("register")]
+        [Route("identity/employer/register")]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            return await Task.Run<ActionResult>(() =>
+            var actual = await _accountOrchestrator.Register(model, Request.GetOwinContext());
+
+            if (actual)
             {
-                var actual = _accountOrchestrator.Register(model);
+                return RedirectToAction("Confirm");
+            }
 
-                if (actual.Result)
-                {
-                    return RedirectToAction("Confirm");
-                }
+            model.ConfirmPassword = string.Empty;
+            model.Password = string.Empty;
+            model.Valid = false;
 
-                model.ConfirmPassword = string.Empty;
-                model.Password = string.Empty;
-                model.Valid = false;
-
-                return View("Register",model);
-            });
+            return View("Register", model);
         }
 
         [HttpPost]
         [Authorize]
-        [Route("confirm")]
+        [Route("account/confirm")]
         public async Task<ActionResult> Confirm(AccessCodeViewModel accessCodeViewModel)
         {
             return await Task.Run<ActionResult>(() =>
@@ -93,10 +93,9 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             });
         }
 
-        
         [HttpGet]
         [Authorize]
-        [Route("confirm")]
+        [Route("account/confirm")]
         public async Task<ActionResult> Confirm()
         {
             return await Task.Run<ActionResult>(() => View("Confirm", new AccessCodeViewModel {Valid = true}));

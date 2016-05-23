@@ -49,8 +49,6 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
                 Directory.CreateDirectory(_directory);
             }
 
-            registerUser.Id = Guid.NewGuid().ToString();
-
             var path = GetUserFilePath(registerUser);
             using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write))
             using (var writer = new StreamWriter(stream))

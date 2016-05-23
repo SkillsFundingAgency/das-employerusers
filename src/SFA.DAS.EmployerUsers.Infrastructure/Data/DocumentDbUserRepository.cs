@@ -59,8 +59,6 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
         {
             var client = await GetClient();
 
-            registerUser.Id = Guid.NewGuid().ToString();
-
             var collectionId = UriFactory.CreateDocumentCollectionUri(DatabaseName, CollectionName);
             var documentDbUser = DocumentDbUser.FromDomainUser(registerUser);
             await client.CreateDocumentAsync(collectionId, documentDbUser, null, true);

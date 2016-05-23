@@ -30,6 +30,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 
             var registerUser = new User
             {
+                Id = message.Id,
                 Email = message.Email,
                 FirstName = message.FirstName,
                 LastName = message.LastName,
