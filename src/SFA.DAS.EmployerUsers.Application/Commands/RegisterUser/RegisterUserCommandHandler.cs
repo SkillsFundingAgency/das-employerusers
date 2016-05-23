@@ -33,7 +33,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
                 Email = message.Email,
                 FirstName = message.FirstName,
                 LastName = message.LastName,
-                AccessCode = "ABC123ZXY"
+                AccessCode = "ABC123ZXY",
                 Password = securedPassword.HashedPassword,
                 Salt = securedPassword.Salt,
                 PasswordProfileId = securedPassword.ProfileId
