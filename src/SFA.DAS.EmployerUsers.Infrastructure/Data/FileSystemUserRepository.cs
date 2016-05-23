@@ -25,16 +25,23 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
                 return null;
             }
 
-            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
-            using (var reader = new StreamReader(stream))
-            {
-                var json = await reader.ReadToEndAsync();
-                reader.Close();
-
-                return JsonConvert.DeserializeObject<User>(json);
-            }
+            return await ReadUser(path);
         }
+        public async Task<User> GetByEmailAddress(string emailAddress)
+        {
+            var userFiles = Directory.GetFiles(_directory, "*.json");
 
+            foreach (var path in userFiles)
+            {
+                var user = await ReadUser(path);
+                if (user.Email.Equals(emailAddress, StringComparison.OrdinalIgnoreCase))
+                {
+                    return user;
+                }
+            }
+
+            return null;
+        }
         public async Task Create(User registerUser)
         {
             if (!Directory.Exists(_directory))
@@ -54,10 +61,23 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
                 writer.Close();
             }
         }
-
         public Task Update(User user)
         {
             throw new NotImplementedException();
+        }
+
+
+
+        private async Task<User> ReadUser(string path)
+        {
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            using (var reader = new StreamReader(stream))
+            {
+                var json = await reader.ReadToEndAsync();
+                reader.Close();
+
+                return JsonConvert.DeserializeObject<User>(json);
+            }
         }
     }
 }

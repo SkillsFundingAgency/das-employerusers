@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web.Mvc;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
@@ -19,7 +18,20 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("identity/employer/login")]
         public Task<ActionResult> Login()
         {
-            return Task.FromResult<ActionResult>(View());
+            return Task.FromResult<ActionResult>(View(false));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("identity/employer/login")]
+        public async Task<ActionResult> Login(LoginViewModel model)
+        {
+            var success = await _accountOrchestrator.Login(model);
+            if (success)
+            {
+                return Redirect("sdjhkjfhsk");
+            }
+            return View(true);
         }
 
         [HttpGet]

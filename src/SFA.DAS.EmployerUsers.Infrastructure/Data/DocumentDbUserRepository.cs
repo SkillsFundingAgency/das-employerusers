@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
@@ -43,7 +44,17 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
                 throw;
             }
         }
+        public async Task<User> GetByEmailAddress(string emailAddress)
+        {
+            var client = await GetClient();
+            var collectionId = UriFactory.CreateDocumentCollectionUri(DatabaseName, CollectionName);
+            var query = client.CreateDocumentQuery<DocumentDbUser>(collectionId, new FeedOptions {MaxItemCount = 1})
+                .Where(u => u.Email.ToLower() == emailAddress.ToLower());
 
+            var user = query.SingleOrDefault();
+
+            return user?.ToDomainUser();
+        }
         public async Task Create(User registerUser)
         {
             var client = await GetClient();
@@ -54,6 +65,10 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
             var documentDbUser = DocumentDbUser.FromDomainUser(registerUser);
             await client.CreateDocumentAsync(collectionId, documentDbUser, null, true);
         }
+        public Task Update(User user)
+        {
+            throw new NotImplementedException();
+        }
 
         private async Task<DocumentClient> GetClient()
         {
@@ -61,9 +76,5 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
             return new DocumentClient(new Uri(configuration.DataStorage.DocumentDbUri), configuration.DataStorage.DocumentDbAccessToken);
         }
 
-        public Task Update(User user)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

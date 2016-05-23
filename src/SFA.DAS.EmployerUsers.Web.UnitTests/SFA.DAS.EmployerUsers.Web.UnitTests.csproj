@@ -88,8 +88,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\AccountControllerTests\WhenEnteringMyAccessCode.cs" />
+    <Compile Include="Controllers\AccountControllerTests\WhenLoggingIn.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenRegistering.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenEnteringMyAccessCode.cs" />
+    <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenLoggingIn.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenRegistering.cs" />
     <Compile Include="AuthenticationTests\UserServiceTests\UserServiceTestBase.cs" />
     <Compile Include="AuthenticationTests\UserServiceTests\WhenCheckingUserIsActive.cs" />
