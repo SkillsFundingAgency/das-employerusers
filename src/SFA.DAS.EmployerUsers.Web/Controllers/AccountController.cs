@@ -57,9 +57,9 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("identity/employer/register")]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            var actual = await _accountOrchestrator.Register(model);
+            var registerResult = await _accountOrchestrator.Register(model);
 
-            if (actual)
+            if (registerResult)
             {
                 return RedirectToAction("Confirm");
             }
