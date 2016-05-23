@@ -24,6 +24,7 @@ using SFA.DAS.Configuration;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Data;
+using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 using StructureMap.Web;
 using StructureMap.Web.Pipeline;
@@ -48,7 +49,8 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             AddEnvironmentSpecificRegistrations();
             AddMediatrRegistrations();
 
-            For<IOwinContext>().Transient().Use(() => HttpContext.Current.GetOwinContext());
+            //For<IOwinContext>().Transient().Use(() => HttpContext.Current.GetOwinContext());
+            For<IOwinWrapper>().Transient().Use(() => new OwinWrapper(HttpContext.Current.GetOwinContext())).SetLifecycleTo(new HttpContextLifecycle());
         }
 
         private void AddEnvironmentSpecificRegistrations()

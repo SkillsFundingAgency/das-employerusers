@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using IdentityServer3.Core.Extensions;
 using IdentityServer3.Core.Models;
@@ -68,7 +69,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _accountOrchestrator.Register(registerUserViewModel);
 
             //Assert
-            _mediator.Verify(x=>x.SendAsync(It.Is<RegisterUserCommand>(p=>p.Email.Equals(email) && p.FirstName.Equals(firstName) && p.LastName.Equals(lastName) && p.Password.Equals(password) && p.ConfirmPassword.Equals(confirmPassword))),Times.Once);
+            _mediator.Verify(x=>x.SendAsync(It.Is<RegisterUserCommand>(p=> !string.IsNullOrEmpty(p.Id) && p.Email.Equals(email) && p.FirstName.Equals(firstName) && p.LastName.Equals(lastName) && p.Password.Equals(password) && p.ConfirmPassword.Equals(confirmPassword))),Times.Once);
             Assert.IsTrue(actual);
         }
 
@@ -77,12 +78,11 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         {
             //Arrange
 
-            var emailAddress = "test@test.com";
             var registerUserViewModel = new RegisterViewModel
             {
                 FirstName = "test",
                 LastName = "tester",
-                Email = emailAddress,
+                Email = "test@test.com",
                 Password = "password",
                 ConfirmPassword = "password"
             };
@@ -91,7 +91,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             await _accountOrchestrator.Register(registerUserViewModel);
 
             //Assert
-            _owinWrapper.Verify(x=>x.IssueLoginCookie(emailAddress,"test tester"),Times.Once);
+            _owinWrapper.Verify(x=>x.IssueLoginCookie(It.IsAny<string>(),"test tester"),Times.Once);
         }
 
         [Test]

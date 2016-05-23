@@ -58,8 +58,10 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         {
             try
             {
+                var userId = Guid.NewGuid().ToString();
                 await _mediator.SendAsync(new RegisterUserCommand
                 {
+                    Id = userId,
                     FirstName = registerUserViewModel.FirstName,
                     LastName = registerUserViewModel.LastName,
                     Email = registerUserViewModel.Email,
@@ -67,8 +69,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     ConfirmPassword = registerUserViewModel.ConfirmPassword
                 });
 
-
-                SignInUser(registerUserViewModel);
+                SignInUser(userId, $"{registerUserViewModel.FirstName} {registerUserViewModel.LastName}");
 
                 return true;
             }
@@ -98,9 +99,9 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             
         }
 
-        public virtual void SignInUser(RegisterViewModel registerUserViewModel)
+        private void SignInUser(string id, string displayName)
         {
-            _owinWrapper.IssueLoginCookie(registerUserViewModel.Email, $"{registerUserViewModel.FirstName} {registerUserViewModel.LastName}");
+            _owinWrapper.IssueLoginCookie(id, displayName);
         }
     }
 }
