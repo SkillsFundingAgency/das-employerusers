@@ -19,7 +19,6 @@
     </Endpoints>
     <Certificates>
       <Certificate name="WebSslCert" storeLocation="LocalMachine" storeName="My" />
-      <Certificate name="WebSslCert" storeLocation="LocalMachine" storeName="Root" />
       <Certificate name="DasIDPCert" storeLocation="LocalMachine" storeName="My" />
     </Certificates>
     <Runtime>

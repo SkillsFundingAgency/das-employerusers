@@ -24,7 +24,7 @@ namespace SFA.DAS.EmployerUsers.Web
 
             app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
             {
-                Authority = configuration.IdentityProviderUrl, //"/identity",
+                Authority = configuration.IdentityProviderUrl,,
 
                 ClientId = "idp",
                 Scope = "openid profile",
