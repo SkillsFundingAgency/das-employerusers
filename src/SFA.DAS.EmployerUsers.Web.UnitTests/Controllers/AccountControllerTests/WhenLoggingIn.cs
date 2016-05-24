@@ -31,7 +31,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
                     ReturnUrl = ReturnUrl
                 });
 
-            _controller = new AccountController(_orchestrator.Object, _owinWrapper.Object);
+            _controller = new AccountController(_orchestrator.Object, _owinWrapper.Object, null);
         }
 
         [Test]

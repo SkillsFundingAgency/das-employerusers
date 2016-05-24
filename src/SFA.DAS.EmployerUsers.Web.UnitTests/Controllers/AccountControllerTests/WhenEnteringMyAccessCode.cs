@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using IdentityServer3.Core;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Configuration;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Controllers;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
@@ -17,8 +19,11 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 {
     public class WhenEnteringMyAccessCode
     {
-        private AccountController _accountController;
+        private const string EmployerPortalUrl = "http://employerportal.local";
+
         private Mock<AccountOrchestrator> _accountOrchestrator;
+        private Mock<IConfigurationService> _configurationService;
+        private AccountController _accountController;
 
         [SetUp]
         public void Arrange()
@@ -32,7 +37,18 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             controllerContext.Setup(c => c.HttpContext).Returns(httpContext.Object);
 
             _accountOrchestrator = new Mock<AccountOrchestrator>();
-            _accountController = new AccountController(_accountOrchestrator.Object, null);
+
+            _configurationService = new Mock<IConfigurationService>();
+            _configurationService.Setup(s => s.Get<EmployerUsersConfiguration>())
+                .Returns(Task.FromResult(new EmployerUsersConfiguration
+                {
+                    IdentityServer = new IdentityServerConfiguration
+                    {
+                        EmployerPortalUrl = EmployerPortalUrl
+                    }
+                }));
+
+            _accountController = new AccountController(_accountOrchestrator.Object, null, _configurationService.Object);
             _accountController.ControllerContext = controllerContext.Object;
         }
 
@@ -62,7 +78,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         }
 
         [Test]
-        public async Task ThenTheIndexOnHomeControllerIsReturnedWhenTheOrchestratorReturnsTrue()
+        public async Task ThenTheEmployerPortalIsReturnedWhenTheOrchestratorReturnsTrue()
         {
             //Arrange
             _accountOrchestrator.Setup(x => x.ActivateUser(It.IsAny<AccessCodeViewModel>())).ReturnsAsync(true);
@@ -72,9 +88,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 
             //Assert
             Assert.IsNotNull(actual);
-            var redirectToRouteResult = actual as RedirectToRouteResult;
-            Assert.IsNotNull(redirectToRouteResult);
-            Assert.AreEqual("Index", redirectToRouteResult.RouteValues["Action"].ToString());
+            var redirectResult = actual as RedirectResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(EmployerPortalUrl, redirectResult.Url);
         }
 
         [Test]

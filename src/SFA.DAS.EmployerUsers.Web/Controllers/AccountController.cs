@@ -7,6 +7,8 @@ using System.Web.Mvc;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using IdentityServer3.Core;
 using IdentityServer3.Core.Extensions;
+using SFA.DAS.Configuration;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 
@@ -17,11 +19,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
     {
         private readonly AccountOrchestrator _accountOrchestrator;
         private readonly IOwinWrapper _owinWrapper;
+        private readonly IConfigurationService _configurationService;
 
-        public AccountController(AccountOrchestrator accountOrchestrator, IOwinWrapper owinWrapper)
+        public AccountController(AccountOrchestrator accountOrchestrator, IOwinWrapper owinWrapper, IConfigurationService configurationService)
         {
             _accountOrchestrator = accountOrchestrator;
             _owinWrapper = owinWrapper;
+            _configurationService = configurationService;
         }
 
         [HttpGet]
@@ -76,21 +80,18 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/confirm")]
         public async Task<ActionResult> Confirm(AccessCodeViewModel accessCodeViewModel)
         {
-            return await Task.Run<ActionResult>(() =>
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var idClaim = claimsIdentity?.Claims.FirstOrDefault(c => c.Type == Constants.ClaimTypes.Id);
+            var id = idClaim?.Value;
+
+            var activatedSuccessfully = await _accountOrchestrator.ActivateUser(new AccessCodeViewModel {AccessCode = accessCodeViewModel.AccessCode, UserId = id});
+
+            if (activatedSuccessfully)
             {
-                var claimsIdentity = User.Identity as ClaimsIdentity;
-                var idClaim = claimsIdentity?.Claims.FirstOrDefault(c => c.Type == Constants.ClaimTypes.Id);
-                var id = idClaim?.Value;
+                return await RedirectToEmployerPortal();
+            }
 
-                var result = _accountOrchestrator.ActivateUser(new AccessCodeViewModel {AccessCode = accessCodeViewModel.AccessCode, UserId = id});
-
-                if (result.Result)
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-
-                return View("Confirm", new AccessCodeViewModel {Valid = false});
-            });
+            return View("Confirm", new AccessCodeViewModel {Valid = false});
         }
 
         [HttpGet]
@@ -99,6 +100,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         public async Task<ActionResult> Confirm()
         {
             return await Task.Run<ActionResult>(() => View("Confirm", new AccessCodeViewModel {Valid = true}));
+        }
+
+
+        private async Task<ActionResult> RedirectToEmployerPortal()
+        {
+            var configuration = await _configurationService.Get<EmployerUsersConfiguration>();
+            return Redirect(configuration.IdentityServer.EmployerPortalUrl);
         }
     }
 }
