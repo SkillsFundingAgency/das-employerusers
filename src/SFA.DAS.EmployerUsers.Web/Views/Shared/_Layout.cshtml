@@ -36,11 +36,29 @@
                 <span>This is a new service – your <a href="https://designpatterns.hackpad.com/GOV.UK-elements-feedback-sKrDyQxcfA2">feedback</a> will help us to improve it.</span>
             </p>
         </div>
-        <div class="breadcrumbs">
-            <ol role="breadcrumbs">
-                <li><a href="/">GOV.UK Levy Management</a></li>
-            </ol>
+
+        <div class="grid-row">
+            <div class="column-half">
+                <div class="breadcrumbs">
+                    <ol role="breadcrumbs">
+                        <li><a href="/">GOV.UK Levy Management</a></li>
+                    </ol>
+                </div>
+            </div>
+            <div class="column-half">
+                <div style="text-align: right; padding-top: 0.75em;">
+                    @if (HttpContext.Current.User.Identity.IsAuthenticated)
+                    {
+                        <span>Hi @HttpContext.Current.User.Identity.Name</span>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("Login", "Home")">Sign In / Register</a>
+                    }
+                </div>
+            </div>
         </div>
+        
 
         @RenderBody()
 

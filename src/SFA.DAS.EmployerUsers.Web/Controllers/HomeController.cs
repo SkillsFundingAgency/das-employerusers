@@ -9,16 +9,11 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View();
         }
 
-        public ActionResult Debug()
-        {
-            var envVars = System.Environment.GetEnvironmentVariables();
-            return View(envVars);
-        }
-
         [Authorize]
-        public ActionResult Test()
+        [Route("Login")]
+        public ActionResult Login()
         {
-            return Content("You're in");
+            return RedirectToAction("Index");
         }
     }
 }
