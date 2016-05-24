@@ -167,7 +167,29 @@ namespace SFA.DAS.EmployerUsers.Web
                 }
             };
 
-            return new List<Client> { self };
+            var employerPortal = new Client
+            {
+                ClientName = "Das Employer Portal",
+                ClientId = "employerportal",
+                Flow = Flows.Implicit,
+                RequireConsent = false,
+
+                RedirectUris = new List<string>
+                {
+                    "http://localhost:58887/"
+                },
+                PostLogoutRedirectUris = new List<string>
+                {
+                    "http://localhost:58887/"
+                },
+                AllowedScopes = new List<string>
+                {
+                    "openid",
+                    "profile"
+                }
+            };
+
+            return new List<Client> { self, employerPortal };
         }
         private List<Scope> GetScopes()
         {
