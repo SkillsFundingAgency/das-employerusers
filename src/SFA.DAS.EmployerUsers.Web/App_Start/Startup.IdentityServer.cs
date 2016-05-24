@@ -149,7 +149,7 @@ namespace SFA.DAS.EmployerUsers.Web
             var self = new Client
             {
                 ClientName = "Das Id Manager",
-                ClientId = "mvc",
+                ClientId = "idp",
                 Flow = Flows.Implicit,
                 RequireConsent = false,
 

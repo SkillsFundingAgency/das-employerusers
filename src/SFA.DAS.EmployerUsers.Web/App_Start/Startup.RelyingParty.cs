@@ -8,13 +8,14 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Owin;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using Thinktecture.IdentityModel.Client;
 
 namespace SFA.DAS.EmployerUsers.Web
 {
     public partial class Startup
     {
-        private void ConfigureRelyingParty(IAppBuilder app)
+        private void ConfigureRelyingParty(IAppBuilder app, RelyingPartyConfiguration configuration)
         {
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
@@ -23,12 +24,12 @@ namespace SFA.DAS.EmployerUsers.Web
 
             app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
             {
-                Authority = "https://localhost/identity",
+                Authority = configuration.IdentityProviderUrl, //"/identity",
 
-                ClientId = "mvc",
+                ClientId = "idp",
                 Scope = "openid profile",
                 ResponseType = "id_token token",
-                RedirectUri = "https://localhost/",
+                RedirectUri = configuration.ReturnUrl,
 
                 SignInAsAuthenticationType = "Cookies",
                 UseTokenLifetime = false,
