@@ -15,21 +15,24 @@ namespace SFA.DAS.EmployerUsers.Web
 {
     public partial class Startup
     {
-        private void ConfigureRelyingParty(IAppBuilder app, RelyingPartyConfiguration configuration)
+        private void ConfigureRelyingParty(IAppBuilder app, IdentityServerConfiguration configuration)
         {
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = "Cookies"
             });
 
+            var idpUrl = configuration.ApplicationBaseUrl.EndsWith("/")
+                ? configuration.ApplicationBaseUrl + "identity/"
+                : configuration.ApplicationBaseUrl + "/identity/";
             app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
             {
-                Authority = configuration.IdentityProviderUrl,
+                Authority = idpUrl,
 
                 ClientId = "idp",
                 Scope = "openid profile",
                 ResponseType = "id_token token",
-                RedirectUri = configuration.ReturnUrl,
+                RedirectUri = configuration.ApplicationBaseUrl,
 
                 SignInAsAuthenticationType = "Cookies",
                 UseTokenLifetime = false,

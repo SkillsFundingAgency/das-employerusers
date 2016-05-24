@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerUsers.Web
 
                 var configuration = task.Result;
                 ConfigureIdentityServer(app, configuration.IdentityServer);
-                ConfigureRelyingParty(app, configuration.RelyingParty);
+                ConfigureRelyingParty(app, configuration.IdentityServer);
             }).Wait();
         }
     }

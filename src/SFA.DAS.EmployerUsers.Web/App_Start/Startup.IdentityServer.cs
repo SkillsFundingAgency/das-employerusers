@@ -6,9 +6,7 @@ using System.Web.Helpers;
 using IdentityServer3.Core;
 using IdentityServer3.Core.Configuration;
 using IdentityServer3.Core.Logging;
-using IdentityServer3.Core.Logging.LogProviders;
 using IdentityServer3.Core.Models;
-using IdentityServer3.Core.Services.InMemory;
 using Owin;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Authentication;
@@ -102,7 +100,7 @@ namespace SFA.DAS.EmployerUsers.Web
             {
                 var factory = new IdentityServerServiceFactory()
                     .UseDasUserService()
-                    .UseInMemoryClients(GetClients())
+                    .UseInMemoryClients(GetClients(configuration))
                     .UseInMemoryScopes(GetScopes())
                     .RegisterDasServices(StructuremapMvc.Container);
 
@@ -146,7 +144,7 @@ namespace SFA.DAS.EmployerUsers.Web
             //    store.Close();
             //}
         }
-        private List<Client> GetClients()
+        private List<Client> GetClients(IdentityServerConfiguration configuration)
         {
             var self = new Client
             {
@@ -157,11 +155,11 @@ namespace SFA.DAS.EmployerUsers.Web
 
                 RedirectUris = new List<string>
                 {
-                    "https://localhost/"
+                    configuration.ApplicationBaseUrl
                 },
                 PostLogoutRedirectUris = new List<string>
                 {
-                    "https://localhost/"
+                    configuration.ApplicationBaseUrl
                 },
                 AllowedScopes = new List<string>
                 {
