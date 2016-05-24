@@ -109,8 +109,7 @@ namespace SFA.DAS.EmployerUsers.Web
                 idsrvApp.UseIdentityServer(new IdentityServerOptions
                 {
                     SiteName = "Digital Apprenticeship Service",
-
-                    RequireSsl = false,
+                    
                     SigningCertificate = LoadCertificate(configuration),
 
                     Factory = factory,
