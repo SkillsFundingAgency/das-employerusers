@@ -53,7 +53,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
             using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write))
             using (var writer = new StreamWriter(stream))
             {
-                var json = JsonConvert.SerializeObject(registerUser);
+                var json = JsonConvert.SerializeObject(registerUser, Formatting.Indented);
                 await writer.WriteAsync(json);
                 await writer.FlushAsync();
                 writer.Close();
