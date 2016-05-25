@@ -137,7 +137,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
             await _registerUserCommandHandler.Handle(registerUserCommand);
 
             //Assert
-            _communicationService.Verify(x=>x.SendUserRegistrationMessage(It.IsAny<User>()),Times.Once);
+            _communicationService.Verify(x=>x.SendUserRegistrationMessage(It.IsAny<User>(), It.IsAny<string>()),Times.Once);
         }
 
 
@@ -161,7 +161,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
             await _registerUserCommandHandler.Handle(registerUserCommand);
 
             //Assert
-            _communicationService.Verify(x => x.SendUserRegistrationMessage(It.Is<User>(s=>s.AccessCode.Equals("ABC123XYZ") && s.Id.Equals(userId))), Times.Once);
+            _communicationService.Verify(x => x.SendUserRegistrationMessage(It.Is<User>(s=>s.AccessCode.Equals("ABC123XYZ") && s.Id.Equals(userId)),It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -174,7 +174,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(new RegisterUserCommand()));
             
             //Assert
-            _communicationService.Verify(x => x.SendUserRegistrationMessage(It.IsAny<User>()), Times.Never);
+            _communicationService.Verify(x => x.SendUserRegistrationMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
         }
     }
 }

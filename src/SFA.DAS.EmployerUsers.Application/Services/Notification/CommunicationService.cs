@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Domain;
 
 namespace SFA.DAS.EmployerUsers.Application.Services.Notification
@@ -12,42 +8,35 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
     public class CommunicationService : ICommunicationService
     {
         
+        private readonly IHttpClientWrapper _httpClientWrapper;
+
         private readonly HttpClient _httpClient;
 
-        public CommunicationService(IConfigurationService configurationService)
+        public CommunicationService(IHttpClientWrapper httpClientWrapper)
         {
-            _httpClient = new HttpClient { BaseAddress = new Uri(@"http://localhost:53105/") };
+            _httpClientWrapper = httpClientWrapper;
+            
         }
 
-        public Task SendUserRegistrationMessage(User user)
+        public async Task SendUserRegistrationMessage(User user, string messageId)
         {
-            /*
-             new Dictionary<string, string>
+
+            var messageProperties = new Dictionary<string, string>
             {
-                { "AccessCode" , registerUser.AccessCode },
-                { "UserId" , registerUser.Id },
-                { "MessageId" , Guid.NewGuid().ToString() },
-                { "messagetype" , "SendEmail"},
-                { "toEmail", message.Email},
-                { "fromEmail", "info@sfa.das.gov.uk"}
+                {"AccessCode", user.AccessCode},
+                {"UserId", user.Id},
+                {"MessageId", messageId},
+                {"messagetype", "SendEmail"},
+                {"toEmail", user.Email},
+                {"fromEmail", "info@sfa.das.gov.uk"}
+            };
+
+            using (_httpClientWrapper)
+            {
+                await _httpClientWrapper.SendMessage(messageProperties);
             }
-             */
-            throw new NotImplementedException();
+                
         }
-
-        public async Task SendMessage(Dictionary<string, string> messageProperties)
-        {
-            var serializeObject = JsonConvert.SerializeObject(messageProperties);
-            var resposne = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post, "/api/notification")
-            {
-                Content = new StringContent(serializeObject, Encoding.UTF8, "application/json"),
-            });
-            resposne.EnsureSuccessStatusCode();
-        }
-
-        public void Dispose()
-        {
-            _httpClient.Dispose();
-        }
+        
     }
 }

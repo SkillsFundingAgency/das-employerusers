@@ -70,7 +70,9 @@
     <Compile Include="Queries\IsUserActive\IsUserActiveQuery.cs" />
     <Compile Include="Queries\IsUserActive\IsUserActiveQueryHandler.cs" />
     <Compile Include="Services\Notification\CommunicationService.cs" />
+    <Compile Include="Services\Notification\HttpClientWrapper.cs" />
     <Compile Include="Services\Notification\ICommunicationService.cs" />
+    <Compile Include="Services\Notification\IHttpClientWrapper.cs" />
     <Compile Include="Services\Password\IPasswordService.cs" />
     <Compile Include="Services\Password\PasswordService.cs" />
     <Compile Include="Services\Password\SecuredPassword.cs" />
