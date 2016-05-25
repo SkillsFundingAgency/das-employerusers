@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
@@ -8,12 +10,14 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
     {
         private readonly IValidator<ActivateUserCommand> _activateUserCommandValidator;
         private readonly IUserRepository _userRepository;
+        private readonly ICommunicationService _communicationService;
 
 
-        public ActivateUserCommandHandler(IValidator<ActivateUserCommand> activateUserCommandValidator, IUserRepository userRepository)
+        public ActivateUserCommandHandler(IValidator<ActivateUserCommand> activateUserCommandValidator, IUserRepository userRepository, ICommunicationService communicationService)
         {
             _activateUserCommandValidator = activateUserCommandValidator;
             _userRepository = userRepository;
+            _communicationService = communicationService;
         }
 
         protected override async Task HandleCore(ActivateUserCommand message)
@@ -29,7 +33,9 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
 
             user.IsActive = true;
 
-            await _userRepository.Update(user); 
+            await _userRepository.Update(user);
+
+            await _communicationService.SendUserAccountConfirmationMessage(user, Guid.NewGuid().ToString());
         }
     }
 }

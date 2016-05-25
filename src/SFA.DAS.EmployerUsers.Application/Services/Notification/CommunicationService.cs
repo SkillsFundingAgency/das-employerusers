@@ -37,6 +37,23 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
             }
                 
         }
-        
+
+        public async Task SendUserAccountConfirmationMessage(User user, string messageId)
+        {
+            var messageProperties = new Dictionary<string, string>
+            {
+                {"body", "Account Created Sucessfully"},
+                {"UserId", user.Id},
+                {"MessageId", messageId},
+                {"messagetype", "SendEmail"},
+                {"toEmail", user.Email},
+                {"fromEmail", "info@sfa.das.gov.uk"}
+            };
+
+            using (_httpClientWrapper)
+            {
+                await _httpClientWrapper.SendMessage(messageProperties);
+            }
+        }
     }
 }
