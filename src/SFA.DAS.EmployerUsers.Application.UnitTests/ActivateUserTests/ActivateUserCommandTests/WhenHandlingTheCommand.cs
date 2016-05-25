@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
+using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.ActivateUserTests.ActivateUserCommandTests
@@ -12,6 +13,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ActivateUserTests.Activate
         private ActivateUserCommandHandler _activateUserCommand;
         private Mock<IValidator<ActivateUserCommand>> _activateUserCommandValidator;
         private Mock<IUserRepository> _userRepository;
+        private Mock<ICommunicationService> _communicationSerivce;
 
         [SetUp]
         public void Arrange()
@@ -19,7 +21,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ActivateUserTests.Activate
             _activateUserCommandValidator = new Mock<IValidator<ActivateUserCommand>>();
             _userRepository = new Mock<IUserRepository>();
             _userRepository.Setup(x => x.GetById(It.IsAny<string>())).ReturnsAsync(new Domain.User());
-            _activateUserCommand = new ActivateUserCommandHandler(_activateUserCommandValidator.Object, _userRepository.Object);
+            _communicationSerivce = new Mock<ICommunicationService>();
+            _activateUserCommand = new ActivateUserCommandHandler(_activateUserCommandValidator.Object, _userRepository.Object, _communicationSerivce.Object);
         }
 
         [Test]
@@ -124,6 +127,35 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ActivateUserTests.Activate
 
             //Assert
             _userRepository.Verify(x => x.Update(It.Is<Domain.User>(p=>p.IsActive && p.Id == userId)), Times.Once);
+        }
+
+        [Test]
+        public async Task ThenTheUserIsEmailedAboutThereAccountCreation()
+        {
+            //Arrange
+            var userId = Guid.NewGuid().ToString();
+            _activateUserCommandValidator.Setup(x => x.Validate(It.IsAny<ActivateUserCommand>())).Returns(true);
+
+            //Act
+            await _activateUserCommand.Handle(new ActivateUserCommand { UserId = userId });
+
+            //Assert
+            _communicationSerivce.Verify(x=>x.SendUserAccountConfirmationMessage(It.IsAny<Domain.User>(), It.IsAny<string>()),Times.Once);
+        }
+
+
+        [Test]
+        public void ThenTheUserIsNotEmailedAboutThereAccountCreationIfItFailsValidation()
+        {
+            //Arrange
+            var userId = Guid.NewGuid().ToString();
+            _activateUserCommandValidator.Setup(x => x.Validate(It.IsAny<ActivateUserCommand>())).Returns(false);
+
+            //Act
+            Assert.ThrowsAsync<InvalidRequestException>(async () => await _activateUserCommand.Handle(new ActivateUserCommand()));
+
+            //Assert
+            _communicationSerivce.Verify(x => x.SendUserAccountConfirmationMessage(It.IsAny<Domain.User>(), It.IsAny<string>()),Times.Never);
         }
     }
 }

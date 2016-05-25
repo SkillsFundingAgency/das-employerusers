@@ -6,6 +6,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
     public interface ICommunicationService
     {
         Task SendUserRegistrationMessage(User user, string messageId);
-        
+
+        Task SendUserAccountConfirmationMessage(User user, string messageId);
     }
 }
