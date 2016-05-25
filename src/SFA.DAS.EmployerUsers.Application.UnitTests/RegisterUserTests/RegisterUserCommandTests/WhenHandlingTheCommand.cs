@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
+using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
@@ -15,6 +17,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
         private Mock<IValidator<RegisterUserCommand>> _registerUserCommandValidator;
         private Mock<IUserRepository> _userRepository;
         private Mock<IPasswordService> _passwordService;
+        private Mock<ICommunicationService> _communicationService;
 
         [SetUp]
         public void Arrange()
@@ -30,8 +33,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
             }));
 
             _userRepository = new Mock<IUserRepository>();
-
-            _registerUserCommandHandler = new RegisterUserCommandHandler(_registerUserCommandValidator.Object, _passwordService.Object, _userRepository.Object);
+            _communicationService = new Mock<ICommunicationService>();
+            _registerUserCommandHandler = new RegisterUserCommandHandler(_registerUserCommandValidator.Object, _passwordService.Object, _userRepository.Object,_communicationService.Object);
         }
 
         [Test]
@@ -115,6 +118,63 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
                                                                && u.Salt == "Generated_Salt"
                                                                && u.PasswordProfileId == "Password_Profile_Id")));
         }
-        
+
+        [Test]
+        public async Task ThenTheCommunicationServiceIsCalledOnSuccessfulCommand()
+        {
+            // Arrange
+            var registerUserCommand = new RegisterUserCommand
+            {
+                FirstName = "Unit",
+                LastName = "Tests",
+                Email = "unit.tests@test.local",
+                Password = "SomePassword",
+                ConfirmPassword = "SomePassword"
+            };
+            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(true);
+
+            //Act
+            await _registerUserCommandHandler.Handle(registerUserCommand);
+
+            //Assert
+            _communicationService.Verify(x=>x.SendUserRegistrationMessage(It.IsAny<User>(), It.IsAny<string>()),Times.Once);
+        }
+
+
+        [Test]
+        public async Task ThenTheAccessCodeIsSentToTheUserOnSuccessfulCreation()
+        {
+            // Arrange
+            var userId = Guid.NewGuid().ToString();
+            var registerUserCommand = new RegisterUserCommand
+            {
+                FirstName = "Unit",
+                LastName = "Tests",
+                Email = "unit.tests@test.local",
+                Password = "SomePassword",
+                ConfirmPassword = "SomePassword",
+                Id = userId
+            };
+            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(true);
+
+            //Act
+            await _registerUserCommandHandler.Handle(registerUserCommand);
+
+            //Assert
+            _communicationService.Verify(x => x.SendUserRegistrationMessage(It.Is<User>(s=>s.AccessCode.Equals("ABC123XYZ") && s.Id.Equals(userId)),It.IsAny<string>()), Times.Once);
+        }
+
+        [Test]
+        public void ThenTheAccessCodeIsNotSentToTheUserOnUnSuccessfulCreation()
+        {
+            // Arrange
+            _registerUserCommandValidator.Setup(x => x.Validate(new RegisterUserCommand())).Returns(false);
+
+            //Act
+            Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(new RegisterUserCommand()));
+            
+            //Assert
+            _communicationService.Verify(x => x.SendUserRegistrationMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
+        }
     }
 }
