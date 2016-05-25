@@ -16,10 +16,12 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Security.Cryptography;
 using System.Web;
 using MediatR;
 using Microsoft.Owin;
 using Microsoft.WindowsAzure.ServiceRuntime;
+using SFA.DAS.CodeGenerator;
 using SFA.DAS.Configuration;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.EmployerUsers.Domain.Data;
@@ -60,6 +62,8 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             var configurationService = new ConfigurationService(new AzureTableStorageConfigurationRepository(),
                 new ConfigurationOptions("SFA.DAS.EmployerUsers.Web", environment, "1.0"));
             For<IConfigurationService>().Use(configurationService);
+
+            For<ICodeGenerator>().Use(new RandomCodeGenerator());
 
             if (environment == "DEV")
             {
