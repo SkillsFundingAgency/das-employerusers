@@ -17,6 +17,8 @@ namespace SFA.DAS.EmployerUsers.Web
     {
         private void ConfigureRelyingParty(IAppBuilder app, IdentityServerConfiguration configuration)
         {
+            _logger.Debug("Setting up relying party");
+
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = "Cookies"

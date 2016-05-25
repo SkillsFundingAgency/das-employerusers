@@ -15,7 +15,7 @@ using SFA.DAS.EmployerUsers.Web.Orchestrators;
 namespace SFA.DAS.EmployerUsers.Web.Controllers
 {
     //[RoutePrefix("identity/employer")]
-    public class AccountController : Controller
+    public class AccountController : ControllerBase
     {
         private readonly AccountOrchestrator _accountOrchestrator;
         private readonly IOwinWrapper _owinWrapper;
@@ -40,7 +40,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("identity/employer/login")]
         public async Task<ActionResult> Login(string id, LoginViewModel model)
         {
-
             var success = await _accountOrchestrator.Login(model);
             if (success)
             {

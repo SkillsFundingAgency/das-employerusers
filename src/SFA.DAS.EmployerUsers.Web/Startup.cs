@@ -9,7 +9,7 @@ namespace SFA.DAS.EmployerUsers.Web
 {
     public partial class Startup
     {
-        protected static readonly Logger _logger = LogManager.GetLogger("Startup");
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public void Configuration(IAppBuilder app)
         {
@@ -20,7 +20,8 @@ namespace SFA.DAS.EmployerUsers.Web
             {
                 if (task.Exception != null)
                 {
-                    throw task.Exception;
+                    task.Exception.UnpackAndLog(_logger);
+                    throw task.Exception.InnerExceptions[0];
                 }
 
                 _logger.Debug("EmployerUsersConfiguration read successfully");

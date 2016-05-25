@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Web.Helpers;
 using IdentityServer3.Core;
 using IdentityServer3.Core.Configuration;
-using IdentityServer3.Core.Logging;
 using IdentityServer3.Core.Models;
 using Owin;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
@@ -18,6 +16,8 @@ namespace SFA.DAS.EmployerUsers.Web
 	{
 	    private void ConfigureIdentityServer(IAppBuilder app, IdentityServerConfiguration configuration)
 	    {
+	        _logger.Debug("Setting up IdentityServer");
+
             AntiForgeryConfig.UniqueClaimTypeIdentifier = Constants.ClaimTypes.Id;
 
             app.Map("/identity", idsrvApp =>
@@ -49,7 +49,9 @@ namespace SFA.DAS.EmployerUsers.Web
 
         private X509Certificate2 LoadCertificate(IdentityServerConfiguration configuration)
         {
-            return new X509Certificate2(string.Format(@"{0}\bin\DasIDPCert.pfx", AppDomain.CurrentDomain.BaseDirectory), "idsrv3test");
+            var certificatePath = string.Format(@"{0}\bin\DasIDPCert.pfx", AppDomain.CurrentDomain.BaseDirectory);
+            _logger.Debug("Loading IDP certificate from {0}", certificatePath);
+            return new X509Certificate2(certificatePath, "idsrv3test");
 
             //TODO: This need fixing to work with new Windows store
             //var storeLocation = (StoreLocation)Enum.Parse(typeof (StoreLocation), configuration.CertificateStore);
