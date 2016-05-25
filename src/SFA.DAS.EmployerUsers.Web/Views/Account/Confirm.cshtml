@@ -1,10 +1,15 @@
 ﻿@model SFA.DAS.EmployerUsers.Web.Models.AccessCodeViewModel
 
+@{
+    var invalidAttributes = Model.Valid ? "aria-invalid=\"true\" aria-labeledby=\"invalidMessage\"" : "";
+}
+
+
 <h1 class="heading-large">Register</h1>
 
 @if (!Model.Valid)
 {
-    <div class="error" style="margin-bottom: 10px;">
+    <div id="invalidMessage" class="error" style="margin-bottom: 10px;">
         <p class="error-message">
             Invalid Code
         </p>
@@ -17,7 +22,7 @@
 
         <div class="form-group">
             <label class="form-label" for="AccessCode">Access Code</label>
-            <input class="form-control" id="AccessCode" name="AccessCode">
+            <input @invalidAttributes autofocus="autofocus" aria-required="true" class="form-control" id="AccessCode" name="AccessCode">
         </div>
     </fieldset>
     <button type="submit" class="button">Activate Account</button>
