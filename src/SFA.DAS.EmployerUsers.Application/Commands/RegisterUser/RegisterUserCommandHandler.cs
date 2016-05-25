@@ -51,10 +51,10 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
                 PasswordProfileId = securedPassword.ProfileId
             };
 
-            var userCreateTask =  _userRepository.Create(registerUser);
-            var registrationEmailTask = _communicationService.SendUserRegistrationMessage(registerUser, Guid.NewGuid().ToString());
+            await _userRepository.Create(registerUser);
+            await _communicationService.SendUserRegistrationMessage(registerUser, Guid.NewGuid().ToString());
 
-            Task.WaitAll(userCreateTask, registrationEmailTask);
+
 
         }
     }

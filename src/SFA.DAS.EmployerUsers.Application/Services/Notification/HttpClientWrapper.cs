@@ -5,22 +5,25 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SFA.DAS.Configuration;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 
 namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 {
     public class HttpClientWrapper : IHttpClientWrapper
     {
         private readonly IConfigurationService _configurationService;
-        private readonly HttpClient _httpClient;
+        private HttpClient _httpClient;
 
         public HttpClientWrapper(IConfigurationService configurationService)
         {
             _configurationService = configurationService;
-            _httpClient = new HttpClient { BaseAddress = new Uri(@"http://localhost:53105/") };
         }
 
         public async Task SendMessage(Dictionary<string, string> messageProperties)
         {
+            var configuration = await _configurationService.Get<EmployerUsersConfiguration>();
+            _httpClient = new HttpClient { BaseAddress = new Uri(configuration.EmployerPortalConfiguration.ApiBaseUrl) };
+
             var serializeObject = JsonConvert.SerializeObject(messageProperties);
             var resposne = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post, "/api/notification")
             {
