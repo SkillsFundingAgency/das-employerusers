@@ -12,6 +12,8 @@
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
       <Setting name="StorageConnectionString" />
+      <Setting name="ConfigurationStorageConnectionString" />
+      <Setting name="EnvironmentName" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="HttpIn" protocol="http" port="80" />
@@ -21,10 +23,5 @@
       <Certificate name="WebSslCert" storeLocation="LocalMachine" storeName="My" />
       <Certificate name="DasIDPCert" storeLocation="LocalMachine" storeName="My" />
     </Certificates>
-    <Runtime>
-      <Environment>
-        <Variable name="DASENV" value="__DASENV__" />
-      </Environment>
-    </Runtime>
   </WebRole>
 </ServiceDefinition>

@@ -19,6 +19,7 @@ using System;
 using System.Web;
 using MediatR;
 using Microsoft.Owin;
+using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.ServiceRuntime;
 using SFA.DAS.Configuration;
 using SFA.DAS.Configuration.AzureTableStorage;
@@ -55,13 +56,17 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
 
         private void AddEnvironmentSpecificRegistrations()
         {
-            var environment = RoleEnvironment.IsEmulated ? "DEV" : "CLOUD_DEV";
+            var environment = Environment.GetEnvironmentVariable("DASENV");
+            if (string.IsNullOrEmpty(environment))
+            {
+                environment = CloudConfigurationManager.GetSetting("EnvironmentName");
+            }
 
             var configurationService = new ConfigurationService(new AzureTableStorageConfigurationRepository(),
                 new ConfigurationOptions("SFA.DAS.EmployerUsers.Web", environment, "1.0"));
             For<IConfigurationService>().Use(configurationService);
 
-            if (environment == "DEV")
+            if (environment == "LOCAL")
             {
                 AddDevelopmentRegistrations();
             }
