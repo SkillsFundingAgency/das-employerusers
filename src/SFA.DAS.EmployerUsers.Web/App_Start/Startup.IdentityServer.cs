@@ -13,87 +13,11 @@ using SFA.DAS.EmployerUsers.Web.Authentication;
 
 namespace SFA.DAS.EmployerUsers.Web
 {
-    internal class DisposableAction : IDisposable
-    {
-        private readonly Action _onDispose;
-
-        public DisposableAction(Action onDispose = null)
-        {
-            this._onDispose = onDispose;
-        }
-
-        public void Dispose()
-        {
-            if (this._onDispose == null)
-                return;
-            this._onDispose();
-        }
-    }
-    internal class TestLogger : ILogProvider
-    {
-        private static readonly IDisposable NoopDisposableInstance = (IDisposable)new DisposableAction((Action)null);
-        private readonly Lazy<OpenNdc> _lazyOpenNdcMethod;
-        private readonly Lazy<OpenMdc> _lazyOpenMdcMethod;
-
-        protected delegate IDisposable OpenNdc(string message);
-
-        protected delegate IDisposable OpenMdc(string key, string value);
-
-        public TestLogger()
-        {
-            this._lazyOpenNdcMethod = new Lazy<OpenNdc>(new Func<OpenNdc>(this.GetOpenNdcMethod));
-            this._lazyOpenMdcMethod = new Lazy<OpenMdc>(new Func<OpenMdc>(this.GetOpenMdcMethod));
-        }
-        public Logger GetLogger(string name)
-        {
-            return (Logger) Log;
-        }
-
-        private bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception = null, params object[] formatParameters)
-        {
-            if (messageFunc == null)
-            {
-                return true;
-            }
-
-            var format = messageFunc();
-            var message = string.Format(format, formatParameters);
-            if (exception != null)
-            {
-                message += $"\n    {exception}";
-            }
-
-            Debug.Print($"IDS [{logLevel}]: {message}");
-            return true;
-        }
-
-        public IDisposable OpenNestedContext(string message)
-        {
-            return this._lazyOpenNdcMethod.Value(message);
-        }
-
-        public IDisposable OpenMappedContext(string key, string value)
-        {
-            return this._lazyOpenMdcMethod.Value(key, value);
-        }
-
-        protected virtual OpenNdc GetOpenNdcMethod()
-        {
-            return (OpenNdc)(_ => NoopDisposableInstance);
-        }
-
-        protected virtual OpenMdc GetOpenMdcMethod()
-        {
-            return (OpenMdc)((_, __) => NoopDisposableInstance);
-        }
-    }
 
 	public partial class Startup
 	{
 	    private void ConfigureIdentityServer(IAppBuilder app, IdentityServerConfiguration configuration)
 	    {
-	        LogProvider.SetCurrentLogProvider(new TestLogger());
-
             AntiForgeryConfig.UniqueClaimTypeIdentifier = Constants.ClaimTypes.Id;
 
             app.Map("/identity", idsrvApp =>
