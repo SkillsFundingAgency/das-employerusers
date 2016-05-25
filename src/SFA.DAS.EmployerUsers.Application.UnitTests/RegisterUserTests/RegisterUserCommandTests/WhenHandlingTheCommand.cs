@@ -174,7 +174,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(new RegisterUserCommand()));
             
             //Assert
-            _communicationService.Verify(x => x.SendMessage(It.IsAny<Dictionary<string, string>>()), Times.Never);
+            _communicationService.Verify(x => x.SendUserRegistrationMessage(It.IsAny<User>()), Times.Never);
         }
     }
 }
