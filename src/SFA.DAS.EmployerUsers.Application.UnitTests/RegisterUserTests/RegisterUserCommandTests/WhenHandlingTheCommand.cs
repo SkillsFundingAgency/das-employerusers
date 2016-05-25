@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.CodeGenerator;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
@@ -18,6 +18,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
         private Mock<IUserRepository> _userRepository;
         private Mock<IPasswordService> _passwordService;
         private Mock<ICommunicationService> _communicationService;
+        private Mock<ICodeGenerator> _codeGenerator;
 
         [SetUp]
         public void Arrange()
@@ -34,7 +35,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
 
             _userRepository = new Mock<IUserRepository>();
             _communicationService = new Mock<ICommunicationService>();
-            _registerUserCommandHandler = new RegisterUserCommandHandler(_registerUserCommandValidator.Object, _passwordService.Object, _userRepository.Object,_communicationService.Object);
+            _codeGenerator = new Mock<ICodeGenerator>();
+            _codeGenerator.Setup(x => x.GenerateAlphaNumeric(6)).Returns("ABC123XYZ");
+            _registerUserCommandHandler = new RegisterUserCommandHandler(_registerUserCommandValidator.Object, _passwordService.Object, _userRepository.Object,_communicationService.Object, _codeGenerator.Object);
         }
 
         [Test]
@@ -175,6 +178,29 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
             
             //Assert
             _communicationService.Verify(x => x.SendUserRegistrationMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        public async Task ThenTheAccessCodeIsProvidedFromTheCodeGenerator()
+        {
+            // Arrange
+            var userId = Guid.NewGuid().ToString();
+            var registerUserCommand = new RegisterUserCommand
+            {
+                FirstName = "Unit",
+                LastName = "Tests",
+                Email = "unit.tests@test.local",
+                Password = "SomePassword",
+                ConfirmPassword = "SomePassword",
+                Id = userId
+            };
+            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(true);
+
+            //Act
+            await _registerUserCommandHandler.Handle(registerUserCommand);
+
+            //Assert
+            _codeGenerator.Verify(x=>x.GenerateAlphaNumeric(6),Times.Once);
         }
     }
 }
