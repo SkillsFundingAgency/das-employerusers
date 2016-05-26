@@ -19,15 +19,15 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.UnitTests.ConfigurationTests.Empl
         public void Arrange()
         {
             _configurationService = new Mock<IConfigurationService>();
-            _configurationService.Setup(s => s.GetAsync<EmployerUsersConfiguration>())
-                .Returns(Task.FromResult<EmployerUsersConfiguration>(
+            _configurationService.Setup(s => s.Get<EmployerUsersConfiguration>())
+                .Returns(
                     new EmployerUsersConfiguration
                     {
                         IdentityServer = new IdentityServerConfiguration
                         {
                             ApplicationBaseUrl = "http://unittests.local/"
                         }
-                    }));
+                    });
 
             _factory = new EmployerUsersClientComponentConfigurationFactory(_configurationService.Object);
         }
@@ -46,7 +46,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.UnitTests.ConfigurationTests.Empl
         public void ThenItShouldThrowExceptionIfConfigurationServiceFails()
         {
             // Arrange
-            _configurationService.Setup(s => s.GetAsync<EmployerUsersConfiguration>()).Throws<Exception>();
+            _configurationService.Setup(s => s.Get<EmployerUsersConfiguration>()).Throws<Exception>();
 
             // Act + Assert
             Assert.Throws<Exception>(() => _factory.Get());

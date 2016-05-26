@@ -65,6 +65,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="ActivateUserTests\ActivateUserCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="ActivateUserTests\ActivateUserCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="CommandsTests\AuthenticateUserTests\AuthenticateUserCommandHandlerTests\WhenHandling.cs" />

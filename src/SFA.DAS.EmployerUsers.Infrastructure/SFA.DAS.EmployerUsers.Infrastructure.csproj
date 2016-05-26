@@ -57,6 +57,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Configuration\DataStorageConfiguration.cs" />
     <Compile Include="Configuration\EmployerPortalConfiguration.cs" />
     <Compile Include="Configuration\EmployerUsersClientComponentConfigurationFactory.cs" />
