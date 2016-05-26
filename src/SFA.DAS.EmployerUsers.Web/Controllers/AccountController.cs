@@ -28,11 +28,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             _configurationService = configurationService;
         }
 
+
+
         [HttpGet]
         [Route("identity/employer/login")]
-        public Task<ActionResult> Login(string id)
+        public ActionResult Login(string id)
         {
-            return Task.FromResult<ActionResult>(View(false));
+            return View(false);
         }
 
         [HttpPost]
@@ -54,11 +56,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View(true);
         }
 
+
+
         [HttpGet]
         [Route("identity/employer/register")]
-        public async Task<ActionResult> Register()
+        public ActionResult Register()
         {
-            return await Task.Run<ActionResult>(() => View(new RegisterViewModel {Valid = true}));
+            return View(new RegisterViewModel {Valid = true});
         }
 
         [HttpPost]
@@ -79,6 +83,16 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View("Register", model);
         }
 
+
+
+        [HttpGet]
+        [Authorize]
+        [Route("account/confirm")]
+        public ActionResult Confirm()
+        {
+            return View("Confirm", new AccessCodeViewModel { Valid = true });
+        }
+
         [HttpPost]
         [Authorize]
         [Route("account/confirm")]
@@ -96,14 +110,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             }
 
             return View("Confirm", new AccessCodeViewModel {Valid = false});
-        }
-
-        [HttpGet]
-        [Authorize]
-        [Route("account/confirm")]
-        public async Task<ActionResult> Confirm()
-        {
-            return await Task.Run<ActionResult>(() => View("Confirm", new AccessCodeViewModel {Valid = true}));
         }
 
 
