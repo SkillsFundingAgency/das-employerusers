@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         {
             _mediator = new Mock<IMediator>();
             _mediator.Setup(m => m.SendAsync(It.IsAny<AuthenticateUserCommand>()))
-                .Returns(Task.FromResult(new Domain.User {Email = "unit.tests@test.local" }));
+                .Returns(Task.FromResult(new Domain.User {Email = "unit.tests@test.local", IsActive = true }));
 
             _owinWrapper = new Mock<IOwinWrapper>();
 
@@ -42,7 +42,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _orchestrator.Login(_model);
 
             // Assert
-            Assert.IsTrue(actual);
+            Assert.IsTrue(actual.Success);
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _orchestrator.Login(_model);
 
             // Assert
-            Assert.IsFalse(actual);
+            Assert.IsFalse(actual.Success);
         }
 
         [Test]
@@ -70,9 +70,32 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _orchestrator.Login(_model);
 
             // Assert
-            Assert.IsFalse(actual);
+            Assert.IsFalse(actual.Success);
         }
 
+        [Test]
+        public async Task ThenItShouldReturnRequiresActivationWhenUserIsNotActive()
+        {
+            // Arrange
+            _mediator.Setup(m => m.SendAsync(It.IsAny<AuthenticateUserCommand>()))
+                .Returns(Task.FromResult(new Domain.User { Email = "unit.tests@test.local", IsActive = false }));
+
+            // Act
+            var actual = await _orchestrator.Login(_model);
+
+            // Assert
+            Assert.IsTrue(actual.RequiresActivation);
+        }
+
+        [Test]
+        public async Task ThenItShouldDoesNotReturnRequireActivationWhenUserIsActive()
+        {
+            // Act
+            var actual = await _orchestrator.Login(_model);
+
+            // Assert
+            Assert.IsFalse(actual.RequiresActivation);
+        }
 
     }
 }

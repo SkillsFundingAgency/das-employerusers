@@ -40,9 +40,14 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("identity/employer/login")]
         public async Task<ActionResult> Login(string id, LoginViewModel model)
         {
-            var success = await _accountOrchestrator.Login(model);
-            if (success)
+            var result = await _accountOrchestrator.Login(model);
+            if (result.Success)
             {
+                if (result.RequiresActivation)
+                {
+                    return RedirectToAction("Confirm");
+                }
+
                 var signinMessage = _owinWrapper.GetSignInMessage(id);
                 return Redirect(signinMessage.ReturnUrl);
             }

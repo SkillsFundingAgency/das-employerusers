@@ -34,7 +34,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 
         public void Dispose()
         {
-            _httpClient.Dispose();
+            _httpClient?.Dispose();
         }
     }
 }

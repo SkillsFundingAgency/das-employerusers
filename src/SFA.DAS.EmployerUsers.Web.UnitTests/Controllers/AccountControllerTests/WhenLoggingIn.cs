@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using IdentityServer3.Core.Models;
 using Microsoft.Owin;
@@ -6,6 +7,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Controllers;
+using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
@@ -23,6 +25,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public void Arrange()
         {
             _orchestrator = new Mock<AccountOrchestrator>();
+            _orchestrator.Setup(o => o.Login(It.IsAny<Models.LoginViewModel>())).Returns(Task.FromResult(new LoginResultModel { Success = false }));
 
             _owinWrapper = new Mock<IOwinWrapper>();
             _owinWrapper.Setup(w => w.GetSignInMessage(Id))
@@ -55,17 +58,32 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         }
 
         [Test]
-        public async Task ThenItShouldReturnARedirectIfSuccessful()
+        public async Task ThenItShouldReturnARedirectToReturnUrlIfSuccessful()
         {
             // Arrange
-            _orchestrator.Setup(o => o.Login(It.IsAny<Models.LoginViewModel>())).Returns(Task.FromResult(true));
+            _orchestrator.Setup(o => o.Login(It.IsAny<Models.LoginViewModel>())).Returns(Task.FromResult(new LoginResultModel { Success = true }));
 
             // Act
             var actual = await _controller.Login(Id, new Models.LoginViewModel());
 
             // Assert
             Assert.IsInstanceOf<RedirectResult>(actual);
-            Assert.AreEqual(ReturnUrl, ((RedirectResult) actual).Url);
+            Assert.AreEqual(ReturnUrl, ((RedirectResult)actual).Url);
+        }
+
+        [Test]
+        public async Task ThenItShouldReturnARedirectToConfirmationIfSuccessfulButRequiresActivation()
+        {
+            // Arrange
+            _orchestrator.Setup(o => o.Login(It.IsAny<Models.LoginViewModel>())).Returns(
+                Task.FromResult(new LoginResultModel { Success = true, RequiresActivation = true }));
+
+            // Act
+            var actual = await _controller.Login(Id, new Models.LoginViewModel()) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual.RouteValues.Any(v => v.Key == "action" && (string)v.Value == "Confirm"));
         }
     }
 }

@@ -268,6 +268,7 @@
     </Compile>
     <Compile Include="Models\AccessCodeViewModel.cs" />
     <Compile Include="Models\ConfirmationViewModel.cs" />
+    <Compile Include="Models\LoginResultModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Orchestrators\AccountOrchestrator.cs" />
