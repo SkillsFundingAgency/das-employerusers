@@ -39,7 +39,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             _accountOrchestrator = new Mock<AccountOrchestrator>();
 
             _configurationService = new Mock<IConfigurationService>();
-            _configurationService.Setup(s => s.Get<EmployerUsersConfiguration>())
+            _configurationService.Setup(s => s.GetAsync<EmployerUsersConfiguration>())
                 .Returns(Task.FromResult(new EmployerUsersConfiguration
                 {
                     IdentityServer = new IdentityServerConfiguration

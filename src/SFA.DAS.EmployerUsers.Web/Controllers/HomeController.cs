@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using SFA.DAS.EmployerUsers.WebClientComponents;
 
 namespace SFA.DAS.EmployerUsers.Web.Controllers
 {
@@ -9,7 +10,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View();
         }
 
-        [Authorize]
+        [AuthoriseActiveUser]
         [Route("Login")]
         public ActionResult Login()
         {

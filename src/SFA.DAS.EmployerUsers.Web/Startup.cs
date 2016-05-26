@@ -16,7 +16,7 @@ namespace SFA.DAS.EmployerUsers.Web
             _logger.Debug("Started running Owin Configuration");
 
             var configurationService = StructuremapMvc.Container.GetInstance<IConfigurationService>();
-            configurationService.Get<EmployerUsersConfiguration>().ContinueWith((task) =>
+            configurationService.GetAsync<EmployerUsersConfiguration>().ContinueWith((task) =>
             {
                 if (task.Exception != null)
                 {

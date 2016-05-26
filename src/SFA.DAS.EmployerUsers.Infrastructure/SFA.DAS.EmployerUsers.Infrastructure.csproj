@@ -40,8 +40,11 @@
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SFA.DAS.Configuration, Version=1.0.0.4203, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Configuration.1.0.0.4203\lib\net45\SFA.DAS.Configuration.dll</HintPath>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.4.3.4\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="SFA.DAS.Configuration, Version=1.0.0.4261, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Configuration.1.0.0.4261\lib\net45\SFA.DAS.Configuration.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -56,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Configuration\DataStorageConfiguration.cs" />
     <Compile Include="Configuration\EmployerPortalConfiguration.cs" />
+    <Compile Include="Configuration\EmployerUsersClientComponentConfigurationFactory.cs" />
     <Compile Include="Configuration\EmployerUsersConfiguration.cs" />
     <Compile Include="Configuration\IdentityServerConfiguration.cs" />
     <Compile Include="Configuration\PasswordConfiguration.cs" />
@@ -69,6 +73,10 @@
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.Domain\SFA.DAS.EmployerUsers.Domain.csproj">
       <Project>{2686243C-201A-45C1-ADBC-99B05BD83D73}</Project>
       <Name>SFA.DAS.EmployerUsers.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.EmployerUsers.WebClientComponents\SFA.DAS.EmployerUsers.WebClientComponents.csproj">
+      <Project>{06C4FA3C-23A2-462B-AEA8-D2F1F1EB3246}</Project>
+      <Name>SFA.DAS.EmployerUsers.WebClientComponents</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

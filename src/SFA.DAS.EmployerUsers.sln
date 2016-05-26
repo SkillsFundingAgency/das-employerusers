@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "SFA.DAS.EmployerUsers", "SFA.DAS.EmployerUsers\SFA.DAS.EmployerUsers.ccproj", "{69ECC3F8-055D-4341-B7AA-03688C0109B8}"
 EndProject
@@ -34,6 +34,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PreReqs", "PreReqs", "{A039
 		DevInstall.ps1 = DevInstall.ps1
 		localhost.pfx = localhost.pfx
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.WebClientComponents", "SFA.DAS.EmployerUsers.WebClientComponents\SFA.DAS.EmployerUsers.WebClientComponents.csproj", "{06C4FA3C-23A2-462B-AEA8-D2F1F1EB3246}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Infrastructure.UnitTests", "SFA.DAS.EmployerUsers.Infrastructure.UnitTests\SFA.DAS.EmployerUsers.Infrastructure.UnitTests.csproj", "{29C49F6C-CBE8-4988-831E-37F1359A5829}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +77,14 @@ Global
 		{A38872C3-513F-4FD4-8917-E5BA21D5E3A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A38872C3-513F-4FD4-8917-E5BA21D5E3A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A38872C3-513F-4FD4-8917-E5BA21D5E3A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06C4FA3C-23A2-462B-AEA8-D2F1F1EB3246}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06C4FA3C-23A2-462B-AEA8-D2F1F1EB3246}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06C4FA3C-23A2-462B-AEA8-D2F1F1EB3246}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06C4FA3C-23A2-462B-AEA8-D2F1F1EB3246}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29C49F6C-CBE8-4988-831E-37F1359A5829}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29C49F6C-CBE8-4988-831E-37F1359A5829}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29C49F6C-CBE8-4988-831E-37F1359A5829}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29C49F6C-CBE8-4988-831E-37F1359A5829}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,5 +93,6 @@ Global
 		{A63AE672-0953-48DB-BD96-47E496A5FD37} = {22D47948-6411-4B2A-A6AD-AA60013CA1DA}
 		{884664CA-3E6B-4DED-BC05-5A7F198375BC} = {22D47948-6411-4B2A-A6AD-AA60013CA1DA}
 		{8082BC59-8C78-40A4-A6AC-566BD5B95FD5} = {22D47948-6411-4B2A-A6AD-AA60013CA1DA}
+		{29C49F6C-CBE8-4988-831E-37F1359A5829} = {22D47948-6411-4B2A-A6AD-AA60013CA1DA}
 	EndGlobalSection
 EndGlobal

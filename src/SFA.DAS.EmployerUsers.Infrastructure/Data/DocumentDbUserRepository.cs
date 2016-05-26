@@ -73,7 +73,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
 
         private async Task<DocumentClient> GetClient()
         {
-            var configuration = await _configurationService.Get<EmployerUsersConfiguration>();
+            var configuration = await _configurationService.GetAsync<EmployerUsersConfiguration>();
             return new DocumentClient(new Uri(configuration.DataStorage.DocumentDbUri), configuration.DataStorage.DocumentDbAccessToken);
         }
         

@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.PasswordTest
         public void Arrange()
         {
             _configurationService = new Mock<IConfigurationService>();
-            _configurationService.Setup(s => s.Get<EmployerUsersConfiguration>())
+            _configurationService.Setup(s => s.GetAsync<EmployerUsersConfiguration>())
                 .Returns(Task.FromResult(new EmployerUsersConfiguration
                 {
                     Password = new PasswordConfiguration

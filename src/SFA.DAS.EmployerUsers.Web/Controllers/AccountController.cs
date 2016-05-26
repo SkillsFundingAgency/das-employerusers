@@ -115,7 +115,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
         private async Task<ActionResult> RedirectToEmployerPortal()
         {
-            var configuration = await _configurationService.Get<EmployerUsersConfiguration>();
+            var configuration = await _configurationService.GetAsync<EmployerUsersConfiguration>();
             return Redirect(configuration.IdentityServer.EmployerPortalUrl);
         }
     }

@@ -16,20 +16,17 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Security.Cryptography;
 using System.Web;
 using MediatR;
-using Microsoft.Owin;
 using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.ServiceRuntime;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.Configuration;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.EmployerUsers.Domain.Data;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Data;
 using SFA.DAS.EmployerUsers.Web.Authentication;
-using SFA.DAS.EmployerUsers.Web.Orchestrators;
-using StructureMap.Web;
+using SFA.DAS.EmployerUsers.WebClientComponents;
 using StructureMap.Web.Pipeline;
 
 namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
@@ -49,11 +46,11 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
                     scan.RegisterConcreteTypesAgainstTheFirstInterface();
                 });
 
+            For<IOwinWrapper>().Transient().Use(() => new OwinWrapper(HttpContext.Current.GetOwinContext())).SetLifecycleTo(new HttpContextLifecycle());
+            For<ICodeGenerator>().Use(new RandomCodeGenerator());
+
             AddEnvironmentSpecificRegistrations();
             AddMediatrRegistrations();
-
-            //For<IOwinContext>().Transient().Use(() => HttpContext.Current.GetOwinContext());
-            For<IOwinWrapper>().Transient().Use(() => new OwinWrapper(HttpContext.Current.GetOwinContext())).SetLifecycleTo(new HttpContextLifecycle());
         }
 
         private void AddEnvironmentSpecificRegistrations()
@@ -67,8 +64,6 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             var configurationService = new ConfigurationService(new AzureTableStorageConfigurationRepository(),
                 new ConfigurationOptions("SFA.DAS.EmployerUsers.Web", environment, "1.0"));
             For<IConfigurationService>().Use(configurationService);
-
-            For<ICodeGenerator>().Use(new RandomCodeGenerator());
 
             if (environment == "LOCAL")
             {

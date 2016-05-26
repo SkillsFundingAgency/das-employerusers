@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{884664CA-3E6B-4DED-BC05-5A7F198375BC}</ProjectGuid>
+    <ProjectGuid>{29C49F6C-CBE8-4988-831E-37F1359A5829}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SFA.DAS.EmployerUsers.Application.UnitTests</RootNamespace>
-    <AssemblyName>SFA.DAS.EmployerUsers.Application.UnitTests</AssemblyName>
+    <RootNamespace>SFA.DAS.EmployerUsers.Infrastructure.UnitTests</RootNamespace>
+    <AssemblyName>SFA.DAS.EmployerUsers.Infrastructure.UnitTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,10 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MediatR, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediatR.2.0.2\lib\net45\MediatR.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Moq, Version=4.2.1510.2205, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\packages\Moq.4.2.1510.2205\lib\net40\Moq.dll</HintPath>
       <Private>True</Private>
@@ -45,10 +40,6 @@
     </Reference>
     <Reference Include="nunit.framework, Version=3.2.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.2.1\lib\net45\nunit.framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SFA.DAS.CodeGenerator, Version=1.0.0.4198, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.CodeGenerator.1.0.0.4198\lib\net45\SFA.DAS.CodeGenerator.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SFA.DAS.Configuration, Version=1.0.0.4261, Culture=neutral, processorArchitecture=MSIL">
@@ -65,37 +56,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActivateUserTests\ActivateUserCommandTests\WhenHandlingTheCommand.cs" />
-    <Compile Include="ActivateUserTests\ActivateUserCommandValidatorTests\WhenValidatingTheRequest.cs" />
-    <Compile Include="CommandsTests\AuthenticateUserTests\AuthenticateUserCommandHandlerTests\WhenHandling.cs" />
+    <Compile Include="ConfigurationTests\EmployerUsersClientComponentConfigurationFactoryTests\WhenGettingConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegisterUserTests\RegisterUserCommandTests\WhenHandlingTheCommand.cs" />
-    <Compile Include="RegisterUserTests\RegisterUserCommandValidatorTests\WhenValidatingTheRequest.cs" />
-    <Compile Include="QueriesTests\GetUserByIdTests\GetUserByIdQueryHandlerTests\WhenHandlingRequest.cs" />
-    <Compile Include="QueriesTests\IsUserActiveTests\IsUserActiveQueryHandlerTests\WhenHandlingRequest.cs" />
-    <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenRegisteringAUser.cs" />
-    <Compile Include="ServicesTests\PasswordTests\PasswordServiceTests\WhenGenerating.cs" />
-    <Compile Include="ServicesTests\PasswordTests\PasswordServiceTests\WhenVerifying.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.EmployerUsers.Application\SFA.DAS.EmployerUsers.Application.csproj">
-      <Project>{2243A091-EE5A-4641-B02E-D7BA560C0086}</Project>
-      <Name>SFA.DAS.EmployerUsers.Application</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.EmployerUsers.Domain\SFA.DAS.EmployerUsers.Domain.csproj">
-      <Project>{2686243C-201A-45C1-ADBC-99B05BD83D73}</Project>
-      <Name>SFA.DAS.EmployerUsers.Domain</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.Infrastructure\SFA.DAS.EmployerUsers.Infrastructure.csproj">
       <Project>{A38872C3-513F-4FD4-8917-E5BA21D5E3A6}</Project>
       <Name>SFA.DAS.EmployerUsers.Infrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.EmployerUsers.WebClientComponents\SFA.DAS.EmployerUsers.WebClientComponents.csproj">
+      <Project>{06c4fa3c-23a2-462b-aea8-d2f1f1eb3246}</Project>
+      <Name>SFA.DAS.EmployerUsers.WebClientComponents</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

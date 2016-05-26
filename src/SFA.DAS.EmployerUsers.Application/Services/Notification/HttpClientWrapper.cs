@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 
         public async Task SendMessage(Dictionary<string, string> messageProperties)
         {
-            var configuration = await _configurationService.Get<EmployerUsersConfiguration>();
+            var configuration = await _configurationService.GetAsync<EmployerUsersConfiguration>();
             _httpClient = new HttpClient { BaseAddress = new Uri(configuration.EmployerPortalConfiguration.ApiBaseUrl) };
 
             var serializeObject = JsonConvert.SerializeObject(messageProperties);
