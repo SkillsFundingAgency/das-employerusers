@@ -96,36 +96,36 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [HttpPost]
         [Authorize]
         [Route("account/confirm")]
-        public async Task<ActionResult> Confirm(AccessCodeViewModel accessCodeViewModel)
+        public async Task<ActionResult> Confirm(AccessCodeViewModel accessCodeViewModel, string command)
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var idClaim = claimsIdentity?.Claims.FirstOrDefault(c => c.Type == Constants.ClaimTypes.Id);
             var id = idClaim?.Value;
 
-            var activatedSuccessfully = await _accountOrchestrator.ActivateUser(new AccessCodeViewModel {AccessCode = accessCodeViewModel.AccessCode, UserId = id});
-
-            if (activatedSuccessfully)
+            if (command.Equals("activate"))
             {
-                return await RedirectToEmployerPortal();
+                var activatedSuccessfully = 
+                    await
+                        _accountOrchestrator.ActivateUser(new AccessCodeViewModel
+                        {
+                            AccessCode = accessCodeViewModel.AccessCode,
+                            UserId = id
+                        });
+
+                if (activatedSuccessfully)
+                {
+                    return await RedirectToEmployerPortal();
+                }
+
+                return View("Confirm", new AccessCodeViewModel {Valid = false});
             }
+            else
+            {
+                await _accountOrchestrator.ResendActivationCode(new ResendActivationCodeViewModel { UserId = id });
 
-            return View("Confirm", new AccessCodeViewModel {Valid = false});
+                return View("Confirm", new AccessCodeViewModel { Valid = true });
+            }
         }
-
-        [HttpGet]
-        [Authorize]
-        [Route("account/resendactivationcode")]
-        public async Task<ActionResult> ResendActivationCode()
-        {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var idClaim = claimsIdentity?.Claims.FirstOrDefault(c => c.Type == Constants.ClaimTypes.Id);
-            var id = idClaim?.Value;
-
-            await _accountOrchestrator.ResendActivationCode(new ResendActivationCodeViewModel { UserId = id });
-
-            return View("Confirm", new AccessCodeViewModel { Valid = true });
-        }
-
 
         private async Task<ActionResult> RedirectToEmployerPortal()
         {

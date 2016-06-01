@@ -25,6 +25,6 @@
       <input @invalidAttributes autofocus="autofocus" aria-required="true" class="form-control" id="AccessCode" name="AccessCode">
     </div>
   </fieldset>
-  <button type="submit" class="button">Activate Account</button>
+  <button type="submit" class="button" name="command" value="activate">Activate Account</button>
+  <button type="submit" class="link" name="command" value="resend">Resend Activation Code</button>
 </form>
-@Html.ActionLink("Resend Activation Code", "resendactivationcode", "account")
