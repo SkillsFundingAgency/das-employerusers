@@ -8,5 +8,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
         Task SendUserRegistrationMessage(User user, string messageId);
 
         Task SendUserAccountConfirmationMessage(User user, string messageId);
+
+        Task ResendActivationCodeMessage(User user, string messageId);
     }
 }

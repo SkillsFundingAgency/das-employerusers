@@ -76,7 +76,10 @@
     <Compile Include="RegisterUserTests\RegisterUserCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="QueriesTests\GetUserByIdTests\GetUserByIdQueryHandlerTests\WhenHandlingRequest.cs" />
     <Compile Include="QueriesTests\IsUserActiveTests\IsUserActiveQueryHandlerTests\WhenHandlingRequest.cs" />
+    <Compile Include="ResendActivationCodeTests\ResendActivationCodeCommandTests\WhenHandlingTheCommand.cs" />
+    <Compile Include="ResendActivationCodeTests\ResendActivationCodeCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenRegisteringAUser.cs" />
+    <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenResendingActivationCode.cs" />
     <Compile Include="ServicesTests\PasswordTests\PasswordServiceTests\WhenGenerating.cs" />
     <Compile Include="ServicesTests\PasswordTests\PasswordServiceTests\WhenVerifying.cs" />
   </ItemGroup>
