@@ -1,10 +1,14 @@
 ﻿using System.Threading.Tasks;
+using MediatR;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
+using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.AuthenticateUserTests.AuthenticateUserCommandHandlerTests
 {
@@ -19,6 +23,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.Authenticate
         private User _user;
         private Mock<IUserRepository> _userRepository;
         private Mock<IPasswordService> _passwordService;
+        private EmployerUsersConfiguration _configuration;
+        private Mock<IConfigurationService> _configurationService;
+        private Mock<IMediator> _mediator;
         private AuthenticateUserCommandHandler _commandHandler;
         private AuthenticateUserCommand _command;
 
@@ -30,7 +37,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.Authenticate
                 Email = EmailAddress,
                 Password = CorrectHashedPassword,
                 Salt = CorrectSalt,
-                PasswordProfileId = CorrectProfileId
+                PasswordProfileId = CorrectProfileId,
+                FailedLoginAttempts = 1
             };
             _userRepository = new Mock<IUserRepository>();
             _userRepository.Setup(r => r.GetByEmailAddress(EmailAddress))
@@ -39,10 +47,27 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.Authenticate
             _passwordService = new Mock<IPasswordService>();
             _passwordService.Setup(s => s.VerifyAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(false));
-            _passwordService.Setup(s=>s.VerifyAsync(CorrectPassword, CorrectHashedPassword, CorrectSalt, CorrectProfileId))
+            _passwordService.Setup(s => s.VerifyAsync(CorrectPassword, CorrectHashedPassword, CorrectSalt, CorrectProfileId))
                 .Returns(Task.FromResult(true));
 
-            _commandHandler = new AuthenticateUserCommandHandler(_userRepository.Object, _passwordService.Object);
+            _configuration = new EmployerUsersConfiguration
+            {
+                Account = new AccountConfiguration
+                {
+                    AllowedFailedLoginAttempts = 2
+                }
+            };
+            _configurationService = new Mock<IConfigurationService>();
+            _configurationService.Setup(s => s.GetAsync<EmployerUsersConfiguration>()).Returns(Task.FromResult(_configuration));
+
+            _mediator = new Mock<IMediator>();
+            _mediator.Setup(m => m.PublishAsync(It.IsAny<IAsyncNotification>())).Returns(Task.FromResult<object>(null));
+
+            _commandHandler = new AuthenticateUserCommandHandler(
+                _userRepository.Object, 
+                _passwordService.Object, 
+                _configurationService.Object,
+                _mediator.Object);
 
             _command = new AuthenticateUserCommand
             {
@@ -75,10 +100,21 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.Authenticate
         }
 
         [Test]
+        public void ThenItShouldThrowAnAccountLockedExceptionWhenAccountIsAlreadyLocked()
+        {
+            // Arrange
+            _user.IsLocked = true;
+
+            // Act + Assert
+            Assert.ThrowsAsync<AccountLockedException>(async () => await _commandHandler.Handle(_command));
+        }
+
+        [Test]
         public async Task ThenItShouldReturnNullWhenPasswordIsIncorrect()
         {
             // Arrange
             _command.Password = CorrectPassword + "-Wrong";
+            _user.FailedLoginAttempts = 0;
 
             // Act
             var actual = await _commandHandler.Handle(_command);
@@ -86,6 +122,86 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.Authenticate
             // Assert
             Assert.IsNull(actual);
         }
-        
+
+        [Test]
+        public async Task ThenItShouldUpdateFailedLoginAttemptsBy1WhenPasswordIsIncorrect()
+        {
+            // Arrange
+            _command.Password = CorrectPassword + "-Wrong";
+
+            // Act
+            try
+            {
+                await _commandHandler.Handle(_command);
+            }
+            catch (AccountLockedException)
+            {
+                // This is expected, but do not care for this test
+            }
+
+            // Assert
+            _userRepository.Verify(r => r.Update(It.Is<User>(u => u.FailedLoginAttempts == 2)), Times.Once());
+        }
+
+        [Test]
+        public async Task ThenItShouldUpdateIsLockedToTrueWhenPasswordIsIncorrectAndAllowedFailedAttemptsReached()
+        {
+            // Arrange
+            _command.Password = CorrectPassword + "-Wrong";
+
+            // Act
+            try
+            {
+                await _commandHandler.Handle(_command);
+            }
+            catch (AccountLockedException)
+            {
+                // This is expected, but do not care for this test
+            }
+
+            // Assert
+            _userRepository.Verify(r => r.Update(It.Is<User>(u => u.IsLocked)), Times.Once());
+        }
+
+        [Test]
+        public void ThenItShouldThrowAnAccountLockedExceptionWhenPasswordIsIncorrectAndAllowedFailedAttemptsReached()
+        {
+            // Arrange
+            _command.Password = CorrectPassword + "-Wrong";
+
+            // Act + Assert
+            Assert.ThrowsAsync<AccountLockedException>(async () => await _commandHandler.Handle(_command));
+        }
+
+        [Test]
+        public async Task ThenItShouldPublishAnAccountLockedEventWhenPasswordIsIncorrectAndAllowedFailedAttemptsReached()
+        {
+            // Arrange
+            _command.Password = CorrectPassword + "-Wrong";
+
+            // Act
+            try
+            {
+                await _commandHandler.Handle(_command);
+            }
+            catch (AccountLockedException)
+            {
+                // This is expected, but do not care for this test
+            }
+
+            // Assert
+            _mediator.Verify(m => m.PublishAsync(It.Is<AccountLockedEvent>(e => e.User == _user)), Times.Once());
+        }
+
+        [Test]
+        public async Task ThenItShouldUpdateFailedLoginAttemptsTo0WhenGreaterThan0AndCredentialsMatch()
+        {
+            // Act
+            var actual = await _commandHandler.Handle(_command);
+
+            // Assert
+            _userRepository.Verify(r => r.Update(It.Is<User>(u => u.FailedLoginAttempts == 0)), Times.Once());
+        }
+
     }
 }

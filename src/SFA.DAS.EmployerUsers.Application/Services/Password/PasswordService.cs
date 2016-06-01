@@ -70,7 +70,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Password
         private async Task<PasswordProfile> GetActivePasswordProfile()
         {
             var configuration = await _configurationService.GetAsync<EmployerUsersConfiguration>();
-            return await GetPasswordProfile(configuration.Password.ActiveProfileId);
+            return await GetPasswordProfile(configuration.Account.ActivePasswordProfileId);
         }
         private async Task<PasswordProfile> GetPasswordProfile(string id)
         {

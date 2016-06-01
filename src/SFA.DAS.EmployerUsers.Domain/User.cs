@@ -11,5 +11,7 @@
         public string PasswordProfileId { get; set; }
         public bool IsActive { get; set; }
         public string AccessCode { get; set; }
+        public int FailedLoginAttempts { get; set; }
+        public bool IsLocked { get; set; }
     }
 }

@@ -65,7 +65,7 @@
     <Compile Include="Configuration\EmployerUsersClientComponentConfigurationFactory.cs" />
     <Compile Include="Configuration\EmployerUsersConfiguration.cs" />
     <Compile Include="Configuration\IdentityServerConfiguration.cs" />
-    <Compile Include="Configuration\PasswordConfiguration.cs" />
+    <Compile Include="Configuration\AccountConfiguration.cs" />
     <Compile Include="Data\DocumentDbUser.cs" />
     <Compile Include="Data\DocumentDbUserRepository.cs" />
     <Compile Include="Data\FileSystemUserRepository.cs" />

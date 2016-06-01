@@ -50,6 +50,11 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
                 return new LoginResultModel { Success = true, RequiresActivation = !user.IsActive };
             }
+            catch (AccountLockedException ex)
+            {
+                _logger.Info(ex.Message);
+                return new LoginResultModel { AccountIsLocked = true };
+            }
             catch (Exception ex)
             {
                 _logger.Error(ex, ex.Message);

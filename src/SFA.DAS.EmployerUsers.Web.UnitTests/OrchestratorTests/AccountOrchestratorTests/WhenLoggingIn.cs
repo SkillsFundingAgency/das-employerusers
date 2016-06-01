@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
@@ -22,11 +23,11 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         {
             _mediator = new Mock<IMediator>();
             _mediator.Setup(m => m.SendAsync(It.IsAny<AuthenticateUserCommand>()))
-                .Returns(Task.FromResult(new Domain.User {Email = "unit.tests@test.local", IsActive = true }));
+                .Returns(Task.FromResult(new Domain.User { Email = "unit.tests@test.local", IsActive = true }));
 
             _owinWrapper = new Mock<IOwinWrapper>();
 
-            _orchestrator = new AccountOrchestrator(_mediator.Object,_owinWrapper.Object);
+            _orchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object);
 
             _model = new LoginViewModel
             {
@@ -88,13 +89,41 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         }
 
         [Test]
-        public async Task ThenItShouldDoesNotReturnRequireActivationWhenUserIsActive()
+        public async Task ThenItShouldNotReturnRequireActivationWhenUserIsActive()
         {
             // Act
             var actual = await _orchestrator.Login(_model);
 
             // Assert
             Assert.IsFalse(actual.RequiresActivation);
+        }
+
+        [Test]
+        public async Task ThenItShouldFalseWhenCommadnThrowsAccountLockedException()
+        {
+            //Arrange
+            _mediator.Setup(m => m.SendAsync(It.IsAny<AuthenticateUserCommand>()))
+                .Throws(new AccountLockedException(new Domain.User { Email = "unit.tests@testing.local" }));
+
+            // Act
+            var actual = await _orchestrator.Login(_model);
+
+            // Assert
+            Assert.IsFalse(actual.Success);
+        }
+
+        [Test]
+        public async Task ThenItShouldAccountIsLockedWhenCommadnThrowsAccountLockedException()
+        {
+            //Arrange
+            _mediator.Setup(m => m.SendAsync(It.IsAny<AuthenticateUserCommand>()))
+                .Throws(new AccountLockedException(new Domain.User { Email = "unit.tests@testing.local" }));
+
+            // Act
+            var actual = await _orchestrator.Login(_model);
+
+            // Assert
+            Assert.IsTrue(actual.AccountIsLocked);
         }
 
     }

@@ -35,9 +35,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.PasswordTest
             _configurationService.Setup(s => s.GetAsync<EmployerUsersConfiguration>())
                 .Returns(Task.FromResult(new EmployerUsersConfiguration
                 {
-                    Password = new PasswordConfiguration
+                    Account = new AccountConfiguration
                     {
-                        ActiveProfileId = "XYZ"
+                        ActivePasswordProfileId = "XYZ"
                     }
                 }));
 

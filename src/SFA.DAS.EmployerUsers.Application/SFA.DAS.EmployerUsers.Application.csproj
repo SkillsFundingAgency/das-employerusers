@@ -60,6 +60,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AccountLockedException.cs" />
     <Compile Include="Commands\ActivateUser\ActivateUserCommand.cs" />
     <Compile Include="Commands\ActivateUser\ActivateUserCommandHandler.cs" />
     <Compile Include="Commands\ActivateUser\ActivateUserCommandValidator.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Commands\RegisterUser\RegisterUserCommandHandler.cs" />
     <Compile Include="Commands\RegisterUser\RegisterUserCommandValidator.cs" />
     <Compile Include="DataEntities\User\RegisterUser.cs" />
+    <Compile Include="Events\AccountLocked\AccountLockedEvent.cs" />
     <Compile Include="InvalidRequestException.cs" />
     <Compile Include="IValidator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
