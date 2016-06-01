@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
 using SFA.DAS.EmployerUsers.Domain;
 
@@ -7,10 +6,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 {
     public class CommunicationService : ICommunicationService
     {
-        
         private readonly IHttpClientWrapper _httpClientWrapper;
-
-        private readonly HttpClient _httpClient;
 
         public CommunicationService(IHttpClientWrapper httpClientWrapper)
         {
@@ -20,7 +16,6 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 
         public async Task SendUserRegistrationMessage(User user, string messageId)
         {
-
             var messageProperties = new Dictionary<string, string>
             {
                 {"AccessCode", user.AccessCode},
@@ -31,11 +26,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 {"fromEmail", "info@sfa.das.gov.uk"}
             };
 
-            using (_httpClientWrapper)
-            {
-                await _httpClientWrapper.SendMessage(messageProperties);
-            }
-                
+            await _httpClientWrapper.SendMessage(messageProperties);
         }
 
         public async Task SendUserAccountConfirmationMessage(User user, string messageId)
@@ -50,10 +41,22 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 {"fromEmail", "info@sfa.das.gov.uk"}
             };
 
-            using (_httpClientWrapper)
+            await _httpClientWrapper.SendMessage(messageProperties);
+        }
+
+        public async Task SendAccountLockedMessage(User user, string messageId)
+        {
+            var messageProperties = new Dictionary<string, string>
             {
-                await _httpClientWrapper.SendMessage(messageProperties);
-            }
+                {"body", user.UnlockCode},
+                {"UserId", user.Id},
+                {"MessageId", messageId},
+                {"messagetype", "SendEmail"},
+                {"toEmail", user.Email},
+                {"fromEmail", "info@sfa.das.gov.uk"}
+            };
+
+            await _httpClientWrapper.SendMessage(messageProperties);
         }
     }
 }

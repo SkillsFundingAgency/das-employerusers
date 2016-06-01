@@ -22,6 +22,7 @@ using Microsoft.WindowsAzure;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.Configuration;
 using SFA.DAS.Configuration.AzureTableStorage;
+using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Data;
@@ -78,11 +79,13 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
         {
             For<IUserRepository>().Use<FileSystemUserRepository>();
             For<IPasswordProfileRepository>().Use<InMemoryPasswordProfileRepository>();
+            For<IHttpClientWrapper>().Use<StubHttpClientWrapper>();
         }
         private void AddProductionRegistrations()
         {
             For<IUserRepository>().Use<DocumentDbUserRepository>();
             For<IPasswordProfileRepository>().Use<InMemoryPasswordProfileRepository>();
+            For<IHttpClientWrapper>().Use<HttpClientWrapper>();
         }
 
         private void AddMediatrRegistrations()

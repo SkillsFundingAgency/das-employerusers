@@ -12,7 +12,6 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
     public class HttpClientWrapper : IHttpClientWrapper
     {
         private readonly IConfigurationService _configurationService;
-        private HttpClient _httpClient;
 
         public HttpClientWrapper(IConfigurationService configurationService)
         {
@@ -21,20 +20,24 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 
         public async Task SendMessage(Dictionary<string, string> messageProperties)
         {
-            var configuration = await _configurationService.GetAsync<EmployerUsersConfiguration>();
-            _httpClient = new HttpClient { BaseAddress = new Uri(configuration.EmployerPortalConfiguration.ApiBaseUrl) };
-
-            var serializeObject = JsonConvert.SerializeObject(messageProperties);
-            var resposne = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post, "/api/notification")
+            using (var httpClient = await CreateHttpClient())
             {
-                Content = new StringContent(serializeObject, Encoding.UTF8, "application/json"),
-            });
-            resposne.EnsureSuccessStatusCode();
+                var serializeObject = JsonConvert.SerializeObject(messageProperties);
+                var response = await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post, "/api/notification")
+                {
+                    Content = new StringContent(serializeObject, Encoding.UTF8, "application/json")
+                });
+                response.EnsureSuccessStatusCode();
+            }
         }
 
-        public void Dispose()
+        private async Task<HttpClient> CreateHttpClient()
         {
-            _httpClient?.Dispose();
+            var configuration = await _configurationService.GetAsync<EmployerUsersConfiguration>();
+            return new HttpClient
+            {
+                BaseAddress = new Uri(configuration.EmployerPortalConfiguration.ApiBaseUrl)
+            };
         }
     }
 }

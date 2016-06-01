@@ -13,5 +13,6 @@
         public string AccessCode { get; set; }
         public int FailedLoginAttempts { get; set; }
         public bool IsLocked { get; set; }
+        public string UnlockCode { get; set; }
     }
 }
