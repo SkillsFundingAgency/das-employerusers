@@ -112,6 +112,20 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View("Confirm", new AccessCodeViewModel {Valid = false});
         }
 
+        [HttpGet]
+        [Authorize]
+        [Route("account/resendactivationcode")]
+        public async Task<ActionResult> ResendActivationCode()
+        {
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var idClaim = claimsIdentity?.Claims.FirstOrDefault(c => c.Type == Constants.ClaimTypes.Id);
+            var id = idClaim?.Value;
+
+            await _accountOrchestrator.ResendActivationCode(new ResendActivationCodeViewModel { UserId = id });
+
+            return View("Confirm", new AccessCodeViewModel { Valid = true });
+        }
+
 
         private async Task<ActionResult> RedirectToEmployerPortal()
         {

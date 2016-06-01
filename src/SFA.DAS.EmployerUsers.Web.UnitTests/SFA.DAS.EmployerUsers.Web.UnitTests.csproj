@@ -108,6 +108,7 @@
     <Compile Include="AuthenticationTests\UserServiceTests\WhenCheckingUserIsActive.cs" />
     <Compile Include="AuthenticationTests\UserServiceTests\WhenGettingProfileData.cs" />
     <Compile Include="AuthenticationTests\UserServiceTests\WhenPreAuthenticating.cs" />
+    <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenResendingActivationCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

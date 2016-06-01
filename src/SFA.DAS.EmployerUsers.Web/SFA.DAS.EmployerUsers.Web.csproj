@@ -273,6 +273,7 @@
     <Compile Include="Models\LoginResultModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
+    <Compile Include="Models\ResendActivationCodeViewModel.cs" />
     <Compile Include="Orchestrators\AccountOrchestrator.cs" />
     <Compile Include="Orchestrators\IOrchestrator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -17,13 +17,14 @@
 }
 
 <form method="post">
-    <fieldset>
-        <legend class="visuallyhidden">Access code for user registration</legend>
+  <fieldset>
+    <legend class="visuallyhidden">Access code for user registration</legend>
 
-        <div class="form-group">
-            <label class="form-label" for="AccessCode">Access Code</label>
-            <input @invalidAttributes autofocus="autofocus" aria-required="true" class="form-control" id="AccessCode" name="AccessCode">
-        </div>
-    </fieldset>
-    <button type="submit" class="button">Activate Account</button>
+    <div class="form-group">
+      <label class="form-label" for="AccessCode">Access Code</label>
+      <input @invalidAttributes autofocus="autofocus" aria-required="true" class="form-control" id="AccessCode" name="AccessCode">
+    </div>
+  </fieldset>
+  <button type="submit" class="button">Activate Account</button>
 </form>
+@Html.ActionLink("Resend Activation Code", "resendactivationcode", "account")
