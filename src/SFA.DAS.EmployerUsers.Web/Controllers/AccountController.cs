@@ -43,6 +43,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         public async Task<ActionResult> Login(string id, LoginViewModel model)
         {
             var result = await _accountOrchestrator.Login(model);
+
             if (result.Success)
             {
                 if (result.RequiresActivation)
@@ -53,6 +54,12 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 var signinMessage = _owinWrapper.GetSignInMessage(id);
                 return Redirect(signinMessage.ReturnUrl);
             }
+
+            if (result.AccountIsLocked)
+            {
+                return RedirectToAction("Unlock");
+            }
+
             return View(true);
         }
 
@@ -111,6 +118,18 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
             return View("Confirm", new AccessCodeViewModel {Valid = false});
         }
+
+
+
+
+        [HttpGet]
+        //[Authorize]
+        [Route("account/unlock")]
+        public ActionResult Unlock()
+        {
+            return View("Unlock");
+        }
+
 
 
         private async Task<ActionResult> RedirectToEmployerPortal()

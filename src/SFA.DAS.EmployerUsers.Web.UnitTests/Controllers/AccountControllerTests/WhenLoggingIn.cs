@@ -85,5 +85,20 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual.RouteValues.Any(v => v.Key == "action" && (string)v.Value == "Confirm"));
         }
+
+        [Test]
+        public async Task ThenItShouldReturnARedirectToUnlockIfUnsuccessfulAndAccountIsLocked()
+        {
+            // Arrange
+            _orchestrator.Setup(o => o.Login(It.IsAny<Models.LoginViewModel>())).Returns(
+                Task.FromResult(new LoginResultModel { Success = false, AccountIsLocked = true }));
+
+            // Act
+            var actual = await _controller.Login(Id, new Models.LoginViewModel()) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual.RouteValues.Any(v => v.Key == "action" && (string)v.Value == "Unlock"));
+        }
     }
 }
