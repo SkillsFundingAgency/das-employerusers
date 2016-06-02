@@ -9,7 +9,7 @@
       <Setting name="EnvironmentName" value="__EnvironmentName__" />
     </ConfigurationSettings>
     <Certificates>
-      <Certificate name="WebSslCert" thumbprint="55A2FE842CF496C2EC899D149ED0D15063BAD3D8" thumbprintAlgorithm="sha1" />
+      <Certificate name="WebSslCert" thumbprint="87A28DF77BBA73983918DF4288A132588AE820F4" thumbprintAlgorithm="sha1" />
       <Certificate name="DasIDPCert" thumbprint="C0ADAB0D15F856216B7BBDA548DA47CFAB871CEF" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
