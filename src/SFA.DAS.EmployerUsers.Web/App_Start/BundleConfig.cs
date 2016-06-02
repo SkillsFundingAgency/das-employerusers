@@ -13,19 +13,14 @@ namespace SFA.DAS.EmployerUsers.Web
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
 
-            // Use the development version of Modernizr to develop with and learn from. Then, when you're
-            // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
-            bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
-                        "~/Scripts/modernizr-*"));
-
             bundles.Add(new ScriptBundle("~/bundles/scripts").Include(
-                "~/assets/javascripts/govuk-template.js"));
+                "~/scripts/govuk-template.js"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/assets/stylesheets/govuk-template.css",
-                      "~/assets/stylesheets/fonts.css",
-                      "~/Content/Site.css",
-                      "~/Content/Dashboard.css"));
+            bundles.Add(new StyleBundle("~/Content/stylesheets/bundled-css").Include(
+                      "~/Content/stylesheets/govuk-template.css",
+                      "~/Content/stylesheets/fonts.css",
+                      "~/Content/stylesheets/users-main.css",
+                      "~/Content/stylesheets/users-dashboard.css"));
         }
     }
 }
