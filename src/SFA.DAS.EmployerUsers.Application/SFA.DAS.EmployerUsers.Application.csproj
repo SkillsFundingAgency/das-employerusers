@@ -73,6 +73,9 @@
     <Compile Include="Commands\RegisterUser\RegisterUserCommand.cs" />
     <Compile Include="Commands\RegisterUser\RegisterUserCommandHandler.cs" />
     <Compile Include="Commands\RegisterUser\RegisterUserCommandValidator.cs" />
+    <Compile Include="Commands\ResendActivationCode\ResendActivationCodeCommand.cs" />
+    <Compile Include="Commands\ResendActivationCode\ResendActivationCodeCommandHandler.cs" />
+    <Compile Include="Commands\ResendActivationCode\ResendActivationCodeCommandValidator.cs" />
     <Compile Include="DataEntities\User\RegisterUser.cs" />
     <Compile Include="Events\AccountLocked\AccountLockedEvent.cs" />
     <Compile Include="Events\AccountLocked\GenerateAndEmailAccountLockedEmailHandler.cs" />

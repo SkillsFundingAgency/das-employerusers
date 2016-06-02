@@ -8,6 +8,7 @@ using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
+using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
 
@@ -104,6 +105,24 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 {
                     AccessCode = accessCodeviewModel.AccessCode,
                     UserId = accessCodeviewModel.UserId
+                });
+
+                return true;
+            }
+            catch (InvalidRequestException)
+            {
+                return false;
+            }
+
+        }
+
+        public virtual async Task<bool> ResendActivationCode(ResendActivationCodeViewModel resendActivationCodeViewModel)
+        {
+            try
+            {
+                await _mediator.SendAsync(new ResendActivationCodeCommand
+                {
+                    UserId = resendActivationCodeViewModel.UserId
                 });
 
                 return true;
