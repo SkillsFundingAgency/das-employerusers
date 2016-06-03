@@ -1,9 +1,11 @@
-﻿namespace SFA.DAS.EmployerUsers.Application
+﻿using System.Collections.Generic;
+
+namespace SFA.DAS.EmployerUsers.Application
 {
     public interface IValidator<T>
     {
 
-        bool Validate(T item);
+        Dictionary<string,string> Validate(T item);
         
     }
 }

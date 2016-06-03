@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ActivateUserTests.Activate
             var actual = _activateUserCommandValidator.Validate(new ActivateUserCommand());
 
             //Assert
-            Assert.IsFalse(actual);
+            Assert.IsNotEmpty(actual);
         }
 
 
@@ -33,7 +33,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ActivateUserTests.Activate
             var actual = _activateUserCommandValidator.Validate(null);
 
             //Assert
-            Assert.IsFalse(actual);
+            Assert.IsNotEmpty(actual);
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ActivateUserTests.Activate
             var actual = _activateUserCommandValidator.Validate(new ActivateUserCommand {AccessCode = "AccessCode", UserId = Guid.NewGuid().ToString(), User = new User {AccessCode = "ACCESSCODE"} });
 
             //Assert
-            Assert.IsTrue(actual);
+            Assert.IsEmpty(actual);
         }
 
         [Test]
@@ -53,7 +53,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ActivateUserTests.Activate
             var actual = _activateUserCommandValidator.Validate(new ActivateUserCommand { AccessCode = "AccessCode", UserId = Guid.NewGuid().ToString(), User = new User {AccessCode = "Edocssecca"} });
 
             //Assert
-            Assert.IsFalse(actual);
+            Assert.IsNotEmpty(actual);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.CodeGenerator;
@@ -28,7 +29,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 
         protected override async Task HandleCore(RegisterUserCommand message)
         {
-            if (!_registerUserCommandValidator.Validate(message))
+            if (_registerUserCommandValidator.Validate(message).Any())
             {
                 throw new InvalidRequestException(new[] { "NotValid" });
             }

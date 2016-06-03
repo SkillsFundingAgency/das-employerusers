@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
@@ -26,7 +27,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
             message.User = user;
             var result = _activateUserCommandValidator.Validate(message);
 
-            if (!result)
+            if (result.Any())
             {
                 throw new InvalidRequestException(new[] { "NotValid" });
             }

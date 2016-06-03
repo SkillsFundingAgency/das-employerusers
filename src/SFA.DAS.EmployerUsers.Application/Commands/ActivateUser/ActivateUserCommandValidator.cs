@@ -1,22 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
 {
     public class ActivateUserCommandValidator : IValidator<ActivateUserCommand>
     {
-        public bool Validate(ActivateUserCommand item)
+        public Dictionary<string, string> Validate(ActivateUserCommand item)
         {
             if (string.IsNullOrEmpty(item?.AccessCode) || string.IsNullOrEmpty(item.UserId))
             {
-                return false;
+                return new Dictionary<string, string> { { "", "" } };
             }
 
-            if (!item.AccessCode.Equals(item.User.AccessCode,StringComparison.CurrentCultureIgnoreCase))
+            if (!item.AccessCode.Equals(item.User.AccessCode, StringComparison.CurrentCultureIgnoreCase))
             {
-                return false;
+                return new Dictionary<string, string> { { "", "" } };
             }
 
-            return true;
+            return new Dictionary<string, string>();
         }
     }
 }

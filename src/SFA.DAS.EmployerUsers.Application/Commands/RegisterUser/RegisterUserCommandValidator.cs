@@ -1,29 +1,30 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 {
     public class RegisterUserCommandValidator : IValidator<RegisterUserCommand>
     {
-        public bool Validate(RegisterUserCommand item)
+        public Dictionary<string,string> Validate(RegisterUserCommand item)
         {
             if (string.IsNullOrWhiteSpace(item?.Email) || string.IsNullOrWhiteSpace(item.FirstName) ||
                 string.IsNullOrWhiteSpace(item.LastName) || string.IsNullOrWhiteSpace(item.Password) ||
                 string.IsNullOrWhiteSpace(item.ConfirmPassword))
             {
-                return false;
+                return new Dictionary<string, string> { { "", "" } };
             }
 
             if (CheckPasswordMatchesAtLeastOneUppercaseOneLowercaseOneNumberAndAtLeastEightCharacters(item.Password))
             {
-                return false;
+                return new Dictionary<string, string> { { "", "" } };
             }
 
             if (!item.ConfirmPassword.Equals(item.Password))
             {
-                return false;
+                return new Dictionary<string, string> { { "", "" } };
             }
 
-            return true;
+            return new Dictionary<string, string>();
         }
 
         private static bool CheckPasswordMatchesAtLeastOneUppercaseOneLowercaseOneNumberAndAtLeastEightCharacters(string password)

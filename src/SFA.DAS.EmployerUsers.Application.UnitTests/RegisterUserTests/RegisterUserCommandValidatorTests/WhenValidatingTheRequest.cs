@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.RegisterUserCommandValidatorTests
@@ -14,7 +15,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
         }
 
         [Test]
-        public void ThenTrueIsReturnedIfAllFieldsArePopulated()
+        public void ThenAnEmptyDictionaryIsReturnedIfAllFieldsArePopulated()
         {
             //Act
             var actual = _validator.Validate(new RegisterUserCommand
@@ -27,7 +28,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
             });
 
             //Assert
-            Assert.IsTrue(actual);
+            Assert.IsAssignableFrom<Dictionary<string,string>>(actual);
+            Assert.IsEmpty(actual);
         }
 
         [TestCase("", "", "", "", "")]
@@ -54,7 +56,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
             var actual = _validator.Validate(registerUserCommand);
 
             //Assert
-            Assert.IsFalse(actual);
+            Assert.IsNotEmpty(actual);
         }
 
         [Test]
@@ -64,7 +66,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
             var actual = _validator.Validate(null);
 
             //Assert
-            Assert.IsFalse(actual);
+            Assert.IsNotEmpty(actual);
 
         }
 
@@ -86,7 +88,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
             });
 
             //Assert
-            Assert.IsFalse(actual);
+            Assert.IsNotEmpty(actual);
         }
         
     }
