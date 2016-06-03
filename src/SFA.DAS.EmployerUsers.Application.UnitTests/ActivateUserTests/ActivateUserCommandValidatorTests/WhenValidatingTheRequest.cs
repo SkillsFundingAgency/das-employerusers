@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
+using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.ActivateUserTests.ActivateUserCommandValidatorTests
@@ -22,7 +23,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ActivateUserTests.Activate
             var actual = _activateUserCommandValidator.Validate(new ActivateUserCommand());
 
             //Assert
-            Assert.IsNotEmpty(actual);
+            Assert.IsAssignableFrom<ValidationResult>(actual);
+            Assert.IsFalse(actual.IsValid());
         }
 
 
@@ -33,7 +35,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ActivateUserTests.Activate
             var actual = _activateUserCommandValidator.Validate(null);
 
             //Assert
-            Assert.IsNotEmpty(actual);
+            Assert.IsFalse(actual.IsValid());
         }
 
         [Test]
@@ -43,7 +45,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ActivateUserTests.Activate
             var actual = _activateUserCommandValidator.Validate(new ActivateUserCommand {AccessCode = "AccessCode", UserId = Guid.NewGuid().ToString(), User = new User {AccessCode = "ACCESSCODE"} });
 
             //Assert
-            Assert.IsEmpty(actual);
+            Assert.IsTrue(actual.IsValid());
         }
 
         [Test]
@@ -53,7 +55,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ActivateUserTests.Activate
             var actual = _activateUserCommandValidator.Validate(new ActivateUserCommand { AccessCode = "AccessCode", UserId = Guid.NewGuid().ToString(), User = new User {AccessCode = "Edocssecca"} });
 
             //Assert
-            Assert.IsNotEmpty(actual);
+            Assert.IsFalse(actual.IsValid());
         }
     }
 }

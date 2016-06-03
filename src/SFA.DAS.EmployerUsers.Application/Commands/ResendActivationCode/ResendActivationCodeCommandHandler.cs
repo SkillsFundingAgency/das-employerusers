@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
+using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode
@@ -28,7 +29,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode
 
         protected override async Task HandleCore(ResendActivationCodeCommand message)
         {
-            if (_commandValidator.Validate(message).Any())
+            if (!_commandValidator.Validate(message).IsValid())
                 throw new InvalidRequestException(new[] { "NotValid" });
 
             var user = await _userRepository.GetById(message.UserId);

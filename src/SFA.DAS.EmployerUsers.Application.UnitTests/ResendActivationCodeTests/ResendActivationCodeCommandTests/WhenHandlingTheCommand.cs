@@ -4,6 +4,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
+using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
@@ -75,11 +76,11 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ResendActivationCodeTests.
         {
             if (isValid)
             {
-                _validator.Setup(x => x.Validate(It.IsAny<ResendActivationCodeCommand>())).Returns(new Dictionary<string,string>());
+                _validator.Setup(x => x.Validate(It.IsAny<ResendActivationCodeCommand>())).Returns(new ValidationResult {ValidationDictionary = new Dictionary<string,string>()});
             }
             else
             {
-                _validator.Setup(x => x.Validate(It.IsAny<ResendActivationCodeCommand>())).Returns(new Dictionary<string, string> { {"",""} });
+                _validator.Setup(x => x.Validate(It.IsAny<ResendActivationCodeCommand>())).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { {"",""} }});
             }
         }
 

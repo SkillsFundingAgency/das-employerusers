@@ -5,6 +5,7 @@ using MediatR;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
+using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
@@ -29,7 +30,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 
         protected override async Task HandleCore(RegisterUserCommand message)
         {
-            if (_registerUserCommandValidator.Validate(message).Any())
+            if (!_registerUserCommandValidator.Validate(message).IsValid())
             {
                 throw new InvalidRequestException(new[] { "NotValid" });
             }

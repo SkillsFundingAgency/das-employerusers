@@ -16,24 +16,24 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ResendActivationCodeTests.
         }
 
         [Test]
-        public void ThenFalseIsReturnedIfValidCommandIsPassed()
+        public void ThenTrueIsReturnedIfValidCommandIsPassed()
         {
-            Assert.IsEmpty(_validator.Validate(new ResendActivationCodeCommand
+            Assert.IsTrue(_validator.Validate(new ResendActivationCodeCommand
             {
                 UserId = Guid.NewGuid().ToString()
-            }));
+            }).IsValid());
         }
 
         [Test]
         public void ThenFalseIsReturnedIfEmptyCommandIsPassed()
         {
-            Assert.IsNotEmpty(_validator.Validate(new ResendActivationCodeCommand()));
+            Assert.IsFalse(_validator.Validate(new ResendActivationCodeCommand()).IsValid());
         }
 
         [Test]
         public void ThenFalseIsReturnedIfNullIsPassed()
         {
-            Assert.IsNotEmpty(_validator.Validate(null));
+            Assert.IsFalse(_validator.Validate(null).IsValid());
         }
     }
 }

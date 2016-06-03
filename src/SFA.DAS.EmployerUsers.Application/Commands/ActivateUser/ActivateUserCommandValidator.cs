@@ -1,23 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.EmployerUsers.Application.Validation;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
 {
     public class ActivateUserCommandValidator : IValidator<ActivateUserCommand>
     {
-        public Dictionary<string, string> Validate(ActivateUserCommand item)
+        public ValidationResult Validate(ActivateUserCommand item)
         {
+            var validationResult = new ValidationResult();
             if (string.IsNullOrEmpty(item?.AccessCode) || string.IsNullOrEmpty(item.UserId))
             {
-                return new Dictionary<string, string> { { "", "" } };
+                validationResult.ValidationDictionary = new Dictionary<string, string> {{"", ""}};
+                return validationResult;
             }
 
             if (!item.AccessCode.Equals(item.User.AccessCode, StringComparison.CurrentCultureIgnoreCase))
             {
-                return new Dictionary<string, string> { { "", "" } };
+                validationResult.ValidationDictionary = new Dictionary<string, string> { { "", "" } };
+                return validationResult;
             }
 
-            return new Dictionary<string, string>();
+            return validationResult;
         }
     }
 }
