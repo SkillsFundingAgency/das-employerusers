@@ -11,6 +11,7 @@ using MediatR;
 using Microsoft.Owin;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.Application.Queries.IsUserActive;
+using SFA.DAS.EmployerUsers.WebClientComponents;
 
 namespace SFA.DAS.EmployerUsers.Web.Authentication
 {
@@ -18,7 +19,7 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
     {
         private readonly IMediator _mediator;
         private readonly IOwinContext _owinContext;
-        
+
         public UserService(OwinEnvironmentService owinEnvironment, IMediator mediator)
         {
             _mediator = mediator;
@@ -53,7 +54,7 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
         {
             var userId = GetUserId(context.Subject);
 
-            var user = await _mediator.SendAsync(new GetUserByIdQuery {UserId = userId });
+            var user = await _mediator.SendAsync(new GetUserByIdQuery { UserId = userId });
             if (user == null)
             {
                 return;
@@ -61,11 +62,12 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
 
             var claims = new List<Claim>
             {
-                new Claim(Constants.ClaimTypes.Id, user.Id),
-                new Claim(Constants.ClaimTypes.Email, user.Email),
-                new Claim(Constants.ClaimTypes.GivenName, user.FirstName),
-                new Claim(Constants.ClaimTypes.FamilyName, user.LastName),
-                new Claim(Constants.ClaimTypes.Name, $"{user.FirstName} {user.LastName}")
+                new Claim(DasClaimTypes.Id, user.Id),
+                new Claim(DasClaimTypes.Email, user.Email),
+                new Claim(DasClaimTypes.GivenName, user.FirstName),
+                new Claim(DasClaimTypes.FamilyName, user.LastName),
+                new Claim(DasClaimTypes.DisplayName, $"{user.FirstName} {user.LastName}"),
+                new Claim(DasClaimTypes.RequiresVerification, (!user.IsActive).ToString())
             };
             context.IssuedClaims = claims;
         }
@@ -73,7 +75,7 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
 
         private string GetUserId(ClaimsPrincipal subject)
         {
-            var claim = subject?.Claims.FirstOrDefault(c => c.Type.Equals(Constants.ClaimTypes.Id));
+            var claim = subject?.Claims.FirstOrDefault(c => c.Type.Equals(DasClaimTypes.Id));
             if (claim == null)
             {
                 claim = subject?.Claims.FirstOrDefault(c => c.Type.Equals(Constants.ClaimTypes.Subject));

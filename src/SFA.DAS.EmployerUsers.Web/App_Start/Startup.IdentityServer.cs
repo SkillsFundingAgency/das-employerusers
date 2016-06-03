@@ -8,6 +8,7 @@ using IdentityServer3.Core.Models;
 using Owin;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Authentication;
+using SFA.DAS.EmployerUsers.WebClientComponents;
 
 namespace SFA.DAS.EmployerUsers.Web
 {
@@ -18,7 +19,7 @@ namespace SFA.DAS.EmployerUsers.Web
 	    {
 	        _logger.Debug("Setting up IdentityServer");
 
-            AntiForgeryConfig.UniqueClaimTypeIdentifier = Constants.ClaimTypes.Id;
+            AntiForgeryConfig.UniqueClaimTypeIdentifier = DasClaimTypes.Id;
 
             app.Map("/identity", idsrvApp =>
             {

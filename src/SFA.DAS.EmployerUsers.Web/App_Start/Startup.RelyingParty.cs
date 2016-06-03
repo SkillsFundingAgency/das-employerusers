@@ -9,6 +9,7 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Owin;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
+using SFA.DAS.EmployerUsers.WebClientComponents;
 using Thinktecture.IdentityModel.Client;
 
 namespace SFA.DAS.EmployerUsers.Web
@@ -46,7 +47,7 @@ namespace SFA.DAS.EmployerUsers.Web
                     {
                         var nid = new ClaimsIdentity(
                             n.AuthenticationTicket.Identity.AuthenticationType,
-                            Constants.ClaimTypes.GivenName,
+                            DasClaimTypes.DisplayName,
                             Constants.ClaimTypes.Role);
 
                         // get userinfo data

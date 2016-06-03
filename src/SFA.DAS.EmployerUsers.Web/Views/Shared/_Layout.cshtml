@@ -50,6 +50,7 @@
                     @if (HttpContext.Current.User.Identity.IsAuthenticated)
                     {
                         <span>Hi @HttpContext.Current.User.Identity.Name</span>
+                        <span><a href="@Url.Action("Logout", "Account")">Log out</a></span>
                     }
                     else
                     {

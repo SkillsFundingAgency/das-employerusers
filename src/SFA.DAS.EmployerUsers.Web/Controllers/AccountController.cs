@@ -65,6 +65,15 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
 
 
+        [Route("account/logout")]
+        public ActionResult Logout()
+        {
+            Request.GetOwinContext().Authentication.SignOut();
+            return RedirectToAction("Index", "Home");
+        }
+
+
+
         [HttpGet]
         [Route("identity/employer/register")]
         public ActionResult Register()
