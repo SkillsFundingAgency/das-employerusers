@@ -322,6 +322,7 @@
     <Content Include="Content\stylesheets\fonts\GDSTransportWebsite-Bold.eot" />
     <Content Include="Content\stylesheets\fonts\GDSTransportTabular-Light.eot" />
     <Content Include="Content\stylesheets\fonts\GDSTransportTabular-Bold.eot" />
+    <Content Include="App_Data\RelyingParties\employerportal.json" />
     <None Include="Properties\PublishProfiles\SFA.DAS.EmployerUsers.WebPublishProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\govuk-template.js" />
@@ -354,9 +355,7 @@
     <Content Include="Views\Home\Debug.cshtml" />
     <Content Include="Views\Account\Unlock.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />

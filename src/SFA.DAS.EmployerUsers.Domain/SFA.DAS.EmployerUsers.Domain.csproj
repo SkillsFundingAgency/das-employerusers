@@ -45,9 +45,11 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Data\IPasswordProfileRepository.cs" />
+    <Compile Include="Data\IRelyingPartyRepository.cs" />
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="Data\IUserRepository.cs" />
     <Compile Include="PasswordProfile.cs" />
+    <Compile Include="RelyingParty.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

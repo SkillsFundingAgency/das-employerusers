@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Web.Helpers;
 using IdentityServer3.Core;
 using IdentityServer3.Core.Configuration;
 using IdentityServer3.Core.Models;
 using Owin;
+using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.WebClientComponents;
@@ -13,11 +15,11 @@ using SFA.DAS.EmployerUsers.WebClientComponents;
 namespace SFA.DAS.EmployerUsers.Web
 {
 
-	public partial class Startup
-	{
-	    private void ConfigureIdentityServer(IAppBuilder app, IdentityServerConfiguration configuration)
-	    {
-	        _logger.Debug("Setting up IdentityServer");
+    public partial class Startup
+    {
+        private void ConfigureIdentityServer(IAppBuilder app, IdentityServerConfiguration configuration, IRelyingPartyRepository relyingPartyRepository)
+        {
+            _logger.Debug("Setting up IdentityServer");
 
             AntiForgeryConfig.UniqueClaimTypeIdentifier = DasClaimTypes.Id;
 
@@ -25,7 +27,7 @@ namespace SFA.DAS.EmployerUsers.Web
             {
                 var factory = new IdentityServerServiceFactory()
                     .UseDasUserService()
-                    .UseInMemoryClients(GetClients(configuration))
+                    .UseInMemoryClients(GetClients(configuration, relyingPartyRepository))
                     .UseInMemoryScopes(GetScopes())
                     .RegisterDasServices(StructuremapMvc.Container);
 
@@ -34,7 +36,7 @@ namespace SFA.DAS.EmployerUsers.Web
                 idsrvApp.UseIdentityServer(new IdentityServerOptions
                 {
                     SiteName = "Digital Apprenticeship Service",
-                    
+
                     SigningCertificate = LoadCertificate(configuration),
 
                     Factory = factory,
@@ -62,7 +64,7 @@ namespace SFA.DAS.EmployerUsers.Web
             //{
             //    var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, configuration.CertificateThumbprint, false);
             //    var certificate = certificates.Count > 0 ? certificates[0] : null;
-                
+
             //    return certificate;
             //}
             //finally
@@ -70,7 +72,7 @@ namespace SFA.DAS.EmployerUsers.Web
             //    store.Close();
             //}
         }
-        private List<Client> GetClients(IdentityServerConfiguration configuration)
+        private List<Client> GetClients(IdentityServerConfiguration configuration, IRelyingPartyRepository relyingPartyRepository)
         {
             var self = new Client
             {
@@ -89,34 +91,33 @@ namespace SFA.DAS.EmployerUsers.Web
                 },
                 AllowedScopes = new List<string>
                 {
-                    "openid",
-                    "profile"
+                    "openid", "profile"
                 }
             };
+            var clients = new List<Client> { self };
 
-            var employerPortal = new Client
+            var relyingParties = relyingPartyRepository.GetAllAsync().Result;
+            clients.AddRange(relyingParties.Select(rp => new Client
             {
-                ClientName = "Das Employer Portal",
-                ClientId = "employerportal",
+                ClientName = rp.Name, ClientId = rp.Id,
                 Flow = Flows.Implicit,
                 RequireConsent = false,
-
                 RedirectUris = new List<string>
                 {
-                    "http://localhost:58887/"
+                    rp.ApplicationUrl
                 },
                 PostLogoutRedirectUris = new List<string>
                 {
-                    "http://localhost:58887/"
+                    rp.LogoutUrl
                 },
                 AllowedScopes = new List<string>
                 {
-                    "openid",
-                    "profile"
+                    "openid", "profile"
                 }
-            };
+            }));
 
-            return new List<Client> { self, employerPortal };
+
+            return clients;
         }
         private List<Scope> GetScopes()
         {

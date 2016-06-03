@@ -66,8 +66,13 @@
     <Compile Include="Configuration\EmployerUsersConfiguration.cs" />
     <Compile Include="Configuration\IdentityServerConfiguration.cs" />
     <Compile Include="Configuration\AccountConfiguration.cs" />
+    <Compile Include="Data\DocumentDbRelyingParty.cs" />
+    <Compile Include="Data\DocumentDbRelyingPartyRepository.cs" />
+    <Compile Include="Data\DocumentDbRepository.cs" />
     <Compile Include="Data\DocumentDbUser.cs" />
     <Compile Include="Data\DocumentDbUserRepository.cs" />
+    <Compile Include="Data\FileSystemRelyingPartyRepository.cs" />
+    <Compile Include="Data\FileSystemRepository.cs" />
     <Compile Include="Data\FileSystemUserRepository.cs" />
     <Compile Include="Data\InMemoryPasswordProfileRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

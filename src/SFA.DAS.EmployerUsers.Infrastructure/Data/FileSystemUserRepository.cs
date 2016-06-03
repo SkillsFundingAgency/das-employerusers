@@ -7,33 +7,24 @@ using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Infrastructure.Data
 {
-    public class FileSystemUserRepository : IUserRepository
+    public class FileSystemUserRepository : FileSystemRepository, IUserRepository
     {
-        private readonly string _directory;
-
         public FileSystemUserRepository()
+            : base("Users")
         {
-            var appData = (string)AppDomain.CurrentDomain.GetData("DataDirectory");
-            _directory = Path.Combine(appData, "Users");
         }
 
         public async Task<User> GetById(string id)
         {
-            var path = Path.Combine(_directory, id + ".json");
-            if (!File.Exists(path))
-            {
-                return null;
-            }
-
-            return await ReadUser(path);
+            return await ReadFileById<User>(id);
         }
         public async Task<User> GetByEmailAddress(string emailAddress)
         {
-            var userFiles = Directory.GetFiles(_directory, "*.json");
+            var userFiles = GetDataFiles();
 
             foreach (var path in userFiles)
             {
-                var user = await ReadUser(path);
+                var user = await ReadFile<User>(path);
                 if (user.Email.Equals(emailAddress, StringComparison.OrdinalIgnoreCase))
                 {
                     return user;
@@ -44,46 +35,16 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
         }
         public async Task Create(User registerUser)
         {
-            if (!Directory.Exists(_directory))
-            {
-                Directory.CreateDirectory(_directory);
-            }
-
-            var path = GetUserFilePath(registerUser);
-            using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write))
-            using (var writer = new StreamWriter(stream))
-            {
-                var json = JsonConvert.SerializeObject(registerUser, Formatting.Indented);
-                await writer.WriteAsync(json);
-                await writer.FlushAsync();
-                writer.Close();
-            }
+            await CreateFile(registerUser, registerUser.Id);
         }
         public async Task Update(User user)
         {
-            var path = GetUserFilePath(user);
+            var path = Path.Combine(_directory, user.Id + ".json");
 
             File.Delete(path);
 
             await Create(user);
 
-        }
-
-
-		private string GetUserFilePath(User registerUser)
-        {
-            return Path.Combine(_directory, registerUser.Id + ".json");
-        }
-		private async Task<User> ReadUser(string path)
-        {
-            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
-            using (var reader = new StreamReader(stream))
-            {
-                var json = await reader.ReadToEndAsync();
-                reader.Close();
-
-                return JsonConvert.DeserializeObject<User>(json);
-            }
         }
     }
 }
