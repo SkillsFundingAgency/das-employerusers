@@ -36,9 +36,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
                 throw new ArgumentNullException(typeof (RegisterUserCommand).Name, "RegisterUserCommand is null");
             }
 
-            if (!_registerUserCommandValidator.Validate(message).IsValid())
+            var validationResult = _registerUserCommandValidator.Validate(message);
+
+            if (!validationResult.IsValid())
             {
-                throw new InvalidRequestException(new[] { "NotValid" });
+                throw new InvalidRequestException(validationResult.ValidationDictionary);
             }
 
             var securedPassword = await _passwordService.GenerateAsync(message.Password);

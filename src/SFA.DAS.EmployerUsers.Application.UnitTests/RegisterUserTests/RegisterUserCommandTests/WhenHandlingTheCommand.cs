@@ -53,13 +53,14 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
         public void ThenTheCommandIsHandledAndValidatorCalled()
         {
             //Arrange
-            _registerUserCommandValidator.Setup(x => x.Validate(It.IsAny<RegisterUserCommand>())).Returns(new ValidationResult {ValidationDictionary = new Dictionary<string, string> { {"",""} }});
+            _registerUserCommandValidator.Setup(x => x.Validate(It.IsAny<RegisterUserCommand>())).Returns(new ValidationResult {ValidationDictionary = new Dictionary<string, string> { {"MyError","Some error has happened"} }});
 
             //Act
-            Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(new RegisterUserCommand()));
+            var actual = Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(new RegisterUserCommand()));
 
             //Assert
             _registerUserCommandValidator.Verify(x=>x.Validate(It.IsAny<RegisterUserCommand>()));
+            Assert.Contains(new KeyValuePair<string,string>("MyError", "Some error has happened"),actual.ErrorMessages);
         }
 
         [Test]

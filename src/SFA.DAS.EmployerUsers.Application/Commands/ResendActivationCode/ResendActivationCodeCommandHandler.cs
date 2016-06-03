@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
@@ -29,13 +30,14 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode
 
         protected override async Task HandleCore(ResendActivationCodeCommand message)
         {
-            if (!_commandValidator.Validate(message).IsValid())
-                throw new InvalidRequestException(new[] { "NotValid" });
+            var validationResult = _commandValidator.Validate(message);
+            if (!validationResult.IsValid())
+                throw new InvalidRequestException(validationResult.ValidationDictionary);
 
             var user = await _userRepository.GetById(message.UserId);
 
             if (user == null)
-                throw new InvalidRequestException(new[] { "UserNotFound" });
+                throw new InvalidRequestException(new Dictionary<string,string> { {"UserNotFound","User not found"} });
 
             if (!user.IsActive)
             {

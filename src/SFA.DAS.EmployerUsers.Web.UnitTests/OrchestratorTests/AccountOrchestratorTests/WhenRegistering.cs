@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MediatR;
 using Moq;
 using NUnit.Framework;
@@ -15,15 +16,15 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         private AccountOrchestrator _accountOrchestrator;
         private Mock<IMediator> _mediator;
         private Mock<IOwinWrapper> _owinWrapper;
-        
+
         [SetUp]
         public void Arrange()
         {
             _mediator = new Mock<IMediator>();
             _owinWrapper = new Mock<IOwinWrapper>();
-            
-            _accountOrchestrator = new AccountOrchestrator(_mediator.Object,_owinWrapper.Object);
-            
+
+            _accountOrchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object);
+
         }
 
         [Test]
@@ -63,7 +64,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _accountOrchestrator.Register(registerUserViewModel);
 
             //Assert
-            _mediator.Verify(x=>x.SendAsync(It.Is<RegisterUserCommand>(p=> !string.IsNullOrEmpty(p.Id) && p.Email.Equals(email) && p.FirstName.Equals(firstName) && p.LastName.Equals(lastName) && p.Password.Equals(password) && p.ConfirmPassword.Equals(confirmPassword))),Times.Once);
+            _mediator.Verify(x => x.SendAsync(It.Is<RegisterUserCommand>(p => !string.IsNullOrEmpty(p.Id) && p.Email.Equals(email) && p.FirstName.Equals(firstName) && p.LastName.Equals(lastName) && p.Password.Equals(password) && p.ConfirmPassword.Equals(confirmPassword))), Times.Once);
             Assert.IsTrue(actual);
         }
 
@@ -85,14 +86,14 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             await _accountOrchestrator.Register(registerUserViewModel);
 
             //Assert
-            _owinWrapper.Verify(x=>x.IssueLoginCookie(It.IsAny<string>(),"test tester"),Times.Once);
+            _owinWrapper.Verify(x => x.IssueLoginCookie(It.IsAny<string>(), "test tester"), Times.Once);
         }
 
         [Test]
         public async Task ThenFalseIsReturnedWhenTheRegisterUserCommandHandlerThrowsAnException()
         {
             //Arrange
-            _mediator.Setup(x => x.SendAsync(It.IsAny<RegisterUserCommand>())).ThrowsAsync(new InvalidRequestException(new [] {"Something"}));
+            _mediator.Setup(x => x.SendAsync(It.IsAny<RegisterUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string>()));
 
             //Act
             var actual = await _accountOrchestrator.Register(new RegisterViewModel());
@@ -101,6 +102,6 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             Assert.IsFalse(actual);
 
         }
-        
+
     }
 }

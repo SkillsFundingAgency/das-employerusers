@@ -30,7 +30,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
 
             if (!result.IsValid())
             {
-                throw new InvalidRequestException(new[] { "NotValid" });
+                throw new InvalidRequestException(result.ValidationDictionary);
             }
 
             user.IsActive = true;

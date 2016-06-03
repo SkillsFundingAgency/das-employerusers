@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MediatR;
 using Moq;
 using NUnit.Framework;
@@ -37,7 +38,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         [Test]
         public async Task ThenFalseIfMediatorThrowsException()
         {
-            _mediator.Setup(x => x.SendAsync(It.IsAny<ResendActivationCodeCommand>())).ThrowsAsync(new InvalidRequestException(new[] { "Something" }));
+            _mediator.Setup(x => x.SendAsync(It.IsAny<ResendActivationCodeCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string,string>()));
 
             var actual = await _accountOrchestrator.ResendActivationCode(new ResendActivationCodeViewModel());
 
