@@ -19,6 +19,10 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
         public string Salt { get; set; }
         public string PasswordProfileId { get; set; }
         public bool IsActive { get; set; }
+        public string AccessCode { get; set; }
+        public int FailedLoginAttempts { get; set; }
+        public bool IsLocked { get; set; }
+        public string UnlockCode { get; set; }
 
         internal static DocumentDbUser FromDomainUser(User user)
         {
@@ -31,7 +35,11 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
                 LastName = user.LastName,
                 Password = user.Password,
                 Salt = user.Salt,
-                PasswordProfileId = user.PasswordProfileId
+                PasswordProfileId = user.PasswordProfileId,
+                AccessCode = user.AccessCode,
+                FailedLoginAttempts = user.FailedLoginAttempts,
+                IsLocked = user.IsLocked,
+                UnlockCode = user.UnlockCode
             };
         }
 
@@ -46,7 +54,11 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
                 LastName = LastName,
                 Password = Password,
                 Salt = Salt,
-                PasswordProfileId = PasswordProfileId
+                PasswordProfileId = PasswordProfileId,
+                AccessCode = AccessCode,
+                FailedLoginAttempts = FailedLoginAttempts,
+                IsLocked = IsLocked,
+                UnlockCode = UnlockCode
             };
         }
     }
