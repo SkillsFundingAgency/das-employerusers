@@ -38,7 +38,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             //Assert
             Assert.IsNotNull(actual);
-            Assert.IsAssignableFrom<bool>(actual);
+            Assert.IsAssignableFrom<RegisterResultModel>(actual);
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             //Assert
             _mediator.Verify(x => x.SendAsync(It.Is<RegisterUserCommand>(p => !string.IsNullOrEmpty(p.Id) && p.Email.Equals(email) && p.FirstName.Equals(firstName) && p.LastName.Equals(lastName) && p.Password.Equals(password) && p.ConfirmPassword.Equals(confirmPassword))), Times.Once);
-            Assert.IsTrue(actual);
+            Assert.IsTrue(actual.IsValid());
         }
 
         [Test]
@@ -93,14 +93,28 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         public async Task ThenFalseIsReturnedWhenTheRegisterUserCommandHandlerThrowsAnException()
         {
             //Arrange
-            _mediator.Setup(x => x.SendAsync(It.IsAny<RegisterUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string>()));
+            _mediator.Setup(x => x.SendAsync(It.IsAny<RegisterUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { {"SomeError","Some Error"} }));
 
             //Act
             var actual = await _accountOrchestrator.Register(new RegisterViewModel());
 
             //Assert
-            Assert.IsFalse(actual);
+            Assert.IsFalse(actual.IsValid());
 
+        }
+
+        [Test]
+        public async Task ThenTheErrorsAreReturnedInTheException()
+        {
+            //Arrange
+            _mediator.Setup(x => x.SendAsync(It.IsAny<RegisterUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { {"SomeError","Some Error"} }));
+
+            //Act
+            var actual = await _accountOrchestrator.Register(new RegisterViewModel());
+
+            //Assert
+            Assert.IsAssignableFrom<RegisterResultModel>(actual);
+            Assert.Contains(new KeyValuePair<string,string>("SomeError", "Some Error"),actual.ErrorDictionary );
         }
 
     }

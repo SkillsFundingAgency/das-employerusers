@@ -63,8 +63,9 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
         }
 
-        public virtual async Task<bool> Register(RegisterViewModel registerUserViewModel)
+        public virtual async Task<RegisterResultModel> Register(RegisterViewModel registerUserViewModel)
         {
+            var registerResultModel = new RegisterResultModel();
             try
             {
                 var userId = Guid.NewGuid().ToString();
@@ -78,23 +79,17 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     ConfirmPassword = registerUserViewModel.ConfirmPassword
                 });
 
-
                 _owinWrapper.IssueLoginCookie(userId, $"{registerUserViewModel.FirstName} {registerUserViewModel.LastName}");
-                //var env = owinContext.Environment;
-                //env.IssueLoginCookie(new IdentityServer3.Core.Models.AuthenticatedLogin
-                //{
-                //    Subject = userId,
-                //    Name = $"{registerUserViewModel.FirstName} {registerUserViewModel.LastName}",
-                //});
+                
                 _owinWrapper.RemovePartialLoginCookie();
 
-                return true;
+                return registerResultModel;
             }
-            catch (InvalidRequestException)
+            catch (InvalidRequestException ex)
             {
-                return false;
+                registerResultModel.ErrorDictionary = ex.ErrorMessages;
+                return registerResultModel;
             }
-
         }
 
         public virtual async Task<bool> ActivateUser(AccessCodeViewModel accessCodeviewModel)

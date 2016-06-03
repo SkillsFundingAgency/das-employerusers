@@ -78,7 +78,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         {
             var registerResult = await _accountOrchestrator.Register(model);
 
-            if (registerResult)
+            if (registerResult.IsValid())
             {
                 return RedirectToAction("Confirm");
             }
