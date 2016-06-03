@@ -129,6 +129,10 @@
       <Project>{A38872C3-513F-4FD4-8917-E5BA21D5E3A6}</Project>
       <Name>SFA.DAS.EmployerUsers.Infrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.EmployerUsers.WebClientComponents\SFA.DAS.EmployerUsers.WebClientComponents.csproj">
+      <Project>{06C4FA3C-23A2-462B-AEA8-D2F1F1EB3246}</Project>
+      <Name>SFA.DAS.EmployerUsers.WebClientComponents</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.Web\SFA.DAS.EmployerUsers.Web.csproj">
       <Project>{0B267087-A640-4075-90CA-44B7A12C1B85}</Project>
       <Name>SFA.DAS.EmployerUsers.Web</Name>

@@ -8,6 +8,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.Domain;
+using SFA.DAS.EmployerUsers.WebClientComponents;
 
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.AuthenticationTests.UserServiceTests
 {
@@ -22,7 +23,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.AuthenticationTests.UserServiceTes
 
             _principal = new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
-                new Claim(Constants.ClaimTypes.Id,"xyz")
+                new Claim(DasClaimTypes.Id,"xyz")
             }));
 
             _requestContext = new ProfileDataRequestContext
@@ -103,11 +104,11 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.AuthenticationTests.UserServiceTes
             await _userService.GetProfileDataAsync(_requestContext);
 
             // Assert
-            AssertClaimExistsAndHasCorrectValue(_requestContext.IssuedClaims, Constants.ClaimTypes.Id, "xyz");
-            AssertClaimExistsAndHasCorrectValue(_requestContext.IssuedClaims, Constants.ClaimTypes.Email, "thomas.tester@unittest.local");
-            AssertClaimExistsAndHasCorrectValue(_requestContext.IssuedClaims, Constants.ClaimTypes.GivenName, "Thomas");
-            AssertClaimExistsAndHasCorrectValue(_requestContext.IssuedClaims, Constants.ClaimTypes.FamilyName, "Tester");
-            AssertClaimExistsAndHasCorrectValue(_requestContext.IssuedClaims, Constants.ClaimTypes.Name, "Thomas Tester");
+            AssertClaimExistsAndHasCorrectValue(_requestContext.IssuedClaims, DasClaimTypes.Id, "xyz");
+            AssertClaimExistsAndHasCorrectValue(_requestContext.IssuedClaims, DasClaimTypes.Email, "thomas.tester@unittest.local");
+            AssertClaimExistsAndHasCorrectValue(_requestContext.IssuedClaims, DasClaimTypes.GivenName, "Thomas");
+            AssertClaimExistsAndHasCorrectValue(_requestContext.IssuedClaims, DasClaimTypes.FamilyName, "Tester");
+            AssertClaimExistsAndHasCorrectValue(_requestContext.IssuedClaims, DasClaimTypes.DisplayName, "Thomas Tester");
         }
 
 
