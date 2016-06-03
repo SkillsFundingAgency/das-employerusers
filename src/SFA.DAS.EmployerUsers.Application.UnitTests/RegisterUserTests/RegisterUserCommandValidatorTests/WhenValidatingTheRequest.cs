@@ -22,8 +22,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
                 Email = "test",
                 FirstName = "Testing",
                 LastName = "Tester",
-                Password = "p$24234AAA",
-                ConfirmPassword = "p$24234AAA"
+                Password = "p24234AAA",
+                ConfirmPassword = "p24234AAA"
             });
 
             //Assert
@@ -38,8 +38,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
         [TestCase("", "", "aaa", "aaa", "")]
         [TestCase("", "aaa", "aaa", "aaa", "")]
         [TestCase("aaa", "aaa", "aaa", "aaa", "")]
-        [TestCase("aaa", "aaa", "aaa", "aaa", "bbb")]
-        [TestCase("aaa", "aaa", "aaa", "aaa", "AAA")]
         public void ThenFalseIsReturnedIfThereAreMissingFields(string firstName, string lastName, string email, string password, string confirmPassword)
         {
             //Arrange
@@ -69,5 +67,27 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
             Assert.IsFalse(actual);
 
         }
+
+        [TestCase("Passw0r")]
+        [TestCase("Password")]
+        [TestCase("123456789")]
+        [TestCase("aaaaa6789")]
+        [TestCase("AAAAA6789")]
+        public void ThenFalseIsReturnedIfThePasswordDoesNotTheRequiredStrenth(string password)
+        {
+            //Act
+            var actual = _validator.Validate(new RegisterUserCommand
+            {
+                Email = "test",
+                FirstName = "Testing",
+                LastName = "Tester",
+                Password = password,
+                ConfirmPassword = password
+            });
+
+            //Assert
+            Assert.IsFalse(actual);
+        }
+        
     }
 }

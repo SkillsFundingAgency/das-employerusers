@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
+﻿using System.Text.RegularExpressions;
+
+namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 {
     public class RegisterUserCommandValidator : IValidator<RegisterUserCommand>
     {
@@ -10,7 +12,11 @@
             {
                 return false;
             }
-            
+
+            if (CheckPasswordMatchesAtLeastOneUppercaseOneLowercaseOneNumberAndAtLeastEightCharacters(item.Password))
+            {
+                return false;
+            }
 
             if (!item.ConfirmPassword.Equals(item.Password))
             {
@@ -18,6 +24,11 @@
             }
 
             return true;
+        }
+
+        private static bool CheckPasswordMatchesAtLeastOneUppercaseOneLowercaseOneNumberAndAtLeastEightCharacters(string password)
+        {
+            return !Regex.IsMatch(password, @"^(?=(.*[0-9].*))(?=(.*[a-z].*))(?=(.*[A-Z].*)).{8,}$");
         }
     }
 }
