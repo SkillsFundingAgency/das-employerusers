@@ -9,6 +9,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
         public ValidationResult Validate(ActivateUserCommand item)
         {
             var validationResult = new ValidationResult();
+            validationResult.ValidationDictionary = new Dictionary<string, string>();
             if (string.IsNullOrEmpty(item?.AccessCode) || string.IsNullOrEmpty(item.UserId))
             {
                 validationResult.ValidationDictionary = new Dictionary<string, string> {{"", ""}};
