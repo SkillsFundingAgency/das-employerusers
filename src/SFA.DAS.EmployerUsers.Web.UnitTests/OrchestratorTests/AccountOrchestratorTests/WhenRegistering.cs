@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using IdentityServer3.Core.Extensions;
-using IdentityServer3.Core.Models;
+﻿using System.Threading.Tasks;
 using MediatR;
-using Microsoft.Owin;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application;
@@ -20,8 +15,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         private AccountOrchestrator _accountOrchestrator;
         private Mock<IMediator> _mediator;
         private Mock<IOwinWrapper> _owinWrapper;
-        private Mock<AccountOrchestrator> _mockAccountController;
-
+        
         [SetUp]
         public void Arrange()
         {
