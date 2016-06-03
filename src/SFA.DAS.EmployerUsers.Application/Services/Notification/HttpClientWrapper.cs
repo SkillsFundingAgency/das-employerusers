@@ -18,11 +18,11 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
             _configurationService = configurationService;
         }
 
-        public async Task SendMessage(Dictionary<string, string> messageProperties)
+        public async Task SendMessage<T>(T content)
         {
             using (var httpClient = await CreateHttpClient())
             {
-                var serializeObject = JsonConvert.SerializeObject(messageProperties);
+                var serializeObject = JsonConvert.SerializeObject(content);
                 var response = await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post, "/api/notification")
                 {
                     Content = new StringContent(serializeObject, Encoding.UTF8, "application/json")

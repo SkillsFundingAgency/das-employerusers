@@ -23,7 +23,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
         }
 
         [Test]
-        public async Task MyTest()
+        public async Task ThenItShouldSendAHttpMessageWithTheCorrectContent()
         {
             var user = new User
             {
@@ -33,26 +33,17 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
             };
             var messageId = Guid.NewGuid().ToString();
 
-            var messagePropertiesSerialized = JsonConvert.SerializeObject(CreateMessage(user, messageId));
-
             //Act
             await _communicationService.ResendActivationCodeMessage(user, messageId);
 
             //Assert
-            _httpClientWrapper.Verify(x => x.SendMessage(It.Is<Dictionary<string, string>>(s => JsonConvert.SerializeObject(s) == messagePropertiesSerialized)), Times.Once);
-        }
-
-        private Dictionary<string, string> CreateMessage(User user, string messageId)
-        {
-            return new Dictionary<string, string>
-            {
-                {"AccessCode", user.AccessCode},
-                {"UserId", user.Id},
-                {"MessageId", messageId},
-                {"messagetype", "ResendActivationCodeEmail"},
-                {"toEmail", user.Email},
-                {"fromEmail", "info@sfa.das.gov.uk"}
-            };
+            _httpClientWrapper.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.MessageType == "ResendActivationCode")), Times.Once);
+            _httpClientWrapper.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.UserId == user.Id)), Times.Once);
+            _httpClientWrapper.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.RecipientsAddress == user.Email)), Times.Once);
+            _httpClientWrapper.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.ReplyToAddress == "info@sfa.das.gov.uk")), Times.Once);
+            _httpClientWrapper.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.ForceFormat)), Times.Once);
+            _httpClientWrapper.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.Data.ContainsKey("AccessCode") && s.Data["AccessCode"] == user.AccessCode)), Times.Once);
+            _httpClientWrapper.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.Data.ContainsKey("MessageId") && s.Data["MessageId"] == messageId)), Times.Once);
         }
     }
 }

@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Newtonsoft.Json;
 using NLog;
 
 namespace SFA.DAS.EmployerUsers.Application.Services.Notification
@@ -9,10 +8,10 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
-        public Task SendMessage(Dictionary<string, string> messageProperties)
+        public Task SendMessage<T>(T content)
         {
-            var msg = "Send http message\n" + messageProperties.Select(kvp => $"{kvp.Key} = '{kvp.Value}'")
-                .Aggregate((x, y) => $"{x}\n{y}");
+            var json = JsonConvert.SerializeObject(content, Formatting.Indented);
+            var msg = "Send http message\n" + json;
             Logger.Debug(msg);
             return Task.FromResult<object>(null);
         }

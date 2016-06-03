@@ -6,6 +6,6 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 {
     public interface IHttpClientWrapper 
     {
-        Task SendMessage(Dictionary<string, string> messageProperties);
+        Task SendMessage<T>(T content);
     }
 }

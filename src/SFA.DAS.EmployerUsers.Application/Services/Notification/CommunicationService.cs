@@ -11,67 +11,83 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
         public CommunicationService(IHttpClientWrapper httpClientWrapper)
         {
             _httpClientWrapper = httpClientWrapper;
-            
+
         }
 
         public async Task SendUserRegistrationMessage(User user, string messageId)
         {
-            var messageProperties = new Dictionary<string, string>
+            var message = new EmailNotification
             {
-                {"AccessCode", user.AccessCode},
-                {"UserId", user.Id},
-                {"MessageId", messageId},
-                {"messagetype", "SendEmail"},
-                {"toEmail", user.Email},
-                {"fromEmail", "info@sfa.das.gov.uk"}
+                MessageType = "UserRegistration",
+                UserId = user.Id,
+                RecipientsAddress = user.Email,
+                ReplyToAddress = "info@sfa.das.gov.uk",
+                ForceFormat = true,
+                Data = new Dictionary<string, string>
+                {
+                    { "AccessCode", user.AccessCode },
+                    { "MessageId", messageId }
+                }
             };
 
-            await _httpClientWrapper.SendMessage(messageProperties);
+            await _httpClientWrapper.SendMessage(message);
         }
 
         public async Task SendUserAccountConfirmationMessage(User user, string messageId)
         {
-            var messageProperties = new Dictionary<string, string>
+            var message = new EmailNotification
             {
-                {"body", "Account Created Sucessfully"},
-                {"UserId", user.Id},
-                {"MessageId", messageId},
-                {"messagetype", "SendEmail"},
-                {"toEmail", user.Email},
-                {"fromEmail", "info@sfa.das.gov.uk"}
+                MessageType = "UserAccountConfirmation",
+                UserId = user.Id,
+                RecipientsAddress = user.Email,
+                ReplyToAddress = "info@sfa.das.gov.uk",
+                ForceFormat = true,
+                Data = new Dictionary<string, string>
+                {
+                    { "MessageId", messageId }
+                }
             };
 
-            await _httpClientWrapper.SendMessage(messageProperties);
+            await _httpClientWrapper.SendMessage(message);
         }
 
         public async Task SendAccountLockedMessage(User user, string messageId)
         {
-            var messageProperties = new Dictionary<string, string>
+            var message = new EmailNotification
             {
-                {"body", user.UnlockCode},
-                {"UserId", user.Id},
-                {"MessageId", messageId},
-                {"messagetype", "SendEmail"},
-                {"toEmail", user.Email},
-                {"fromEmail", "info@sfa.das.gov.uk"}
+                MessageType = "AccountLocked",
+                UserId = user.Id,
+                RecipientsAddress = user.Email,
+                ReplyToAddress = "info@sfa.das.gov.uk",
+                ForceFormat = true,
+                Data = new Dictionary<string, string>
+                {
+                    { "UnlockCode", user.UnlockCode },
+                    { "MessageId", messageId }
+                }
             };
 
-            await _httpClientWrapper.SendMessage(messageProperties);
+            await _httpClientWrapper.SendMessage(message);
         }
 
         public async Task ResendActivationCodeMessage(User user, string messageId)
         {
-            var messageProperties = new Dictionary<string, string>
+            var message = new EmailNotification
             {
-                {"AccessCode", user.AccessCode},
-                {"UserId", user.Id},
-                {"MessageId", messageId},
-                {"messagetype", "ResendActivationCodeEmail"},
-                {"toEmail", user.Email},
-                {"fromEmail", "info@sfa.das.gov.uk"}
+                MessageType = "ResendActivationCode",
+                UserId = user.Id,
+                RecipientsAddress = user.Email,
+                ReplyToAddress = "info@sfa.das.gov.uk",
+                ForceFormat = true,
+                Data = new Dictionary<string, string>
+                {
+                    { "AccessCode", user.AccessCode },
+                    { "MessageId", messageId }
+                }
             };
 
-            await _httpClientWrapper.SendMessage(messageProperties);
+            await _httpClientWrapper.SendMessage(message);
         }
+
     }
 }

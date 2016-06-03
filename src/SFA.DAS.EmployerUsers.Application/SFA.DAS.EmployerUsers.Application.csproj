@@ -87,6 +87,7 @@
     <Compile Include="Queries\IsUserActive\IsUserActiveQuery.cs" />
     <Compile Include="Queries\IsUserActive\IsUserActiveQueryHandler.cs" />
     <Compile Include="Services\Notification\CommunicationService.cs" />
+    <Compile Include="Services\Notification\EmailNotification.cs" />
     <Compile Include="Services\Notification\HttpClientWrapper.cs" />
     <Compile Include="Services\Notification\ICommunicationService.cs" />
     <Compile Include="Services\Notification\IHttpClientWrapper.cs" />
