@@ -43,6 +43,13 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
         }
 
         [Test]
+        public void ThenAnExceptionIsThrownIfTheCommandIsNull()
+        {
+            //Act/Assert
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await _registerUserCommandHandler.Handle(null));
+        }
+
+        [Test]
         public void ThenTheCommandIsHandledAndValidatorCalled()
         {
             //Arrange
