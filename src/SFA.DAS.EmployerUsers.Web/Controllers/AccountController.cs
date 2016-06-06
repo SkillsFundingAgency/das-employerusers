@@ -1,12 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using IdentityServer3.Core;
-using IdentityServer3.Core.Extensions;
 using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Models;
@@ -76,31 +73,45 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
         [HttpGet]
         [Route("identity/employer/register")]
+        [OutputCache(Duration = 0)]
         public ActionResult Register()
         {
-            return View(new RegisterViewModel {Valid = true});
+
+            var id = GetLoggedInUserId();
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                return RedirectToAction("Confirm"); 
+            }
+
+            return View(new RegisterViewModel());
         }
 
         [HttpPost]
         [Route("identity/employer/register")]
+        [OutputCache(Duration = 0)]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            var id = GetLoggedInUserId();
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                return RedirectToAction("Confirm");
+            }
+
             var registerResult = await _accountOrchestrator.Register(model);
 
-            if (registerResult)
+            if (registerResult.Valid)
             {
                 return RedirectToAction("Confirm");
             }
 
             model.ConfirmPassword = string.Empty;
             model.Password = string.Empty;
-            model.Valid = false;
 
             return View("Register", model);
         }
-
-
-
+        
         [HttpGet]
         [Authorize]
         [Route("account/confirm")]
@@ -114,9 +125,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/confirm")]
         public async Task<ActionResult> Confirm(AccessCodeViewModel accessCodeViewModel, string command)
         {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            var idClaim = claimsIdentity?.Claims.FirstOrDefault(c => c.Type == Constants.ClaimTypes.Id);
-            var id = idClaim?.Value;
+            var id = GetLoggedInUserId();
 
             if (command.Equals("activate"))
             {
@@ -143,8 +152,14 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             }
         }
 
-
-
+        private string GetLoggedInUserId()
+        {
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var idClaim = claimsIdentity?.Claims.FirstOrDefault(c => c.Type == Constants.ClaimTypes.Id);
+            var id = idClaim?.Value;
+            return id;
+        }
+        
         [HttpGet]
         //[Authorize]
         [Route("account/unlock")]

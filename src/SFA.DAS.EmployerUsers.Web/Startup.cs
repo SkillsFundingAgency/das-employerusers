@@ -1,4 +1,5 @@
-﻿using Microsoft.Owin;
+﻿using System;
+using Microsoft.Owin;
 using NLog;
 using Owin;
 using SFA.DAS.Configuration;

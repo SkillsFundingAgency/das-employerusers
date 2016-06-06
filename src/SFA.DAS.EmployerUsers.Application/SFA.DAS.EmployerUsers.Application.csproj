@@ -80,7 +80,6 @@
     <Compile Include="Events\AccountLocked\AccountLockedEvent.cs" />
     <Compile Include="Events\AccountLocked\GenerateAndEmailAccountLockedEmailHandler.cs" />
     <Compile Include="InvalidRequestException.cs" />
-    <Compile Include="IValidator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\GetUserById\GetUserByIdQuery.cs" />
     <Compile Include="Queries\GetUserById\GetUserByIdQueryHandler.cs" />
@@ -95,6 +94,8 @@
     <Compile Include="Services\Password\IPasswordService.cs" />
     <Compile Include="Services\Password\PasswordService.cs" />
     <Compile Include="Services\Password\SecuredPassword.cs" />
+    <Compile Include="Validation\IValidator.cs" />
+    <Compile Include="Validation\ValidationResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

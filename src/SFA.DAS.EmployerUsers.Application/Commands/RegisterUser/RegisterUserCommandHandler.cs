@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
+using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
@@ -28,9 +30,17 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 
         protected override async Task HandleCore(RegisterUserCommand message)
         {
-            if (!_registerUserCommandValidator.Validate(message))
+
+            if (message == null)
             {
-                throw new InvalidRequestException(new[] { "NotValid" });
+                throw new ArgumentNullException(typeof (RegisterUserCommand).Name, "RegisterUserCommand is null");
+            }
+
+            var validationResult = _registerUserCommandValidator.Validate(message);
+
+            if (!validationResult.IsValid())
+            {
+                throw new InvalidRequestException(validationResult.ValidationDictionary);
             }
 
             var securedPassword = await _passwordService.GenerateAsync(message.Password);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
@@ -6,6 +7,7 @@ using SFA.DAS.CodeGenerator;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
+using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
@@ -41,13 +43,24 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
         }
 
         [Test]
+        public void ThenAnExceptionIsThrownIfTheCommandIsNull()
+        {
+            //Act/Assert
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await _registerUserCommandHandler.Handle(null));
+        }
+
+        [Test]
         public void ThenTheCommandIsHandledAndValidatorCalled()
         {
+            //Arrange
+            _registerUserCommandValidator.Setup(x => x.Validate(It.IsAny<RegisterUserCommand>())).Returns(new ValidationResult {ValidationDictionary = new Dictionary<string, string> { {"MyError","Some error has happened"} }});
+
             //Act
-            Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(new RegisterUserCommand()));
+            var actual = Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(new RegisterUserCommand()));
 
             //Assert
             _registerUserCommandValidator.Verify(x=>x.Validate(It.IsAny<RegisterUserCommand>()));
+            Assert.Contains(new KeyValuePair<string,string>("MyError", "Some error has happened"),actual.ErrorMessages);
         }
 
         [Test]
@@ -66,7 +79,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
                     Password = password,
                     ConfirmPassword = password
             };
-            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(true);
+            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>()});
 
             //Act
             await _registerUserCommandHandler.Handle(registerUserCommand);
@@ -80,7 +93,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
         public void ThenTheUserIsNotCreatedIfTheCommandIsInvalid()
         {
             //Arrange
-            _registerUserCommandValidator.Setup(x => x.Validate(It.IsAny<RegisterUserCommand>())).Returns(false);
+            _registerUserCommandValidator.Setup(x => x.Validate(It.IsAny<RegisterUserCommand>())).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
 
             //Act
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(new RegisterUserCommand()));
@@ -93,7 +106,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
         public void ThenAnExceptionIsThrownIfTheCommandIsInvalid()
         {
             //Arrange
-            _registerUserCommandValidator.Setup(x => x.Validate(It.IsAny<RegisterUserCommand>())).Returns(false);
+            _registerUserCommandValidator.Setup(x => x.Validate(It.IsAny<RegisterUserCommand>())).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
 
 
             Assert.ThrowsAsync<InvalidRequestException>(async ()=> await _registerUserCommandHandler.Handle(new RegisterUserCommand()));
@@ -111,7 +124,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
                 Password = "SomePassword",
                 ConfirmPassword = "SomePassword"
             };
-            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(true);
+            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
 
             // Act
             await _registerUserCommandHandler.Handle(registerUserCommand);
@@ -134,7 +147,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
                 Password = "SomePassword",
                 ConfirmPassword = "SomePassword"
             };
-            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(true);
+            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
 
             //Act
             await _registerUserCommandHandler.Handle(registerUserCommand);
@@ -158,7 +171,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
                 ConfirmPassword = "SomePassword",
                 Id = userId
             };
-            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(true);
+            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
 
             //Act
             await _registerUserCommandHandler.Handle(registerUserCommand);
@@ -171,7 +184,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
         public void ThenTheAccessCodeIsNotSentToTheUserOnUnSuccessfulCreation()
         {
             // Arrange
-            _registerUserCommandValidator.Setup(x => x.Validate(new RegisterUserCommand())).Returns(false);
+            _registerUserCommandValidator.Setup(x => x.Validate(It.IsAny<RegisterUserCommand>())).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } }});
 
             //Act
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(new RegisterUserCommand()));
@@ -194,7 +207,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
                 ConfirmPassword = "SomePassword",
                 Id = userId
             };
-            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(true);
+            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
 
             //Act
             await _registerUserCommandHandler.Handle(registerUserCommand);

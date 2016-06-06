@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using Moq;
@@ -60,7 +61,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         public async Task ThenFalseIsReturnedWhenTheRegisterUserCommandHandlerThrowsAnException()
         {
             //Arrange
-            _mediator.Setup(x => x.SendAsync(It.IsAny<ActivateUserCommand>())).ThrowsAsync(new InvalidRequestException(new[] { "Something" }));
+            _mediator.Setup(x => x.SendAsync(It.IsAny<ActivateUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string>()));
 
             //Act
             var actual = await _accountOrchestrator.ActivateUser(new AccessCodeViewModel());

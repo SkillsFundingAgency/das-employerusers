@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
+using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
@@ -72,7 +74,14 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ResendActivationCodeTests.
 
         private void SetValidatorToReturn(bool isValid)
         {
-            _validator.Setup(x => x.Validate(It.IsAny<ResendActivationCodeCommand>())).Returns(isValid);
+            if (isValid)
+            {
+                _validator.Setup(x => x.Validate(It.IsAny<ResendActivationCodeCommand>())).Returns(new ValidationResult {ValidationDictionary = new Dictionary<string,string>()});
+            }
+            else
+            {
+                _validator.Setup(x => x.Validate(It.IsAny<ResendActivationCodeCommand>())).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { {"",""} }});
+            }
         }
 
         private void SetUserRepositoryToReturn(User user)

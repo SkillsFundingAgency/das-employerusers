@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.EmployerUsers.Application
 {
-    public class InvalidRequestException : ApplicationException
+    public class InvalidRequestException : Exception
     {
-        private string[] v;
+        public  Dictionary<string,string> ErrorMessages { get; private set; }
 
-        public InvalidRequestException(string[] v)
+        public InvalidRequestException(Dictionary<string,string> errorMessages)
         {
-            this.v = v;
+            this.ErrorMessages = errorMessages;
         }
     }
 }
