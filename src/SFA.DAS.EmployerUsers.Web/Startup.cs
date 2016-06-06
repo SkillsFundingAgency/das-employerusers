@@ -1,4 +1,5 @@
-﻿using Microsoft.Owin;
+﻿using System;
+using Microsoft.Owin;
 using NLog;
 using Owin;
 using SFA.DAS.Configuration;
@@ -27,6 +28,7 @@ namespace SFA.DAS.EmployerUsers.Web
                 _logger.Debug("EmployerUsersConfiguration read successfully");
 
                 var configuration = task.Result;
+                
                 ConfigureIdentityServer(app, configuration.IdentityServer);
                 ConfigureRelyingParty(app, configuration.IdentityServer);
             }).Wait();

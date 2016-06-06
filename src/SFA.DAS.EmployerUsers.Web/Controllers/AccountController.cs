@@ -86,6 +86,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             model.ConfirmPassword = string.Empty;
             model.Password = string.Empty;
             model.Valid = false;
+            model.ErrorDictionary = registerResult.ErrorDictionary;
 
             return View("Register", model);
         }

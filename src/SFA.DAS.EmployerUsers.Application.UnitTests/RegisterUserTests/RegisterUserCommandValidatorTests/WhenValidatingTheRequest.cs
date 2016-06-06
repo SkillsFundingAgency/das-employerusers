@@ -65,6 +65,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
         [TestCase("123456789")]
         [TestCase("aaaaa6789")]
         [TestCase("AAAAA6789")]
+        [TestCase("")]
+        [TestCase(null)]
         public void ThenFalseIsReturnedIfThePasswordDoesNotTheRequiredStrenth(string password)
         {
             //Act
@@ -79,6 +81,24 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
 
             //Assert
             Assert.IsFalse(actual.IsValid());
+        }
+
+        [Test]
+        public void ThenFalseIsReturnedIftheConfirmPasswordIsNull()
+        {
+            //Act
+            var actual = _validator.Validate(new RegisterUserCommand
+            {
+                Email = "test",
+                FirstName = "Testing",
+                LastName = "Tester",
+                Password = "P@55w0rd",
+                ConfirmPassword = null
+            });
+
+            //Assert
+            Assert.IsFalse(actual.IsValid());
+
         }
 
         [Test]

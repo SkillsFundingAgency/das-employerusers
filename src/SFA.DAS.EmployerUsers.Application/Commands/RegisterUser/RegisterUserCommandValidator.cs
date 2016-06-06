@@ -31,17 +31,17 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
                 validationResult.AddError("Password", "Please enter password");
             }
 
-            if (string.IsNullOrEmpty(item.Password))
+            if (string.IsNullOrEmpty(item.ConfirmPassword))
             {
                 validationResult.AddError("ConfirmPassword", "Please confirm password");
             }
 
-            if (CheckPasswordMatchesAtLeastOneUppercaseOneLowercaseOneNumberAndAtLeastEightCharacters(item.Password))
+            if (!string.IsNullOrEmpty(item.Password) && !string.IsNullOrEmpty(item.ConfirmPassword) && CheckPasswordMatchesAtLeastOneUppercaseOneLowercaseOneNumberAndAtLeastEightCharacters(item.Password))
             {
                 validationResult.AddError("PasswordComplexity", "Password requires upper and lowercase letters, a number and at least 8 characters");
             }
 
-            if (!item.ConfirmPassword.Equals(item.Password))
+            if (!string.IsNullOrEmpty(item.Password) && !string.IsNullOrEmpty(item.ConfirmPassword) && !item.ConfirmPassword.Equals(item.Password))
             {
                 validationResult.AddError("PasswordNotMatch", "Sorry, your passwords don’t match");
             }

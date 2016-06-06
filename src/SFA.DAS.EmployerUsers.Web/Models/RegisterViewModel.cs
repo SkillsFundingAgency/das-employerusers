@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.EmployerUsers.Web.Models
+﻿using System.Collections.Generic;
+
+namespace SFA.DAS.EmployerUsers.Web.Models
 {
     public class RegisterViewModel
     {
@@ -8,5 +10,6 @@
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
         public bool Valid { get; set; }
+        public Dictionary<string,string> ErrorDictionary { get; set; } 
     }
 }

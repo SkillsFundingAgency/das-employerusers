@@ -71,6 +71,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             var actualModel = actualViewResult.Model as RegisterViewModel;
             Assert.IsNotNull(actualModel);
             Assert.IsFalse(actualModel.Valid);
+            Assert.IsNotEmpty(actualModel.ErrorDictionary);
         }
     }
 }
