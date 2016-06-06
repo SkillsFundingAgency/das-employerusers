@@ -23,7 +23,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
             using (var httpClient = await CreateHttpClient())
             {
                 var serializeObject = JsonConvert.SerializeObject(content);
-                var response = await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post, "/api/notification")
+                var response = await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post, "/api/email")
                 {
                     Content = new StringContent(serializeObject, Encoding.UTF8, "application/json")
                 });
