@@ -63,9 +63,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
         }
 
-        public virtual async Task<RegisterResultModel> Register(RegisterViewModel registerUserViewModel)
+        public virtual async Task<RegisterViewModel> Register(RegisterViewModel registerUserViewModel)
         {
-            var registerResultModel = new RegisterResultModel();
             try
             {
                 var userId = Guid.NewGuid().ToString();
@@ -83,12 +82,12 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 
                 _owinWrapper.RemovePartialLoginCookie();
 
-                return registerResultModel;
+                return registerUserViewModel;
             }
             catch (InvalidRequestException ex)
             {
-                registerResultModel.ErrorDictionary = ex.ErrorMessages;
-                return registerResultModel;
+                registerUserViewModel.ErrorDictionary = ex.ErrorMessages;
+                return registerUserViewModel;
             }
         }
 

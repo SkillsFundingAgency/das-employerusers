@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public async Task ThenTheAccountOrchestratorRegisterIsCalled()
         {
             //Arrange
-            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>())).ReturnsAsync(new RegisterResultModel());
+            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>())).ReturnsAsync(new RegisterViewModel());
 
             //Act
             await _accountController.Register(new RegisterViewModel());
@@ -40,7 +40,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public async Task ThenTheConfirmViewIsReturnedWhenTheOrchestratorReturnsTrue()
         {
             //Arrange
-            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>())).ReturnsAsync(new RegisterResultModel());
+            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>())).ReturnsAsync(new RegisterViewModel());
 
             //Act
             var actual = await _accountController.Register(new RegisterViewModel());
@@ -57,7 +57,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public async Task ThenTheRegisterViewIsReturnedWhenTheOrchestratorReturnsFalse()
         {
             //Arrange
-            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>())).ReturnsAsync(new RegisterResultModel { ErrorDictionary = new Dictionary<string, string> { { "Error", "Error" } } });
+            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>())).ReturnsAsync(new RegisterViewModel { ErrorDictionary = new Dictionary<string, string> { { "Error", "Error" } } });
 
             //Act
             var actual = await _accountController.Register(new RegisterViewModel());
@@ -70,8 +70,6 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             Assert.IsAssignableFrom<RegisterViewModel>(actualViewResult.Model);
             var actualModel = actualViewResult.Model as RegisterViewModel;
             Assert.IsNotNull(actualModel);
-            Assert.IsFalse(actualModel.Valid);
-            Assert.IsNotEmpty(actualModel.ErrorDictionary);
         }
     }
 }

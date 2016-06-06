@@ -18,6 +18,7 @@ namespace SFA.DAS.EmployerUsers.Web
 
             bundles.Add(new StyleBundle("~/Content/stylesheets/bundled-css").Include(
                       "~/Content/stylesheets/govuk-template.css",
+                      "~/Content/stylesheets/elements.css",
                       "~/Content/stylesheets/fonts.css",
                       "~/Content/stylesheets/users-main.css",
                       "~/Content/stylesheets/users-dashboard.css"));

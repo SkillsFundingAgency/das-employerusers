@@ -69,7 +69,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("identity/employer/register")]
         public ActionResult Register()
         {
-            return View(new RegisterViewModel {Valid = true});
+            return View(new RegisterViewModel());
         }
 
         [HttpPost]
@@ -78,15 +78,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         {
             var registerResult = await _accountOrchestrator.Register(model);
 
-            if (registerResult.IsValid())
+            if (registerResult.Valid)
             {
                 return RedirectToAction("Confirm");
             }
 
             model.ConfirmPassword = string.Empty;
             model.Password = string.Empty;
-            model.Valid = false;
-            model.ErrorDictionary = registerResult.ErrorDictionary;
 
             return View("Register", model);
         }

@@ -36,7 +36,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
                 validationResult.AddError("ConfirmPassword", "Please confirm password");
             }
 
-            if (!string.IsNullOrEmpty(item.Password) && !string.IsNullOrEmpty(item.ConfirmPassword) && CheckPasswordMatchesAtLeastOneUppercaseOneLowercaseOneNumberAndAtLeastEightCharacters(item.Password))
+            if (!string.IsNullOrEmpty(item.Password) && CheckPasswordMatchesAtLeastOneUppercaseOneLowercaseOneNumberAndAtLeastEightCharacters(item.Password))
             {
                 validationResult.AddError("PasswordComplexity", "Password requires upper and lowercase letters, a number and at least 8 characters");
             }

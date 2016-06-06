@@ -38,7 +38,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             //Assert
             Assert.IsNotNull(actual);
-            Assert.IsAssignableFrom<RegisterResultModel>(actual);
+            Assert.IsAssignableFrom<RegisterViewModel>(actual);
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             //Assert
             _mediator.Verify(x => x.SendAsync(It.Is<RegisterUserCommand>(p => !string.IsNullOrEmpty(p.Id) && p.Email.Equals(email) && p.FirstName.Equals(firstName) && p.LastName.Equals(lastName) && p.Password.Equals(password) && p.ConfirmPassword.Equals(confirmPassword))), Times.Once);
-            Assert.IsTrue(actual.IsValid());
+            Assert.IsTrue(actual.Valid);
         }
 
         [Test]
@@ -93,13 +93,13 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         public async Task ThenFalseIsReturnedWhenTheRegisterUserCommandHandlerThrowsAnException()
         {
             //Arrange
-            _mediator.Setup(x => x.SendAsync(It.IsAny<RegisterUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { {"SomeError","Some Error"} }));
+            _mediator.Setup(x => x.SendAsync(It.IsAny<RegisterUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { { "FirstName", "Some Error" } }));
 
             //Act
             var actual = await _accountOrchestrator.Register(new RegisterViewModel());
 
             //Assert
-            Assert.IsFalse(actual.IsValid());
+            Assert.IsFalse(actual.Valid);
 
         }
 
@@ -107,14 +107,51 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         public async Task ThenTheErrorsAreReturnedInTheException()
         {
             //Arrange
-            _mediator.Setup(x => x.SendAsync(It.IsAny<RegisterUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { {"SomeError","Some Error"} }));
+            _mediator.Setup(x => x.SendAsync(It.IsAny<RegisterUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { { "FirstName", "Some Error" } }));
 
             //Act
             var actual = await _accountOrchestrator.Register(new RegisterViewModel());
 
             //Assert
-            Assert.IsAssignableFrom<RegisterResultModel>(actual);
-            Assert.Contains(new KeyValuePair<string,string>("SomeError", "Some Error"),actual.ErrorDictionary );
+            Assert.IsAssignableFrom<RegisterViewModel>(actual);
+            Assert.Contains(new KeyValuePair<string, string>("FirstName", "Some Error"), actual.ErrorDictionary);
+            Assert.AreEqual("Some Error", actual.FirstNameError);
+        }
+
+        [Test]
+        public async Task ThenTheErrorsAreCorrectlyMappedWhenAllFieldsHaveFailedValidation()
+        {
+            //Arrange
+            var firstNameError = "Fist Name Error";
+            var lastNameError = "Last Name Error";
+            var emailError = "Email Error";
+            var passwordError = "Password Error";
+            var confirmPasswordError = "Confirm Password Error";
+            var passwordComplexityError = "Password Complexity Error";
+            var passwordsDontMatchError = "Passwords Dont Match Error";
+            _mediator.Setup(x => x.SendAsync(It.IsAny<RegisterUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string>
+            {
+                { "FirstName", firstNameError },
+                { "LastName", lastNameError },
+                { "Email", emailError },
+                { "Password", passwordError },
+                { "ConfirmPassword", confirmPasswordError },
+                { "PasswordComplexity", passwordComplexityError },
+                { "PasswordNotMatch", passwordsDontMatchError }
+                
+            }));
+
+            //Act
+            var actual = await _accountOrchestrator.Register(new RegisterViewModel());
+
+            //Assert
+            Assert.AreEqual(firstNameError, actual.FirstNameError);
+            Assert.AreEqual(lastNameError, actual.LastNameError);
+            Assert.AreEqual(emailError, actual.EmailError);
+            Assert.AreEqual(passwordError, actual.PasswordError);
+            Assert.AreEqual(confirmPasswordError, actual.ConfirmPasswordError);
+            Assert.AreEqual(passwordComplexityError, actual.PasswordComplexityError);
+            Assert.AreEqual(passwordsDontMatchError, actual.PasswordsDontMatchError);
         }
 
     }
