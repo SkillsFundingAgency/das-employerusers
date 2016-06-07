@@ -9,6 +9,7 @@ using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
+using SFA.DAS.EmployerUsers.WebClientComponents;
 
 namespace SFA.DAS.EmployerUsers.Web.Controllers
 {
@@ -147,16 +148,16 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             }
             else
             {
-                await _accountOrchestrator.ResendActivationCode(new ResendActivationCodeViewModel { UserId = id });
+                var result = await _accountOrchestrator.ResendActivationCode(new ResendActivationCodeViewModel { UserId = id });
 
-                return View("Confirm", new AccessCodeViewModel { Valid = true });
+                return View("Confirm", new AccessCodeViewModel { Valid = result });
             }
         }
 
         private string GetLoggedInUserId()
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
-            var idClaim = claimsIdentity?.Claims.FirstOrDefault(c => c.Type == Constants.ClaimTypes.Id);
+            var idClaim = claimsIdentity?.Claims.FirstOrDefault(c => c.Type == DasClaimTypes.Id);
             var id = idClaim?.Value;
             return id;
         }
