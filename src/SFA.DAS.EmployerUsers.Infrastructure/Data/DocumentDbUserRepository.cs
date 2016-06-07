@@ -63,9 +63,9 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
         public async Task Update(User user)
         {
             var client = await GetClient();
-            var collectionId = UriFactory.CreateDocumentCollectionUri(DatabaseName, CollectionName);
+            var documentUri = UriFactory.CreateDocumentUri(DatabaseName, CollectionName, user.Id);
             var documentDbUser = DocumentDbUser.FromDomainUser(user);
-            await client.ReplaceDocumentAsync(collectionId, documentDbUser);
+            await client.ReplaceDocumentAsync(documentUri, documentDbUser);
         }
         
     }

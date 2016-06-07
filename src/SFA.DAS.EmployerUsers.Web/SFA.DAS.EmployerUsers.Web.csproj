@@ -281,14 +281,43 @@
     <Compile Include="WebRole.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\images\accordian-arrow-2x.png" />
+    <Content Include="Content\images\accordian-arrow.png" />
     <Content Include="Content\images\apple-touch-icon-120x120.png" />
     <Content Include="Content\images\apple-touch-icon-152x152.png" />
     <Content Include="Content\images\apple-touch-icon-60x60.png" />
     <Content Include="Content\images\apple-touch-icon-76x76.png" />
+    <Content Include="Content\images\arrow-sprite.png" />
     <Content Include="Content\images\favicon.ico" />
     <Content Include="Content\images\gov.uk_logotype_crown_invert.png" />
     <Content Include="Content\images\gov.uk_logotype_crown_invert_trans.png" />
+    <Content Include="Content\images\icon-arrow-left.png" />
+    <Content Include="Content\images\icon-calendar-2x.png" />
+    <Content Include="Content\images\icon-calendar.png" />
+    <Content Include="Content\images\icon-file-download-2x.png" />
+    <Content Include="Content\images\icon-file-download.png" />
+    <Content Include="Content\images\icon-important-2x.png" />
+    <Content Include="Content\images\icon-important.png" />
+    <Content Include="Content\images\icon-information-2x.png" />
+    <Content Include="Content\images\icon-information.png" />
+    <Content Include="Content\images\icon-locator-2x.png" />
+    <Content Include="Content\images\icon-locator.png" />
+    <Content Include="Content\images\icon-pointer-2x.png" />
+    <Content Include="Content\images\icon-pointer-black-2x.png" />
+    <Content Include="Content\images\icon-pointer-black.png" />
+    <Content Include="Content\images\icon-pointer-indexed.png" />
+    <Content Include="Content\images\icon-pointer.png" />
+    <Content Include="Content\images\icon-search-2x.png" />
+    <Content Include="Content\images\icon-search.png" />
     <Content Include="Content\images\opengraph-image.png" />
+    <Content Include="Content\images\player-icon-forward.png" />
+    <Content Include="Content\images\player-icon-pause.png" />
+    <Content Include="Content\images\player-icon-play.png" />
+    <Content Include="Content\images\player-icon-rewind.png" />
+    <Content Include="Content\images\player-icon-volume.png" />
+    <Content Include="Content\images\separator-2x.png" />
+    <Content Include="Content\images\separator.png" />
+    <Content Include="Content\stylesheets\das-controls.css" />
     <Content Include="Content\stylesheets\elements.css" />
     <Content Include="Content\stylesheets\external-links\external-link-24x24.png" />
     <Content Include="Content\stylesheets\external-links\external-link-black-12x12.png" />
@@ -318,11 +347,11 @@
     <Content Include="DasIDPCert.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="App_Data\RelyingParties\employerportal.json" />
     <Content Include="Content\stylesheets\fonts\GDSTransportWebsite.eot" />
     <Content Include="Content\stylesheets\fonts\GDSTransportWebsite-Bold.eot" />
     <Content Include="Content\stylesheets\fonts\GDSTransportTabular-Light.eot" />
     <Content Include="Content\stylesheets\fonts\GDSTransportTabular-Bold.eot" />
-    <Content Include="App_Data\RelyingParties\employerportal.json" />
     <None Include="Properties\PublishProfiles\SFA.DAS.EmployerUsers.WebPublishProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\govuk-template.js" />

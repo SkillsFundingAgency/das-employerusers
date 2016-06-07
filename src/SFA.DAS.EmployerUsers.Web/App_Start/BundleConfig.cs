@@ -20,6 +20,7 @@ namespace SFA.DAS.EmployerUsers.Web
                       "~/Content/stylesheets/govuk-template.css",
                       "~/Content/stylesheets/elements.css",
                       "~/Content/stylesheets/fonts.css",
+                      "~/Content/stylesheets/das-controls.css",
                       "~/Content/stylesheets/users-main.css",
                       "~/Content/stylesheets/users-dashboard.css"));
         }
