@@ -83,7 +83,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
             if (!string.IsNullOrEmpty(id))
             {
-                return RedirectToAction("Confirm"); 
+                return RedirectToAction("Confirm");
             }
 
             return View(new RegisterViewModel());
@@ -113,7 +113,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
             return View("Register", model);
         }
-        
+
         [HttpGet]
         [Authorize]
         [Route("account/confirm")]
@@ -131,7 +131,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
             if (command.Equals("activate"))
             {
-                var activatedSuccessfully = 
+                var activatedSuccessfully =
                     await
                         _accountOrchestrator.ActivateUser(new AccessCodeViewModel
                         {
@@ -144,7 +144,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                     return await RedirectToEmployerPortal();
                 }
 
-                return View("Confirm", new AccessCodeViewModel {Valid = false});
+                return View("Confirm", new AccessCodeViewModel { Valid = false });
             }
             else
             {
@@ -158,10 +158,14 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var idClaim = claimsIdentity?.Claims.FirstOrDefault(c => c.Type == DasClaimTypes.Id);
+            if (idClaim == null)
+            {
+                idClaim = claimsIdentity?.Claims.FirstOrDefault(c => c.Type == Constants.ClaimTypes.Subject);
+            }
             var id = idClaim?.Value;
             return id;
         }
-        
+
         [HttpGet]
         //[Authorize]
         [Route("account/unlock")]

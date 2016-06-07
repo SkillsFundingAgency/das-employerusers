@@ -7,10 +7,14 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode
     {
         public ValidationResult Validate(ResendActivationCodeCommand item)
         {
-            var validate = !string.IsNullOrEmpty(item?.UserId);
+            var validationErrors = new Dictionary<string, string>();
 
-            return validate ? new ValidationResult { ValidationDictionary = new Dictionary<string, string>() }
-                            : new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } };
+            if (string.IsNullOrEmpty(item?.UserId))
+            {
+                validationErrors.Add("UserId", "UserId has not been specified");
+            }
+
+            return new ValidationResult {ValidationDictionary = validationErrors};
         }
     }
 }
