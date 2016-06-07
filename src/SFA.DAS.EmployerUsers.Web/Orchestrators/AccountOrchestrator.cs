@@ -103,8 +103,9 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
                 return true;
             }
-            catch (InvalidRequestException)
+            catch (InvalidRequestException ex)
             {
+                _logger.Warn(ex, ex.Message);
                 return false;
             }
 
@@ -121,8 +122,9 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
                 return true;
             }
-            catch (InvalidRequestException)
+            catch (InvalidRequestException ex)
             {
+                _logger.Warn(ex, ex.Message);
                 return false;
             }
 
