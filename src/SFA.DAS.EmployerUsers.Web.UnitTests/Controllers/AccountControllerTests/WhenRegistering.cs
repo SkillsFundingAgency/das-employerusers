@@ -10,6 +10,7 @@ using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Web.Controllers;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
+using SFA.DAS.EmployerUsers.WebClientComponents;
 
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 {
@@ -36,7 +37,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             var httpContext = new Mock<HttpContextBase>();
             httpContext.Setup(c => c.User).Returns(new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
-                new Claim(Constants.ClaimTypes.Id, userId),
+                new Claim(DasClaimTypes.Id, userId),
             })));
             _controllerContext = new Mock<ControllerContext>();
             _controllerContext.Setup(c => c.HttpContext).Returns(httpContext.Object);

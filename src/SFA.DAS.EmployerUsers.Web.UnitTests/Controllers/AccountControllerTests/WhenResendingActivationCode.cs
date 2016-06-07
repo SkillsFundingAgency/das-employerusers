@@ -10,6 +10,7 @@ using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Controllers;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
+using SFA.DAS.EmployerUsers.WebClientComponents;
 
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 {
@@ -30,7 +31,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             var httpContext = new Mock<HttpContextBase>();
             httpContext.Setup(c => c.User).Returns(new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
-                new Claim(Constants.ClaimTypes.Id, UserId),
+                new Claim(DasClaimTypes.Id, UserId),
             })));
             var controllerContext = new Mock<ControllerContext>();
             controllerContext.Setup(c => c.HttpContext).Returns(httpContext.Object);
@@ -66,5 +67,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             Assert.IsNotNull(viewResult);
             Assert.That(viewResult.ViewName, Is.EqualTo("Confirm"));
         }
+
+        //TODO: Create negative test case for this.
     }
 }
