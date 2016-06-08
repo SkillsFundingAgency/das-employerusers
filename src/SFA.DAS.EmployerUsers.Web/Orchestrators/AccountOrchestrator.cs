@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using IdentityServer3.Core.Extensions;
 using MediatR;
-using Microsoft.Owin;
 using NLog;
 using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
+using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
 
@@ -128,6 +127,30 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 return false;
             }
 
+        }
+
+        public virtual async Task<bool> UnlockUser(UnlockUserViewModel unlockUserViewModel)
+        {
+            try
+            {
+                await _mediator.SendAsync(new UnlockUserCommand
+                {
+                    Email = unlockUserViewModel.Email,
+                    UnlockCode = unlockUserViewModel.UnlockCode
+                });
+
+                return true;
+            }
+            catch (InvalidRequestException ex)
+            {
+                _logger.Info(ex, ex.Message);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, ex.Message);
+                return false;
+            }
         }
     }
 }
