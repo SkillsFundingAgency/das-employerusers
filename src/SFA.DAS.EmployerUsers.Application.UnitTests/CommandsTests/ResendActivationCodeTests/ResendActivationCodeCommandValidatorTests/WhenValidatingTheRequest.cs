@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
 
-namespace SFA.DAS.EmployerUsers.Application.UnitTests.ResendActivationCodeTests.ResendActivationCodeCommandValidatorTests
+namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendActivationCodeTests.ResendActivationCodeCommandValidatorTests
 {
     [TestFixture]
     public class WhenValidatingTheRequest

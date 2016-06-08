@@ -68,17 +68,17 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="ActivateUserTests\ActivateUserCommandTests\WhenHandlingTheCommand.cs" />
-    <Compile Include="ActivateUserTests\ActivateUserCommandValidatorTests\WhenValidatingTheRequest.cs" />
+    <Compile Include="CommandsTests\ActivateUserTests\ActivateUserCommandTests\WhenHandlingTheCommand.cs" />
+    <Compile Include="CommandsTests\ActivateUserTests\ActivateUserCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="CommandsTests\AuthenticateUserTests\AuthenticateUserCommandHandlerTests\WhenHandling.cs" />
+    <Compile Include="CommandsTests\ResendActivationCodeTests\ResendActivationCodeCommandTests\WhenHandlingTheCommand.cs" />
+    <Compile Include="CommandsTests\ResendActivationCodeTests\ResendActivationCodeCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="EventsTests\AccountLockedTests\GenerateAndEmailAccountLockedEmailHandlerTests\WhenHandling.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegisterUserTests\RegisterUserCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="RegisterUserTests\RegisterUserCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="QueriesTests\GetUserByIdTests\GetUserByIdQueryHandlerTests\WhenHandlingRequest.cs" />
     <Compile Include="QueriesTests\IsUserActiveTests\IsUserActiveQueryHandlerTests\WhenHandlingRequest.cs" />
-    <Compile Include="ResendActivationCodeTests\ResendActivationCodeCommandTests\WhenHandlingTheCommand.cs" />
-    <Compile Include="ResendActivationCodeTests\ResendActivationCodeCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenRegisteringAUser.cs" />
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenSendingAccountUnlockMessage.cs" />
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenResendingActivationCode.cs" />

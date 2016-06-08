@@ -4,7 +4,7 @@ using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 
-namespace SFA.DAS.EmployerUsers.Application.UnitTests.ActivateUserTests.ActivateUserCommandValidatorTests
+namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUserTests.ActivateUserCommandValidatorTests
 {
     public class WhenValidatingTheRequest
     {

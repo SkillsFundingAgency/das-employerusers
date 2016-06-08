@@ -8,7 +8,7 @@ using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
-namespace SFA.DAS.EmployerUsers.Application.UnitTests.ResendActivationCodeTests.ResendActivationCodeCommandTests
+namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendActivationCodeTests.ResendActivationCodeCommandTests
 {
     [TestFixture]
     public class WhenHandlingTheCommand

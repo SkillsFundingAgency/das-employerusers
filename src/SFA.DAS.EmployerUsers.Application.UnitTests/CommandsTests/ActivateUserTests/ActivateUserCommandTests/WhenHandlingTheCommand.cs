@@ -8,7 +8,7 @@ using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
-namespace SFA.DAS.EmployerUsers.Application.UnitTests.ActivateUserTests.ActivateUserCommandTests
+namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUserTests.ActivateUserCommandTests
 {
     public class WhenHandlingTheCommand
     {
