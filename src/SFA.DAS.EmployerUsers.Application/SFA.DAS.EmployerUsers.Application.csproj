@@ -76,6 +76,9 @@
     <Compile Include="Commands\ResendActivationCode\ResendActivationCodeCommand.cs" />
     <Compile Include="Commands\ResendActivationCode\ResendActivationCodeCommandHandler.cs" />
     <Compile Include="Commands\ResendActivationCode\ResendActivationCodeCommandValidator.cs" />
+    <Compile Include="Commands\UnlockUser\UnlockUserCommand.cs" />
+    <Compile Include="Commands\UnlockUser\UnlockUserCommandHandler.cs" />
+    <Compile Include="Commands\UnlockUser\UnlockUserCommandValidator.cs" />
     <Compile Include="DataEntities\User\RegisterUser.cs" />
     <Compile Include="Events\AccountLocked\AccountLockedEvent.cs" />
     <Compile Include="Events\AccountLocked\GenerateAndEmailAccountLockedEmailHandler.cs" />
