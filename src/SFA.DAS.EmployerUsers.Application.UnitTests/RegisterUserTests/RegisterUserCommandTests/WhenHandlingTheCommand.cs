@@ -215,5 +215,28 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
             //Assert
             _codeGenerator.Verify(x=>x.GenerateAlphaNumeric(6),Times.Once);
         }
+
+        [Test]
+        public async Task ThenTheEmailAddressIsAlreadyInUse()
+        {
+            // Arrange
+            var userId = Guid.NewGuid().ToString();
+            var registerUserCommand = new RegisterUserCommand
+            {
+                Email = "unit.tests@test.local",
+                Id = userId
+            };
+            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
+
+            _userRepository.Setup(x => x.GetByEmailAddress(registerUserCommand.Email)).ReturnsAsync(new User
+            {
+                Email = registerUserCommand.Email,
+                IsActive = true
+            });
+
+            //Act
+            Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(registerUserCommand));
+
+        }
     }
 }

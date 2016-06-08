@@ -8,6 +8,7 @@ using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
+using System.Collections.Generic;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 {
@@ -41,6 +42,16 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
             if (!validationResult.IsValid())
             {
                 throw new InvalidRequestException(validationResult.ValidationDictionary);
+            }
+
+            var existingUser = await _userRepository.GetByEmailAddress(message.Email);
+
+            if (existingUser != null) // && existingUser.IsActive
+            {
+                throw new InvalidRequestException(new Dictionary<string, string>
+                {
+                    {"Email", "This email address is already in use" }
+                });
             }
 
             var securedPassword = await _passwordService.GenerateAsync(message.Password);
