@@ -159,5 +159,37 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
             //Assert
             _communicationSerivce.Verify(x => x.SendUserAccountConfirmationMessage(It.IsAny<Domain.User>(), It.IsAny<string>()),Times.Never);
         }
+
+        [Test]
+        public async Task ThenTheUserIsNotEmailedAndTheUserIsNotUpdatedIfTheUserIsAlreadyActive()
+        {
+            //Arrange
+            var userId = Guid.NewGuid().ToString();
+            var accessCode = "123ADF&^%";
+            var user = new Domain.User
+            {
+                Email = "test@test.com",
+                LastName = "Tester",
+                FirstName = "Test",
+                Password = "SomePassword",
+                IsActive = true,
+                Id = userId,
+                AccessCode = accessCode
+            };
+            var activateUserCommand = new ActivateUserCommand
+            {
+                UserId = userId,
+                AccessCode = accessCode
+            };
+            _userRepository.Setup(x => x.GetById(userId)).ReturnsAsync(user);
+            _activateUserCommandValidator.Setup(x => x.Validate(It.Is<ActivateUserCommand>(p => p.AccessCode == accessCode && p.UserId == userId && p.User.AccessCode == accessCode))).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
+
+            //Act
+            await _activateUserCommand.Handle(activateUserCommand);
+
+            //Assert
+            _userRepository.Verify(x => x.Update(It.Is<Domain.User>(p => p.IsActive && p.Id == userId)), Times.Never);
+            _communicationSerivce.Verify(x => x.SendUserAccountConfirmationMessage(It.IsAny<Domain.User>(), It.IsAny<string>()), Times.Never);
+        }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
@@ -31,6 +30,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
             if (!result.IsValid())
             {
                 throw new InvalidRequestException(result.ValidationDictionary);
+            }
+
+            if (user.IsActive)
+            {
+                return;
             }
 
             user.IsActive = true;
