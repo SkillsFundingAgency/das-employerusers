@@ -9,6 +9,7 @@ namespace SFA.DAS.EmployerUsers.Web
     {
         protected void Application_Start()
         {
+            LoggingConfig.ConfigureLogging();
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

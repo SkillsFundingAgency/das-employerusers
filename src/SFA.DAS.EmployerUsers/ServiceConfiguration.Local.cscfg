@@ -7,6 +7,7 @@
       <Setting name="StorageConnectionString" value="UseDevelopmentStorage=true" />
       <Setting name="ConfigurationStorageConnectionString" value="UseDevelopmentStorage=true" />
       <Setting name="EnvironmentName" value="LOCAL" />
+      <Setting name="LogLevel" value="Debug" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="WebSslCert" thumbprint="FE14C6E906B1E94E93C6AF8FA113EA1221D5DE9C" thumbprintAlgorithm="sha1" />
