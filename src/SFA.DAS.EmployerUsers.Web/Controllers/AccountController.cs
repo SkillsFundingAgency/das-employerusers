@@ -41,6 +41,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("identity/employer/login")]
         public async Task<ActionResult> Login(string id, LoginViewModel model)
         {
+            model.OriginatingAddress = Request.UserHostAddress;
             var result = await _accountOrchestrator.Login(model);
 
             if (result.Success)

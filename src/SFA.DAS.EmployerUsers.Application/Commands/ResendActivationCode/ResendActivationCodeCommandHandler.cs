@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
+using NLog;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain.Data;
@@ -11,6 +12,8 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode
 {
     public class ResendActivationCodeCommandHandler : AsyncRequestHandler<ResendActivationCodeCommand>
     {
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly IValidator<ResendActivationCodeCommand> _commandValidator;
         private readonly IUserRepository _userRepository;
         private readonly ICommunicationService _communicationService;
@@ -30,6 +33,8 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode
 
         protected override async Task HandleCore(ResendActivationCodeCommand message)
         {
+            Logger.Debug($"Received ResendActivationCodeCommand for user '{message.UserId}'");
+
             var validationResult = _commandValidator.Validate(message);
             if (!validationResult.IsValid())
                 throw new InvalidRequestException(validationResult.ValidationDictionary);
