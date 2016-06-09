@@ -41,6 +41,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("identity/employer/login")]
         public async Task<ActionResult> Login(string id, LoginViewModel model)
         {
+            model.OriginatingAddress = Request.UserHostAddress;
             var result = await _accountOrchestrator.Login(model);
 
             if (result.Success)
@@ -74,11 +75,11 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
 
         [HttpGet]
-        [Route("identity/employer/register")]
+        [Route("account/register")]
         [OutputCache(Duration = 0)]
+        [AttemptAuthorise]
         public ActionResult Register()
         {
-
             var id = GetLoggedInUserId();
 
             if (!string.IsNullOrEmpty(id))
@@ -90,6 +91,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Route("identity/employer/register")]
         [OutputCache(Duration = 0)]
         public async Task<ActionResult> Register(RegisterViewModel model)
@@ -114,15 +116,24 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View("Register", model);
         }
 
+
+
         [HttpGet]
         [Authorize]
         [Route("account/confirm")]
-        public ActionResult Confirm()
+        public async Task<ActionResult> Confirm()
         {
-            return View("Confirm", new AccessCodeViewModel { Valid = true });
+            var userId = GetLoggedInUserId();
+            var confirmationRequired = await _accountOrchestrator.RequestConfirmAccount(userId);
+            if (!confirmationRequired)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View("Confirm", new AccessCodeViewModel {Valid = true});
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize]
         [Route("account/confirm")]
         public async Task<ActionResult> Confirm(AccessCodeViewModel accessCodeViewModel, string command)

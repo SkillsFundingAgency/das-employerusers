@@ -249,10 +249,12 @@
     <Compile Include="AggregateExceptionExtensions.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\LoggingConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.RelyingParty.cs" />
     <Compile Include="App_Start\StructuremapMvc.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="AttemptAuthoriseAttribute.cs" />
     <Compile Include="Authentication\IdentityServerServiceFactoryExtensions.cs" />
     <Compile Include="Authentication\IOWinWrapper.cs" />
     <Compile Include="Authentication\OwinWrapper.cs" />

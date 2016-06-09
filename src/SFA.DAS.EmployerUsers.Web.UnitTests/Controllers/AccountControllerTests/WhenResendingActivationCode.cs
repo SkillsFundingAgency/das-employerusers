@@ -15,7 +15,7 @@ using SFA.DAS.EmployerUsers.WebClientComponents;
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 {
     [TestFixture]
-    public class WhenResendingActivationCode
+    public class WhenResendingActivationCode : ControllerTestBase
     {
         private const string EmployerPortalUrl = "http://employerportal.local";
         private const string Action = "resend";
@@ -26,15 +26,14 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         private AccountController _accountController;
 
         [SetUp]
-        public void Setup()
+        public override void Arrange()
         {
-            var httpContext = new Mock<HttpContextBase>();
-            httpContext.Setup(c => c.User).Returns(new ClaimsPrincipal(new ClaimsIdentity(new[]
+            base.Arrange();
+
+            _httpContext.Setup(c => c.User).Returns(new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
                 new Claim(DasClaimTypes.Id, UserId),
             })));
-            var controllerContext = new Mock<ControllerContext>();
-            controllerContext.Setup(c => c.HttpContext).Returns(httpContext.Object);
 
             _accountOrchestrator = new Mock<AccountOrchestrator>();
 
@@ -50,7 +49,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 
             _accountController = new AccountController(_accountOrchestrator.Object, null, _configurationService.Object)
             {
-                ControllerContext = controllerContext.Object
+                ControllerContext = _controllerContext.Object
             };
         }
 

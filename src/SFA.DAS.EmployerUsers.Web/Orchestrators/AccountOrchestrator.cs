@@ -8,6 +8,7 @@ using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
 using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
+using SFA.DAS.EmployerUsers.Application.Queries.IsUserActive;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
 
@@ -15,7 +16,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 {
     public class AccountOrchestrator : IOrchestrator
     {
-        private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IMediator _mediator;
         private readonly IOwinWrapper _owinWrapper;
@@ -42,6 +43,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 });
                 if (user == null)
                 {
+                    Logger.Warn($"Failed login attempt for email address '{loginViewModel.EmailAddress}' originating from {loginViewModel.OriginatingAddress}");
                     return new LoginResultModel { Success = false };
                 }
 
@@ -52,12 +54,12 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             catch (AccountLockedException ex)
             {
-                _logger.Info(ex.Message);
+                Logger.Info(ex.Message);
                 return new LoginResultModel { AccountIsLocked = true };
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, ex.Message);
+                Logger.Error(ex, ex.Message);
                 return new LoginResultModel { Success = false };
             }
         }
@@ -77,17 +79,26 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     ConfirmPassword = registerUserViewModel.ConfirmPassword
                 });
 
-                _owinWrapper.IssueLoginCookie(userId, $"{registerUserViewModel.FirstName} {registerUserViewModel.LastName}");
-                
-                _owinWrapper.RemovePartialLoginCookie();
+                _owinWrapper.IssueLoginCookie(userId,
+                    $"{registerUserViewModel.FirstName} {registerUserViewModel.LastName}");
 
-                return registerUserViewModel;
+                _owinWrapper.RemovePartialLoginCookie();
             }
             catch (InvalidRequestException ex)
             {
+                Logger.Info(ex, ex.Message);
                 registerUserViewModel.ErrorDictionary = ex.ErrorMessages;
-                return registerUserViewModel;
             }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, ex.Message);
+                registerUserViewModel.ErrorDictionary = new System.Collections.Generic.Dictionary<string, string>
+                {
+                    {"", "Unexpected error occured"}
+                };
+            }
+
+            return registerUserViewModel;
         }
 
         public virtual async Task<bool> ActivateUser(AccessCodeViewModel accessCodeviewModel)
@@ -104,10 +115,14 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             catch (InvalidRequestException ex)
             {
-                _logger.Warn(ex, ex.Message);
+                Logger.Info(ex, ex.Message);
                 return false;
             }
-
+            catch (Exception ex)
+            {
+                Logger.Error(ex, ex.Message);
+                return false;
+            }
         }
 
         public virtual async Task<bool> ResendActivationCode(ResendActivationCodeViewModel resendActivationCodeViewModel)
@@ -123,10 +138,20 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             catch (InvalidRequestException ex)
             {
-                _logger.Warn(ex, ex.Message);
+                Logger.Info(ex, ex.Message);
                 return false;
             }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, ex.Message);
+                return false;
+            }
+        }
 
+        public virtual async Task<bool> RequestConfirmAccount(string userId)
+        {
+            var isUserActive = await _mediator.SendAsync(new IsUserActiveQuery {UserId = userId});
+            return !isUserActive;
         }
 
         public virtual async Task<bool> UnlockUser(UnlockUserViewModel unlockUserViewModel)
@@ -148,12 +173,12 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             catch (InvalidRequestException ex)
             {
-                _logger.Info(ex, ex.Message);
+                Logger.Info(ex, ex.Message);
                 return false;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, ex.Message);
+                Logger.Error(ex, ex.Message);
                 return false;
             }
         }

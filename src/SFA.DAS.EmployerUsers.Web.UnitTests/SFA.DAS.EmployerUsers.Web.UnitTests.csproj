@@ -101,7 +101,9 @@
     <Compile Include="Controllers\AccountControllerTests\WhenEnteringMyAccessCode.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenLoggingIn.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenRegistering.cs" />
+    <Compile Include="Controllers\AccountControllerTests\WhenRequestingConfirmPage.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenResendingActivationCode.cs" />
+    <Compile Include="Controllers\ControllerTestBase.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenEnteringMyAccessCode.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenLoggingIn.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenRegistering.cs" />
@@ -109,6 +111,7 @@
     <Compile Include="AuthenticationTests\UserServiceTests\WhenCheckingUserIsActive.cs" />
     <Compile Include="AuthenticationTests\UserServiceTests\WhenGettingProfileData.cs" />
     <Compile Include="AuthenticationTests\UserServiceTests\WhenPreAuthenticating.cs" />
+    <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenRequestingConfirmAccount.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenResendingActivationCode.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenUnlockingUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

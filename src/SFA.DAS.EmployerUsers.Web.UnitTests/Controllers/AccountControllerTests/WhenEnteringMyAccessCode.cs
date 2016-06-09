@@ -14,7 +14,7 @@ using SFA.DAS.EmployerUsers.WebClientComponents;
 
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 {
-    public class WhenEnteringMyAccessCode
+    public class WhenEnteringMyAccessCode : ControllerTestBase
     {
         private const string EmployerPortalUrl = "http://employerportal.local";
         private const string Action = "activate";
@@ -24,15 +24,11 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         private AccountController _accountController;
 
         [SetUp]
-        public void Arrange()
+        public override void Arrange()
         {
-            var httpContext = new Mock<HttpContextBase>();
-            httpContext.Setup(c => c.User).Returns(new ClaimsPrincipal(new ClaimsIdentity(new[]
-            {
-                new Claim(DasClaimTypes.Id, "myid"),
-            })));
-            var controllerContext = new Mock<ControllerContext>();
-            controllerContext.Setup(c => c.HttpContext).Returns(httpContext.Object);
+            base.Arrange();
+
+            AddUserToContext("myid");
 
             _accountOrchestrator = new Mock<AccountOrchestrator>();
 
@@ -47,23 +43,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
                 }));
 
             _accountController = new AccountController(_accountOrchestrator.Object, null, _configurationService.Object);
-            _accountController.ControllerContext = controllerContext.Object;
+            _accountController.ControllerContext = _controllerContext.Object;
         }
 
-        [Test]
-        public void ThenWhenTheViewIsLoadedTheValidFlagIsTrue()
-        {
-            //Act
-            var actual = _accountController.Confirm();
-
-            //Assert
-            Assert.IsNotNull(actual);
-            var viewResult = actual as ViewResult;
-            Assert.IsNotNull(viewResult);
-            var actualModel = viewResult.Model as AccessCodeViewModel;
-            Assert.IsNotNull(actualModel);
-            Assert.IsTrue(actualModel.Valid);
-        }
 
         [Test]
         public async Task ThenTheAccountOrchestratorAccessCodeIsCalled()
