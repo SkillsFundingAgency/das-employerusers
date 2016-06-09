@@ -50,7 +50,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
             {
                 throw new InvalidRequestException(new Dictionary<string, string>
                 {
-                    {"Email", "This email address is already in use" }
+                    {"Email", "Your email address has already been registered. Please try signing in again. If you've forgotten your password you can reset it." }
                 });
             }
 
