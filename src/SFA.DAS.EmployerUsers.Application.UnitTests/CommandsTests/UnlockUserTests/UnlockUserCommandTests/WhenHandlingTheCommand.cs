@@ -32,7 +32,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             _userRepositry = new Mock<IUserRepository>();
             _mediator = new Mock<IMediator>();
             _communicationService = new Mock<ICommunicationService>();
-            _userRepositry.Setup(x => x.GetByEmailAddress(ExpectedEmail)).ReturnsAsync(new User {Email = ExpectedEmail, AccessCode = AccessCode});
+            _userRepositry.Setup(x => x.GetByEmailAddress(ExpectedEmail)).ReturnsAsync(new User {Email = ExpectedEmail, AccessCode = AccessCode, IsLocked = true });
             _userRepositry.Setup(x => x.GetByEmailAddress(NotAUser)).ReturnsAsync(null);
             _unlockUserCommand = new UnlockUserCommandHandler(_unlockUserCommandValidator.Object, _userRepositry.Object, _mediator.Object, _communicationService.Object);
         }
@@ -100,7 +100,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             await _unlockUserCommand.Handle(unlockUserCommand);
 
             //Assert
-            _userRepositry.Verify(x => x.Update(It.Is<User>(c => !c.IsActive && c.Email == ExpectedEmail && !c.IsLocked && c.FailedLoginAttempts == 0)), Times.Once);
+            _userRepositry.Verify(x => x.Update(It.Is<User>(c => !c.IsActive && c.Email == ExpectedEmail && !c.IsLocked && c.FailedLoginAttempts == 0 && c.UnlockCode == string.Empty && c.UnlockCodeExpiry == null)), Times.Once);
         }
         
         [Test]
@@ -204,6 +204,24 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             //Assert
             _communicationService.Verify(x=>x.SendUserUnlockedMessage(It.Is<User>(c => !c.IsActive && c.Email == ExpectedEmail && !c.IsLocked && c.FailedLoginAttempts == 0),It.IsAny<string>()));
            
+        }
+
+        [Test]
+        public async Task ThenTheRespostioryWontBeUpdatedIfTheAccountIsNotLocked()
+        {
+            //Arrange
+            _userRepositry.Setup(x => x.GetByEmailAddress(ExpectedEmail)).ReturnsAsync(new User { Email = ExpectedEmail, AccessCode = AccessCode, IsLocked = false});
+            var unlockUserCommand = new UnlockUserCommand
+            {
+                UnlockCode = "ASDASDASD",
+                Email = ExpectedEmail
+            };
+
+            //Act
+            await _unlockUserCommand.Handle(unlockUserCommand);
+
+            //Assert
+            _userRepositry.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
         }
 
     }

@@ -27,10 +27,15 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
         {
             if (message == null)
             {
-                throw new ArgumentNullException(typeof(UnlockUserCommand).Name,"Unlock User Command Is Null");
+                throw new ArgumentNullException(typeof(UnlockUserCommand).Name, "Unlock User Command Is Null");
             }
 
             message.User = await _userRepository.GetByEmailAddress(message.Email);
+
+            if (message.User != null && !message.User.IsLocked)
+            {
+                return;
+            }
 
             var result = _unlockUserCommandValidator.Validate(message);
 
@@ -45,6 +50,9 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
 
             message.User.FailedLoginAttempts = 0;
             message.User.IsLocked = false;
+            message.User.UnlockCode = string.Empty;
+            message.User.UnlockCodeExpiry = null;
+
 
             await _userRepository.Update(message.User);
 

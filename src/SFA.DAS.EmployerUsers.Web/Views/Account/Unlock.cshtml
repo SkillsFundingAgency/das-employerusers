@@ -1,1 +1,75 @@
-﻿<h1 class="heading-large">Unlock your account</h1>
+﻿@model SFA.DAS.EmployerUsers.Web.Models.UnlockUserViewModel
+
+
+<h1 class="heading-large">Account locked</h1>
+
+@if (!Model.Valid)
+{
+    <div class="validation-summary-errors panel-danger" style="margin-bottom: 10px;">
+        <div class="panel-body">
+            <ul>
+                @if (!string.IsNullOrEmpty(Model.EmailError))
+                {
+                    <li>
+                        <a class="fake-link" href="#@(nameof(Model.EmailError))">@Model.EmailError</a>
+                    </li>
+                }
+                @if (!string.IsNullOrEmpty(Model.UnlockCodeError))
+                {
+                    <li>
+                        <a class="fake-link" href="#@(nameof(Model.UnlockCode))">@Model.UnlockCodeError</a>
+                    </li>
+                }
+                @if (!string.IsNullOrEmpty(Model.UnlockCodeExpiryError))
+                {
+                    <li>
+                        <a class="fake-link" href="#@(nameof(Model.UnlockCode))">@Model.UnlockCodeExpiryError</a>
+                    </li>
+                }
+                @if (!string.IsNullOrEmpty(Model.UnlockCodeMatchError))
+                {
+                    <li>
+                        <a class="fake-link" href="#@(nameof(Model.UnlockCode))">@Model.UnlockCodeMatchError</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+<p class="text">
+    You should receive a 6-character code in your email. Enter the code to unlock your account.
+</p>
+<form method="POST">
+    <fieldset>
+        <legend class="visuallyhidden">email address and unlockcode</legend>
+        <div class="form-group @(!string.IsNullOrEmpty(Model.EmailError) ? "input-validation-error" : "") ">
+            <a name="@nameof(Model.EmailError)"></a>
+            <label class="form-label" for="Email">Email</label>
+            <input class="form-control" id="Email" name="Email" value="@Model.Email" aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.EmailError) ? "True" : "False")">
+            @if (!string.IsNullOrEmpty(Model.EmailError))
+            {
+                <span class="field-validation-error" aria-live="polite">
+                    @Model.EmailError
+                </span>
+            }
+        </div>
+        <div class="form-group @(!string.IsNullOrEmpty(Model.UnlockCodeError) || !string.IsNullOrEmpty(Model.UnlockCodeExpiryError) ? "input-validation-error" : "") ">
+            <a name="@nameof(Model.UnlockCode)"></a>
+            <label class="form-label" for="UnlockCode">Enter Code</label>
+            <input class="form-control" id="UnlockCode" name="UnlockCode" value="@Model.UnlockCode" aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.UnlockCodeError)|| !string.IsNullOrEmpty(Model.UnlockCodeExpiryError) ? "True" : "False")">
+            @if (!string.IsNullOrEmpty(Model.UnlockCodeError))
+            {
+                <span class="field-validation-error" aria-live="polite">
+                    @Model.UnlockCodeError
+                </span>
+            }
+            @if (!string.IsNullOrEmpty(Model.UnlockCodeMatchError))
+            {
+                <span class="field-validation-error" aria-live="polite">
+                    @Model.UnlockCodeMatchError
+                </span>
+            }
+        </div>
+    </fieldset>
+    <button type="submit" class="button">Unlock Account</button>
+</form>

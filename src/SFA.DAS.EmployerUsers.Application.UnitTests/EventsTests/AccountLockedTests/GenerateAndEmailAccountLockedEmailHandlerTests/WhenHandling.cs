@@ -77,7 +77,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
 
             // Assert
             _userRepository.Verify(r => r.Update(It.Is<User>(u => u.UnlockCode == UnlockCode 
-                                        && u.UnlockCodeExpiry.ToString("yyyy mm dd").Equals(DateTime.UtcNow.AddDays(1).ToString("yyyy mm dd")))), Times.Once());
+                                        && u.UnlockCodeExpiry.Value.ToString("yyyy mm dd").Equals(DateTime.UtcNow.AddDays(1).ToString("yyyy mm dd")))), Times.Once());
         }
 
         [Test]

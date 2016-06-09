@@ -26,9 +26,12 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
 
         protected override async Task HandleCore(ActivateUserCommand message)
         {
-            Logger.Debug($"Received ActivateUserCommand for user '{message.UserId}' with access code '{message.AccessCode}'");
+            Logger.Debug($"Received ActivateUserCommand for userId '{message.UserId}', Email Address '{message.Email}' with access code '{message.AccessCode}'");
 
-            var user = await _userRepository.GetById(message.UserId);
+            var user = (!string.IsNullOrEmpty(message.Email) && string.IsNullOrEmpty(message.UserId) && string.IsNullOrEmpty(message.AccessCode)) 
+                            ? await _userRepository.GetByEmailAddress(message.Email) 
+                            : await _userRepository.GetById(message.UserId);
+
             message.User = user;
             var result = _activateUserCommandValidator.Validate(message);
 

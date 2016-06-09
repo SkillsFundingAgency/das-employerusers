@@ -21,9 +21,13 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
         public void Arrange()
         {
             _activateUserCommandValidator = new Mock<IValidator<ActivateUserCommand>>();
+
             _userRepository = new Mock<IUserRepository>();
             _userRepository.Setup(x => x.GetById(It.IsAny<string>())).ReturnsAsync(new Domain.User());
+            _userRepository.Setup(x => x.GetByEmailAddress(It.IsAny<string>())).ReturnsAsync(new Domain.User());
+
             _communicationSerivce = new Mock<ICommunicationService>();
+
             _activateUserCommand = new ActivateUserCommandHandler(_activateUserCommandValidator.Object, _userRepository.Object, _communicationSerivce.Object);
         }
 
@@ -98,6 +102,20 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
 
             //Assert
             _userRepository.Verify(x => x.GetById(userId), Times.Once);
+        }
+
+        [Test]
+        public async Task ThenTheUserIsRetrievedByEmailIfTheUserIdIsNotPresent()
+        {
+            //Arrange
+            var emailAddress = "test@local.com";
+            _activateUserCommandValidator.Setup(x => x.Validate(It.IsAny<ActivateUserCommand>())).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
+
+            //Act
+            await _activateUserCommand.Handle(new ActivateUserCommand { Email = emailAddress });
+
+            //Assert
+            _userRepository.Verify(x => x.GetByEmailAddress(emailAddress), Times.Once);
         }
 
         [Test]
