@@ -31,9 +31,10 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
         public async Task Handle(AccountLockedEvent notification)
         {
             var user = await _userRepository.GetById(notification.User.Id);
-            if (string.IsNullOrEmpty(user.UnlockCode))
+            if ((user.UnlockCodeExpiry < DateTime.UtcNow && !string.IsNullOrEmpty(user.UnlockCode)) || string.IsNullOrEmpty(user.UnlockCode))
             {
                 user.UnlockCode = await GenerateCode();
+                user.UnlockCodeExpiry = DateTime.Now.AddDays(1);
                 await _userRepository.Update(user);
 
                 await _communicationService.SendAccountLockedMessage(user, Guid.NewGuid().ToString());

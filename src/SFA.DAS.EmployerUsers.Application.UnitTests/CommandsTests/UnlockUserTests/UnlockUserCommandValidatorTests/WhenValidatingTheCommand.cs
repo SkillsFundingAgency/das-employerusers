@@ -83,7 +83,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
                     User = new User
                     {
                         UnlockCode = accessCode,
-                        UnlockCodeExpiry = DateTime.Now.AddDays(-1)
+                        UnlockCodeExpiry = DateTime.UtcNow.AddMinutes(-1)
                     }
                 });
 
