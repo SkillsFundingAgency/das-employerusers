@@ -139,7 +139,8 @@
         <div class="form-group @(!string.IsNullOrEmpty(Model.HasAcceptedTermsAndConditionsError) ? "input-validation-error" : "")">
             <a name="@nameof(Model.HasAcceptedTermsAndConditions)"></a>
             <label class="block-label">
-                <input type="checkbox" class="form-checkbox" id="hasAcceptedTermsAndConditions" name="HasAcceptedTermsAndConditions" value="true" />
+                <input type="checkbox" class="form-checkbox" id="hasAcceptedTermsAndConditions" name="HasAcceptedTermsAndConditions" value="true"
+                       aria-invalid="@(string.IsNullOrEmpty(Model.HasAcceptedTermsAndConditionsError) ? "false" : "true")" />
                 I accept the <a href="@Url.Action("Index", "TermsAndConditions")" target="_blank">terms and conditions</a>
             </label>
             @if (!string.IsNullOrEmpty(Model.HasAcceptedTermsAndConditionsError))
