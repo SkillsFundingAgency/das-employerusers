@@ -262,6 +262,7 @@
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\TermsAndConditionsController.cs" />
     <Compile Include="DependencyResolution\ControllerConvention.cs" />
     <Compile Include="DependencyResolution\DefaultRegistry.cs" />
     <Compile Include="DependencyResolution\IoC.cs" />
@@ -385,6 +386,8 @@
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\Debug.cshtml" />
     <Content Include="Views\Account\Unlock.cshtml" />
+    <Content Include="Views\TermsAndConditions\Index.cshtml" />
+    <Content Include="Views\TermsAndConditions\_TermsAndConditionBody.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
