@@ -139,6 +139,11 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     UnlockCode = unlockUserViewModel.UnlockCode
                 });
 
+                await _mediator.SendAsync(new ActivateUserCommand
+                {
+                    Email = unlockUserViewModel.Email
+                });
+
                 return true;
             }
             catch (InvalidRequestException ex)

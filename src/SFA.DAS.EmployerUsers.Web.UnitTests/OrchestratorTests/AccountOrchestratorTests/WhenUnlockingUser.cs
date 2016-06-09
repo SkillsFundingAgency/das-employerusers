@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application;
+using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
@@ -70,6 +68,37 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             //Assert
             Assert.IsFalse(actual);
 
+        }
+
+
+        [Test]
+        public async Task ThenTheActivateUserCommandIsNotCaleldWhenAnArgumentNullExceptionIsThrown()
+        {
+            //Arrange
+            _mediator.Setup(x => x.SendAsync(It.IsAny<UnlockUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string>()));
+
+            //Act
+            await _accountOrchestrator.UnlockUser(new UnlockUserViewModel());
+
+            //Assert
+            _mediator.Verify(x => x.SendAsync(It.IsAny<ActivateUserCommand>()), Times.Never);
+
+        }
+
+        [Test]
+        public async Task ThenTheActivateUserCommandIsPassedToTheMediatorForAValidUnlockUserCommand()
+        {
+            //Arrange
+            var unlockCode = "123EWQ321";
+            var email = "email@local";
+            var unlockUserViewModel = new UnlockUserViewModel { UnlockCode = unlockCode, Email = email };
+
+            //Act
+            var actual = await _accountOrchestrator.UnlockUser(unlockUserViewModel);
+
+            //Assert
+            _mediator.Verify(x=>x.SendAsync(It.Is<ActivateUserCommand>(p=>p.Email == email)),Times.Once);
+            Assert.IsTrue(actual);
         }
     }
 }
