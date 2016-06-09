@@ -128,7 +128,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
             await _activateUserCommand.Handle(activateUserCommand);
 
             //Assert
-            _userRepository.Verify(x => x.Update(It.Is<Domain.User>(p=>p.IsActive && p.Id == userId)), Times.Once);
+            _userRepository.Verify(x => x.Update(It.Is<Domain.User>(p=>p.IsActive && p.Id == userId && p.AccessCode == string.Empty)), Times.Once);
         }
 
         [Test]

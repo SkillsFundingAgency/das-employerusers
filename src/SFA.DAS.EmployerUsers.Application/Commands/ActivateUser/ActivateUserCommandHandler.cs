@@ -38,6 +38,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
             }
 
             user.IsActive = true;
+            user.AccessCode = string.Empty;
 
             await _userRepository.Update(user);
 
