@@ -4,7 +4,7 @@ using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 
-namespace SFA.DAS.EmployerUsers.Application.UnitTests.ActivateUserTests.ActivateUserCommandValidatorTests
+namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUserTests.ActivateUserCommandValidatorTests
 {
     public class WhenValidatingTheRequest
     {
@@ -56,6 +56,16 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ActivateUserTests.Activate
 
             //Assert
             Assert.IsFalse(actual.IsValid());
+        }
+
+        [Test]
+        public void ThenTrueIsReturnedIfOnlyTheEmailHasBeenSuppliedAndTheUserIdIsNull()
+        {
+            //Act
+            var actual = _activateUserCommandValidator.Validate(new ActivateUserCommand {UserId=null, Email = "User@Email", User = new User {Email = "user@email"} });
+
+            //Assert
+            Assert.IsTrue(actual.IsValid());
         }
     }
 }

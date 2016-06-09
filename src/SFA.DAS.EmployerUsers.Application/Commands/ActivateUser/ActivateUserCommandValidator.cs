@@ -10,6 +10,12 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
         {
             var validationResult = new ValidationResult();
             validationResult.ValidationDictionary = new Dictionary<string, string>();
+
+            if (TheUserIsBeingClassedAsValidFromJustHavingAMatchingEmail(item))
+            {
+                return validationResult;
+            }
+
             if (string.IsNullOrEmpty(item?.AccessCode) || string.IsNullOrEmpty(item.UserId))
             {
                 validationResult.ValidationDictionary = new Dictionary<string, string> {{"", ""}};
@@ -23,6 +29,13 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
             }
 
             return validationResult;
+        }
+
+        private static bool TheUserIsBeingClassedAsValidFromJustHavingAMatchingEmail(ActivateUserCommand item)
+        {
+            return !string.IsNullOrEmpty(item?.Email) || (item?.User?.Email != null 
+                                                            && string.IsNullOrEmpty(item.UserId) 
+                                                            && !item.Email.Equals(item.User.Email, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }

@@ -36,9 +36,10 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
             Logger.Debug($"Handling AccountLockedEvent for user '{notification.User?.Email}' (id: {notification.User?.Id})");
 
             var user = await _userRepository.GetById(notification.User.Id);
-            if (string.IsNullOrEmpty(user.UnlockCode))
+            if ((user.UnlockCodeExpiry < DateTime.UtcNow && !string.IsNullOrEmpty(user.UnlockCode)) || string.IsNullOrEmpty(user.UnlockCode))
             {
                 user.UnlockCode = await GenerateCode();
+                user.UnlockCodeExpiry = DateTime.Now.AddDays(1);
                 await _userRepository.Update(user);
 
                 Logger.Debug($"Generated new unlock code of '{user.UnlockCode}' for user '{user.Id}'");

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using NLog;
@@ -38,7 +37,13 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
                 throw new InvalidRequestException(result.ValidationDictionary);
             }
 
+            if (user.IsActive)
+            {
+                return;
+            }
+
             user.IsActive = true;
+            user.AccessCode = string.Empty;
 
             await _userRepository.Update(user);
 
