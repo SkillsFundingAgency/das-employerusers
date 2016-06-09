@@ -14,6 +14,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         private UnlockUserCommandHandler _unlockUserCommand;
         private Mock<IValidator<UnlockUserCommand>> _unlockUserCommandValidator;
         private Mock<IUserRepository> _userRepositry;
+        private const string AccessCode = "ABC123456PLM";
         private const string ExpectedEmail =  "test@user.local";
         private const string NotAUser = "not@user.local";
 
@@ -24,7 +25,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             _unlockUserCommandValidator = new Mock<IValidator<UnlockUserCommand>>();
             _unlockUserCommandValidator.Setup(x => x.Validate(It.IsAny<UnlockUserCommand>())).Returns(new ValidationResult());
             _userRepositry = new Mock<IUserRepository>();
-            _userRepositry.Setup(x => x.GetByEmailAddress(ExpectedEmail)).ReturnsAsync(new User {Email = ExpectedEmail});
+
+            _userRepositry.Setup(x => x.GetByEmailAddress(ExpectedEmail)).ReturnsAsync(new User {Email = ExpectedEmail, AccessCode = AccessCode});
             _userRepositry.Setup(x => x.GetByEmailAddress(NotAUser)).ReturnsAsync(null);
             _unlockUserCommand = new UnlockUserCommandHandler(_unlockUserCommandValidator.Object, _userRepositry.Object);
         }
@@ -84,7 +86,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             //Arrange
             var unlockUserCommand = new UnlockUserCommand
             {
-                UnlockCode = "123RTY098",
+                UnlockCode = AccessCode,
                 Email = ExpectedEmail
             };
 
@@ -94,19 +96,20 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             //Assert
             _userRepositry.Verify(x => x.Update(It.Is<User>(c => !c.IsActive && c.Email == ExpectedEmail && !c.IsLocked && c.FailedLoginAttempts == 0)), Times.Once);
         }
-
+        
         [Test]
-        public async Task ThenTheUserRepositoryIsNotUpdatedIfTheUserDoesNotExist()
+        public void ThenTheUserRepositoryIsNotUpdatedIfTheUserDoesNotExist()
         {
             //Arrange
+            _unlockUserCommandValidator.Setup(x => x.Validate(It.IsAny<UnlockUserCommand>())).Returns(new ValidationResult { ValidationDictionary = { { "", "" } } });
             var unlockUserCommand = new UnlockUserCommand
             {
-                UnlockCode = "123RTY098",
+                UnlockCode = AccessCode,
                 Email = NotAUser
             };
 
             //Act
-            await _unlockUserCommand.Handle(unlockUserCommand);
+            Assert.ThrowsAsync<InvalidRequestException>(async () => await _unlockUserCommand.Handle(unlockUserCommand));
 
             //Assert
             _userRepositry.Verify(x => x.Update(It.IsAny<User>()), Times.Never);

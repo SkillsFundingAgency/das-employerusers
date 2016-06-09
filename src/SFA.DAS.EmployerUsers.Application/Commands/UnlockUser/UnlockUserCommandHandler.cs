@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.EmployerUsers.Application.Validation;
+using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
@@ -24,6 +25,8 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
                 throw new ArgumentNullException(typeof(UnlockUserCommand).Name,"Unlock User Command Is Null");
             }
 
+            message.User = await _userRepository.GetByEmailAddress(message.Email);
+
             var result = _unlockUserCommandValidator.Validate(message);
 
             if (!result.IsValid())
@@ -31,17 +34,10 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
                 throw new InvalidRequestException(result.ValidationDictionary);
             }
 
-            var user = await _userRepository.GetByEmailAddress(message.Email);
+            message.User.FailedLoginAttempts = 0;
+            message.User.IsLocked = false;
 
-            if (user == null)
-            {
-                return;
-            }
-
-            user.FailedLoginAttempts = 0;
-            user.IsLocked = false;
-
-            await _userRepository.Update(user);
+            await _userRepository.Update(message.User);
         }
     }
 }
