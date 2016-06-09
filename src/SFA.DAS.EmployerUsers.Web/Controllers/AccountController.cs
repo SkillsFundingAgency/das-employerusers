@@ -10,6 +10,7 @@ using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 using SFA.DAS.EmployerUsers.WebClientComponents;
+using System;
 
 namespace SFA.DAS.EmployerUsers.Web.Controllers
 {
@@ -116,8 +117,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View("Register", model);
         }
 
-
-
         [HttpGet]
         [Authorize]
         [Route("account/confirm")]
@@ -165,6 +164,30 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             }
         }
 
+        [HttpGet]
+        [AttemptAuthorise]
+        [Route("account/unlock")]
+        public ActionResult Unlock()
+        {
+            var email = GetLoggedInUserEmail();
+            var model = new UnlockUserViewModel {Email = email};
+            return View("Unlock", model);
+        }
+
+        [HttpPost]
+        [Route("account/unlock")]
+        public async Task<ActionResult> Unlock(UnlockUserViewModel unlockUserViewModel)
+        {
+            var result = await _accountOrchestrator.UnlockUser(unlockUserViewModel);
+
+            if (result.Valid)
+            {
+                return await RedirectToEmployerPortal();
+            }
+            unlockUserViewModel.UnlockCode = string.Empty;
+            return View("Unlock", unlockUserViewModel);
+        }
+
         private string GetLoggedInUserId()
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
@@ -177,14 +200,14 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return id;
         }
 
-        [HttpGet]
-        //[Authorize]
-        [Route("account/unlock")]
-        public ActionResult Unlock()
+        private string GetLoggedInUserEmail()
         {
-            return View("Unlock");
+            var claimsIdentity = User?.Identity as ClaimsIdentity;
+            var idClaim = claimsIdentity?.Claims?.FirstOrDefault(c => c.Type == DasClaimTypes.Email);
+            
+            var id = idClaim?.Value;
+            return id;
         }
-
 
 
         private async Task<ActionResult> RedirectToEmployerPortal()

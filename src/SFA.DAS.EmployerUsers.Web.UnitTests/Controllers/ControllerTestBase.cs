@@ -24,11 +24,12 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers
             _controllerContext.Setup(c => c.HttpContext).Returns(_httpContext.Object);
         }
 
-        protected void AddUserToContext(string id = "USER_ID")
+        protected void AddUserToContext(string id = "USER_ID", string email = "my@local.com")
         {
             var identity = new ClaimsIdentity(new[]
             {
-                new Claim(DasClaimTypes.Id, id)
+                new Claim(DasClaimTypes.Id, id),
+                new Claim(DasClaimTypes.Email, email),
             });
             var principal = new ClaimsPrincipal(identity);
             _httpContext.Setup(c => c.User).Returns(principal);

@@ -154,7 +154,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             return !isUserActive;
         }
 
-        public virtual async Task<bool> UnlockUser(UnlockUserViewModel unlockUserViewModel)
+        public virtual async Task<UnlockUserViewModel> UnlockUser(UnlockUserViewModel unlockUserViewModel)
         {
             try
             {
@@ -168,18 +168,25 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 {
                     Email = unlockUserViewModel.Email
                 });
-
-                return true;
+                unlockUserViewModel.Valid = true;
+                return unlockUserViewModel;
             }
             catch (InvalidRequestException ex)
             {
                 Logger.Info(ex, ex.Message);
-                return false;
+
+                if (ex.ErrorMessages.ContainsKey(nameof(unlockUserViewModel.UnlockCodeExpiry)))
+                {
+                    unlockUserViewModel.UnlockCodeExpiry = true;
+                }
+
+                return unlockUserViewModel;
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, ex.Message);
-                return false;
+                
+                return unlockUserViewModel;
             }
         }
     }

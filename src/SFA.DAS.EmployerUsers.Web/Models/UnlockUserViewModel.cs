@@ -9,5 +9,7 @@ namespace SFA.DAS.EmployerUsers.Web.Models
     {
         public string UnlockCode { get; set; }
         public string Email { get; set; }
+        public bool Valid { get; set; }
+        public bool UnlockCodeExpiry { get; set; }
     }
 }

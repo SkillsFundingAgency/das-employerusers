@@ -36,8 +36,8 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _accountOrchestrator.UnlockUser(unlockUserViewModel);
 
             //Assert
-            Assert.IsAssignableFrom<bool>(actual);
-            Assert.IsTrue(actual);
+            Assert.IsAssignableFrom<UnlockUserViewModel>(actual);
+            Assert.IsTrue(actual.Valid);
         }
 
         [Test]
@@ -53,7 +53,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             //Assert
             _mediator.Verify(x => x.SendAsync(It.Is<UnlockUserCommand>(p => p.Email.Equals(email) && p.UnlockCode.Equals(unlockCode))), Times.Once);
-            Assert.IsTrue(actual);
+            Assert.IsTrue(actual.Valid);
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _accountOrchestrator.UnlockUser(new UnlockUserViewModel());
 
             //Assert
-            Assert.IsFalse(actual);
+            Assert.IsFalse(actual.Valid);
 
         }
 
@@ -98,7 +98,21 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             //Assert
             _mediator.Verify(x=>x.SendAsync(It.Is<ActivateUserCommand>(p=>p.Email == email)),Times.Once);
-            Assert.IsTrue(actual);
+            Assert.IsTrue(actual.Valid);
+        }
+
+        [Test]
+        public async Task ThenTheUnlockCodeExpiredFlagIsSetToTrueIfTheRequestIsInvalidAndTheErrorDictionaryContainsTheKey()
+        {
+            //Arrange
+            _mediator.Setup(x => x.SendAsync(It.IsAny<UnlockUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { { "UnlockCodeExpiry", "Unlock code expired"} }));
+
+            //Act
+            var actual = await _accountOrchestrator.UnlockUser(new UnlockUserViewModel());
+
+            //Assert
+            _mediator.Verify(x => x.SendAsync(It.IsAny<ActivateUserCommand>()), Times.Never);
+            Assert.IsTrue(actual.UnlockCodeExpiry);
         }
     }
 }
