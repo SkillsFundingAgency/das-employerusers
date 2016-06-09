@@ -25,7 +25,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
                 FirstName = "Testing",
                 LastName = "Tester",
                 Password = "p24234AAA",
-                ConfirmPassword = "p24234AAA"
+                ConfirmPassword = "p24234AAA",
+                HasAcceptedTermsAndConditions = true
             });
 
             //Assert
@@ -50,7 +51,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
                 LastName = lastName,
                 Email = email,
                 Password = password,
-                ConfirmPassword = confirmPassword
+                ConfirmPassword = confirmPassword,
+                HasAcceptedTermsAndConditions = true
             };
 
             //Act
@@ -76,7 +78,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
                 FirstName = "Testing",
                 LastName = "Tester",
                 Password = password,
-                ConfirmPassword = password
+                ConfirmPassword = password,
+                HasAcceptedTermsAndConditions = true
             });
 
             //Assert
@@ -93,12 +96,31 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
                 FirstName = "Testing",
                 LastName = "Tester",
                 Password = "P@55w0rd",
-                ConfirmPassword = null
+                ConfirmPassword = null,
+                HasAcceptedTermsAndConditions = true
             });
 
             //Assert
             Assert.IsFalse(actual.IsValid());
 
+        }
+
+        [Test]
+        public void ThenFalseIsReturnedIftheTermsAndConditionsHaveNotBeenAccepted()
+        {
+            //Act
+            var actual = _validator.Validate(new RegisterUserCommand
+            {
+                Email = "test",
+                FirstName = "Testing",
+                LastName = "Tester",
+                Password = "P@55w0rd",
+                ConfirmPassword = "P@55w0rd",
+                HasAcceptedTermsAndConditions = false
+            });
+
+            //Assert
+            Assert.IsFalse(actual.IsValid());
         }
 
         [Test]
@@ -111,7 +133,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
                 FirstName = "",
                 LastName = "",
                 Password = "",
-                ConfirmPassword = ""
+                ConfirmPassword = "",
+                HasAcceptedTermsAndConditions = false
             });
 
             //Assert
@@ -121,6 +144,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
             Assert.Contains(new KeyValuePair<string, string>("LastName", "Please enter last name"), actual.ValidationDictionary);
             Assert.Contains(new KeyValuePair<string, string>("Password", "Please enter password"), actual.ValidationDictionary);
             Assert.Contains(new KeyValuePair<string, string>("ConfirmPassword", "Please confirm password"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("HasAcceptedTermsAndConditions", "Please accept the terms and conditions"), actual.ValidationDictionary);
         }
 
         [Test]
