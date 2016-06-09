@@ -57,5 +57,15 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
             //Assert
             Assert.IsFalse(actual.IsValid());
         }
+
+        [Test]
+        public void ThenTrueIsReturnedIfOnlyTheEmailHasBeenSuppliedAndTheUserIdIsNull()
+        {
+            //Act
+            var actual = _activateUserCommandValidator.Validate(new ActivateUserCommand {UserId=null, Email = "User@Email", User = new User {Email = "user@email"} });
+
+            //Assert
+            Assert.IsTrue(actual.IsValid());
+        }
     }
 }
