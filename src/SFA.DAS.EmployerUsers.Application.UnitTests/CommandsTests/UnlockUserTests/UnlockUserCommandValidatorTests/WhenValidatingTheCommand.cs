@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
+using SFA.DAS.EmployerUsers.Domain;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTests.UnlockUserCommandValidatorTests
 {
@@ -26,14 +28,19 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         }
 
         [Test]
-        public void ThenTheDicionaryIsEmptyIsTheCommmandIsPopulated()
+        public void ThenTheDicionaryIsEmptyIfTheCommmandIsPopulated()
         {
             //Act
             var actual =
                 _unlockUserCommandValidator.Validate(new UnlockUserCommand
                 {
                     Email = "test@local",
-                    UnlockCode = "SomeCode"
+                    UnlockCode = "SomeCode",
+                    User = new User
+                    {
+                        UnlockCode = "SomeCode",
+                        UnlockCodeExpiry = DateTime.Now.AddMinutes(1)
+                    }
                 });
 
             //Assert
@@ -42,6 +49,51 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         }
 
         [Test]
+        public void ThenTheDictionaryIsNotEmptyIfTheUnlockCodesDoNotMatch()
+        {
+            //Act
+            var actual =
+                _unlockUserCommandValidator.Validate(new UnlockUserCommand
+                {
+                    Email = "test@local",
+                    UnlockCode = "SomeCode",
+                    User = new User
+                    {
+                        UnlockCode = "AnotherCode",
+                        UnlockCodeExpiry = DateTime.Now.AddMinutes(1)
+                    }
+                });
+
+            //Assert
+            Assert.IsNotEmpty(actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("UnlockCodeMatch", "Unlock Code is not correct"), actual.ValidationDictionary);
+            Assert.IsFalse(actual.IsValid());
+        }
+
+        [TestCase("AnotherCode")]
+        [TestCase("SomeCode")]
+        public void ThenTheDictionaryIsNotEmptyIfTheAccessCodeHasExpiredForValidAndNonValidUnlockCodes(string accessCode)
+        {
+            //Act
+            var actual =
+                _unlockUserCommandValidator.Validate(new UnlockUserCommand
+                {
+                    Email = "test@local",
+                    UnlockCode = "SomeCode",
+                    User = new User
+                    {
+                        UnlockCode = accessCode,
+                        UnlockCodeExpiry = DateTime.Now.AddDays(-1)
+                    }
+                });
+
+            //Assert
+            Assert.IsNotEmpty(actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("UnlockCodeExpiry", "Unlock Code has expired"), actual.ValidationDictionary);
+            Assert.IsFalse(actual.IsValid());
+        }
+        
+        [Test]
         public void ThenTheDictionaryContainsTheCorrectErrorMessagesWhenNotValid()
         {
             //Act
@@ -49,8 +101,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
 
             //Assert
             Assert.IsNotEmpty(actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("User", "User Does Not Exist"), actual.ValidationDictionary);
             Assert.Contains(new KeyValuePair<string, string>("Email", "Email has not been supplied"), actual.ValidationDictionary);
             Assert.Contains(new KeyValuePair<string, string>("UnlockCode", "Unlock Code has not been supplied"), actual.ValidationDictionary);
+            
         }
     }
 }

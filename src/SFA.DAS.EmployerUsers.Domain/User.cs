@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.EmployerUsers.Domain
+﻿using System;
+
+namespace SFA.DAS.EmployerUsers.Domain
 {
     public class User
     {
@@ -14,5 +16,6 @@
         public int FailedLoginAttempts { get; set; }
         public bool IsLocked { get; set; }
         public string UnlockCode { get; set; }
+        public DateTime UnlockCodeExpiry { get; set; }
     }
 }
