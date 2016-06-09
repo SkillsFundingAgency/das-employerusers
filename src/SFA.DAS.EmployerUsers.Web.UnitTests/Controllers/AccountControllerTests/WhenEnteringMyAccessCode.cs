@@ -28,13 +28,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         {
             base.Arrange();
 
-            var httpContext = new Mock<HttpContextBase>();
-            httpContext.Setup(c => c.User).Returns(new ClaimsPrincipal(new ClaimsIdentity(new[]
-            {
-                new Claim(DasClaimTypes.Id, "myid"),
-            })));
-            var controllerContext = new Mock<ControllerContext>();
-            controllerContext.Setup(c => c.HttpContext).Returns(httpContext.Object);
+            AddUserToContext("myid");
 
             _accountOrchestrator = new Mock<AccountOrchestrator>();
 
@@ -49,23 +43,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
                 }));
 
             _accountController = new AccountController(_accountOrchestrator.Object, null, _configurationService.Object);
-            _accountController.ControllerContext = controllerContext.Object;
+            _accountController.ControllerContext = _controllerContext.Object;
         }
 
-        [Test]
-        public async Task ThenWhenTheViewIsLoadedTheValidFlagIsTrue()
-        {
-            //Act
-            var actual = await _accountController.Confirm();
-
-            //Assert
-            Assert.IsNotNull(actual);
-            var viewResult = actual as ViewResult;
-            Assert.IsNotNull(viewResult);
-            var actualModel = viewResult.Model as AccessCodeViewModel;
-            Assert.IsNotNull(actualModel);
-            Assert.IsTrue(actualModel.Valid);
-        }
 
         [Test]
         public async Task ThenTheAccountOrchestratorAccessCodeIsCalled()

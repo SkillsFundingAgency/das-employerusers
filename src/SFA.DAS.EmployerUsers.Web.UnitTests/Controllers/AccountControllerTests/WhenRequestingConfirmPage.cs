@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Web.Controllers;
+using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
@@ -35,6 +36,21 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             // Assert
             Assert.IsInstanceOf<ViewResult>(actual);
             Assert.AreEqual("Confirm", ((ViewResult) actual).ViewName);
+        }
+
+        [Test]
+        public async Task ThenWhenTheViewIsLoadedTheValidFlagIsTrue()
+        {
+            //Act
+            var actual = await _controller.Confirm();
+
+            //Assert
+            Assert.IsNotNull(actual);
+            var viewResult = actual as ViewResult;
+            Assert.IsNotNull(viewResult);
+            var actualModel = viewResult.Model as AccessCodeViewModel;
+            Assert.IsNotNull(actualModel);
+            Assert.IsTrue(actualModel.Valid);
         }
 
         [Test]
