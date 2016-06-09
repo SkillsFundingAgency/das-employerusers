@@ -60,7 +60,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         public async Task ThenFalseIsReturnedIfAnArgumentNullExceptionIsThrown()
         {
             //Arrange
-            _mediator.Setup(x => x.SendAsync(It.IsAny<UnlockUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string>()));
+            _mediator.Setup(x => x.SendAsync(It.IsAny<UnlockUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { {"",""} }));
 
             //Act
             var actual = await _accountOrchestrator.UnlockUser(new UnlockUserViewModel());
@@ -105,14 +105,41 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         public async Task ThenTheUnlockCodeExpiredFlagIsSetToTrueIfTheRequestIsInvalidAndTheErrorDictionaryContainsTheKey()
         {
             //Arrange
-            _mediator.Setup(x => x.SendAsync(It.IsAny<UnlockUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { { "UnlockCodeExpiry", "Unlock code expired"} }));
+            _mediator.Setup(x => x.SendAsync(It.IsAny<UnlockUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { { "UnlockCodeExpired", "Unlock code expired"} }));
 
             //Act
             var actual = await _accountOrchestrator.UnlockUser(new UnlockUserViewModel());
 
             //Assert
             _mediator.Verify(x => x.SendAsync(It.IsAny<ActivateUserCommand>()), Times.Never);
-            Assert.IsTrue(actual.UnlockCodeExpiry);
+            Assert.IsTrue(actual.UnlockCodeExpired);
+        }
+
+        [Test]
+        public async Task ThenTheErrorsAreCorrectlyMappedWhenAllFieldsHaveFailedValidation()
+        {
+            //Arrange
+            var unlockCodeExpiryError = "unlock code expiry Error";
+            var unlockCodeError = "unlock code Error";
+            var emailError = "Email Error";
+            var unlockCodeMatchError = "Unlock code match error";
+            _mediator.Setup(x => x.SendAsync(It.IsAny<UnlockUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string>
+            {
+                { "Email", emailError },
+                { "UnlockCode", unlockCodeError },
+                { "UnlockCodeExpiry", unlockCodeExpiryError },
+                { "UnlockCodeMatch", unlockCodeMatchError }
+            }));
+
+            //Act
+            var actual = await _accountOrchestrator.UnlockUser(new UnlockUserViewModel());
+
+            //Assert
+            Assert.AreEqual(unlockCodeExpiryError, actual.UnlockCodeExpiryError);
+            Assert.AreEqual(unlockCodeError, actual.UnlockCodeError);
+            Assert.AreEqual(emailError, actual.EmailError);
+            Assert.AreEqual(unlockCodeMatchError, actual.UnlockCodeMatchError);
+            
         }
     }
 }

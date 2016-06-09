@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace SFA.DAS.EmployerUsers.Web.Models
+﻿namespace SFA.DAS.EmployerUsers.Web.Models
 {
-    public class UnlockUserViewModel
+    public class UnlockUserViewModel : ViewModelBase
     {
         public string UnlockCode { get; set; }
         public string Email { get; set; }
-        public bool Valid { get; set; }
-        public bool UnlockCodeExpiry { get; set; }
+        public bool UnlockCodeExpired { get; set; }
+        
+        public string UnlockCodeExpiryError => GetErrorMessage("UnlockCodeExpiry");
+        public string UnlockCodeError => GetErrorMessage(nameof(UnlockCode));
+        public string EmailError => GetErrorMessage(nameof(Email));
+        public string UnlockCodeMatchError => GetErrorMessage("UnlockCodeMatch");
     }
 }

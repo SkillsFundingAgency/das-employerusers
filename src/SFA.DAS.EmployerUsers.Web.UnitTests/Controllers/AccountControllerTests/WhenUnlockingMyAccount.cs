@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.WebPages.Scope;
 using Moq;
@@ -38,7 +39,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
                     IdentityServer = new IdentityServerConfiguration {EmployerPortalUrl = EmployerPortalUrl}
                 });
             _accountController = new AccountController(_accountOrchestrator.Object,_owinWrapper.Object,_configurationService.Object);
-            _accountOrchestrator.Setup(x => x.UnlockUser(It.IsAny<UnlockUserViewModel>())).ReturnsAsync(new UnlockUserViewModel { Valid = true });
+            _accountOrchestrator.Setup(x => x.UnlockUser(It.IsAny<UnlockUserViewModel>())).ReturnsAsync(new UnlockUserViewModel { ErrorDictionary = new Dictionary<string, string>() });
             _accountController.ControllerContext = _controllerContext.Object;
         }
 
@@ -124,7 +125,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public async Task ThenTheUserIsReturnedToTheUnlockViewIfTheOrchestratorIsNotSuccessful()
         {
             //Arrange
-            _accountOrchestrator.Setup(x => x.UnlockUser(It.IsAny<UnlockUserViewModel>())).ReturnsAsync(new UnlockUserViewModel {Valid = false});
+            _accountOrchestrator.Setup(x => x.UnlockUser(It.IsAny<UnlockUserViewModel>())).ReturnsAsync(new UnlockUserViewModel {ErrorDictionary = new Dictionary<string, string> { {"",""} } });
             var unlockCode = "123RET678";
             var unlockUserViewModel = new UnlockUserViewModel { Email = LoggedInEmail, UnlockCode = unlockCode };
 

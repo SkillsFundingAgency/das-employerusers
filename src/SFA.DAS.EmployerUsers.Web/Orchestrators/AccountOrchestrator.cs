@@ -168,24 +168,27 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 {
                     Email = unlockUserViewModel.Email
                 });
-                unlockUserViewModel.Valid = true;
+                
                 return unlockUserViewModel;
             }
             catch (InvalidRequestException ex)
             {
                 Logger.Info(ex, ex.Message);
 
-                if (ex.ErrorMessages.ContainsKey(nameof(unlockUserViewModel.UnlockCodeExpiry)))
+                if (ex.ErrorMessages.ContainsKey(nameof(unlockUserViewModel.UnlockCodeExpired)))
                 {
-                    unlockUserViewModel.UnlockCodeExpiry = true;
+                    unlockUserViewModel.UnlockCodeExpired = true;
                 }
-
+                unlockUserViewModel.ErrorDictionary = ex.ErrorMessages;
                 return unlockUserViewModel;
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, ex.Message);
-                
+                unlockUserViewModel.ErrorDictionary = new System.Collections.Generic.Dictionary<string, string>
+                {
+                    {"", "Unexpected error occured"}
+                };
                 return unlockUserViewModel;
             }
         }
