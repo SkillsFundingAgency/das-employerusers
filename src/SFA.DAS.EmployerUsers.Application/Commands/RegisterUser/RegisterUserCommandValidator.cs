@@ -46,6 +46,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
                 validationResult.AddError("PasswordNotMatch", "Sorry, your passwords don’t match");
             }
 
+            if (!item.HasAcceptedTermsAndConditions)
+            {
+                validationResult.AddError("HasAcceptedTermsAndConditions", "Please accept the terms and conditions");
+            }
+
             return validationResult;
         }
 

@@ -50,6 +50,12 @@
                         <a class="fake-link" href="#@(nameof(Model.ConfirmPassword))">@Model.PasswordsDontMatchError</a>
                     </li>
                 }
+                @if (!string.IsNullOrEmpty(Model.HasAcceptedTermsAndConditionsError))
+                {
+                    <li>
+                        <a class="fake-link" href="#@(nameof(Model.HasAcceptedTermsAndConditions))">@Model.HasAcceptedTermsAndConditionsError</a>
+                    </li>
+                }
             </ul>    
         </div>
 
@@ -127,6 +133,19 @@
             {
                 <span class="field-validation-error" aria-live="polite">
                     @Model.PasswordsDontMatchError
+                </span>
+            }
+        </div>
+        <div class="form-group @(!string.IsNullOrEmpty(Model.HasAcceptedTermsAndConditionsError) ? "input-validation-error" : "")">
+            <a name="@nameof(Model.HasAcceptedTermsAndConditions)"></a>
+            <label class="block-label">
+                <input type="checkbox" class="form-checkbox" id="hasAcceptedTermsAndConditions" name="HasAcceptedTermsAndConditions" value="true" />
+                I accept the <a href="@Url.Action("Index", "TermsAndConditions")" target="_blank">terms and conditions</a>
+            </label>
+            @if (!string.IsNullOrEmpty(Model.HasAcceptedTermsAndConditionsError))
+            {
+                <span class="field-validation-error" aria-live="polite">
+                    @Model.HasAcceptedTermsAndConditionsError
                 </span>
             }
         </div>

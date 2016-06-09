@@ -77,7 +77,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     LastName = registerUserViewModel.LastName,
                     Email = registerUserViewModel.Email,
                     Password = registerUserViewModel.Password,
-                    ConfirmPassword = registerUserViewModel.ConfirmPassword
+                    ConfirmPassword = registerUserViewModel.ConfirmPassword,
+                    HasAcceptedTermsAndConditions = registerUserViewModel.HasAcceptedTermsAndConditions
                 });
 
                 _owinWrapper.IssueLoginCookie(userId,
