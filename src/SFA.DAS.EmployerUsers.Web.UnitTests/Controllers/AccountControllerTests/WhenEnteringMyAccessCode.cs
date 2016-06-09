@@ -14,7 +14,7 @@ using SFA.DAS.EmployerUsers.WebClientComponents;
 
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 {
-    public class WhenEnteringMyAccessCode
+    public class WhenEnteringMyAccessCode : ControllerTestBase
     {
         private const string EmployerPortalUrl = "http://employerportal.local";
         private const string Action = "activate";
@@ -24,8 +24,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         private AccountController _accountController;
 
         [SetUp]
-        public void Arrange()
+        public override void Arrange()
         {
+            base.Arrange();
+
             var httpContext = new Mock<HttpContextBase>();
             httpContext.Setup(c => c.User).Returns(new ClaimsPrincipal(new ClaimsIdentity(new[]
             {

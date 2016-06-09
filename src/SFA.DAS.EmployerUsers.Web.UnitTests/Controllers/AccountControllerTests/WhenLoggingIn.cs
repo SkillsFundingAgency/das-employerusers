@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using IdentityServer3.Core.Models;
 using Microsoft.Owin;
 using Moq;
@@ -12,7 +14,7 @@ using SFA.DAS.EmployerUsers.Web.Orchestrators;
 
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 {
-    public class WhenLoggingIn
+    public class WhenLoggingIn : ControllerTestBase
     {
         private const string Id = "UNIT_TESTS";
         private const string ReturnUrl = "http://unittests.local";
@@ -22,8 +24,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         private AccountController _controller;
 
         [SetUp]
-        public void Arrange()
+        public override void Arrange()
         {
+            base.Arrange();
+
             _orchestrator = new Mock<AccountOrchestrator>();
             _orchestrator.Setup(o => o.Login(It.IsAny<Models.LoginViewModel>())).Returns(Task.FromResult(new LoginResultModel { Success = false }));
 
@@ -34,7 +38,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
                     ReturnUrl = ReturnUrl
                 });
 
+            
+
             _controller = new AccountController(_orchestrator.Object, _owinWrapper.Object, null);
+            _controller.ControllerContext = _controllerContext.Object;
         }
 
         [Test]

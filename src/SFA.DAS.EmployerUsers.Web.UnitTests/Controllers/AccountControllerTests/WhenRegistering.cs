@@ -14,15 +14,16 @@ using SFA.DAS.EmployerUsers.WebClientComponents;
 
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 {
-    public class WhenRegistering
+    public class WhenRegistering : ControllerTestBase
     {
         private AccountController _accountController;
         private Mock<AccountOrchestrator> _accountOrchestator;
         private Mock<ControllerContext> _controllerContext;
 
         [SetUp]
-        public void Arrange()
+        public override void Arrange()
         {
+            base.Arrange();
 
             ArrangeControllerContext("");
 

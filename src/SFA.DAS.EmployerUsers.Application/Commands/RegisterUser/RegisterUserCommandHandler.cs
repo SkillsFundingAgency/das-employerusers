@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
+using NLog;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
@@ -14,6 +15,8 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 {
     public class RegisterUserCommandHandler : AsyncRequestHandler<RegisterUserCommand>
     {
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly IUserRepository _userRepository;
         private readonly ICommunicationService _communicationService;
         private readonly ICodeGenerator _codeGenerator;
@@ -31,11 +34,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 
         protected override async Task HandleCore(RegisterUserCommand message)
         {
-
             if (message == null)
             {
-                throw new ArgumentNullException(typeof (RegisterUserCommand).Name, "RegisterUserCommand is null");
+                throw new ArgumentNullException(nameof(message), "RegisterUserCommand is null");
             }
+            Logger.Debug($"Received RegisterUserCommand for user '{message.Email}'");
 
             var validationResult = _registerUserCommandValidator.Validate(message);
 
