@@ -188,6 +188,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View("Unlock", unlockUserViewModel);
         }
 
+        [HttpGet]
+        [Route("account/forgottencredentials")]
+        public ActionResult ForgottenCredentials()
+        {
+            return View("ForgottenCredentials");
+        }
+
         private string GetLoggedInUserId()
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
