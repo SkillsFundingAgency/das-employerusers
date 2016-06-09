@@ -75,11 +75,11 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
 
         [HttpGet]
-        [Route("identity/employer/register")]
+        [Route("account/register")]
         [OutputCache(Duration = 0)]
+        [AttemptAuthorise]
         public ActionResult Register()
         {
-
             var id = GetLoggedInUserId();
 
             if (!string.IsNullOrEmpty(id))
@@ -91,6 +91,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Route("identity/employer/register")]
         [OutputCache(Duration = 0)]
         public async Task<ActionResult> Register(RegisterViewModel model)
@@ -114,6 +115,8 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
             return View("Register", model);
         }
+
+
 
         [HttpGet]
         [Authorize]

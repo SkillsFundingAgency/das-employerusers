@@ -254,6 +254,7 @@
     <Compile Include="App_Start\Startup.RelyingParty.cs" />
     <Compile Include="App_Start\StructuremapMvc.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="AttemptAuthoriseAttribute.cs" />
     <Compile Include="Authentication\IdentityServerServiceFactoryExtensions.cs" />
     <Compile Include="Authentication\IOWinWrapper.cs" />
     <Compile Include="Authentication\OwinWrapper.cs" />

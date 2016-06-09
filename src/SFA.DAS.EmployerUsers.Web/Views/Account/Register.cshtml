@@ -56,16 +56,18 @@
     </div>
 }
 
-<form method="post">
+<form method="post" action="@Url.Content("~/identity/employer/register")">
+    @Html.AntiForgeryToken()
+
     <fieldset>
         <legend class="visuallyhidden">email address and password to sign in</legend>
-        
+
         <div class="form-group @(!string.IsNullOrEmpty(Model.FirstNameError) ? "input-validation-error" : "") ">
             <a name="@nameof(Model.FirstName)"></a>
             <label class="form-label" for="Firstname">First Name</label>
             <input class="form-control" id="Firstname" name="FirstName" value="@Model.FirstName" aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.FirstNameError) ? "True" : "False")">
-            @if(!string.IsNullOrEmpty(Model.FirstNameError))
-            { 
+            @if (!string.IsNullOrEmpty(Model.FirstNameError))
+            {
                 <span class="field-validation-error" aria-live="polite">
                     @Model.FirstNameError
                 </span>
