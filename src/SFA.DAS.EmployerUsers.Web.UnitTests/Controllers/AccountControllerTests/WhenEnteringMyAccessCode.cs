@@ -53,10 +53,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         }
 
         [Test]
-        public void ThenWhenTheViewIsLoadedTheValidFlagIsTrue()
+        public async Task ThenWhenTheViewIsLoadedTheValidFlagIsTrue()
         {
             //Act
-            var actual = _accountController.Confirm();
+            var actual = await _accountController.Confirm();
 
             //Assert
             Assert.IsNotNull(actual);

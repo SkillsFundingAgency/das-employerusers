@@ -121,12 +121,19 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [HttpGet]
         [Authorize]
         [Route("account/confirm")]
-        public ActionResult Confirm()
+        public async Task<ActionResult> Confirm()
         {
-            return View("Confirm", new AccessCodeViewModel { Valid = true });
+            var userId = GetLoggedInUserId();
+            var confirmationRequired = await _accountOrchestrator.RequestConfirmAccount(userId);
+            if (!confirmationRequired)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View("Confirm", new AccessCodeViewModel {Valid = true});
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize]
         [Route("account/confirm")]
         public async Task<ActionResult> Confirm(AccessCodeViewModel accessCodeViewModel, string command)

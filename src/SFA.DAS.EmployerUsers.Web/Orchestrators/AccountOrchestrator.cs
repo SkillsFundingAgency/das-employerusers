@@ -9,6 +9,7 @@ using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
+using SFA.DAS.EmployerUsers.Application.Queries.IsUserActive;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
 
@@ -146,6 +147,12 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 Logger.Error(ex, ex.Message);
                 return false;
             }
+        }
+
+        public virtual async Task<bool> RequestConfirmAccount(string userId)
+        {
+            var isUserActive = await _mediator.SendAsync(new IsUserActiveQuery {UserId = userId});
+            return !isUserActive;
         }
     }
 }

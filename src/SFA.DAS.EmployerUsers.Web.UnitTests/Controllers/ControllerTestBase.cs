@@ -1,6 +1,8 @@
-﻿using System.Web;
+﻿using System.Security.Claims;
+using System.Web;
 using System.Web.Mvc;
 using Moq;
+using SFA.DAS.EmployerUsers.WebClientComponents;
 
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers
 {
@@ -20,6 +22,16 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers
 
             _controllerContext = new Mock<ControllerContext>();
             _controllerContext.Setup(c => c.HttpContext).Returns(_httpContext.Object);
+        }
+
+        protected void AddUserToContext(string id = "USER_ID")
+        {
+            var identity = new ClaimsIdentity(new[]
+            {
+                new Claim(DasClaimTypes.Id, id)
+            });
+            var principal = new ClaimsPrincipal(identity);
+            _httpContext.Setup(c => c.User).Returns(principal);
         }
     }
 }
