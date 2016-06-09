@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
 using SFA.DAS.EmployerUsers.Application.Validation;
-using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
@@ -11,11 +11,13 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
     {
         private readonly IValidator<UnlockUserCommand> _unlockUserCommandValidator;
         private readonly IUserRepository _userRepository;
+        private readonly IMediator _mediator;
 
-        public UnlockUserCommandHandler(IValidator<UnlockUserCommand> unlockUserCommandValidator, IUserRepository userRepository)
+        public UnlockUserCommandHandler(IValidator<UnlockUserCommand> unlockUserCommandValidator, IUserRepository userRepository, IMediator mediator)
         {
             _unlockUserCommandValidator = unlockUserCommandValidator;
             _userRepository = userRepository;
+            _mediator = mediator;
         }
 
         protected override async Task HandleCore(UnlockUserCommand message)
@@ -31,6 +33,10 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
 
             if (!result.IsValid())
             {
+                if (message.User != null)
+                {
+                    await _mediator.PublishAsync(new AccountLockedEvent { User = message.User });
+                }
                 throw new InvalidRequestException(result.ValidationDictionary);
             }
 

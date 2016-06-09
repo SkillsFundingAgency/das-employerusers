@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using MediatR;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
 using Moq;
+using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
@@ -14,6 +16,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         private UnlockUserCommandHandler _unlockUserCommand;
         private Mock<IValidator<UnlockUserCommand>> _unlockUserCommandValidator;
         private Mock<IUserRepository> _userRepositry;
+        private Mock<IMediator> _mediator;
         private const string AccessCode = "ABC123456PLM";
         private const string ExpectedEmail =  "test@user.local";
         private const string NotAUser = "not@user.local";
@@ -25,10 +28,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             _unlockUserCommandValidator = new Mock<IValidator<UnlockUserCommand>>();
             _unlockUserCommandValidator.Setup(x => x.Validate(It.IsAny<UnlockUserCommand>())).Returns(new ValidationResult());
             _userRepositry = new Mock<IUserRepository>();
-
+            _mediator = new Mock<IMediator>();
             _userRepositry.Setup(x => x.GetByEmailAddress(ExpectedEmail)).ReturnsAsync(new User {Email = ExpectedEmail, AccessCode = AccessCode});
             _userRepositry.Setup(x => x.GetByEmailAddress(NotAUser)).ReturnsAsync(null);
-            _unlockUserCommand = new UnlockUserCommandHandler(_unlockUserCommandValidator.Object, _userRepositry.Object);
+            _unlockUserCommand = new UnlockUserCommandHandler(_unlockUserCommandValidator.Object, _userRepositry.Object, _mediator.Object);
         }
 
         [Test]
@@ -113,6 +116,47 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
 
             //Assert
             _userRepositry.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
+        }
+
+        [Test]
+        public void ThenAnAccountLockedEventIsRaisedIfTheValidationFailsAndTheUserIsNotNull()
+        {
+            //Arrange
+            _unlockUserCommandValidator.Setup(x => x.Validate(It.IsAny<UnlockUserCommand>())).Returns(new ValidationResult { ValidationDictionary = { { "", "" } } });
+            var unlockUserCommand = new UnlockUserCommand
+            {
+                UnlockCode = AccessCode,
+                Email = ExpectedEmail,
+                User = new User
+                {
+                    Email = ExpectedEmail
+                }
+            };
+
+            //Act
+            Assert.ThrowsAsync<InvalidRequestException>(async () => await _unlockUserCommand.Handle(unlockUserCommand));
+
+            //Assert
+            _mediator.Verify(x=>x.PublishAsync(It.Is<AccountLockedEvent>(c=>c.User.Email.Equals(ExpectedEmail))),Times.Once);
+        }
+
+
+        [Test]
+        public void ThenAnAccountLockedEventIsNotRaisedIfTheValidationFailsAndTheUserIsNull()
+        {
+            //Arrange
+            _unlockUserCommandValidator.Setup(x => x.Validate(It.IsAny<UnlockUserCommand>())).Returns(new ValidationResult { ValidationDictionary = { { "", "" } } });
+            var unlockUserCommand = new UnlockUserCommand
+            {
+                UnlockCode = AccessCode,
+                Email = NotAUser
+            };
+
+            //Act
+            Assert.ThrowsAsync<InvalidRequestException>(async () => await _unlockUserCommand.Handle(unlockUserCommand));
+
+            //Assert
+            _mediator.Verify(x => x.PublishAsync(It.IsAny<AccountLockedEvent>()),Times.Never());
         }
 
         [Test]
