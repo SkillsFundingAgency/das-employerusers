@@ -16,12 +16,15 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Configuration;
 using System.Web;
+using System.Web.WebPages;
 using MediatR;
 using Microsoft.WindowsAzure;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.Configuration;
 using SFA.DAS.Configuration.AzureTableStorage;
+using SFA.DAS.Configuration.FileStorage;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
@@ -62,7 +65,18 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
                 environment = CloudConfigurationManager.GetSetting("EnvironmentName");
             }
 
-            var configurationService = new ConfigurationService(new AzureTableStorageConfigurationRepository(),
+            IConfigurationRepository configurationRepository;
+
+            if (ConfigurationManager.AppSettings["LocalConfig"].AsBool())
+            {
+                configurationRepository = new FileStorageConfigurationRepository();
+            }
+            else
+            {
+                configurationRepository = new AzureTableStorageConfigurationRepository();
+            }
+
+            var configurationService = new ConfigurationService(configurationRepository,
                 new ConfigurationOptions("SFA.DAS.EmployerUsers.Web", environment, "1.0"));
             For<IConfigurationService>().Use(configurationService);
 
