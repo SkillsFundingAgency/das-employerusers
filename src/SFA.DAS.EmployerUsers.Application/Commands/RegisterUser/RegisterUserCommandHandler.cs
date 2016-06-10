@@ -49,11 +49,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 
             var existingUser = await _userRepository.GetByEmailAddress(message.Email);
 
-            if (existingUser != null) // && existingUser.IsActive
+            if (existingUser != null && existingUser.IsActive)
             {
                 throw new InvalidRequestException(new Dictionary<string, string>
                 {
-                    {"Email", "Your email address has already been registered. Please try signing in again. If you've forgotten your password you can reset it." }
+                    {"Email", "Your email address has already been activated. Please try signing in again. If you've forgotten your password you can reset it." }
                 });
             }
 
