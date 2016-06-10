@@ -1,7 +1,7 @@
 ## Development Machine Setup
 You will require the Azure SDK v2.8 upwards to run the solution.
 
-As the solution also requires SSL, you will need to run DevInstall.ps1 to install the test certificate in your local stores.
+As the solution also requires SSL, you will need to run DevInstall.ps1 to install the test certificate in your local stores. This must be ran as administrator
 
 ### Running local
 
@@ -21,4 +21,13 @@ The following should be entered in data
 The row key is SFA.DAS.EmployerUsers.Web_1.0
 Parition key is LOCAL
 
+OR
+
+You can set the following config value
+
+````
+<add key="LocalConfig" value="true"/>
+````
+
+In the web.config of the SFA.DAS.EmployerUsers.Web project
 

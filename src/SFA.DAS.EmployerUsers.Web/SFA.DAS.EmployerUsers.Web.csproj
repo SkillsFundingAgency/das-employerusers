@@ -131,12 +131,16 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\SFA.DAS.CodeGenerator.1.0.0.4198\lib\net45\SFA.DAS.CodeGenerator.dll</HintPath>
     </Reference>
-    <Reference Include="SFA.DAS.Configuration, Version=1.0.0.4261, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Configuration.1.0.0.4261\lib\net45\SFA.DAS.Configuration.dll</HintPath>
+    <Reference Include="SFA.DAS.Configuration, Version=1.0.0.4757, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Configuration.1.0.0.4757\lib\net45\SFA.DAS.Configuration.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SFA.DAS.Configuration.AzureTableStorage, Version=1.0.0.4261, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Configuration.AzureTableStorage.1.0.0.4261\lib\net45\SFA.DAS.Configuration.AzureTableStorage.dll</HintPath>
+    <Reference Include="SFA.DAS.Configuration.AzureTableStorage, Version=1.0.0.4757, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Configuration.AzureTableStorage.1.0.0.4757\lib\net45\SFA.DAS.Configuration.AzureTableStorage.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SFA.DAS.Configuration.FileStorage, Version=1.0.0.4757, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Configuration.FileStorage.1.0.0.4757\lib\net45\SFA.DAS.Configuration.FileStorage.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="StructureMap, Version=3.1.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -357,6 +361,9 @@
     <Content Include="Content\stylesheets\fonts\GDSTransportWebsite-Bold.eot" />
     <Content Include="Content\stylesheets\fonts\GDSTransportTabular-Light.eot" />
     <Content Include="Content\stylesheets\fonts\GDSTransportTabular-Bold.eot" />
+    <Content Include="App_Data\LOCAL_SFA.DAS.EmployerUsers.Web_1.0.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\PublishProfiles\SFA.DAS.EmployerUsers.WebPublishProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\govuk-template.js" />
