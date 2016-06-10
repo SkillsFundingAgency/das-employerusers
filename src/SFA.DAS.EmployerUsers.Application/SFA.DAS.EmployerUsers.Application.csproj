@@ -84,6 +84,8 @@
     <Compile Include="Events\AccountLocked\GenerateAndEmailAccountLockedEmailHandler.cs" />
     <Compile Include="InvalidRequestException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queries\GetUserByEmailAddress\GetUserByEmailAddressQuery.cs" />
+    <Compile Include="Queries\GetUserByEmailAddress\GetUserByEmailAddressQueryHandler.cs" />
     <Compile Include="Queries\GetUserById\GetUserByIdQuery.cs" />
     <Compile Include="Queries\GetUserById\GetUserByIdQueryHandler.cs" />
     <Compile Include="Queries\IsUserActive\IsUserActiveQuery.cs" />

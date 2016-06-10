@@ -8,6 +8,7 @@ using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
 using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
+using SFA.DAS.EmployerUsers.Application.Queries.GetUserByEmailAddress;
 using SFA.DAS.EmployerUsers.Application.Queries.IsUserActive;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
@@ -68,10 +69,9 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         {
             try
             {
-                var userId = Guid.NewGuid().ToString();
                 await _mediator.SendAsync(new RegisterUserCommand
                 {
-                    Id = userId,
+                    Id = Guid.NewGuid().ToString(),
                     FirstName = registerUserViewModel.FirstName,
                     LastName = registerUserViewModel.LastName,
                     Email = registerUserViewModel.Email,
@@ -80,8 +80,12 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     HasAcceptedTermsAndConditions = registerUserViewModel.HasAcceptedTermsAndConditions
                 });
 
-                _owinWrapper.IssueLoginCookie(userId,
-                    $"{registerUserViewModel.FirstName} {registerUserViewModel.LastName}");
+                var user = await _mediator.SendAsync(new GetUserByEmailAddressQuery
+                {
+                    EmailAddress = registerUserViewModel.Email
+                });
+
+                _owinWrapper.IssueLoginCookie(user.Id, $"{user.FirstName} {user.LastName}");
 
                 _owinWrapper.RemovePartialLoginCookie();
             }

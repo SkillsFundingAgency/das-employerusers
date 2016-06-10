@@ -59,24 +59,43 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 
             var securedPassword = await _passwordService.GenerateAsync(message.Password);
 
-            var accessCode = _codeGenerator.GenerateAlphaNumeric();
-            var registerUser = new User
+            if (existingUser == null)
+            {
+                var registerUser = Create(message, securedPassword);
+
+                await _userRepository.Create(registerUser);
+                await _communicationService.SendUserRegistrationMessage(registerUser, Guid.NewGuid().ToString());
+            }
+            else
+            {
+                Update(existingUser, message, securedPassword);
+
+                await _userRepository.Update(existingUser);
+                //await _communicationService.SendUserRegistrationMessage(existingUser, Guid.NewGuid().ToString());
+            }
+        }
+
+        private void Update(User user, RegisterUserCommand message, SecuredPassword securedPassword)
+        {
+            user.FirstName = message.FirstName;
+            user.LastName = message.LastName;
+            user.Password = securedPassword.HashedPassword;
+            user.Salt = securedPassword.Salt;
+            user.PasswordProfileId = securedPassword.ProfileId;
+        }
+
+        private User Create(RegisterUserCommand message, SecuredPassword securedPassword)
+        {
+            var user = new User
             {
                 Id = message.Id,
                 Email = message.Email,
-                FirstName = message.FirstName,
-                LastName = message.LastName,
-                AccessCode = accessCode,
-                Password = securedPassword.HashedPassword,
-                Salt = securedPassword.Salt,
-                PasswordProfileId = securedPassword.ProfileId
+                AccessCode = _codeGenerator.GenerateAlphaNumeric(),
             };
 
-            await _userRepository.Create(registerUser);
-            await _communicationService.SendUserRegistrationMessage(registerUser, Guid.NewGuid().ToString());
+            Update(user, message, securedPassword);
 
-
-
+            return user;
         }
     }
     
