@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
+using SFA.DAS.EmployerUsers.Application.Queries.GetUserByEmailAddress;
+using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
@@ -51,6 +54,14 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         [Test]
         public async Task ThenTheRegisterUserCommandIsPassedOntoTheMediator()
         {
+            //Arrange 
+            _mediator.Setup(x => x.SendAsync(It.IsAny<GetUserByEmailAddressQuery>())).ReturnsAsync(new User
+            {
+                Id = Guid.NewGuid().ToString(),
+                FirstName = "Test",
+                LastName = "User"
+            });
+
             //Act
             var actual = await _accountOrchestrator.Register(_registerUserViewModel);
 
@@ -62,11 +73,42 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         [Test]
         public async Task ThenTheUserIsSignedInOnSuccessfulRegistration()
         {
+            var user = new User
+            {
+                Id = Guid.NewGuid().ToString(),
+                FirstName = "Test",
+                LastName = "User"
+            };
+
+            //Arrange 
+            _mediator.Setup(x => x.SendAsync(It.IsAny<GetUserByEmailAddressQuery>())).ReturnsAsync(user);
+
             //Act
             await _accountOrchestrator.Register(_registerUserViewModel);
 
             //Assert
-            _owinWrapper.Verify(x => x.IssueLoginCookie(It.IsAny<string>(), "test tester"), Times.Once);
+            _owinWrapper.Verify(x => x.IssueLoginCookie(user.Id, $"{user.FirstName} {user.LastName}"), Times.Once);
+        }
+
+        [Test]
+        public async Task ThenTheNewUserIsSignedInOnSuccessfulRegistration()
+        {
+            //Arrange 
+            var user = new User
+            {
+                Id = Guid.NewGuid().ToString(),
+                Email = _registerUserViewModel.Email,
+                FirstName = _registerUserViewModel.FirstName,
+                LastName = _registerUserViewModel.LastName
+            };
+
+            _mediator.Setup(x => x.SendAsync(It.IsAny<GetUserByEmailAddressQuery>())).ReturnsAsync(user);
+
+            //Act
+            await _accountOrchestrator.Register(_registerUserViewModel);
+
+            //Assert
+            _owinWrapper.Verify(x => x.IssueLoginCookie(It.IsAny<string>(), $"{_registerUserViewModel.FirstName} {_registerUserViewModel.LastName}"), Times.Once);
         }
 
         [Test]

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.Queries.GetUserByEmailAddress
 {
-    public class GetUserByEmailAddressQueryHandler : IAsyncRequestHandler<GetUserByIdQuery, User>
+    public class GetUserByEmailAddressQueryHandler : IAsyncRequestHandler<GetUserByEmailAddressQuery, User>
     {
         private readonly IUserRepository _userRepository;
 
