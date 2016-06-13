@@ -13,6 +13,10 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
         {
             var appData = (string)AppDomain.CurrentDomain.GetData("DataDirectory");
             _directory = Path.Combine(appData, appDataFolderName);
+            if (!Directory.Exists(_directory))
+            {
+                Directory.CreateDirectory(_directory);
+            }
         }
 
         protected string[] GetDataFiles()
@@ -44,10 +48,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
 
         protected async Task CreateFile<T>(T item, string id)
         {
-            if (!Directory.Exists(_directory))
-            {
-                Directory.CreateDirectory(_directory);
-            }
+            
 
             var path = Path.Combine(_directory, id + ".json");
             using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write))
