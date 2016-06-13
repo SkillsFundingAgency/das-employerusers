@@ -114,6 +114,7 @@
     <Compile Include="AuthenticationTests\UserServiceTests\WhenPreAuthenticating.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenRequestingConfirmAccount.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenResendingActivationCode.cs" />
+    <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenResendingUnlockCode.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenUnlockingUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

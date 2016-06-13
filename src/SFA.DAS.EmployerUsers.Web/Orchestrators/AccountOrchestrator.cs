@@ -7,8 +7,11 @@ using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
+using SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode;
 using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
+using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
 using SFA.DAS.EmployerUsers.Application.Queries.IsUserActive;
+using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
 
@@ -21,6 +24,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         private readonly IMediator _mediator;
         private readonly IOwinWrapper _owinWrapper;
 
+
+        //TODO : Remove
         public AccountOrchestrator()
         {
 
@@ -192,6 +197,26 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 };
                 return unlockUserViewModel;
             }
+        }
+
+
+        public async Task<ResendUnlockCodeViewModel> ResendUnlockCode(ResendUnlockCodeViewModel model)
+        {
+            try
+            {
+                await _mediator.SendAsync(new ResendUnlockCodeCommand
+                {
+                    Email = model.Email
+                });
+
+                return model;
+            }
+            catch (InvalidRequestException ex)
+            {
+                model.ErrorDictionary = ex.ErrorMessages;
+                return model;
+            }
+            
         }
     }
 }
