@@ -162,9 +162,25 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
 
             //Assert
             Assert.IsNotEmpty(actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("PasswordComplexity", "Password requires upper and lowercase letters, a number and at least 8 characters"), actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("PasswordNotMatch", "Sorry, your passwords don’t match"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("Password", "Password requires upper and lowercase letters, a number and at least 8 characters"), actual.ValidationDictionary);
+        }
 
+        [Test]
+        public void ThenThedictionaryIsPopulatedWithTheFailedMessagesWhenThePasswordsDoNotMatch()
+        {
+            //Act
+            var actual = _validator.Validate(new RegisterUserCommand
+            {
+                Email = "a",
+                FirstName = "a",
+                LastName = "a",
+                Password = "Pa55word",
+                ConfirmPassword = "b"
+            });
+
+            //Assert
+            Assert.IsNotEmpty(actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("ConfirmPassword", "Sorry, your passwords don’t match"), actual.ValidationDictionary);
         }
 
     }

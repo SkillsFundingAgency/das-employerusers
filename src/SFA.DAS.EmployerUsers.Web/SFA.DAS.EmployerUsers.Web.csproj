@@ -366,6 +366,8 @@
     </Content>
     <None Include="Properties\PublishProfiles\SFA.DAS.EmployerUsers.WebPublishProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\additional-methods.min.js" />
+    <Content Include="Scripts\das.validate.js" />
     <Content Include="Scripts\govuk-template.js" />
     <Content Include="Scripts\ie.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
