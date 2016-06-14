@@ -281,7 +281,6 @@
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Models\ResendActivationCodeViewModel.cs" />
-    <Compile Include="Models\ResendUnlockCodeViewModel.cs" />
     <Compile Include="Models\UnlockUserViewModel.cs" />
     <Compile Include="Models\ViewModelBase.cs" />
     <Compile Include="Orchestrators\AccountOrchestrator.cs" />

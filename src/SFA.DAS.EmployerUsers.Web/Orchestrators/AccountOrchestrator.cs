@@ -200,14 +200,17 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         }
 
 
-        public async Task<ResendUnlockCodeViewModel> ResendUnlockCode(ResendUnlockCodeViewModel model)
+        public virtual async Task<UnlockUserViewModel> ResendUnlockCode(UnlockUserViewModel model)
         {
+            
             try
             {
                 await _mediator.SendAsync(new ResendUnlockCodeCommand
                 {
                     Email = model.Email
                 });
+
+                model.UnlockCodeSent = true;
 
                 return model;
             }
