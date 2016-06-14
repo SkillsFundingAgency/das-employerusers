@@ -40,6 +40,8 @@
     You should receive a 6-character code in your email. Enter the code to unlock your account.
 </p>
 <form method="POST">
+    @Html.AntiForgeryToken()
+
     <fieldset>
         <legend class="visuallyhidden">email address and unlockcode</legend>
         <div class="form-group @(!string.IsNullOrEmpty(Model.EmailError) ? "input-validation-error" : "") ">
@@ -56,7 +58,7 @@
         <div class="form-group @(!string.IsNullOrEmpty(Model.UnlockCodeError) || !string.IsNullOrEmpty(Model.UnlockCodeExpiryError) ? "input-validation-error" : "") ">
             <a name="@nameof(Model.UnlockCode)"></a>
             <label class="form-label" for="UnlockCode">Enter Code</label>
-            <input class="form-control" id="UnlockCode" name="UnlockCode" value="@Model.UnlockCode" aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.UnlockCodeError)|| !string.IsNullOrEmpty(Model.UnlockCodeExpiryError) ? "True" : "False")">
+            <input class="form-control" id="UnlockCode" name="UnlockCode" value="@Model.UnlockCode" aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.UnlockCodeError) || !string.IsNullOrEmpty(Model.UnlockCodeExpiryError) ? "True" : "False")">
             @if (!string.IsNullOrEmpty(Model.UnlockCodeError))
             {
                 <span class="field-validation-error" aria-live="polite">

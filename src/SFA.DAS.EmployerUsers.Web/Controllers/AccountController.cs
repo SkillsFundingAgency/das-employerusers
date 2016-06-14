@@ -175,6 +175,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Route("account/unlock")]
         public async Task<ActionResult> Unlock(UnlockUserViewModel unlockUserViewModel)
         {
