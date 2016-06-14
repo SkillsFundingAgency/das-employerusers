@@ -393,7 +393,6 @@
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\Confirm.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
-    <Content Include="Views\Home\Debug.cshtml" />
     <Content Include="Views\Account\Unlock.cshtml" />
     <Content Include="Views\Account\ForgottenCredentials.cshtml" />
     <Content Include="Views\TermsAndConditions\Index.cshtml" />

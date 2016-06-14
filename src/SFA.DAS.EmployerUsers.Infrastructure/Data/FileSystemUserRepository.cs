@@ -39,7 +39,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
         }
         public async Task Update(User user)
         {
-            var path = Path.Combine(_directory, user.Id + ".json");
+            var path = Path.Combine(Directory, user.Id + ".json");
 
             File.Delete(path);
 
