@@ -39,6 +39,11 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
                             ? await _userRepository.GetById(notification.User.Id) 
                             : await _userRepository.GetByEmailAddress(notification.User.Email);
 
+            if (user == null)
+            {
+                return;
+            }
+
             var sendNotification = false;
 
             if ((user.UnlockCodeExpiry < DateTime.UtcNow && !string.IsNullOrEmpty(user.UnlockCode)) || string.IsNullOrEmpty(user.UnlockCode))

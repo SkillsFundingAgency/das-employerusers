@@ -187,5 +187,19 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
             //Assert
             _userRepository.Verify(x=>x.GetByEmailAddress(_event.User.Email),Times.Once);
         }
+
+        [Test]
+        public async Task ThenItShouldNotCallTheCommunicationServiceIfTheUserDoesNotExist()
+        {
+            // Arrange
+            _event.User.Email = "456789";
+            _event.User.Id = string.Empty;
+
+            //Act
+            await _handler.Handle(_event);
+
+            // Assert
+            _communicationService.Verify(s => s.SendAccountLockedMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never());
+        }
     }
 }
