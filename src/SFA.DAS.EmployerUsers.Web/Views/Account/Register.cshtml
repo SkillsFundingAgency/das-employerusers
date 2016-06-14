@@ -1,8 +1,6 @@
 ﻿@model SFA.DAS.EmployerUsers.Web.Models.RegisterViewModel
 
-
 <h1 class="heading-large">Register</h1>
-
 @if (!Model.Valid)
 {
     <div class="validation-summary-errors panel-danger" style="margin-bottom: 10px;">
@@ -32,22 +30,10 @@
                         <a class="fake-link" href="#@(nameof(Model.Password))">@Model.PasswordError</a>
                     </li>
                 }
-                @if (!string.IsNullOrEmpty(Model.PasswordComplexityError))
-                {
-                    <li>
-                        <a class="fake-link" href="#@(nameof(Model.Password))">@Model.PasswordComplexityError</a>
-                    </li>
-                }
                 @if (!string.IsNullOrEmpty(Model.ConfirmPasswordError))
                 {
                     <li>
                         <a class="fake-link" href="#@(nameof(Model.ConfirmPassword))">@Model.ConfirmPasswordError</a>
-                    </li>
-                }
-                @if (!string.IsNullOrEmpty(Model.PasswordsDontMatchError))
-                {
-                    <li>
-                        <a class="fake-link" href="#@(nameof(Model.ConfirmPassword))">@Model.PasswordsDontMatchError</a>
                     </li>
                 }
                 @if (!string.IsNullOrEmpty(Model.HasAcceptedTermsAndConditionsError))
@@ -56,9 +42,8 @@
                         <a class="fake-link" href="#@(nameof(Model.HasAcceptedTermsAndConditions))">@Model.HasAcceptedTermsAndConditionsError</a>
                     </li>
                 }
-            </ul>    
+            </ul>
         </div>
-
     </div>
 }
 
@@ -70,86 +55,66 @@
 
         <div class="form-group @(!string.IsNullOrEmpty(Model.FirstNameError) ? "input-validation-error" : "") ">
             <a name="@nameof(Model.FirstName)"></a>
-            <label class="form-label" for="Firstname">First Name</label>
-            <input class="form-control" id="Firstname" name="FirstName" value="@Model.FirstName" aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.FirstNameError) ? "True" : "False")">
-            @if (!string.IsNullOrEmpty(Model.FirstNameError))
-            {
-                <span class="field-validation-error" aria-live="polite">
-                    @Model.FirstNameError
-                </span>
-            }
-
+            <label class="form-label" for="FirstName">First Name</label>
+            <input class="form-control" id="FirstName" name="FirstName" value="@Model.FirstName"
+                   required="required" data-rule-required="true" data-msg-required="Please enter first name"
+                   aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.FirstNameError) ? "True" : "False")">
+            <span class="field-validation-error" aria-live="polite" data-valmsg-for="FirstName">@Model.FirstNameError</span>
         </div>
         <div class="form-group @(!string.IsNullOrEmpty(Model.LastNameError) ? "input-validation-error" : "") ">
             <a name="@nameof(Model.LastName)"></a>
-            <label class="form-label" for="lastname">Last Name</label>
-            <input class="form-control" id="lastname" name="LastName" value="@Model.LastName" aria-invalid="@(!string.IsNullOrEmpty(Model.FirstNameError) ? "True" : "False")">
-            @if (!string.IsNullOrEmpty(Model.LastNameError))
-            {
-                <span class="field-validation-error" aria-live="polite">
-                    @Model.LastNameError
-                </span>
-            }
+            <label class="form-label" for="LastName">Last Name</label>
+            <input class="form-control" id="LastName" name="LastName" value="@Model.LastName"
+                   required="required" data-rule-required="true" data-msg-required="Please enter last name"
+                   aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.LastNameError) ? "True" : "False")">
+            <span class="field-validation-error" aria-live="polite" data-valmsg-for="LastName">@Model.LastNameError</span>
         </div>
         <div class="form-group @(!string.IsNullOrEmpty(Model.EmailError) ? "input-validation-error" : "") ">
             <a name="@nameof(Model.Email)"></a>
-            <label class="form-label" for="email-address">Email address</label>
-            <input class="form-control" id="email-address" name="Email" type="text" value="@Model.Email" aria-invalid="@(!string.IsNullOrEmpty(Model.EmailError) ? "True" : "False")">
-            @if (!string.IsNullOrEmpty(Model.EmailError))
-            {
-                <span class="field-validation-error" aria-live="polite">
-                    @Model.EmailError
-                </span>
-            }
+            <label class="form-label" for="Email">Email address</label>
+            <input class="form-control" id="Email" name="Email" type="text" value="@Model.Email" 
+                   required="required" data-rule-required="true" data-msg-required="Please enter email address"
+                   aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.EmailError) ? "True" : "False")">
+            <span class="field-validation-error" aria-live="polite" data-valmsg-for="Email">@Model.EmailError</span>
         </div>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.PasswordComplexityError) || !string.IsNullOrEmpty(Model.PasswordError) ? "input-validation-error" : "") ">
+        <div class="form-group @(!string.IsNullOrEmpty(Model.PasswordError) ? "input-validation-error" : "") ">
             <a name="@nameof(Model.Password)"></a>
-            <label class="form-label" for="password">Password</label>
-            <input class="form-control" id="password" type="password" name="Password" aria-invalid="@(!string.IsNullOrEmpty(Model.PasswordComplexityError) || !string.IsNullOrEmpty(Model.PasswordError) ? "True" : "False")">
-            @if (!string.IsNullOrEmpty(Model.PasswordComplexityError))
-            {
-                <span class="field-validation-error" aria-live="polite">
-                    @Model.PasswordComplexityError
-                </span>
-            }
-            @if (!string.IsNullOrEmpty(Model.PasswordError))
-            {
-                <span class="field-validation-error" aria-live="polite">
-                    @Model.PasswordError
-                </span>
-            }
+            <label class="form-label" for="Password">Password</label>
+            <input class="form-control" id="Password" type="password" name="Password"
+                   required="required" data-rule-required="true" data-msg-required="Please enter password"
+                   data-rule-pattern="^(?=(.*[0-9].*))(?=(.*[a-z].*))(?=(.*[A-Z].*)).{8,}$" data-msg-pattern="Password requires upper and lowercase letters, a number and at least 8 characters"
+                   aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.PasswordError) ? "True" : "False")">
+            <span class="field-validation-error" aria-live="polite" data-valmsg-for="Password">@Model.PasswordError</span>
         </div>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.ConfirmPasswordError) || !string.IsNullOrEmpty(Model.PasswordsDontMatchError) ? "input-validation-error" : "") ">
+        <div class="form-group @(!string.IsNullOrEmpty(Model.ConfirmPasswordError) ? "input-validation-error" : "") ">
             <a name="@nameof(Model.ConfirmPassword)"></a>
-            <label class="form-label" for="confirmpassword">Confirm Password</label>
-            <input class="form-control" id="confirmpassword" type="password" name="ConfirmPassword" aria-invalid="@(!string.IsNullOrEmpty(Model.ConfirmPasswordError) || !string.IsNullOrEmpty(Model.PasswordsDontMatchError) ? "True" : "False")">
-            @if (!string.IsNullOrEmpty(Model.ConfirmPasswordError))
-            {
-                <span class="field-validation-error" aria-live="polite">
-                    @Model.ConfirmPasswordError
-                </span>
-            }
-            @if (!string.IsNullOrEmpty(Model.PasswordsDontMatchError))
-            {
-                <span class="field-validation-error" aria-live="polite">
-                    @Model.PasswordsDontMatchError
-                </span>
-            }
+            <label class="form-label" for="ConfirmPassword">Confirm Password</label>
+            <input class="form-control" id="ConfirmPassword" type="password" name="ConfirmPassword"
+                   required="required" data-rule-required="true" data-msg-required="Please confirm password"
+                   data-rule-equalto="#Password" data-msg-equalto="Sorry, your passwords don’t match"
+                   aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.ConfirmPasswordError) ? "True" : "False")">
+            <span class="field-validation-error" aria-live="polite" data-valmsg-for="ConfirmPassword">@Model.ConfirmPasswordError</span>
         </div>
         <div class="form-group @(!string.IsNullOrEmpty(Model.HasAcceptedTermsAndConditionsError) ? "input-validation-error" : "")">
             <a name="@nameof(Model.HasAcceptedTermsAndConditions)"></a>
             <label class="block-label">
-                <input type="checkbox" class="form-checkbox" id="hasAcceptedTermsAndConditions" name="HasAcceptedTermsAndConditions" value="true"
-                       aria-invalid="@(string.IsNullOrEmpty(Model.HasAcceptedTermsAndConditionsError) ? "false" : "true")" />
+                <input type="checkbox" class="form-checkbox" id="HasAcceptedTermsAndConditions" name="HasAcceptedTermsAndConditions" value="true"
+                       required="required" data-rule-required="true" data-msg-required="Please accept the terms and conditions"
+                       aria-required="True" aria-invalid="@(string.IsNullOrEmpty(Model.HasAcceptedTermsAndConditionsError) ? "false" : "true")" />
                 I accept the <a href="@Url.Action("Index", "TermsAndConditions")" target="_blank">terms and conditions</a>
             </label>
-            @if (!string.IsNullOrEmpty(Model.HasAcceptedTermsAndConditionsError))
-            {
-                <span class="field-validation-error" aria-live="polite">
-                    @Model.HasAcceptedTermsAndConditionsError
-                </span>
-            }
+            <span class="field-validation-error" aria-live="polite" data-valmsg-for="HasAcceptedTermsAndConditions">@Model.HasAcceptedTermsAndConditionsError</span>
         </div>
     </fieldset>
     <button type="submit" class="button">Register</button>
 </form>
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script src="@Url.Content("~/Scripts/das.validate.js")"></script>
+    <script>
+        window.das.validation.enableValidation();
+    </script>
+}
