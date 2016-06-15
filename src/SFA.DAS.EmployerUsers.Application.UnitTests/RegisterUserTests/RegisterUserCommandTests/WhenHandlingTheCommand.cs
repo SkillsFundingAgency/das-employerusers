@@ -41,14 +41,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.RegisterUserTests.Register
             _codeGenerator.Setup(x => x.GenerateAlphaNumeric(6)).Returns("ABC123XYZ");
             _registerUserCommandHandler = new RegisterUserCommandHandler(_registerUserCommandValidator.Object, _passwordService.Object, _userRepository.Object,_communicationService.Object, _codeGenerator.Object);
         }
-
-        [Test]
-        public void ThenAnExceptionIsThrownIfTheCommandIsNull()
-        {
-            //Act/Assert
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await _registerUserCommandHandler.Handle(null));
-        }
-
+        
         [Test]
         public void ThenTheCommandIsHandledAndValidatorCalled()
         {
