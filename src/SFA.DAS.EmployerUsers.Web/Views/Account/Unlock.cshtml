@@ -36,6 +36,15 @@
         </div>
     </div>
 }
+@if (Model.UnlockCodeSent)
+{
+    <div class="validation-summary-info panel-info">
+        <div class="panel-body">
+            <p class="text">Unlock code has been resent</p>
+        </div>
+    </div>   
+} 
+
 <p class="text">
     You should receive a 6-character code in your email. Enter the code to unlock your account.
 </p>
@@ -73,5 +82,7 @@
             }
         </div>
     </fieldset>
-    <button type="submit" class="button">Unlock Account</button>
+
+    <button type="submit" name="command" class="button" value="unlock">Unlock Account</button>
+    <button type="submit" class="button button-secondary" name="command" value="resend">Resend Unlock Code</button>
 </form>

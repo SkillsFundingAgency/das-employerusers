@@ -73,6 +73,8 @@
     <Compile Include="CommandsTests\AuthenticateUserTests\AuthenticateUserCommandHandlerTests\WhenHandling.cs" />
     <Compile Include="CommandsTests\ResendActivationCodeTests\ResendActivationCodeCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="CommandsTests\ResendActivationCodeTests\ResendActivationCodeCommandValidatorTests\WhenValidatingTheRequest.cs" />
+    <Compile Include="CommandsTests\ResendUnlockCodeTests\ResendUnlockCodeCommandTests\WhenHandlingTheCommand.cs" />
+    <Compile Include="CommandsTests\ResendUnlockCodeTests\ResendUnlockCodeCommandValidatorTests\WhenValidatingTheCommand.cs" />
     <Compile Include="CommandsTests\UnlockUserTests\UnlockUserCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="CommandsTests\UnlockUserTests\UnlockUserCommandValidatorTests\WhenValidatingTheCommand.cs" />
     <Compile Include="EventsTests\AccountLockedTests\GenerateAndEmailAccountLockedEmailHandlerTests\WhenHandling.cs" />

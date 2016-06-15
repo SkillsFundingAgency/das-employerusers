@@ -15,6 +15,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
     public class WhenHandling
     {
         private const string UnlockCode = "ABC123";
+        private const string UserEmail = "unit.tests@testing.local";
 
         private Mock<IConfigurationService> _configurationService;
         private User _user;
@@ -40,12 +41,13 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
             _user = new User
             {
                 Id = "xxx",
-                Email = "unit.tests@testing.local",
+                Email = UserEmail,
                 UnlockCodeExpiry = DateTime.UtcNow.AddMinutes(1)
                 
             };
             _userRepository = new Mock<IUserRepository>();
             _userRepository.Setup(r => r.GetById("xxx")).Returns(Task.FromResult(_user));
+            _userRepository.Setup(r => r.GetByEmailAddress(UserEmail)).Returns(Task.FromResult(_user));
 
             _codeGenerator = new Mock<ICodeGenerator>();
             _codeGenerator.Setup(cg => cg.GenerateAlphaNumeric(10)).Returns(UnlockCode);
@@ -142,6 +144,62 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
 
             // Assert
             _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.UnlockCode == _user.UnlockCode && c.Id == _user.Id && c.Email == _user.Email), It.IsAny<string>()), Times.Never());
+        }
+
+        [Test]
+        public async Task ThenItShouldGenerateAnEmailIfTheResendPropertyIsTrue()
+        {
+            // Arrange
+            _event.ResendUnlockCode = true;
+            _user.UnlockCode = "UNLOCK_CODE";
+
+            // Act
+            await _handler.Handle(_event);
+
+            // Assert
+            _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.UnlockCode == _user.UnlockCode && c.Id == _user.Id && c.Email == _user.Email), It.IsAny<string>()), Times.Once());
+        }
+
+        [Test]
+        public async Task ThenItShouldRegenerateTheCodeIfResendingAndItHasExpired()
+        {
+            // Arrange
+            _event.ResendUnlockCode = true;
+            _event.User.UnlockCodeExpiry = DateTime.UtcNow.AddMinutes(-1);
+
+            //Act
+            await _handler.Handle(_event);
+
+            // Assert
+            _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.UnlockCode == UnlockCode && c.Id == _user.Id && c.Email == _user.Email), It.IsAny<string>()), Times.Once());
+        }
+
+        [Test]
+        public async Task ThenTheUserShouldBeRetrievedByEmailIfTheIdIsNotProvided()
+        {
+            //Arrange
+            _event.User.Id = null;
+            _event.User.Email = UserEmail;
+
+            //Act
+            await _handler.Handle(_event);
+
+            //Assert
+            _userRepository.Verify(x=>x.GetByEmailAddress(_event.User.Email),Times.Once);
+        }
+
+        [Test]
+        public async Task ThenItShouldNotCallTheCommunicationServiceIfTheUserDoesNotExist()
+        {
+            // Arrange
+            _event.User.Email = "456789";
+            _event.User.Id = string.Empty;
+
+            //Act
+            await _handler.Handle(_event);
+
+            // Assert
+            _communicationService.Verify(s => s.SendAccountLockedMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never());
         }
     }
 }

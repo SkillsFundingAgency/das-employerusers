@@ -177,16 +177,26 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("account/unlock")]
-        public async Task<ActionResult> Unlock(UnlockUserViewModel unlockUserViewModel)
+        public async Task<ActionResult> Unlock(UnlockUserViewModel unlockUserViewModel, string command)
         {
-            var result = await _accountOrchestrator.UnlockUser(unlockUserViewModel);
 
-            if (result.Valid)
+            if (command.ToLower() == "resend")
             {
-                return await RedirectToEmployerPortal();
+                var result = await _accountOrchestrator.ResendUnlockCode(unlockUserViewModel);
+                
+                return View("Unlock", result);
             }
-            unlockUserViewModel.UnlockCode = string.Empty;
-            return View("Unlock", unlockUserViewModel);
+            else
+            {
+                var result = await _accountOrchestrator.UnlockUser(unlockUserViewModel);
+
+                if (result.Valid)
+                {
+                    return await RedirectToEmployerPortal();
+                }
+                unlockUserViewModel.UnlockCode = string.Empty;
+                return View("Unlock", unlockUserViewModel);
+            }
         }
 
         [HttpGet]
