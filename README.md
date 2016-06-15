@@ -3,7 +3,15 @@ You will require the Azure SDK v2.8 upwards to run the solution.
 
 As the solution also requires SSL, you will need to run DevInstall.ps1 to install the test certificate in your local stores. This must be ran as administrator
 
+You may need to set your execution policy to unrestricted in powershell - if so run the following in an administrator powershell window
+
+````
+Set-ExecutionPolicy Unrestricted
+````
+
 ### Running local
+
+Execute RunBuild.bat to build the solution.
 
 In azure local storage a table called Configuration needs creating
 

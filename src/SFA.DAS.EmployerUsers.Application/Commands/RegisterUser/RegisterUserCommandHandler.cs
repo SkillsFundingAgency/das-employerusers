@@ -34,10 +34,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 
         protected override async Task HandleCore(RegisterUserCommand message)
         {
-            if (message == null)
-            {
-                throw new ArgumentNullException(nameof(message), "RegisterUserCommand is null");
-            }
             Logger.Debug($"Received RegisterUserCommand for user '{message.Email}'");
 
             var validationResult = _registerUserCommandValidator.Validate(message);
