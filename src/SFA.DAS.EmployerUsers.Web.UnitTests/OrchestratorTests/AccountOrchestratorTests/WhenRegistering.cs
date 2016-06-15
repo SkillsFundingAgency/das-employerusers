@@ -107,17 +107,13 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var emailError = "Email Error";
             var passwordError = "Password Error";
             var confirmPasswordError = "Confirm Password Error";
-            var passwordComplexityError = "Password Complexity Error";
-            var passwordsDontMatchError = "Passwords Dont Match Error";
             _mediator.Setup(x => x.SendAsync(It.IsAny<RegisterUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string>
             {
                 { "FirstName", firstNameError },
                 { "LastName", lastNameError },
                 { "Email", emailError },
                 { "Password", passwordError },
-                { "ConfirmPassword", confirmPasswordError },
-                { "PasswordComplexity", passwordComplexityError },
-                { "PasswordNotMatch", passwordsDontMatchError }
+                { "ConfirmPassword", confirmPasswordError }
                 
             }));
 
@@ -130,8 +126,6 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             Assert.AreEqual(emailError, actual.EmailError);
             Assert.AreEqual(passwordError, actual.PasswordError);
             Assert.AreEqual(confirmPasswordError, actual.ConfirmPasswordError);
-            Assert.AreEqual(passwordComplexityError, actual.PasswordComplexityError);
-            Assert.AreEqual(passwordsDontMatchError, actual.PasswordsDontMatchError);
         }
 
     }

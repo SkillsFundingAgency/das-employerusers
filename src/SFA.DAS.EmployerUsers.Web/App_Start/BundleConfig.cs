@@ -11,7 +11,8 @@ namespace SFA.DAS.EmployerUsers.Web
                         "~/Scripts/jquery-{version}.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-                        "~/Scripts/jquery.validate*"));
+                        "~/Scripts/jquery.validate*",
+                        "~/Scripts/additional-methods.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/scripts").Include(
                 "~/scripts/govuk-template.js"));

@@ -366,6 +366,8 @@
     </Content>
     <None Include="Properties\PublishProfiles\SFA.DAS.EmployerUsers.WebPublishProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\additional-methods.min.js" />
+    <Content Include="Scripts\das.validate.js" />
     <Content Include="Scripts\govuk-template.js" />
     <Content Include="Scripts\ie.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -393,7 +395,6 @@
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\Confirm.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
-    <Content Include="Views\Home\Debug.cshtml" />
     <Content Include="Views\Account\Unlock.cshtml" />
     <Content Include="Views\Account\ForgottenCredentials.cshtml" />
     <Content Include="Views\TermsAndConditions\Index.cshtml" />

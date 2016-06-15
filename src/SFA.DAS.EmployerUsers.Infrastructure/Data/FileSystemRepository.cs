@@ -7,31 +7,35 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
 {
     public abstract class FileSystemRepository
     {
-        protected readonly string _directory;
+        protected readonly string Directory;
 
         protected FileSystemRepository(string appDataFolderName)
         {
             var appData = (string)AppDomain.CurrentDomain.GetData("DataDirectory");
-            _directory = Path.Combine(appData, appDataFolderName);
+            Directory = Path.Combine(appData, appDataFolderName);
         }
 
         protected string[] GetDataFiles()
         {
-            return Directory.GetFiles(_directory, "*.json");
+            if (!System.IO.Directory.Exists(Directory))
+            {
+                return new string[0];
+            }
+            return System.IO.Directory.GetFiles(Directory, "*.json");
         }
 
         protected async Task<T> ReadFileById<T>(string id)
         {
-            var path = Path.Combine(_directory, id + ".json");
+            var path = Path.Combine(Directory, id + ".json");
+            return await ReadFile<T>(path);
+        }
+        protected async Task<T> ReadFile<T>(string path)
+        {
             if (!File.Exists(path))
             {
                 return default(T);
             }
 
-            return await ReadFile<T>(path);
-        }
-        protected async Task<T> ReadFile<T>(string path)
-        {
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
             using (var reader = new StreamReader(stream))
             {
@@ -44,12 +48,12 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
 
         protected async Task CreateFile<T>(T item, string id)
         {
-            if (!Directory.Exists(_directory))
+            if (!System.IO.Directory.Exists(Directory))
             {
-                Directory.CreateDirectory(_directory);
+                System.IO.Directory.CreateDirectory(Directory);
             }
 
-            var path = Path.Combine(_directory, id + ".json");
+            var path = Path.Combine(Directory, id + ".json");
             using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write))
             using (var writer = new StreamWriter(stream))
             {

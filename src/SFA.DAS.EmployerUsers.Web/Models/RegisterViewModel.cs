@@ -23,8 +23,6 @@ namespace SFA.DAS.EmployerUsers.Web.Models
         public string EmailError => GetErrorMessage(nameof(Email));
         public string PasswordError => GetErrorMessage(nameof(Password));
         public string ConfirmPasswordError => GetErrorMessage(nameof(ConfirmPassword));
-        public string PasswordComplexityError => GetErrorMessage("PasswordComplexity");
-        public string PasswordsDontMatchError => GetErrorMessage("PasswordNotMatch");
         public string HasAcceptedTermsAndConditionsError => GetErrorMessage(nameof(HasAcceptedTermsAndConditions));
     }
 }
