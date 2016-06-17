@@ -55,6 +55,10 @@
       <HintPath>..\packages\SFA.DAS.Configuration.1.0.0.4261\lib\net45\SFA.DAS.Configuration.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SFA.DAS.TimeProvider, Version=1.0.0.3956, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SFA.DAS.TimeProvider.1.0.0.3956\lib\net45\SFA.DAS.TimeProvider.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -71,6 +75,8 @@
     <Compile Include="CommandsTests\ActivateUserTests\ActivateUserCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="CommandsTests\ActivateUserTests\ActivateUserCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="CommandsTests\AuthenticateUserTests\AuthenticateUserCommandHandlerTests\WhenHandling.cs" />
+    <Compile Include="CommandsTests\RequestPasswordResetCodeTests\RequestPasswordResetCodeCommandTests\WhenHandlingTheCommand.cs" />
+    <Compile Include="CommandsTests\RequestPasswordResetCodeTests\RequestPasswordResetCodeCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="CommandsTests\ResendActivationCodeTests\ResendActivationCodeCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="CommandsTests\ResendActivationCodeTests\ResendActivationCodeCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="CommandsTests\ResendUnlockCodeTests\ResendUnlockCodeCommandTests\WhenHandlingTheCommand.cs" />
@@ -88,6 +94,7 @@
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenResendingActivationCode.cs" />
     <Compile Include="ServicesTests\PasswordTests\PasswordServiceTests\WhenGenerating.cs" />
     <Compile Include="ServicesTests\PasswordTests\PasswordServiceTests\WhenVerifying.cs" />
+    <Compile Include="TestHelpers\FakeTimeProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
