@@ -12,6 +12,7 @@ using SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode;
 using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
 using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserByEmailAddress;
+using SFA.DAS.EmployerUsers.Application.Queries.IsPasswordResetValid;
 using SFA.DAS.EmployerUsers.Application.Queries.IsUserActive;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Web.Authentication;
@@ -245,6 +246,18 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 model.ErrorDictionary = ex.ErrorMessages;
                 return model;
             }
+        }
+
+        public virtual async Task<PasswordResetViewModel> PasswordReset(PasswordResetViewModel model)
+        {
+            var isUserActive = await _mediator.SendAsync(new IsPasswordResetCodeValidQuery { Email= model.Email, PasswordResetCode = model.PasswordResetCode});
+
+            return new PasswordResetViewModel
+            {
+                Email = model.Email,
+                HasExpired = isUserActive.HasExpired,
+                IsValid = isUserActive.IsValid
+            };
         }
     }
 }

@@ -106,6 +106,7 @@
     <Compile Include="Controllers\AccountControllerTests\WhenUnlockingMyAccount.cs" />
     <Compile Include="Controllers\ControllerTestBase.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenEnteringMyAccessCode.cs" />
+    <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenEnteringPasswordResetCode.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenLoggingIn.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenRegistering.cs" />
     <Compile Include="AuthenticationTests\UserServiceTests\UserServiceTestBase.cs" />
