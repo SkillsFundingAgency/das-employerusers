@@ -41,31 +41,29 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
         {
             var command = new RequestPasswordResetCodeCommand();
 
-            Assert.ThrowsAsync<InvalidRequestException>(() => _commandHandler.Handle(command));
+            var invalidRequestException = Assert.ThrowsAsync<InvalidRequestException>(() => _commandHandler.Handle(command));
+
+            Assert.That(invalidRequestException.ErrorMessages.Count, Is.EqualTo(1));
+            Assert.That(invalidRequestException.ErrorMessages.Keys.Contains("Email"));
         }
 
         [Test]
         public void UnknownEmailThrowsInvalidRequestException()
         {
-            var command = new RequestPasswordResetCodeCommand
-            {
-                Email = "test.user@test.org"
-            };
+            var command = GetRequestPasswordResetCodeCommand();
 
             _userRepository.Setup(x => x.GetByEmailAddress(command.Email)).ReturnsAsync(null);
 
             var invalidRequestException = Assert.ThrowsAsync<InvalidRequestException>(() => _commandHandler.Handle(command));
 
+            Assert.That(invalidRequestException.ErrorMessages.Count, Is.EqualTo(1));
             Assert.That(invalidRequestException.ErrorMessages.Keys.Contains("UserNotFound"));
         }
 
         [Test]
         public async Task KnownUserWithActiveResetResendsExistingCode()
         {
-            var command = new RequestPasswordResetCodeCommand
-            {
-                Email = "test.user@test.org"
-            };
+            var command = GetRequestPasswordResetCodeCommand();
 
             var existingUser = new User
             {
@@ -87,10 +85,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
             DateTimeProvider.Current = new FakeTimeProvider(DateTime.UtcNow);
             const string newCode = "FEDCBA";
 
-            var command = new RequestPasswordResetCodeCommand
-            {
-                Email = "test.user@test.org"
-            };
+            var command = GetRequestPasswordResetCodeCommand();
 
             var existingUser = new User
             {
@@ -114,10 +109,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
             DateTimeProvider.Current = new FakeTimeProvider(DateTime.UtcNow);
             const string newCode = "FEDCBA";
 
-            var command = new RequestPasswordResetCodeCommand
-            {
-                Email = "test.user@test.org"
-            };
+            var command = GetRequestPasswordResetCodeCommand();
 
             var existingUser = new User
             {
@@ -141,10 +133,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
             DateTimeProvider.Current = new FakeTimeProvider(DateTime.UtcNow);
             const string newCode = "FEDCBA";
 
-            var command = new RequestPasswordResetCodeCommand
-            {
-                Email = "test.user@test.org"
-            };
+            var command = GetRequestPasswordResetCodeCommand();
 
             var existingUser = new User
             {
@@ -160,6 +149,14 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
             await _commandHandler.Handle(command);
 
             _communicationSerivce.Verify(x => x.SendPasswordResetCodeMessage(It.Is<User>(u => u.Email == existingUser.Email && u.PasswordResetCode == newCode && u.PasswordResetCodeExpiry == DateTimeProvider.Current.UtcNow.AddDays(1)), It.IsAny<string>()), Times.Once);
+        }
+
+        private RequestPasswordResetCodeCommand GetRequestPasswordResetCodeCommand()
+        {
+            return new RequestPasswordResetCodeCommand
+            {
+                Email = "test.user@test.org"
+            };
         }
     }
 }
