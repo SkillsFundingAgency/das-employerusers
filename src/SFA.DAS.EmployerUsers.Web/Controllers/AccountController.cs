@@ -206,6 +206,15 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View("ForgottenCredentials");
         }
 
+        [HttpPost]
+        [Route("account/forgottencredentials")]
+        public async Task<ActionResult> ForgottenCredentials(RequestPasswordResetViewModel requestPasswordResetViewModel)
+        {
+            await _accountOrchestrator.RequestPasswordResetCode(requestPasswordResetViewModel);
+
+            return View("ForgottenCredentials");
+        }
+
         private string GetLoggedInUserId()
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;

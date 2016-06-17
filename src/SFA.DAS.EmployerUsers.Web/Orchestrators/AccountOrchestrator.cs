@@ -6,6 +6,7 @@ using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
+using SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode;
 using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
@@ -224,6 +225,26 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 return model;
             }
             
+        }
+
+        public virtual async Task<RequestPasswordResetViewModel> RequestPasswordResetCode(RequestPasswordResetViewModel model)
+        {
+            try
+            {
+                await _mediator.SendAsync(new RequestPasswordResetCodeCommand
+                {
+                    Email = model.Email
+                });
+
+                model.ResetCodeSent = true;
+
+                return model;
+            }
+            catch (InvalidRequestException ex)
+            {
+                model.ErrorDictionary = ex.ErrorMessages;
+                return model;
+            }
         }
     }
 }
