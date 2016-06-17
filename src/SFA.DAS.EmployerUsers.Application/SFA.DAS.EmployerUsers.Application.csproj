@@ -74,6 +74,9 @@
     <Compile Include="Commands\ActivateUser\ActivateUserCommandValidator.cs" />
     <Compile Include="Commands\AuthenticateUser\AuthenticateUserCommand.cs" />
     <Compile Include="Commands\AuthenticateUser\AuthenticateUserCommandHandler.cs" />
+    <Compile Include="Commands\PasswordReset\PasswordResetCommand.cs" />
+    <Compile Include="Commands\PasswordReset\PasswordResetCommandHandler.cs" />
+    <Compile Include="Commands\PasswordReset\PasswordResetCommandValidator.cs" />
     <Compile Include="Commands\RegisterUser\RegisterUserCommand.cs" />
     <Compile Include="Commands\RegisterUser\RegisterUserCommandHandler.cs" />
     <Compile Include="Commands\RegisterUser\RegisterUserCommandValidator.cs" />
