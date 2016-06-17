@@ -51,6 +51,10 @@
       <HintPath>..\packages\SFA.DAS.Configuration.1.0.0.4261\lib\net45\SFA.DAS.Configuration.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SFA.DAS.TimeProvider, Version=1.0.0.3956, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.TimeProvider.1.0.0.3956\lib\net45\SFA.DAS.TimeProvider.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -73,6 +77,9 @@
     <Compile Include="Commands\RegisterUser\RegisterUserCommand.cs" />
     <Compile Include="Commands\RegisterUser\RegisterUserCommandHandler.cs" />
     <Compile Include="Commands\RegisterUser\RegisterUserCommandValidator.cs" />
+    <Compile Include="Commands\RequestPasswordResetCode\RequestPasswordResetCodeCommand.cs" />
+    <Compile Include="Commands\RequestPasswordResetCode\RequestPasswordResetCodeCommandHandler.cs" />
+    <Compile Include="Commands\RequestPasswordResetCode\RequestPasswordResetCodeCommandValidator.cs" />
     <Compile Include="Commands\ResendActivationCode\ResendActivationCodeCommand.cs" />
     <Compile Include="Commands\ResendActivationCode\ResendActivationCodeCommandHandler.cs" />
     <Compile Include="Commands\ResendActivationCode\ResendActivationCodeCommandValidator.cs" />
