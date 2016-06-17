@@ -98,6 +98,8 @@
     <Compile Include="Queries\GetUserByEmailAddress\GetUserByEmailAddressQueryHandler.cs" />
     <Compile Include="Queries\GetUserById\GetUserByIdQuery.cs" />
     <Compile Include="Queries\GetUserById\GetUserByIdQueryHandler.cs" />
+    <Compile Include="Queries\IsPasswordResetValid\IsPasswordResetCodeValidQueryHandler.cs" />
+    <Compile Include="Queries\IsPasswordResetValid\IsPasswordResetCodeValidQuery.cs" />
     <Compile Include="Queries\IsUserActive\IsUserActiveQuery.cs" />
     <Compile Include="Queries\IsUserActive\IsUserActiveQueryHandler.cs" />
     <Compile Include="Services\Notification\CommunicationService.cs" />
