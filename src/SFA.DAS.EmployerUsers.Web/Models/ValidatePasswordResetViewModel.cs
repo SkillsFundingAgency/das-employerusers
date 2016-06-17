@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.EmployerUsers.Web.Models
 {
-    public class PasswordResetViewModel
+    public class ValidatePasswordResetViewModel
     {
         public string Email { get; set; }
 

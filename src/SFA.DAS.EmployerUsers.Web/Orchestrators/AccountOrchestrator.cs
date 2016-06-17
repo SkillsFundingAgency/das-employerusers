@@ -248,11 +248,11 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
         }
 
-        public virtual async Task<PasswordResetViewModel> PasswordReset(PasswordResetViewModel model)
+        public virtual async Task<ValidatePasswordResetViewModel> ValidatePasswordResetCode(ValidatePasswordResetViewModel model)
         {
             var isUserActive = await _mediator.SendAsync(new IsPasswordResetCodeValidQuery { Email= model.Email, PasswordResetCode = model.PasswordResetCode});
 
-            return new PasswordResetViewModel
+            return new ValidatePasswordResetViewModel
             {
                 Email = model.Email,
                 HasExpired = isUserActive.HasExpired,

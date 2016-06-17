@@ -36,10 +36,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         {
             //Arrange
             var actualResetCode = "123456";
-            var model = new PasswordResetViewModel { Email = ValidEmail, PasswordResetCode = actualResetCode };
+            var model = new ValidatePasswordResetViewModel { Email = ValidEmail, PasswordResetCode = actualResetCode };
 
             //Act
-            await _accountOrchestrator.PasswordReset(model);
+            await _accountOrchestrator.ValidatePasswordResetCode(model);
 
             //Assert
             _mediator.Verify(x => x.SendAsync(It.Is<IsPasswordResetCodeValidQuery>(c => c.Email == ValidEmail && c.PasswordResetCode == actualResetCode)), Times.Once);
@@ -52,10 +52,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         public async Task ThenTheReturnModelsPopulatedCorrectlyFromTheQuery(string email, bool isValid, bool hasExpired)
         {
             //Arrange
-            var model = new PasswordResetViewModel { Email = email};
+            var model = new ValidatePasswordResetViewModel { Email = email};
 
             //Act
-            var actual = await _accountOrchestrator.PasswordReset(model);
+            var actual = await _accountOrchestrator.ValidatePasswordResetCode(model);
 
             //Assert
             Assert.AreEqual(isValid, actual.IsValid);

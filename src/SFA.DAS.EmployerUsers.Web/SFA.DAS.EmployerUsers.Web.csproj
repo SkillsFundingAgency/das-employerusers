@@ -279,7 +279,7 @@
     <Compile Include="Models\ConfirmationViewModel.cs" />
     <Compile Include="Models\LoginResultModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
-    <Compile Include="Models\PasswordResetViewModel.cs" />
+    <Compile Include="Models\ValidatePasswordResetViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Models\RequestPasswordResetViewModel.cs" />
     <Compile Include="Models\ResendActivationCodeViewModel.cs" />
