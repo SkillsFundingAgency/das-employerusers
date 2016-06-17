@@ -53,7 +53,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
             if (existingUser == null)
                 throw new InvalidRequestException(new Dictionary<string, string> { { "UserNotFound", $"User '{message.Email}' not found" } });
 
-            if (!ExistingUserHasActivePasswordResetCode(existingUser))
+            if (RequiresPasswordResetCode(existingUser))
             {
                 existingUser.PasswordResetCode = _codeGenerator.GenerateAlphaNumeric();
                 existingUser.PasswordResetCodeExpiry = DateTimeProvider.Current.UtcNow.AddDays(1);
@@ -64,12 +64,12 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
             await _communicationService.SendPasswordResetCodeMessage(existingUser, Guid.NewGuid().ToString());
         }
 
-        private static bool ExistingUserHasActivePasswordResetCode(User user)
+        private static bool RequiresPasswordResetCode(User user)
         {
             if (string.IsNullOrEmpty(user.PasswordResetCode) || !user.PasswordResetCodeExpiry.HasValue)
-                return false;
+                return true;
 
-            return user.PasswordResetCodeExpiry.Value > DateTimeProvider.Current.UtcNow;
+            return user.PasswordResetCodeExpiry.Value <= DateTimeProvider.Current.UtcNow;
         }
     }
 }
