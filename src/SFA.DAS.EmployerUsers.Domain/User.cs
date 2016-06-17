@@ -17,5 +17,7 @@ namespace SFA.DAS.EmployerUsers.Domain
         public bool IsLocked { get; set; }
         public string UnlockCode { get; set; }
         public DateTime? UnlockCodeExpiry { get; set; }
+        public string PasswordResetCode { get; set; }
+        public DateTime? PasswordResetCodeExpiry { get; set; }
     }
 }
