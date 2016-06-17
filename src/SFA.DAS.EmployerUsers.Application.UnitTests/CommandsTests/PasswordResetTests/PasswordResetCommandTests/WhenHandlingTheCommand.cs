@@ -48,7 +48,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         public async Task ThenTheValidatorIsCalled()
         {
             //Act
-            await _passwordResetCommandHandler.Handle(new PasswordResetCommand());
+            await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = ActualEmailAddress });
 
             //Assert
             _validator.Verify(x=>x.Validate(It.IsAny<PasswordResetCommand>()),Times.Once);
@@ -88,10 +88,13 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         }
 
         [Test]
-        public async Task ThenTheUserIsNotUpdatedIfTheValidatorIsInValid()
+        public void ThenTheUserIsNotUpdatedIfTheValidatorIsInValid()
         {
+            //Arrange
+            _validator.Setup(x => x.Validate(It.IsAny<PasswordResetCommand>())).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
+
             //Act
-            await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = "someotheremail@local" });
+            Assert.ThrowsAsync<InvalidRequestException>(async () => await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = "someotheremail@local" }));
 
             //Assert
             _userRepository.Verify(x => x.Update(It.IsAny<User>()),Times.Never);
