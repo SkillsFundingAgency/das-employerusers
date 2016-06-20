@@ -223,7 +223,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("account/resetpassword")]
+        [Route("identity/employer/resetpassword")]
         public async Task<ActionResult> ResetPassword(PasswordResetViewModel model)
         {
             model = await _accountOrchestrator.ResetPassword(model);
