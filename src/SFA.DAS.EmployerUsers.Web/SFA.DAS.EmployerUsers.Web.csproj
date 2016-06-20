@@ -359,13 +359,13 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="App_Data\RelyingParties\employerportal.json" />
+    <Content Include="App_Data\LOCAL_SFA.DAS.EmployerUsers.Web_1.0.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\stylesheets\fonts\GDSTransportWebsite.eot" />
     <Content Include="Content\stylesheets\fonts\GDSTransportWebsite-Bold.eot" />
     <Content Include="Content\stylesheets\fonts\GDSTransportTabular-Light.eot" />
     <Content Include="Content\stylesheets\fonts\GDSTransportTabular-Bold.eot" />
-    <Content Include="App_Data\LOCAL_SFA.DAS.EmployerUsers.Web_1.0.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="Properties\PublishProfiles\SFA.DAS.EmployerUsers.WebPublishProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\additional-methods.min.js" />
