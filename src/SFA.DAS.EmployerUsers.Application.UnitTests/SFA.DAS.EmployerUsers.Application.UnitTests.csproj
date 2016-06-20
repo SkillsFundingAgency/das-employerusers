@@ -76,6 +76,7 @@
     <Compile Include="CommandsTests\ActivateUserTests\ActivateUserCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="CommandsTests\AuthenticateUserTests\AuthenticateUserCommandHandlerTests\WhenHandling.cs" />
     <Compile Include="CommandsTests\PasswordResetTests\PasswordResetCommandTests\WhenHandlingTheCommand.cs" />
+    <Compile Include="CommandsTests\PasswordResetTests\PasswordResetCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="CommandsTests\RegisterUserTests\RegisterUserCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="CommandsTests\RegisterUserTests\RegisterUserCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="CommandsTests\RequestPasswordResetCodeTests\RequestPasswordResetCodeCommandTests\WhenHandlingTheCommand.cs" />
@@ -116,9 +117,7 @@
       <Name>SFA.DAS.EmployerUsers.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CommandsTests\PasswordResetTests\PasswordResetCommandValidatorTests\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
