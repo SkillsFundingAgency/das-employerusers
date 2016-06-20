@@ -253,8 +253,13 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         {
             try
             {
-                await _mediator.SendAsync(new PasswordResetCommand { Email = model.Email, PasswordResetCode = model.PasswordResetCode, Password = model.Password, ConfirmPassword = model.ConfirmPassword });
-
+                await _mediator.SendAsync(new PasswordResetCommand
+                {
+                    Email = model.Email,
+                    PasswordResetCode = model.PasswordResetCode,
+                    Password = model.Password,
+                    ConfirmPassword = model.ConfirmPassword
+                });
 
                 model.Password = string.Empty;
                 model.ConfirmPassword = string.Empty;
