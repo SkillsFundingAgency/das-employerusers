@@ -5,6 +5,7 @@ using NLog;
 using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
+using SFA.DAS.EmployerUsers.Application.Commands.PasswordReset;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
@@ -248,16 +249,23 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
         }
 
-        public virtual async Task<ValidatePasswordResetViewModel> ValidatePasswordResetCode(ValidatePasswordResetViewModel model)
+        public virtual async Task<ValidatePasswordResetViewModel> PasswordResetCodeCommand(ValidatePasswordResetViewModel model)
         {
-            var isUserActive = await _mediator.SendAsync(new IsPasswordResetCodeValidQuery { Email= model.Email, PasswordResetCode = model.PasswordResetCode});
-
-            return new ValidatePasswordResetViewModel
+            try
             {
-                Email = model.Email,
-                HasExpired = isUserActive.HasExpired,
-                IsValid = isUserActive.IsValid
-            };
+                await _mediator.SendAsync(new PasswordResetCommand { Email = model.Email, PasswordResetCode = model.PasswordResetCode, Password = model.Password, ConfirmPassword = model.ConfirmPassword });
+
+
+                model.Password = string.Empty;
+                model.ConfirmPassword = string.Empty;
+
+                return model;
+            }
+            catch (InvalidRequestException ex)
+            {
+                model.ErrorDictionary = ex.ErrorMessages;
+                return model;
+            }
         }
     }
 }

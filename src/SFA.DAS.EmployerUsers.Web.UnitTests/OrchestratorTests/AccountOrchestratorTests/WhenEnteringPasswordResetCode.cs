@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using MediatR;
 using Moq;
+using SFA.DAS.EmployerUsers.Application;
+using SFA.DAS.EmployerUsers.Application.Commands.PasswordReset;
 using SFA.DAS.EmployerUsers.Application.Queries.IsPasswordResetValid;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
@@ -24,43 +26,56 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         public void Arrange()
         {
             _mediator = new Mock<IMediator>();
-            _mediator.Setup(x => x.SendAsync(It.Is<IsPasswordResetCodeValidQuery>(c => c.Email == ValidEmail))).ReturnsAsync(new PasswordResetCodeResponse { IsValid = true, HasExpired = false });
-            _mediator.Setup(x => x.SendAsync(It.Is<IsPasswordResetCodeValidQuery>(c => c.Email == InValidEmail))).ReturnsAsync(new PasswordResetCodeResponse { IsValid = false, HasExpired = false });
-            _mediator.Setup(x => x.SendAsync(It.Is<IsPasswordResetCodeValidQuery>(c => c.Email == ExpiredValidEmail))).ReturnsAsync(new PasswordResetCodeResponse { IsValid = false, HasExpired = true });
 
             _accountOrchestrator = new AccountOrchestrator(_mediator.Object, null);
         }
 
         [Test]
-        public async Task ThenTheQueryIsCalledByTheMediator()
+        public async Task ThenTheCommandIsCalledByTheMediator()
         {
             //Arrange
             var actualResetCode = "123456";
-            var model = new ValidatePasswordResetViewModel { Email = ValidEmail, PasswordResetCode = actualResetCode };
+            var model = new ValidatePasswordResetViewModel { Email = ValidEmail, PasswordResetCode = actualResetCode, Password = "password", ConfirmPassword = "passwordconfirm" };
 
             //Act
-            await _accountOrchestrator.ValidatePasswordResetCode(model);
+            await _accountOrchestrator.PasswordResetCodeCommand(model);
 
             //Assert
-            _mediator.Verify(x => x.SendAsync(It.Is<IsPasswordResetCodeValidQuery>(c => c.Email == ValidEmail && c.PasswordResetCode == actualResetCode)), Times.Once);
+            _mediator.Verify(x => x.SendAsync(It.Is<PasswordResetCommand>(c => c.Email == ValidEmail && c.Password=="password" && c.ConfirmPassword=="passwordconfirm" && c.PasswordResetCode == actualResetCode)), Times.Once);
 
         }
-
-        [TestCase(ValidEmail, true, false)]
-        [TestCase(InValidEmail, false, false)]
-        [TestCase(ExpiredValidEmail, false, true)]
-        public async Task ThenTheReturnModelsPopulatedCorrectlyFromTheQuery(string email, bool isValid, bool hasExpired)
+        
+        [Test]
+        public async Task ThenTheErrorDictionaryIsPopulatedIfAnExceptionIsThrown()
         {
             //Arrange
-            var model = new ValidatePasswordResetViewModel { Email = email};
+            _mediator.Setup(x => x.SendAsync(It.IsAny<PasswordResetCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { { "ConfrimPassword", "Some Error" } }));
 
             //Act
-            var actual = await _accountOrchestrator.ValidatePasswordResetCode(model);
+            var actual = await _accountOrchestrator.PasswordResetCodeCommand(new ValidatePasswordResetViewModel());
 
             //Assert
-            Assert.AreEqual(isValid, actual.IsValid);
-            Assert.AreEqual(hasExpired, actual.HasExpired);
-            
+            Assert.IsNotEmpty(actual.ErrorDictionary);
+            Assert.IsFalse(actual.Valid);
+        }
+
+        [Test]
+        public async Task ThenTheErrorDictionaryContainsTheFieldErrors()
+        {
+            //Arrange
+            _mediator.Setup(x => x.SendAsync(It.IsAny<PasswordResetCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string>
+            {
+                { "ConfirmPassword", "Some Confirm Error" },
+                { "PasswordResetCode", "Some Password Reset Error" }
+            }));
+
+
+            //Act
+            var actual = await _accountOrchestrator.PasswordResetCodeCommand(new ValidatePasswordResetViewModel());
+
+            //Assert
+            Assert.AreEqual("Some Confirm Error", actual.ConfrimPasswordError);
+            Assert.AreEqual("Some Password Reset Error", actual.PasswordResetCodeError);
         }
     }
 }
