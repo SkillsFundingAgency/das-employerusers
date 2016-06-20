@@ -6,5 +6,6 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Password
     {
         Task<SecuredPassword> GenerateAsync(string plainText);
         Task<bool> VerifyAsync(string plainTextPassword, string hashedPassword, string salt, string profileId);
+        bool CheckPasswordMatchesRequiredComplexity(string password);
     }
 }

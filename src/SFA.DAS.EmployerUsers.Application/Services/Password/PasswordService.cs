@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Domain;
@@ -65,6 +66,11 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Password
 
             Console.WriteLine(password);
             return password == hashedPassword;
+        }
+
+        public bool CheckPasswordMatchesRequiredComplexity(string password)
+        {
+            return !Regex.IsMatch(password, @"^(?=(.*[0-9].*))(?=(.*[a-z].*))(?=(.*[A-Z].*)).{8,}$");
         }
 
         private async Task<PasswordProfile> GetActivePasswordProfile()

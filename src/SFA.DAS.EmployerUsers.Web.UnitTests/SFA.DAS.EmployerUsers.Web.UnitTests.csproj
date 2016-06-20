@@ -101,6 +101,7 @@
     <Compile Include="Controllers\AccountControllerTests\WhenEnteringMyAccessCode.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenLoggingIn.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenRegistering.cs" />
+    <Compile Include="Controllers\AccountControllerTests\WhenRequestingAPasswordResetCode.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenRequestingConfirmPage.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenResendingActivationCode.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenResetingMyPassword.cs" />
