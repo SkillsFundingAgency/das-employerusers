@@ -111,13 +111,6 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             return registerUserViewModel;
         }
 
-        private void LoginUser(string id, string firstName, string lastName)
-        {
-            _owinWrapper.IssueLoginCookie(id, $"{firstName} {lastName}");
-
-            _owinWrapper.RemovePartialLoginCookie();
-        }
-
         public virtual async Task<bool> ActivateUser(AccessCodeViewModel accessCodeviewModel)
         {
             try
@@ -265,7 +258,12 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     ConfirmPassword = model.ConfirmPassword
                 });
 
-                
+                var user = await _mediator.SendAsync(new GetUserByEmailAddressQuery
+                {
+                    EmailAddress = model.Email
+                });
+
+                LoginUser(user.Id, user.FirstName, user.LastName);
 
                 return model;
             }
@@ -276,6 +274,12 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 model.ConfirmPassword = string.Empty;
                 return model;
             }
+        }
+        private void LoginUser(string id, string firstName, string lastName)
+        {
+            _owinWrapper.IssueLoginCookie(id, $"{firstName} {lastName}");
+
+            _owinWrapper.RemovePartialLoginCookie();
         }
     }
 }
