@@ -56,6 +56,9 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             message.User.Salt = securedPassword.Salt;
             message.User.IsActive = true;
             message.User.AccessCode = string.Empty;
+            message.User.UnlockCodeExpiry = null;
+            message.User.UnlockCode = string.Empty;
+            message.User.IsLocked = false;
 
             Logger.Info($"Password changed for user '{message.Email}'");
 
