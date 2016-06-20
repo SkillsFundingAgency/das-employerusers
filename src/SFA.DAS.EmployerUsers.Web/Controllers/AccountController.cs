@@ -212,7 +212,12 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         {
             requestPasswordResetViewModel = await _accountOrchestrator.RequestPasswordResetCode(requestPasswordResetViewModel);
 
-            return View("ForgottenCredentials", requestPasswordResetViewModel);
+            if (string.IsNullOrEmpty(requestPasswordResetViewModel.Email))
+            {
+                return View("ForgottenCredentials", requestPasswordResetViewModel);
+            }
+
+            return View("ResetPassword", new PasswordResetViewModel {Email = requestPasswordResetViewModel.Email});
         }
 
         [HttpPost]

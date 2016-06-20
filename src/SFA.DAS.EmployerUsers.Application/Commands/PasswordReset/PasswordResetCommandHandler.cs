@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
+using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
@@ -12,12 +13,14 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
         private readonly IUserRepository _userRepository;
         private readonly IValidator<PasswordResetCommand> _validator;
         private readonly ICommunicationService _communicationService;
+        private readonly IPasswordService _passwordService;
 
-        public PasswordResetCommandHandler(IUserRepository userRepository, IValidator<PasswordResetCommand> validator, ICommunicationService communicationService)
+        public PasswordResetCommandHandler(IUserRepository userRepository, IValidator<PasswordResetCommand> validator, ICommunicationService communicationService, IPasswordService passwordService)
         {
             _userRepository = userRepository;
             _validator = validator;
             _communicationService = communicationService;
+            _passwordService = passwordService;
         }
 
         protected override async Task HandleCore(PasswordResetCommand message)
@@ -32,9 +35,14 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
                 throw new InvalidRequestException(validationResult.ValidationDictionary);
             }
 
+            var securedPassword = await _passwordService.GenerateAsync(message.Password);
+
+
             message.User.PasswordResetCode = string.Empty;
             message.User.PasswordResetCodeExpiry = null;
-            message.User.Password = message.Password;
+            message.User.Password = securedPassword.HashedPassword;
+            message.User.PasswordProfileId = securedPassword.ProfileId;
+            message.User.Salt = securedPassword.Salt;
 
             await _userRepository.Update(message.User);
 
