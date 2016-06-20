@@ -41,23 +41,26 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
         {
             var command = new RequestPasswordResetCodeCommand();
 
-            var invalidRequestException = Assert.ThrowsAsync<InvalidRequestException>(() => _commandHandler.Handle(command));
+            var invalidRequestException = Assert.ThrowsAsync<InvalidRequestException>(async () => await _commandHandler.Handle(command));
 
             Assert.That(invalidRequestException.ErrorMessages.Count, Is.EqualTo(1));
             Assert.That(invalidRequestException.ErrorMessages.Keys.Contains("Email"));
         }
 
         [Test]
-        public void UnknownEmailThrowsInvalidRequestException()
+        public async Task UnknownEmailReturnsAndDoesNotSendAnEmail()
         {
+            //Arrange
             var command = GetRequestPasswordResetCodeCommand();
-
             _userRepository.Setup(x => x.GetByEmailAddress(command.Email)).ReturnsAsync(null);
 
-            var invalidRequestException = Assert.ThrowsAsync<InvalidRequestException>(() => _commandHandler.Handle(command));
+            //Act
+            await _commandHandler.Handle(command);
 
-            Assert.That(invalidRequestException.ErrorMessages.Count, Is.EqualTo(1));
-            Assert.That(invalidRequestException.ErrorMessages.Keys.Contains("UserNotFound"));
+            //Assert
+            _communicationSerivce.Verify(x=>x.SendPasswordResetCodeMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
+            _userRepository.Verify(x=>x.Update(It.IsAny<User>()), Times.Never);
+            
         }
 
         [Test]

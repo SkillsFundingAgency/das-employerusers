@@ -51,7 +51,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
             var existingUser = await _userRepository.GetByEmailAddress(message.Email);
 
             if (existingUser == null)
-                throw new InvalidRequestException(new Dictionary<string, string> { { "UserNotFound", $"User '{message.Email}' not found" } });
+                return;
 
             if (RequiresPasswordResetCode(existingUser))
             {
