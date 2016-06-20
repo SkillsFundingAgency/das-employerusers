@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
@@ -9,11 +11,13 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
     {
         private readonly IUserRepository _userRepository;
         private readonly IValidator<PasswordResetCommand> _validator;
+        private readonly ICommunicationService _communicationService;
 
-        public PasswordResetCommandHandler(IUserRepository userRepository, IValidator<PasswordResetCommand> validator)
+        public PasswordResetCommandHandler(IUserRepository userRepository, IValidator<PasswordResetCommand> validator, ICommunicationService communicationService)
         {
             _userRepository = userRepository;
             _validator = validator;
+            _communicationService = communicationService;
         }
 
         protected override async Task HandleCore(PasswordResetCommand message)
@@ -34,6 +38,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 
             await _userRepository.Update(message.User);
 
+            await _communicationService.SendPasswordResetConfirmationMessage(user, Guid.NewGuid().ToString());
         }
     }
 }

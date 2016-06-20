@@ -126,5 +126,23 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 
             await _httpClientWrapper.SendMessage(message);
         }
+
+        public async Task SendPasswordResetConfirmationMessage(User user, string messageId)
+        {
+            var message = new EmailNotification
+            {
+                MessageType = "PasswordResetConfirmation",
+                UserId = user.Id,
+                RecipientsAddress = user.Email,
+                ReplyToAddress = "info@sfa.das.gov.uk",
+                ForceFormat = true,
+                Data = new Dictionary<string, string>
+                {
+                    { "MessageId", messageId }
+                }
+            };
+
+            await _httpClientWrapper.SendMessage(message);
+        }
     }
 }
