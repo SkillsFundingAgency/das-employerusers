@@ -207,6 +207,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Route("account/forgottencredentials")]
         public async Task<ActionResult> ForgottenCredentials(RequestPasswordResetViewModel requestPasswordResetViewModel)
         {

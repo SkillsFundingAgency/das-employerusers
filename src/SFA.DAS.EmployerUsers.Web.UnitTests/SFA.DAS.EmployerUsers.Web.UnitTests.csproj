@@ -103,6 +103,7 @@
     <Compile Include="Controllers\AccountControllerTests\WhenRegistering.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenRequestingAPasswordResetCode.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenRequestingConfirmPage.cs" />
+    <Compile Include="Controllers\AccountControllerTests\WhenRequestingPasswordReset.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenResendingActivationCode.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenResetingMyPassword.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenUnlockingMyAccount.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="AuthenticationTests\UserServiceTests\WhenGettingProfileData.cs" />
     <Compile Include="AuthenticationTests\UserServiceTests\WhenPreAuthenticating.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenRequestingConfirmAccount.cs" />
+    <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenRequestingPasswordReset.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenResendingActivationCode.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenResendingUnlockCode.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenUnlockingUser.cs" />
