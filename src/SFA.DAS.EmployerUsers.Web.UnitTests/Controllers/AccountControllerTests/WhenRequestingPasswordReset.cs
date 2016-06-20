@@ -19,19 +19,33 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         private Mock<IConfigurationService> _configurationService;
         private AccountController _accountController;
         private RequestPasswordResetViewModel _requestPasswordResetViewModel;
+        private RequestPasswordResetViewModel _errorResponse;
 
         [SetUp]
         public void Setup()
         {
-            _accountOrchestrator = new Mock<AccountOrchestrator>();
-            _owinWrapper = new Mock<IOwinWrapper>();
-            _configurationService = new Mock<IConfigurationService>();
-            _accountController = new AccountController(_accountOrchestrator.Object, _owinWrapper.Object, _configurationService.Object);
 
             _requestPasswordResetViewModel = new RequestPasswordResetViewModel
             {
                 Email = "test.user@test.org"
             };
+
+            _accountOrchestrator = new Mock<AccountOrchestrator>();
+            _errorResponse = new RequestPasswordResetViewModel
+            {
+                Email = _requestPasswordResetViewModel.Email,
+                ResetCodeSent = false,
+                ErrorDictionary = new Dictionary<string, string>
+                {
+                    { "Email", "Error" }
+                }
+            };
+            _accountOrchestrator.Setup(x => x.RequestPasswordResetCode(It.Is<RequestPasswordResetViewModel>(m => m.Email == _requestPasswordResetViewModel.Email))).ReturnsAsync(_errorResponse);
+
+            _owinWrapper = new Mock<IOwinWrapper>();
+            _configurationService = new Mock<IConfigurationService>();
+            _accountController = new AccountController(_accountOrchestrator.Object, _owinWrapper.Object, _configurationService.Object);
+
         }
 
         [Test]
@@ -46,42 +60,46 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             _accountOrchestrator.Setup(x => x.RequestPasswordResetCode(It.Is<RequestPasswordResetViewModel>(m => m.Email == _requestPasswordResetViewModel.Email)))
                 .ReturnsAsync(response);
 
-            var xyz = await _accountController.ForgottenCredentials(_requestPasswordResetViewModel);
+            var actual = await _accountController.ForgottenCredentials(_requestPasswordResetViewModel);
 
-            var viewResult = (ViewResult) xyz;
-            var viewModel = (RequestPasswordResetViewModel) viewResult.Model;
+            var viewResult = (ViewResult) actual;
+            var viewModel = (PasswordResetViewModel) viewResult.Model;
 
-            Assert.That(viewResult.ViewName, Is.EqualTo("ForgottenCredentials"));
+            Assert.That(viewResult.ViewName, Is.EqualTo("ResetPassword"));
             Assert.That(viewModel.Email, Is.EqualTo(response.Email));
-            Assert.That(viewModel.ResetCodeSent, Is.True);
-            Assert.That(viewModel.ErrorDictionary.Count, Is.EqualTo(0));
+            
         }
 
         [Test]
         public async Task ThenTheResetCodeIsNotSentWhenAnErrorOccurs()
         {
-            var response = new RequestPasswordResetViewModel
-            {
-                Email = _requestPasswordResetViewModel.Email,
-                ResetCodeSent = false,
-                ErrorDictionary = new Dictionary<string, string>
-                {
-                    { "Email", "Error" }
-                }
-            };
-
-            _accountOrchestrator.Setup(x => x.RequestPasswordResetCode(It.Is<RequestPasswordResetViewModel>(m => m.Email == _requestPasswordResetViewModel.Email)))
-                .ReturnsAsync(response);
-
+           
             var xyz = await _accountController.ForgottenCredentials(_requestPasswordResetViewModel);
 
             var viewResult = (ViewResult)xyz;
             var viewModel = (RequestPasswordResetViewModel)viewResult.Model;
 
             Assert.That(viewResult.ViewName, Is.EqualTo("ForgottenCredentials"));
-            Assert.That(viewModel.Email, Is.EqualTo(response.Email));
+            Assert.That(viewModel.Email, Is.EqualTo(_errorResponse.Email));
             Assert.That(viewModel.ResetCodeSent, Is.False);
             Assert.That(viewModel.ErrorDictionary.Count, Is.EqualTo(1));
         }
+
+        [Test]
+        public async Task ThenTheUserIsRedirectedToTheForgottenCredentialsPageIfTheEmailIsNotSupplied()
+        {
+            //Arrange
+            _errorResponse.Email = "";
+            _accountOrchestrator.Setup(x => x.RequestPasswordResetCode(It.IsAny<RequestPasswordResetViewModel>())).ReturnsAsync(_errorResponse);
+
+            //Act
+            var actual = await _accountController.ForgottenCredentials(_requestPasswordResetViewModel);
+
+            Assert.IsNotNull(actual);
+            var actualViewResult = actual as ViewResult;
+            Assert.IsNotNull(actualViewResult);
+            Assert.AreEqual("ForgottenCredentials",actualViewResult.ViewName);
+        }
+        
     }
 }

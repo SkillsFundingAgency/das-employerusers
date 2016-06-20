@@ -2,17 +2,11 @@
 
 namespace SFA.DAS.EmployerUsers.Web.Models
 {
-    public class RequestPasswordResetViewModel
+    public class RequestPasswordResetViewModel : ViewModelBase
     {
-        public RequestPasswordResetViewModel()
-        {
-            ErrorDictionary = new Dictionary<string, string>();
-        }
-
         public string Email { get; set; }
 
         public bool ResetCodeSent { get; set; }
-
-        public Dictionary<string, string> ErrorDictionary { get; set; }
+        
     }
 }
