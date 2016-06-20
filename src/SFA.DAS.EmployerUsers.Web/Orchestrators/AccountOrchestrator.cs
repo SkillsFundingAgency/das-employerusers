@@ -56,8 +56,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     return new LoginResultModel { Success = false };
                 }
 
-                _owinWrapper.IssueLoginCookie(user.Id, $"{user.FirstName} {user.LastName}");
-                _owinWrapper.RemovePartialLoginCookie();
+                LoginUser(user.Id, user.FirstName, user.LastName);
 
                 return new LoginResultModel { Success = true, RequiresActivation = !user.IsActive };
             }
@@ -93,9 +92,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     EmailAddress = registerUserViewModel.Email
                 });
 
-                _owinWrapper.IssueLoginCookie(user.Id, $"{user.FirstName} {user.LastName}");
-
-                _owinWrapper.RemovePartialLoginCookie();
+                LoginUser(user.Id, user.FirstName, user.LastName);
             }
             catch (InvalidRequestException ex)
             {
@@ -112,6 +109,13 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
 
             return registerUserViewModel;
+        }
+
+        private void LoginUser(string id, string firstName, string lastName)
+        {
+            _owinWrapper.IssueLoginCookie(id, $"{firstName} {lastName}");
+
+            _owinWrapper.RemovePartialLoginCookie();
         }
 
         public virtual async Task<bool> ActivateUser(AccessCodeViewModel accessCodeviewModel)
@@ -249,7 +253,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
         }
 
-        public virtual async Task<ValidatePasswordResetViewModel> PasswordResetCodeCommand(ValidatePasswordResetViewModel model)
+        public virtual async Task<PasswordResetViewModel> PasswordResetCodeCommand(PasswordResetViewModel model)
         {
             try
             {

@@ -35,7 +35,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         {
             //Arrange
             var actualResetCode = "123456";
-            var model = new ValidatePasswordResetViewModel { Email = ValidEmail, PasswordResetCode = actualResetCode, Password = "password", ConfirmPassword = "passwordconfirm" };
+            var model = new PasswordResetViewModel { Email = ValidEmail, PasswordResetCode = actualResetCode, Password = "password", ConfirmPassword = "passwordconfirm" };
 
             //Act
             await _accountOrchestrator.PasswordResetCodeCommand(model);
@@ -52,7 +52,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             _mediator.Setup(x => x.SendAsync(It.IsAny<PasswordResetCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { { "ConfrimPassword", "Some Error" } }));
 
             //Act
-            var actual = await _accountOrchestrator.PasswordResetCodeCommand(new ValidatePasswordResetViewModel());
+            var actual = await _accountOrchestrator.PasswordResetCodeCommand(new PasswordResetViewModel());
 
             //Assert
             Assert.IsNotEmpty(actual.ErrorDictionary);
@@ -71,10 +71,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
 
             //Act
-            var actual = await _accountOrchestrator.PasswordResetCodeCommand(new ValidatePasswordResetViewModel());
+            var actual = await _accountOrchestrator.PasswordResetCodeCommand(new PasswordResetViewModel());
 
             //Assert
-            Assert.AreEqual("Some Confirm Error", actual.ConfrimPasswordError);
+            Assert.AreEqual("Some Confirm Error", actual.ConfirmPasswordError);
             Assert.AreEqual("Some Password Reset Error", actual.PasswordResetCodeError);
         }
     }
