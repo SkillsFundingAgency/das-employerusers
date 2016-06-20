@@ -38,7 +38,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var model = new PasswordResetViewModel { Email = ValidEmail, PasswordResetCode = actualResetCode, Password = "password", ConfirmPassword = "passwordconfirm" };
 
             //Act
-            await _accountOrchestrator.PasswordResetCodeCommand(model);
+            await _accountOrchestrator.ResetPassword(model);
 
             //Assert
             _mediator.Verify(x => x.SendAsync(It.Is<PasswordResetCommand>(c => c.Email == ValidEmail && c.Password=="password" && c.ConfirmPassword=="passwordconfirm" && c.PasswordResetCode == actualResetCode)), Times.Once);
@@ -52,7 +52,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             _mediator.Setup(x => x.SendAsync(It.IsAny<PasswordResetCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { { "ConfrimPassword", "Some Error" } }));
 
             //Act
-            var actual = await _accountOrchestrator.PasswordResetCodeCommand(new PasswordResetViewModel());
+            var actual = await _accountOrchestrator.ResetPassword(new PasswordResetViewModel());
 
             //Assert
             Assert.IsNotEmpty(actual.ErrorDictionary);
@@ -71,11 +71,29 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
 
             //Act
-            var actual = await _accountOrchestrator.PasswordResetCodeCommand(new PasswordResetViewModel());
+            var actual = await _accountOrchestrator.ResetPassword(new PasswordResetViewModel());
 
             //Assert
             Assert.AreEqual("Some Confirm Error", actual.ConfirmPasswordError);
             Assert.AreEqual("Some Password Reset Error", actual.PasswordResetCodeError);
+        }
+
+        [Test]
+        public async Task ThenThePasswordFieldsAreEmptiedIfThereAreErrors()
+        {
+            //Arrange
+            _mediator.Setup(x => x.SendAsync(It.IsAny<PasswordResetCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string>
+            {
+                { "ConfirmPassword", "Some Confirm Error" },
+                { "PasswordResetCode", "Some Password Reset Error" }
+            }));
+
+            //Act
+            var actual = await _accountOrchestrator.ResetPassword(new PasswordResetViewModel());
+
+            //Assert
+            Assert.AreEqual(string.Empty, actual.Password);
+            Assert.AreEqual(string.Empty, actual.ConfirmPassword);
         }
     }
 }

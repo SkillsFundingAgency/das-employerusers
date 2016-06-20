@@ -253,7 +253,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
         }
 
-        public virtual async Task<PasswordResetViewModel> PasswordResetCodeCommand(PasswordResetViewModel model)
+        public virtual async Task<PasswordResetViewModel> ResetPassword(PasswordResetViewModel model)
         {
             try
             {
@@ -265,14 +265,15 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     ConfirmPassword = model.ConfirmPassword
                 });
 
-                model.Password = string.Empty;
-                model.ConfirmPassword = string.Empty;
+                
 
                 return model;
             }
             catch (InvalidRequestException ex)
             {
                 model.ErrorDictionary = ex.ErrorMessages;
+                model.Password = string.Empty;
+                model.ConfirmPassword = string.Empty;
                 return model;
             }
         }
