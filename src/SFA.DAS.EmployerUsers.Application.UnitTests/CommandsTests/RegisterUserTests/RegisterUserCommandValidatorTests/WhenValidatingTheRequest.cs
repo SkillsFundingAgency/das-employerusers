@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
+using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUserTests.RegisterUserCommandValidatorTests
@@ -8,11 +10,15 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
     public class WhenValidatingTheRequest
     {
         private RegisterUserCommandValidator _validator;
+        private Mock<IPasswordService> _passwordService;
 
         [SetUp]
         public void Arrange()
         {
-            _validator = new RegisterUserCommandValidator();
+            _passwordService = new Mock<IPasswordService>();
+            _passwordService.Setup(x => x.CheckPasswordMatchesRequiredComplexity(It.IsAny<string>())).Returns(true);
+
+            _validator = new RegisterUserCommandValidator(_passwordService.Object);
         }
 
         [Test]
@@ -62,30 +68,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
             Assert.IsFalse(actual.IsValid());
         }
         
-        [TestCase("Passw0r")]
-        [TestCase("Password")]
-        [TestCase("123456789")]
-        [TestCase("aaaaa6789")]
-        [TestCase("AAAAA6789")]
-        [TestCase("")]
-        [TestCase(null)]
-        public void ThenFalseIsReturnedIfThePasswordDoesNotTheRequiredStrenth(string password)
-        {
-            //Act
-            var actual = _validator.Validate(new RegisterUserCommand
-            {
-                Email = "test",
-                FirstName = "Testing",
-                LastName = "Tester",
-                Password = password,
-                ConfirmPassword = password,
-                HasAcceptedTermsAndConditions = true
-            });
-
-            //Assert
-            Assert.IsFalse(actual.IsValid());
-        }
-
         [Test]
         public void ThenFalseIsReturnedIftheConfirmPasswordIsNull()
         {
@@ -150,6 +132,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
         [Test]
         public void ThenThedictionaryIsPopulatedWithTheFailedMessagesWhenThePasswordValidationHasFailed()
         {
+            //Arrange
+            _passwordService.Setup(x => x.CheckPasswordMatchesRequiredComplexity(It.IsAny<string>())).Returns(false);
+
             //Act
             var actual = _validator.Validate(new RegisterUserCommand
             {

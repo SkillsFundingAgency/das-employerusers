@@ -1,12 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 {
     public class RegisterUserCommandValidator : IValidator<RegisterUserCommand>
     {
+        private readonly IPasswordService _passwordService;
+
+        public RegisterUserCommandValidator(IPasswordService passwordService)
+        {
+            _passwordService = passwordService;
+        }
+
         public ValidationResult Validate(RegisterUserCommand item)
         {
             var validationResult = new ValidationResult();
@@ -30,7 +35,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
             {
                 validationResult.AddError(nameof(item.Password), "Please enter password");
             }
-            else if (CheckPasswordMatchesAtLeastOneUppercaseOneLowercaseOneNumberAndAtLeastEightCharacters(item.Password))
+            else if (!_passwordService.CheckPasswordMatchesRequiredComplexity(item.Password))
             {
                 validationResult.AddError(nameof(item.Password), "Password requires upper and lowercase letters, a number and at least 8 characters");
             }
@@ -51,10 +56,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 
             return validationResult;
         }
-
-        private static bool CheckPasswordMatchesAtLeastOneUppercaseOneLowercaseOneNumberAndAtLeastEightCharacters(string password)
-        {
-            return !Regex.IsMatch(password, @"^(?=(.*[0-9].*))(?=(.*[a-z].*))(?=(.*[A-Z].*)).{8,}$");
-        }
+        
     }
 }

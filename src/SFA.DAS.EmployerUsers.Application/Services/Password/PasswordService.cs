@@ -70,7 +70,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Password
 
         public bool CheckPasswordMatchesRequiredComplexity(string password)
         {
-            return !Regex.IsMatch(password, @"^(?=(.*[0-9].*))(?=(.*[a-z].*))(?=(.*[A-Z].*)).{8,}$");
+            return !string.IsNullOrEmpty(password) && Regex.IsMatch(password, @"^(?=(.*[0-9].*))(?=(.*[a-z].*))(?=(.*[A-Z].*)).{8,}$");
         }
 
         private async Task<PasswordProfile> GetActivePasswordProfile()

@@ -95,6 +95,7 @@
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenRegisteringAUser.cs" />
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenSendingAccountUnlockMessage.cs" />
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenResendingActivationCode.cs" />
+    <Compile Include="ServicesTests\PasswordTests\PasswordServiceTests\WhenCheckingThePasswordComplexity.cs" />
     <Compile Include="ServicesTests\PasswordTests\PasswordServiceTests\WhenGenerating.cs" />
     <Compile Include="ServicesTests\PasswordTests\PasswordServiceTests\WhenVerifying.cs" />
     <Compile Include="TestHelpers\FakeTimeProvider.cs" />
