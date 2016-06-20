@@ -220,6 +220,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             catch (InvalidRequestException ex)
             {
+                Logger.Info(ex, ex.Message);
                 model.ErrorDictionary = ex.ErrorMessages;
                 return model;
             }
@@ -241,6 +242,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             catch (InvalidRequestException ex)
             {
+                Logger.Info(ex, ex.Message);
                 model.ErrorDictionary = ex.ErrorMessages;
                 return model;
             }
@@ -269,6 +271,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             catch (InvalidRequestException ex)
             {
+                Logger.Info(ex, ex.Message);
                 model.ErrorDictionary = ex.ErrorMessages;
                 model.Password = string.Empty;
                 model.ConfirmPassword = string.Empty;

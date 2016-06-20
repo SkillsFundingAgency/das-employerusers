@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MediatR;
+using NLog;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
@@ -10,6 +11,8 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 {
     public class PasswordResetCommandHandler : AsyncRequestHandler<PasswordResetCommand>
     {
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly IUserRepository _userRepository;
         private readonly IValidator<PasswordResetCommand> _validator;
         private readonly ICommunicationService _communicationService;
@@ -25,6 +28,8 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 
         protected override async Task HandleCore(PasswordResetCommand message)
         {
+            Logger.Info($"Received PasswordResetCommand for user '{message.Email}'");
+
             var user = await _userRepository.GetByEmailAddress(message.Email);
             message.User = user;
 
@@ -43,6 +48,8 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             message.User.Password = securedPassword.HashedPassword;
             message.User.PasswordProfileId = securedPassword.ProfileId;
             message.User.Salt = securedPassword.Salt;
+
+            Logger.Info($"Password changed for user '{message.Email}'");
 
             await _userRepository.Update(message.User);
 
