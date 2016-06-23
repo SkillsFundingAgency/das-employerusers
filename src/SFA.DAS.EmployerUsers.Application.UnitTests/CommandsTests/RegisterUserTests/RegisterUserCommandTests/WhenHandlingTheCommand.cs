@@ -64,13 +64,13 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
             const string errorKey = "MyError";
             const string errorMessage = "Some error has happened";
 
-            _registerUserCommandValidator.Setup(x => x.Validate(It.IsAny<RegisterUserCommand>())).Returns(BuildValidationResult(errorKey, errorMessage));
+            _registerUserCommandValidator.Setup(x => x.Validate(It.Is<RegisterUserCommand>(m => m.Email == _registerUserCommand.Email))).Returns(BuildValidationResult(errorKey, errorMessage));
 
             //Act
-            var actual = Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(new RegisterUserCommand()));
+            var actual = Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(_registerUserCommand));
 
             //Assert
-            _registerUserCommandValidator.Verify(x=>x.Validate(It.IsAny<RegisterUserCommand>()));
+            _registerUserCommandValidator.Verify(x=>x.Validate(It.Is<RegisterUserCommand>(m => m.Email == _registerUserCommand.Email)));
             Assert.Contains(new KeyValuePair<string,string>(errorKey, errorMessage),actual.ErrorMessages);
         }
 
@@ -106,7 +106,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
         {
             //Arrange
             _registerUserCommandValidator.Setup(x => x.Validate(It.IsAny<RegisterUserCommand>())).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
-
 
             Assert.ThrowsAsync<InvalidRequestException>(async ()=> await _registerUserCommandHandler.Handle(new RegisterUserCommand()));
         }
@@ -163,7 +162,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(new RegisterUserCommand()));
             
             //Assert
-            _communicationService.Verify(x => x.SendUserRegistrationMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
+            _communicationService.Verify(x => x.SendUserRegistrationMessage(It.Is<User>(s => s.Email == _registerUserCommand.Email), It.IsAny<string>()), Times.Never);
         }
 
         [Test]
