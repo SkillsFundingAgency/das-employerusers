@@ -11,127 +11,71 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
         public CommunicationService(IHttpClientWrapper httpClientWrapper)
         {
             _httpClientWrapper = httpClientWrapper;
-
         }
 
         public async Task SendUserRegistrationMessage(User user, string messageId)
         {
-            var message = new EmailNotification
-            {
-                MessageType = "UserRegistration",
-                UserId = user.Id,
-                RecipientsAddress = user.Email,
-                ReplyToAddress = "info@sfa.das.gov.uk",
-                ForceFormat = true,
-                Data = new Dictionary<string, string>
-                {
-                    { "AccessCode", user.AccessCode },
-                    { "MessageId", messageId }
-                }
-            };
+            var message = BuildCoreEmailNotification(user, messageId, "UserRegistration");
+
+            message.Data.Add("AccessCode", user.AccessCode);
 
             await _httpClientWrapper.SendMessage(message);
         }
 
         public async Task SendUserAccountConfirmationMessage(User user, string messageId)
         {
-            var message = new EmailNotification
-            {
-                MessageType = "UserAccountConfirmation",
-                UserId = user.Id,
-                RecipientsAddress = user.Email,
-                ReplyToAddress = "info@sfa.das.gov.uk",
-                ForceFormat = true,
-                Data = new Dictionary<string, string>
-                {
-                    { "MessageId", messageId }
-                }
-            };
+            var message = BuildCoreEmailNotification(user, messageId, "UserAccountConfirmation");
 
             await _httpClientWrapper.SendMessage(message);
         }
 
         public async Task SendAccountLockedMessage(User user, string messageId)
         {
-            var message = new EmailNotification
-            {
-                MessageType = "AccountLocked",
-                UserId = user.Id,
-                RecipientsAddress = user.Email,
-                ReplyToAddress = "info@sfa.das.gov.uk",
-                ForceFormat = true,
-                Data = new Dictionary<string, string>
-                {
-                    { "UnlockCode", user.UnlockCode },
-                    { "MessageId", messageId }
-                }
-            };
+            var message = BuildCoreEmailNotification(user, messageId, "AccountLocked");
+
+            message.Data.Add("UnlockCode", user.UnlockCode);
 
             await _httpClientWrapper.SendMessage(message);
         }
 
         public async Task ResendActivationCodeMessage(User user, string messageId)
         {
-            var message = new EmailNotification
-            {
-                MessageType = "ResendActivationCode",
-                UserId = user.Id,
-                RecipientsAddress = user.Email,
-                ReplyToAddress = "info@sfa.das.gov.uk",
-                ForceFormat = true,
-                Data = new Dictionary<string, string>
-                {
-                    { "AccessCode", user.AccessCode },
-                    { "MessageId", messageId }
-                }
-            };
+            var message = BuildCoreEmailNotification(user, messageId, "ResendActivationCode");
+
+            message.Data.Add("AccessCode", user.AccessCode);
 
             await _httpClientWrapper.SendMessage(message);
         }
 
         public async Task SendUserUnlockedMessage(User user, string messageId)
         {
-            var message = new EmailNotification
-            {
-                MessageType = "AccountUnLocked",
-                UserId = user.Id,
-                RecipientsAddress = user.Email,
-                ReplyToAddress = "info@sfa.das.gov.uk",
-                ForceFormat = true,
-                Data = new Dictionary<string, string>
-                {
-                    { "MessageId", messageId }
-                }
-            };
+            var message = BuildCoreEmailNotification(user, messageId, "AccountUnLocked");
 
             await _httpClientWrapper.SendMessage(message);
         }
 
         public async Task SendPasswordResetCodeMessage(User user, string messageId)
         {
-            var message = new EmailNotification
-            {
-                MessageType = "PasswordReset",
-                UserId = user.Id,
-                RecipientsAddress = user.Email,
-                ReplyToAddress = "info@sfa.das.gov.uk",
-                ForceFormat = true,
-                Data = new Dictionary<string, string>
-                {
-                    { "MessageId", messageId },
-                    { "Code", user.PasswordResetCode },
-                    { "ExpiryDate", user.PasswordResetCodeExpiry.Value.ToString() }
-                }
-            };
+            var message = BuildCoreEmailNotification(user, messageId, "PasswordReset");
+
+            message.Data.Add("Code", user.PasswordResetCode);
+            message.Data.Add("ExpiryDate", user.PasswordResetCodeExpiry.Value.ToString());
 
             await _httpClientWrapper.SendMessage(message);
         }
 
         public async Task SendPasswordResetConfirmationMessage(User user, string messageId)
         {
-            var message = new EmailNotification
+            var message = BuildCoreEmailNotification(user, messageId, "PasswordResetConfirmation");
+
+            await _httpClientWrapper.SendMessage(message);
+        }
+
+        private EmailNotification BuildCoreEmailNotification(User user, string messageId, string messageType)
+        {
+            return new EmailNotification
             {
-                MessageType = "PasswordResetConfirmation",
+                MessageType = messageType,
                 UserId = user.Id,
                 RecipientsAddress = user.Email,
                 ReplyToAddress = "info@sfa.das.gov.uk",
@@ -142,7 +86,6 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 }
             };
 
-            await _httpClientWrapper.SendMessage(message);
         }
     }
 }
