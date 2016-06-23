@@ -15,70 +15,76 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
 {
     public class WhenHandlingTheCommand
     {
-        private RegisterUserCommandHandler _registerUserCommandHandler;
+        private const string AccessCode = "ABC123XYZ";
+
         private Mock<IValidator<RegisterUserCommand>> _registerUserCommandValidator;
         private Mock<IUserRepository> _userRepository;
         private Mock<IPasswordService> _passwordService;
         private Mock<ICommunicationService> _communicationService;
         private Mock<ICodeGenerator> _codeGenerator;
+        private RegisterUserCommandHandler _registerUserCommandHandler;
+        private RegisterUserCommand _registerUserCommand;
+        private SecuredPassword _securedPassword;
 
         [SetUp]
         public void Arrange()
         {
             _registerUserCommandValidator = new Mock<IValidator<RegisterUserCommand>>();
 
-            _passwordService = new Mock<IPasswordService>();
-            _passwordService.Setup(s => s.GenerateAsync(It.IsAny<string>())).Returns(Task.FromResult(new SecuredPassword
+            _securedPassword = new SecuredPassword
             {
                 HashedPassword = "Secured_Password",
                 Salt = "Generated_Salt",
                 ProfileId = "Password_Profile_Id"
-            }));
+            };
+            _passwordService = new Mock<IPasswordService>();
+            _passwordService.Setup(s => s.GenerateAsync(It.IsAny<string>())).Returns(Task.FromResult(_securedPassword));
 
             _userRepository = new Mock<IUserRepository>();
             _communicationService = new Mock<ICommunicationService>();
             _codeGenerator = new Mock<ICodeGenerator>();
-            _codeGenerator.Setup(x => x.GenerateAlphaNumeric(6)).Returns("ABC123XYZ");
+            _codeGenerator.Setup(x => x.GenerateAlphaNumeric(6)).Returns(AccessCode);
             _registerUserCommandHandler = new RegisterUserCommandHandler(_registerUserCommandValidator.Object, _passwordService.Object, _userRepository.Object,_communicationService.Object, _codeGenerator.Object);
+
+            _registerUserCommand = new RegisterUserCommand
+            {
+                Id = Guid.NewGuid().ToString(),
+                FirstName = "Unit",
+                LastName = "Tests",
+                Email = "unit.tests@test.local",
+                Password = "SomePassword",
+                ConfirmPassword = "SomePassword"
+            };
         }
         
         [Test]
         public void ThenTheCommandIsHandledAndValidatorCalled()
         {
             //Arrange
-            _registerUserCommandValidator.Setup(x => x.Validate(It.IsAny<RegisterUserCommand>())).Returns(new ValidationResult {ValidationDictionary = new Dictionary<string, string> { {"MyError","Some error has happened"} }});
+            const string errorKey = "MyError";
+            const string errorMessage = "Some error has happened";
+
+            _registerUserCommandValidator.Setup(x => x.Validate(It.IsAny<RegisterUserCommand>())).Returns(BuildValidationResult(errorKey, errorMessage));
 
             //Act
             var actual = Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(new RegisterUserCommand()));
 
             //Assert
             _registerUserCommandValidator.Verify(x=>x.Validate(It.IsAny<RegisterUserCommand>()));
-            Assert.Contains(new KeyValuePair<string,string>("MyError", "Some error has happened"),actual.ErrorMessages);
+            Assert.Contains(new KeyValuePair<string,string>(errorKey, errorMessage),actual.ErrorMessages);
         }
 
         [Test]
         public async Task ThenTheUserIsCreatedIfTheCommandIsValid()
         {
             //Arrange
-            var firstName = "Test";
-            var lastName = "Tester";
-            var emailAddress = "test@test.com";
-            var password = "password";
-            var registerUserCommand = new RegisterUserCommand
-            {
-                    FirstName = firstName,
-                    LastName = lastName,
-                    Email = emailAddress,
-                    Password = password,
-                    ConfirmPassword = password
-            };
-            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>()});
+            _registerUserCommandValidator.Setup(x => x.Validate(_registerUserCommand)).Returns(SuccessfullValidationResult);
 
             //Act
-            await _registerUserCommandHandler.Handle(registerUserCommand);
+            await _registerUserCommandHandler.Handle(_registerUserCommand);
 
             //Assert
-            _userRepository.Verify(v=>v.Create(It.Is<User>(x=> x.FirstName.Equals(firstName) && x.LastName.Equals(lastName) && x.Email.Equals(emailAddress) && !x.Password.Equals(password) && x.AccessCode.Equals("ABC123XYZ",StringComparison.InvariantCultureIgnoreCase))));
+            _userRepository.Verify(v=>v.Create(It.Is<User>(x=> x.FirstName.Equals(_registerUserCommand.FirstName) && x.LastName.Equals(_registerUserCommand.LastName) && x.Email.Equals(_registerUserCommand.Email) && !x.Password.Equals(_registerUserCommand.Password) && x.AccessCode.Equals(AccessCode, StringComparison.InvariantCultureIgnoreCase))));
         }
 
         [Test]
@@ -86,7 +92,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
         public void ThenTheUserIsNotCreatedIfTheCommandIsInvalid()
         {
             //Arrange
-            _registerUserCommandValidator.Setup(x => x.Validate(It.IsAny<RegisterUserCommand>())).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
+            _registerUserCommandValidator.Setup(x => x.Validate(It.IsAny<RegisterUserCommand>())).Returns(BuildValidationResult("", ""));
 
             //Act
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(new RegisterUserCommand()));
@@ -109,44 +115,28 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
         public async Task ThenTheUserIsCreatedWithSecurePasswordDetails()
         {
             // Arrange
-            var registerUserCommand = new RegisterUserCommand
-            {
-                FirstName = "Unit",
-                LastName = "Tests",
-                Email = "unit.tests@test.local",
-                Password = "SomePassword",
-                ConfirmPassword = "SomePassword"
-            };
-            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
+            _registerUserCommandValidator.Setup(x => x.Validate(_registerUserCommand)).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
 
             // Act
-            await _registerUserCommandHandler.Handle(registerUserCommand);
+            await _registerUserCommandHandler.Handle(_registerUserCommand);
 
             // Assert
-            _userRepository.Verify(r => r.Create(It.Is<User>(u => u.Password == "Secured_Password" 
-                                                               && u.Salt == "Generated_Salt"
-                                                               && u.PasswordProfileId == "Password_Profile_Id")));
+            _userRepository.Verify(r => r.Create(It.Is<User>(u => u.Password == _securedPassword.HashedPassword 
+                                                               && u.Salt == _securedPassword.Salt
+                                                               && u.PasswordProfileId == _securedPassword.ProfileId)));
         }
 
         [Test]
         public async Task ThenTheCommunicationServiceIsCalledOnSuccessfulCommand()
         {
             // Arrange
-            var registerUserCommand = new RegisterUserCommand
-            {
-                FirstName = "Unit",
-                LastName = "Tests",
-                Email = "unit.tests@test.local",
-                Password = "SomePassword",
-                ConfirmPassword = "SomePassword"
-            };
-            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
+            _registerUserCommandValidator.Setup(x => x.Validate(_registerUserCommand)).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
 
             //Act
-            await _registerUserCommandHandler.Handle(registerUserCommand);
+            await _registerUserCommandHandler.Handle(_registerUserCommand);
 
             //Assert
-            _communicationService.Verify(x=>x.SendUserRegistrationMessage(It.IsAny<User>(), It.IsAny<string>()),Times.Once);
+            _communicationService.Verify(x=>x.SendUserRegistrationMessage(It.Is<User>(m => m.Email == _registerUserCommand.Email), It.IsAny<string>()),Times.Once);
         }
 
 
@@ -154,23 +144,13 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
         public async Task ThenTheAccessCodeIsSentToTheUserOnSuccessfulCreation()
         {
             // Arrange
-            var userId = Guid.NewGuid().ToString();
-            var registerUserCommand = new RegisterUserCommand
-            {
-                FirstName = "Unit",
-                LastName = "Tests",
-                Email = "unit.tests@test.local",
-                Password = "SomePassword",
-                ConfirmPassword = "SomePassword",
-                Id = userId
-            };
-            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
+            _registerUserCommandValidator.Setup(x => x.Validate(_registerUserCommand)).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
 
             //Act
-            await _registerUserCommandHandler.Handle(registerUserCommand);
+            await _registerUserCommandHandler.Handle(_registerUserCommand);
 
             //Assert
-            _communicationService.Verify(x => x.SendUserRegistrationMessage(It.Is<User>(s=>s.AccessCode.Equals("ABC123XYZ") && s.Id.Equals(userId)),It.IsAny<string>()), Times.Once);
+            _communicationService.Verify(x => x.SendUserRegistrationMessage(It.Is<User>(s=>s.AccessCode.Equals(AccessCode) && s.Id.Equals(_registerUserCommand.Id)),It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -190,46 +170,39 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
         public async Task ThenTheAccessCodeIsProvidedFromTheCodeGenerator()
         {
             // Arrange
-            var userId = Guid.NewGuid().ToString();
-            var registerUserCommand = new RegisterUserCommand
-            {
-                FirstName = "Unit",
-                LastName = "Tests",
-                Email = "unit.tests@test.local",
-                Password = "SomePassword",
-                ConfirmPassword = "SomePassword",
-                Id = userId
-            };
-            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
+            _registerUserCommandValidator.Setup(x => x.Validate(_registerUserCommand)).Returns(SuccessfullValidationResult);
 
             //Act
-            await _registerUserCommandHandler.Handle(registerUserCommand);
+            await _registerUserCommandHandler.Handle(_registerUserCommand);
 
             //Assert
             _codeGenerator.Verify(x=>x.GenerateAlphaNumeric(6),Times.Once);
         }
 
         [Test]
-        public async Task ThenTheEmailAddressIsAlreadyInUse()
+        public void ThenTheEmailAddressIsAlreadyActive()
         {
             // Arrange
-            var userId = Guid.NewGuid().ToString();
-            var registerUserCommand = new RegisterUserCommand
-            {
-                Email = "unit.tests@test.local",
-                Id = userId
-            };
-            _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
+            _registerUserCommandValidator.Setup(x => x.Validate(_registerUserCommand)).Returns(SuccessfullValidationResult);
 
-            _userRepository.Setup(x => x.GetByEmailAddress(registerUserCommand.Email)).ReturnsAsync(new User
+            _userRepository.Setup(x => x.GetByEmailAddress(_registerUserCommand.Email)).ReturnsAsync(new User
             {
-                Email = registerUserCommand.Email,
+                Email = _registerUserCommand.Email,
                 IsActive = true
             });
 
             //Act
-            Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(registerUserCommand));
-
+            Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(_registerUserCommand));
         }
+
+        private ValidationResult BuildValidationResult(string errorKey, string errorMessage)
+        {
+            return new ValidationResult
+            {
+                ValidationDictionary = new Dictionary<string, string> {{errorKey, errorMessage}}
+            };
+        }
+
+        private ValidationResult SuccessfullValidationResult => new ValidationResult {ValidationDictionary = new Dictionary<string, string>()};
     }
 }
