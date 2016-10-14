@@ -20,6 +20,7 @@ using System.Configuration;
 using System.Web;
 using System.Web.WebPages;
 using MediatR;
+using Microsoft.Azure;
 using Microsoft.WindowsAzure;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.Configuration;
@@ -73,7 +74,7 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             }
             else
             {
-                configurationRepository = new AzureTableStorageConfigurationRepository();
+                configurationRepository = new AzureTableStorageConfigurationRepository(CloudConfigurationManager.GetSetting("ConfigurationStorageConnectionString"));
             }
 
             var configurationService = new ConfigurationService(configurationRepository,

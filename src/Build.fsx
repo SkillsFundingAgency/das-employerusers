@@ -31,10 +31,30 @@ let mutable folderPrecompiled = @"\"+ projectName + ".Release_precompiled "
 let mutable publishDirectory = rootPublishDirectory @@ projectName
 let mutable publishingProfile = projectName + "PublishProfile"
 let mutable shouldPublishSite = false
+let mutable shouldCreateDbProject = false
+let mutable sqlPublishFile = ""
 
 let mutable versionNumber = getBuildParamOrDefault "versionNumber" "1.0.0.0"
 
 let mutable solutionFilePresent = true
+
+Target "Set version number" (fun _ ->
+    if publishNuget.ToLower() = "false" then
+        let assemblyMajorNumber = environVarOrDefault "BUILD_MAJORNUMBER" "1" 
+        let assemblyMinorNumber = environVarOrDefault "BUILD_MINORNUMBER" "0" 
+
+        if testDirectory.ToLower() = "release" then
+            versionNumber <- buildVersion
+            if versionNumber.ToLower() <> "localbuild" then
+                versionNumber <- sprintf  @"%s.%s.0.%s" assemblyMajorNumber assemblyMinorNumber buildVersion
+            else
+                versionNumber <- "1.0.0.0"
+
+    else
+        trace "Skipping version number set"
+
+    trace versionNumber
+)
 
 Target "Set Solution Name" (fun _ ->
     
@@ -68,23 +88,25 @@ Target "Set Solution Name" (fun _ ->
                 
         else
             shouldPublishSite <- false
-    
-        versionNumber <- "1.0.0.0"    
-        let assemblyMajorNumber = environVarOrDefault "BUILD_MAJORNUMBER" "1" 
-        let assemblyMinorNumber = environVarOrDefault "BUILD_MINORNUMBER" "0" 
 
-        if testDirectory.ToLower() = "release" then
-            versionNumber <- buildVersion
-            if versionNumber.ToLower() <> "localbuild" then
-                versionNumber <- sprintf  @"%s.%s.0.%s" assemblyMajorNumber assemblyMinorNumber buildVersion
-            else
-                versionNumber <- "1.0.0.0"
+        let subdirs = FileSystemHelper.directoryInfo(currentDirectory).EnumerateDirectories("*.Database")
+        
+        let mutable databaseDir = ""
+
+        for directs in subdirs do
+            trace directs.Name
+            let dirExists = directs.Name.Contains("Database")
+            if(dirExists) then
+                databaseDir <- directs.Name
+
+        let sqlPublishFile = (@"./"+ databaseDir + "/Database.Publish.xml")
+        shouldCreateDbProject <- fileExists(sqlPublishFile)
 
         trace ("Will publish: " + (shouldPublishSite.ToString()))
+        trace ("Will build db project: " + (shouldCreateDbProject.ToString()))
         trace ("PublishingProfile: " + publishingProfile)
         trace ("PublishDirectory: " + publishDirectory)
         trace ("PrecompiledFolder: " + folderPrecompiled)
-        trace ("VersionNumber:" + versionNumber)
         trace ("Project Name has been set to: " + projectName)
     else
         solutionFilePresent <- false
@@ -148,21 +170,38 @@ Target "Build DNX Project"(fun _ ->
     if result <> 0 then failwith "Failed to build DNX project"
 
 )
-
+  
 let buildSolution() = 
 
     if solutionFilePresent then
-        let buildMode = getBuildParamOrDefault "buildMode" "Debug"
+        
+        for file in !! ("./**/ServiceConfiguration.*.cscfg") do
+            let configurationName = FileSystemHelper.fileInfo(file).Name.Replace("ServiceConfiguration.","").Replace(".cscfg","")
 
-        let properties = 
+            let directory = FileSystemHelper.fileInfo(file).DirectoryName
+
+            let configFile = FileSystemHelper.fileInfo(directory @@ (@"./Configuration/ServiceDefinition." + configurationName + ".csdef"))
+
+            let targetFile = FileSystemHelper.fileInfo(directory @@ (@"ServiceDefinition.csdef"))
+
+            let fileExists = FileSystemHelper.fileExists configFile.FullName
+
+            if fileExists && testDirectory.ToLower() = "release" then
+                let fileRename = FileSystemHelper.fileInfo((configFile.DirectoryName @@ "./ServiceDefinition.csdef")).FullName
+                FileHelper.CopyFile fileRename configFile.FullName
+                FileHelper.MoveFile targetFile.DirectoryName fileRename
+
+            if configurationName.ToUpper() <> "LOCAL" then
+                let properties = 
                         [
-                            ("TargetProfile","cloud")
-                        ]
-
-        !! (@"./" + projectName + ".sln")
-            |> MSBuildReleaseExt null properties "Publish"
-            |> Log "Build-Output: "
-
+                            ("TargetProfile",configurationName);
+                            ("OutputPath",@"bin/" @@ configurationName);
+                        ]    
+            
+                !! (@"./" + projectName + ".sln")
+                    |> MSBuildReleaseExt null properties "Publish"
+                    |> Log "Build-Output: "
+                           
 
 Target "Build Acceptance Solution"(fun _ ->
     buildSolution()
@@ -204,6 +243,64 @@ Target "Publish Solution"(fun _ ->
             |> Log "Build-Output: "
     else
         trace "Skipping publish"
+)
+
+Target "Build Database project"(fun _ ->
+    
+    
+    if shouldCreateDbProject then
+        trace "Publish Database project"
+
+        trace (@".\" + projectName + ".Database.Publish.xml")
+
+        let buildMode = getBuildParamOrDefault "buildMode" "Debug"
+        let directoryinfo = FileSystemHelper.directoryInfo(@".\" @@ publishDirectory)
+        let directory = directoryinfo.FullName
+        
+
+        let properties = 
+                        [
+                            ("DebugSymbols", "False");
+                            ("SqlPublishProfilePath", @".\Database.Publish.xml");
+                            ("ToolsVersion","14");
+                        ]
+
+        !! (@".\**\*.sqlproj")
+            |> MSBuildReleaseExt null properties "Build"
+            |> Log "Build-Output: "
+    else
+        trace "Skipping Build Database project"
+
+)
+
+Target "Publish Database project"(fun _ ->
+    
+    if shouldCreateDbProject then
+        trace "Publish Database project"
+
+        trace (@".\" + projectName + ".Database.Publish.xml")
+
+        let buildMode = getBuildParamOrDefault "buildMode" "Debug"
+        let directoryinfo = FileSystemHelper.directoryInfo(@".\" @@ publishDirectory)
+        let directory = directoryinfo.FullName
+        trace directory
+
+        let properties = 
+                        [
+                            ("DebugSymbols", "False");
+                            ("TargetDatabaseName", "Database");
+                            ("SqlPublishProfilePath", @".\Database.Publish.xml");
+                            ("TargetConnectionString", "Data Source=.;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=True");
+                            ("PublishScriptFileName","Database.sql");
+                            ("ToolsVersion","14");
+                            ("PublishToDatabase","true");
+                        ]
+
+        !! (@".\**\*.sqlproj")
+            |> MSBuildReleaseExt null properties "Publish"
+            |> Log "Build-Output: "
+    else
+        trace "Skipping Publish Database project"
 )
 
 Target "Clean Projects" (fun _ ->
@@ -423,18 +520,21 @@ Target "Create Nuget Package" (fun _ ->
                     })
 )
 
-"Set Solution Name"
+"Set version number"
+   ==>"Set Solution Name"
     ==>"Build Acceptance Solution"
     ==>"Cleaning Integration Tests"
     ==>"Building Integration Tests"
     //==>"Run Acceptance Tests"
 
-"Set Solution Name"
+"Set version number"
+   ==>"Set Solution Name"
    ==>"Update Assembly Info Version Numbers"
    ==>"Clean Publish Directory"
    ==>"Clean Projects"
    ==>"Build Projects"
    ==>"Build Solution"
+   ==>"Build Database project"
    ==>"Publish Solution"
    ==>"Cleaning Unit Tests"
    ==>"Building Unit Tests"
@@ -445,5 +545,9 @@ Target "Create Nuget Package" (fun _ ->
    ==>"Create Development Site in IIS"
    ==>"Create Accceptance Test Site in IIS"
 
+
+"Set Solution Name"
+    ==> "Build Database project"
+    ==> "Publish Database project"
    
 RunTargetOrDefault  "Create Accceptance Test Site in IIS"
