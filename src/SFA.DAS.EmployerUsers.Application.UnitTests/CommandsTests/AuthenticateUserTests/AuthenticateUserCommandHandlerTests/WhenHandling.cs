@@ -32,7 +32,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.Authenticate
         [SetUp]
         public void Arrange()
         {
-            _user = new Domain.User
+            _user = new User
             {
                 Email = EmailAddress,
                 Password = CorrectHashedPassword,

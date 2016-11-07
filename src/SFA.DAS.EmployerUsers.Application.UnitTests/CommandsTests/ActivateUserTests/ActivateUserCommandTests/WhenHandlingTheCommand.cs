@@ -25,8 +25,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
             _activateUserCommandValidator = new Mock<IValidator<ActivateUserCommand>>();
 
             _userRepository = new Mock<IUserRepository>();
-            _userRepository.Setup(x => x.GetById(It.IsAny<string>())).ReturnsAsync(new Domain.User());
-            _userRepository.Setup(x => x.GetByEmailAddress(It.IsAny<string>())).ReturnsAsync(new Domain.User());
+            _userRepository.Setup(x => x.GetById(It.IsAny<string>())).ReturnsAsync(new User());
+            _userRepository.Setup(x => x.GetByEmailAddress(It.IsAny<string>())).ReturnsAsync(new User());
 
             _communicationSerivce = new Mock<ICommunicationService>();
 
@@ -59,7 +59,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
             await _activateUserCommand.Handle(new ActivateUserCommand());
 
             //Assert
-            _userRepository.Verify(x => x.Update(It.IsAny<Domain.User>()), Times.Once);
+            _userRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Once);
 
         }
 
@@ -74,7 +74,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _activateUserCommand.Handle(new ActivateUserCommand()));
 
             //Assert
-            _userRepository.Verify(x => x.Update(It.IsAny<Domain.User>()), Times.Never);
+            _userRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
         }
 
 
@@ -88,7 +88,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _activateUserCommand.Handle(new ActivateUserCommand()));
 
             //Assert
-            _userRepository.Verify(x => x.Update(It.IsAny<Domain.User>()), Times.Never);
+            _userRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
         }
 
 
@@ -126,7 +126,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
             //Arrange
             var userId = Guid.NewGuid().ToString();
             var accessCode = "123ADF&^%";
-            var user = new Domain.User
+            var user = new User
             {
                 Email = "test@test.com",
                 LastName = "Tester",
@@ -147,7 +147,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
             await _activateUserCommand.Handle(activateUserCommand);
 
             //Assert
-            _userRepository.Verify(x => x.Update(It.Is<Domain.User>(p => p.IsActive && p.Id == userId)), Times.Once);
+            _userRepository.Verify(x => x.Update(It.Is<User>(p => p.IsActive && p.Id == userId)), Times.Once);
         }
 
         [Test]
@@ -156,7 +156,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
             //Arrange
             var userId = Guid.NewGuid().ToString();
             var accessCode = "123ADF&^%";
-            var user = new Domain.User
+            var user = new User
             {
                 Email = "test@test.com",
                 LastName = "Tester",
@@ -166,28 +166,28 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
                 Id = userId,
                 SecurityCodes = new[]
                 {
-                    new Domain.SecurityCode
+                    new SecurityCode
                     {
                         Code = "123456",
-                        CodeType = Domain.SecurityCodeType.AccessCode,
+                        CodeType = SecurityCodeType.AccessCode,
                         ExpiryTime = DateTime.MaxValue
                     },
-                    new Domain.SecurityCode
+                    new SecurityCode
                     {
                         Code = "987654",
-                        CodeType = Domain.SecurityCodeType.AccessCode,
+                        CodeType = SecurityCodeType.AccessCode,
                         ExpiryTime = DateTime.MaxValue
                     },
-                    new Domain.SecurityCode
+                    new SecurityCode
                     {
                         Code = "852149",
-                        CodeType = Domain.SecurityCodeType.PasswordResetCode,
+                        CodeType = SecurityCodeType.PasswordResetCode,
                         ExpiryTime = DateTime.MaxValue
                     },
-                    new Domain.SecurityCode
+                    new SecurityCode
                     {
                         Code = "785236",
-                        CodeType = Domain.SecurityCodeType.UnlockCode,
+                        CodeType = SecurityCodeType.UnlockCode,
                         ExpiryTime = DateTime.MaxValue
                     }
                 }
@@ -221,7 +221,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
             await _activateUserCommand.Handle(new ActivateUserCommand { UserId = userId });
 
             //Assert
-            _communicationSerivce.Verify(x => x.SendUserAccountConfirmationMessage(It.IsAny<Domain.User>(), It.IsAny<string>()), Times.Once);
+            _communicationSerivce.Verify(x => x.SendUserAccountConfirmationMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Once);
         }
 
 
@@ -236,7 +236,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _activateUserCommand.Handle(new ActivateUserCommand()));
 
             //Assert
-            _communicationSerivce.Verify(x => x.SendUserAccountConfirmationMessage(It.IsAny<Domain.User>(), It.IsAny<string>()), Times.Never);
+            _communicationSerivce.Verify(x => x.SendUserAccountConfirmationMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
         }
 
         [Test]
@@ -245,7 +245,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
             //Arrange
             var userId = Guid.NewGuid().ToString();
             var accessCode = "123ADF&^%";
-            var user = new Domain.User
+            var user = new User
             {
                 Email = "test@test.com",
                 LastName = "Tester",
@@ -267,8 +267,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
             await _activateUserCommand.Handle(activateUserCommand);
 
             //Assert
-            _userRepository.Verify(x => x.Update(It.Is<Domain.User>(p => p.IsActive && p.Id == userId)), Times.Never);
-            _communicationSerivce.Verify(x => x.SendUserAccountConfirmationMessage(It.IsAny<Domain.User>(), It.IsAny<string>()), Times.Never);
+            _userRepository.Verify(x => x.Update(It.Is<User>(p => p.IsActive && p.Id == userId)), Times.Never);
+            _communicationSerivce.Verify(x => x.SendUserAccountConfirmationMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
         }
     }
 }

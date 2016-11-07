@@ -11,7 +11,7 @@ namespace SFA.DAS.EmployerUsers.Application
         public InvalidRequestException(Dictionary<string, string> errorMessages)
             : base(BuildErrorMessage(errorMessages))
         {
-            this.ErrorMessages = errorMessages;
+            ErrorMessages = errorMessages;
         }
 
         private static string BuildErrorMessage(Dictionary<string, string> errorMessages)
