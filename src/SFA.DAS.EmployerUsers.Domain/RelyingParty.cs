@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SFA.DAS.EmployerUsers.Domain
+﻿namespace SFA.DAS.EmployerUsers.Domain
 {
     public class RelyingParty
     {

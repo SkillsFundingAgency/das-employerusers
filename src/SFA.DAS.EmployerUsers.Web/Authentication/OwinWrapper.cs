@@ -1,7 +1,6 @@
 using IdentityServer3.Core.Extensions;
 using IdentityServer3.Core.Models;
 using Microsoft.Owin;
-using SFA.DAS.EmployerUsers.Web.Orchestrators;
 
 namespace SFA.DAS.EmployerUsers.Web.Authentication
 {

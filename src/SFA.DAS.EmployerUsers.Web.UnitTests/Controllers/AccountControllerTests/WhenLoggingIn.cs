@@ -1,10 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
 using IdentityServer3.Core.Models;
-using Microsoft.Owin;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Web.Authentication;

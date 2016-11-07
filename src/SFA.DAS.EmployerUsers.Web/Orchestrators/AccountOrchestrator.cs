@@ -11,11 +11,8 @@ using SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode;
 using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
-using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserByEmailAddress;
-using SFA.DAS.EmployerUsers.Application.Queries.IsPasswordResetValid;
 using SFA.DAS.EmployerUsers.Application.Queries.IsUserActive;
-using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
 

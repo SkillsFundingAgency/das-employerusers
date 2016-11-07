@@ -21,17 +21,14 @@ using System.Web;
 using System.Web.WebPages;
 using MediatR;
 using Microsoft.Azure;
-using Microsoft.WindowsAzure;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.Configuration;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.Configuration.FileStorage;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Domain.Data;
-using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Data;
 using SFA.DAS.EmployerUsers.Web.Authentication;
-using SFA.DAS.EmployerUsers.WebClientComponents;
 using StructureMap.Web.Pipeline;
 
 namespace SFA.DAS.EmployerUsers.Web.DependencyResolution

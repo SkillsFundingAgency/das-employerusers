@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Microsoft.Azure;
-using Microsoft.WindowsAzure;
 using NLog;
 
 namespace SFA.DAS.EmployerUsers.Web

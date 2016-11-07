@@ -1,8 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
-using IdentityServer3.Core;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Configuration;

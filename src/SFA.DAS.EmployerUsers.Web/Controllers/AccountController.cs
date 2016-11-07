@@ -10,7 +10,6 @@ using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 using SFA.DAS.EmployerUsers.WebClientComponents;
-using System;
 
 namespace SFA.DAS.EmployerUsers.Web.Controllers
 {

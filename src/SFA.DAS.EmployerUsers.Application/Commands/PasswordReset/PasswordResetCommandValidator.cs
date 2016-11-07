@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 
