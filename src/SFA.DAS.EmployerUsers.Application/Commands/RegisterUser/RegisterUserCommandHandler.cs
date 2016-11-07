@@ -25,10 +25,10 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
         private readonly IPasswordService _passwordService;
 
         public RegisterUserCommandHandler(IValidator<RegisterUserCommand> registerUserCommandValidator,
-                                          IPasswordService passwordService,
-                                          IUserRepository userRepository,
-                                          ICommunicationService communicationService,
-                                          ICodeGenerator codeGenerator)
+            IPasswordService passwordService,
+            IUserRepository userRepository,
+            ICommunicationService communicationService,
+            ICodeGenerator codeGenerator)
         {
             _userRepository = userRepository;
             _communicationService = communicationService;
@@ -54,7 +54,10 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
             {
                 throw new InvalidRequestException(new Dictionary<string, string>
                 {
-                    {nameof(message.Email), "Your email address has already been activated. Please try signing in again. If you've forgotten your password you can reset it." }
+                    {
+                        nameof(message.Email),
+                        "Your email address has already been activated. Please try signing in again. If you've forgotten your password you can reset it."
+                    }
                 });
             }
 
@@ -64,7 +67,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
             {
                 var registerUser = Create(message, securedPassword);
 
-                await AddSecurityCode(registerUser);
                 await _userRepository.Create(registerUser);
                 await SendUserRegistrationMessage(registerUser);
             }
@@ -97,36 +99,21 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
             var user = new User
             {
                 Id = message.Id,
-                Email = message.Email
+                Email = message.Email,
+                SecurityCodes = new[]
+                {
+                    new SecurityCode
+                    {
+                        Code = _codeGenerator.GenerateAlphaNumeric(),
+                        CodeType = SecurityCodeType.AccessCode,
+                        ExpiryTime = DateTimeProvider.Current.UtcNow.AddMinutes(30) //TODO: Make time configurable
+                    }
+                }
             };
 
             Update(user, message, securedPassword);
 
             return user;
         }
-
-        private async Task AddSecurityCode(User user)
-        {
-            var securityCode = new SecurityCode
-            {
-                Code = _codeGenerator.GenerateAlphaNumeric(),
-                CodeType = SecurityCodeType.AccessCode,
-                ExpiryTime = DateTimeProvider.Current.UtcNow.AddMinutes(30) //TODO: Make time configurable
-            };
-            await _userRepository.StoreSecurityCode(user, securityCode.Code, securityCode.CodeType, securityCode.ExpiryTime);
-
-            if (user.SecurityCodes == null)
-            {
-                user.SecurityCodes = new[]
-                {
-                    securityCode
-                };
-            }
-            else
-            {
-                user.SecurityCodes = user.SecurityCodes.Concat(new[] { securityCode }).ToArray();
-            }
-        }
     }
-
 }

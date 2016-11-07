@@ -96,12 +96,48 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         {
             //Arrange
             _passwordService.Setup(x => x.GenerateAsync("somePassword")).ReturnsAsync(new SecuredPassword { HashedPassword = "hashedPassword", ProfileId = "theprofile", Salt = "salt" });
+            _userRepository.Setup(x => x.GetByEmailAddress(It.IsAny<string>())).ReturnsAsync(new User
+            {
+                Id = "USER1",
+                Email = ActualEmailAddress,
+                PasswordResetCode = PasswordResetCode,
+                IsActive = true,
+                SecurityCodes = new[]
+                {
+                    new SecurityCode
+                    {
+                        Code = "111111",
+                        CodeType = SecurityCodeType.AccessCode,
+                        ExpiryTime = DateTime.MaxValue
+                    },
+                    new SecurityCode
+                    {
+                        Code = "222222",
+                        CodeType = SecurityCodeType.AccessCode,
+                        ExpiryTime = DateTime.MaxValue
+                    },
+                    new SecurityCode
+                    {
+                        Code = "333333",
+                        CodeType = SecurityCodeType.PasswordResetCode,
+                        ExpiryTime = DateTime.MaxValue
+                    },
+                    new SecurityCode
+                    {
+                        Code = "444444",
+                        CodeType = SecurityCodeType.UnlockCode,
+                        ExpiryTime = DateTime.MaxValue
+                    }
+                }
+            });
 
             //Act
             await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = ActualEmailAddress, Password = "somePassword", ConfirmPassword = "someConfirmPassword" });
 
             //Assert
-            _userRepository.Verify(r => r.ExpirySecurityCodes(It.Is<User>(u => u.Email == ActualEmailAddress), SecurityCodeType.AccessCode));
+            _userRepository.Verify(r => r.Update(It.Is<User>(u => u.Id == "USER1"
+                                                               && !u.SecurityCodes.Any(sc => sc.CodeType == SecurityCodeType.AccessCode))),
+                Times.Once);
         }
 
         [Test]
@@ -109,12 +145,48 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         {
             //Arrange
             _passwordService.Setup(x => x.GenerateAsync("somePassword")).ReturnsAsync(new SecuredPassword { HashedPassword = "hashedPassword", ProfileId = "theprofile", Salt = "salt" });
+            _userRepository.Setup(x => x.GetByEmailAddress(ActualEmailAddress)).ReturnsAsync(new User
+            {
+                Id = "USER1",
+                Email = ActualEmailAddress,
+                PasswordResetCode = PasswordResetCode,
+                IsActive = true,
+                SecurityCodes = new[]
+                {
+                    new SecurityCode
+                    {
+                        Code = "111111",
+                        CodeType = SecurityCodeType.PasswordResetCode,
+                        ExpiryTime = DateTime.MaxValue
+                    },
+                    new SecurityCode
+                    {
+                        Code = "222222",
+                        CodeType = SecurityCodeType.PasswordResetCode,
+                        ExpiryTime = DateTime.MaxValue
+                    },
+                    new SecurityCode
+                    {
+                        Code = "333333",
+                        CodeType = SecurityCodeType.AccessCode,
+                        ExpiryTime = DateTime.MaxValue
+                    },
+                    new SecurityCode
+                    {
+                        Code = "444444",
+                        CodeType = SecurityCodeType.UnlockCode,
+                        ExpiryTime = DateTime.MaxValue
+                    }
+                }
+            });
 
             //Act
             await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = ActualEmailAddress, Password = "somePassword", ConfirmPassword = "someConfirmPassword" });
 
             //Assert
-            _userRepository.Verify(r => r.ExpirySecurityCodes(It.Is<User>(u => u.Email == ActualEmailAddress), SecurityCodeType.PasswordResetCode));
+            _userRepository.Verify(r => r.Update(It.Is<User>(u => u.Id == "USER1"
+                                                               && !u.SecurityCodes.Any(sc => sc.CodeType == SecurityCodeType.PasswordResetCode))),
+                Times.Once);
         }
 
         [Test]

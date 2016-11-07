@@ -93,6 +93,7 @@
     <Compile Include="Commands\UnlockUser\UnlockUserCommandHandler.cs" />
     <Compile Include="Commands\UnlockUser\UnlockUserCommandValidator.cs" />
     <Compile Include="DataEntities\User\RegisterUser.cs" />
+    <Compile Include="DomainObjectExtensions.cs" />
     <Compile Include="Events\AccountLocked\AccountLockedEvent.cs" />
     <Compile Include="Events\AccountLocked\GenerateAndEmailAccountLockedEmailHandler.cs" />
     <Compile Include="InvalidRequestException.cs" />

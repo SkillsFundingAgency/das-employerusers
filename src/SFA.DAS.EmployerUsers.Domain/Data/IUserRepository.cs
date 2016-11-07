@@ -9,8 +9,5 @@ namespace SFA.DAS.EmployerUsers.Domain.Data
         Task<Domain.User> GetByEmailAddress(string emailAddress);
         Task Create(User registerUser);
         Task Update(User user);
-
-        Task StoreSecurityCode(User user, string code, SecurityCodeType codeType, DateTime expiryTime);
-        Task ExpirySecurityCodes(User user, SecurityCodeType codeType);
     }
 }
