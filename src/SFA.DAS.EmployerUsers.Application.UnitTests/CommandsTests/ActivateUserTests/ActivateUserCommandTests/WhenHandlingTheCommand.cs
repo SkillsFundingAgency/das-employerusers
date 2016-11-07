@@ -131,8 +131,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
                 FirstName = "Test",
                 Password = "SomePassword",
                 IsActive = false,
-                Id = userId,
-                AccessCode = accessCode
+                Id = userId
             };
             var activateUserCommand = new ActivateUserCommand
             {
@@ -140,13 +139,43 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
                 AccessCode = accessCode
             };
             _userRepository.Setup(x => x.GetById(userId)).ReturnsAsync(user);
-            _activateUserCommandValidator.Setup(x => x.Validate(It.Is<ActivateUserCommand>(p=>p.AccessCode==accessCode && p.UserId==userId && p.User.AccessCode == accessCode))).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>()});
+            _activateUserCommandValidator.Setup(x => x.Validate(It.Is<ActivateUserCommand>(p=>p.AccessCode==accessCode && p.UserId==userId))).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>()});
 
             //Act
             await _activateUserCommand.Handle(activateUserCommand);
 
             //Assert
-            _userRepository.Verify(x => x.Update(It.Is<Domain.User>(p=>p.IsActive && p.Id == userId && p.AccessCode == string.Empty)), Times.Once);
+            _userRepository.Verify(x => x.Update(It.Is<Domain.User>(p=>p.IsActive && p.Id == userId)), Times.Once);
+        }
+
+        [Test]
+        public async Task ThenTheUsersAccessCodesAreExpired()
+        {
+            //Arrange
+            var userId = Guid.NewGuid().ToString();
+            var accessCode = "123ADF&^%";
+            var user = new Domain.User
+            {
+                Email = "test@test.com",
+                LastName = "Tester",
+                FirstName = "Test",
+                Password = "SomePassword",
+                IsActive = false,
+                Id = userId
+            };
+            var activateUserCommand = new ActivateUserCommand
+            {
+                UserId = userId,
+                AccessCode = accessCode
+            };
+            _userRepository.Setup(x => x.GetById(userId)).ReturnsAsync(user);
+            _activateUserCommandValidator.Setup(x => x.Validate(It.Is<ActivateUserCommand>(p => p.AccessCode == accessCode && p.UserId == userId))).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
+
+            //Act
+            await _activateUserCommand.Handle(activateUserCommand);
+
+            //Assert
+            _userRepository.Verify(x => x.ExpirySecurityCodes(user, Domain.SecurityCodeType.AccessCode), Times.Once);
         }
 
         [Test]

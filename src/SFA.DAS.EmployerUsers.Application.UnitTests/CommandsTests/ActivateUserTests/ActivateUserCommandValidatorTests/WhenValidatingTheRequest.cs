@@ -42,17 +42,78 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
         public void ThenTrueIsReturnedIfAllFieldsAreProvidedAndTheAccessCodeMatchesCaseInsensitive()
         {
             //Act
-            var actual = _activateUserCommandValidator.Validate(new ActivateUserCommand {AccessCode = "AccessCode", UserId = Guid.NewGuid().ToString(), User = new User {AccessCode = "ACCESSCODE"} });
+            var command = new ActivateUserCommand
+            {
+                AccessCode = "AccessCode",
+                UserId = Guid.NewGuid().ToString(),
+                User = new User
+                {
+                    SecurityCodes = new[]
+                    {
+                        new SecurityCode
+                        {
+                            Code = "ACCESSCODE",
+                            CodeType = SecurityCodeType.AccessCode,
+                            ExpiryTime = DateTime.MaxValue
+                        }
+                    }
+                }
+            };
+            var actual = _activateUserCommandValidator.Validate(command);
 
             //Assert
             Assert.IsTrue(actual.IsValid());
         }
 
         [Test]
-        public void ThenFalseIsReturnedIfTheAccessCodeDoesntMatchTheOneOnTheUser()
+        public void ThenFalseIsReturnedIfTheAccessCodeDoesntMatchTheAnyOnTheUser()
         {
             //Act
-            var actual = _activateUserCommandValidator.Validate(new ActivateUserCommand { AccessCode = "AccessCode", UserId = Guid.NewGuid().ToString(), User = new User {AccessCode = "Edocssecca"} });
+            var command = new ActivateUserCommand
+            {
+                AccessCode = "AccessCode",
+                UserId = Guid.NewGuid().ToString(),
+                User = new User
+                {
+                    SecurityCodes = new[]
+                    {
+                        new SecurityCode
+                        {
+                            Code = "Edocssecca",
+                            CodeType = SecurityCodeType.AccessCode,
+                            ExpiryTime = DateTime.MaxValue
+                        }
+                    }
+                }
+            };
+            var actual = _activateUserCommandValidator.Validate(command);
+
+            //Assert
+            Assert.IsFalse(actual.IsValid());
+        }
+
+        [Test]
+        public void ThenFalseIsReturnedIfTheAccessCodeMatchAnyOnTheUserButItHasExpired()
+        {
+            //Act
+            var command = new ActivateUserCommand
+            {
+                AccessCode = "AccessCode",
+                UserId = Guid.NewGuid().ToString(),
+                User = new User
+                {
+                    SecurityCodes = new[]
+                    {
+                        new SecurityCode
+                        {
+                            Code = "AccessCode",
+                            CodeType = SecurityCodeType.AccessCode,
+                            ExpiryTime = DateTime.MinValue
+                        }
+                    }
+                }
+            };
+            var actual = _activateUserCommandValidator.Validate(command);
 
             //Assert
             Assert.IsFalse(actual.IsValid());
@@ -62,7 +123,16 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
         public void ThenTrueIsReturnedIfOnlyTheEmailHasBeenSuppliedAndTheUserIdIsNull()
         {
             //Act
-            var actual = _activateUserCommandValidator.Validate(new ActivateUserCommand {UserId=null, Email = "User@Email", User = new User {Email = "user@email"} });
+            var command = new ActivateUserCommand
+            {
+                UserId = null,
+                Email = "User@Email",
+                User = new User
+                {
+                    Email = "user@email"
+                }
+            };
+            var actual = _activateUserCommandValidator.Validate(command);
 
             //Assert
             Assert.IsTrue(actual.IsValid());

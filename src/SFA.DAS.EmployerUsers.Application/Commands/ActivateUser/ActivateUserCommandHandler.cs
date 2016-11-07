@@ -46,9 +46,9 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
             }
 
             user.IsActive = true;
-            user.AccessCode = string.Empty;
-
             await _userRepository.Update(user);
+
+            await _userRepository.ExpirySecurityCodes(user, Domain.SecurityCodeType.AccessCode);
 
             await _communicationService.SendUserAccountConfirmationMessage(user, Guid.NewGuid().ToString());
         }

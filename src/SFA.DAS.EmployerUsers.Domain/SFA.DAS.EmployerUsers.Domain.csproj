@@ -50,6 +50,8 @@
     <Compile Include="Data\IUserRepository.cs" />
     <Compile Include="PasswordProfile.cs" />
     <Compile Include="RelyingParty.cs" />
+    <Compile Include="SecurityCode.cs" />
+    <Compile Include="SecurityCodeType.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

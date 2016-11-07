@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.EmployerUsers.Application.Validation;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
@@ -18,11 +19,13 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
 
             if (string.IsNullOrEmpty(item?.AccessCode) || string.IsNullOrEmpty(item.UserId))
             {
-                validationResult.ValidationDictionary = new Dictionary<string, string> {{"", ""}};
+                validationResult.ValidationDictionary = new Dictionary<string, string> { { "", "" } };
                 return validationResult;
             }
-
-            if (!item.AccessCode.Equals(item.User.AccessCode, StringComparison.CurrentCultureIgnoreCase))
+            
+            if (!item.User.SecurityCodes.Any(sc => sc.CodeType == Domain.SecurityCodeType.AccessCode 
+                                                && sc.Code.Equals(item.AccessCode, StringComparison.CurrentCultureIgnoreCase)
+                                                && sc.ExpiryTime >= DateTime.Now))
             {
                 validationResult.ValidationDictionary = new Dictionary<string, string> { { "", "" } };
                 return validationResult;
@@ -33,8 +36,8 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
 
         private static bool TheUserIsBeingClassedAsValidFromJustHavingAMatchingEmail(ActivateUserCommand item)
         {
-            return !string.IsNullOrEmpty(item?.Email) || (item?.User?.Email != null 
-                                                            && string.IsNullOrEmpty(item.UserId) 
+            return !string.IsNullOrEmpty(item?.Email) || (item?.User?.Email != null
+                                                            && string.IsNullOrEmpty(item.UserId)
                                                             && !item.Email.Equals(item.User.Email, StringComparison.CurrentCultureIgnoreCase));
         }
     }

@@ -6,6 +6,7 @@ using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 using SFA.DAS.Configuration;
+using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using User = SFA.DAS.EmployerUsers.Domain.User;
 
@@ -73,6 +74,10 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
             var documentDbUser = DocumentDbUser.FromDomainUser(user);
             await client.ReplaceDocumentAsync(documentUri, documentDbUser);
         }
-        
+
+        public Task ExpirySecurityCodes(User user, SecurityCodeType codeType)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

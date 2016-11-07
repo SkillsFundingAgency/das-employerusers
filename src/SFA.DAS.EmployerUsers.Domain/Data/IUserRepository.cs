@@ -6,7 +6,9 @@ namespace SFA.DAS.EmployerUsers.Domain.Data
     {
         Task<Domain.User> GetById(string id);
         Task<Domain.User> GetByEmailAddress(string emailAddress);
-        Task Create(Domain.User registerUser);
-        Task Update(Domain.User user);
+        Task Create(User registerUser);
+        Task Update(User user);
+
+        Task ExpirySecurityCodes(User user, SecurityCodeType codeType);
     }
 }
