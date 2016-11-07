@@ -13,7 +13,6 @@ using SFA.DAS.TimeProvider;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPasswordResetCodeTests.RequestPasswordResetCodeCommandTests
 {
-    [TestFixture]
     public class WhenHandlingTheCommand
     {
         private Mock<IUserRepository> _userRepository;

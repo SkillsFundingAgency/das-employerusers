@@ -48,18 +48,17 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             {
                 sendPasswordResetConfirmationMessage = true;
             }
-
-            message.User.PasswordResetCode = string.Empty;
-            message.User.PasswordResetCodeExpiry = null;
+            
             message.User.Password = securedPassword.HashedPassword;
             message.User.PasswordProfileId = securedPassword.ProfileId;
             message.User.Salt = securedPassword.Salt;
             message.User.IsActive = true;
-            message.User.AccessCode = string.Empty;
-
-            Logger.Info($"Password changed for user '{message.Email}'");
 
             await _userRepository.Update(message.User);
+            Logger.Info($"Password changed for user '{message.Email}'");
+
+            await _userRepository.ExpirySecurityCodes(message.User, Domain.SecurityCodeType.AccessCode);
+            await _userRepository.ExpirySecurityCodes(message.User, Domain.SecurityCodeType.PasswordResetCode);
 
             
             await _communicationService.SendPasswordResetConfirmationMessage(user, Guid.NewGuid().ToString());
