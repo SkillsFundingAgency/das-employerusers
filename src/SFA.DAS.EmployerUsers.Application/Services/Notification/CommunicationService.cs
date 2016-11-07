@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.EmployerUsers.Domain;
 
@@ -25,7 +26,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 ForceFormat = true,
                 Data = new Dictionary<string, string>
                 {
-                    { "AccessCode", user.AccessCode },
+                    { "AccessCode", GetUserAccessCode(user) },
                     { "MessageId", messageId }
                 }
             };
@@ -81,7 +82,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 ForceFormat = true,
                 Data = new Dictionary<string, string>
                 {
-                    { "AccessCode", user.AccessCode },
+                    { "AccessCode", GetUserAccessCode(user) },
                     { "MessageId", messageId }
                 }
             };
@@ -143,6 +144,16 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
             };
 
             await _httpClientWrapper.SendMessage(message);
+        }
+
+
+
+        private string GetUserAccessCode(User user)
+        {
+            return user.SecurityCodes.Where(sc => sc.CodeType == SecurityCodeType.AccessCode)
+                                     .OrderByDescending(sc => sc.ExpiryTime)
+                                     .Select(sc => sc.Code)
+                                     .FirstOrDefault();
         }
     }
 }

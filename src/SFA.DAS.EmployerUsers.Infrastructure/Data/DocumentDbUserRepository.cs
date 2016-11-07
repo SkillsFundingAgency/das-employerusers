@@ -75,6 +75,11 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
             await client.ReplaceDocumentAsync(documentUri, documentDbUser);
         }
 
+        public Task StoreSecurityCode(User user, string code, SecurityCodeType codeType, DateTime expiryTime)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task ExpirySecurityCodes(User user, SecurityCodeType codeType)
         {
             throw new NotImplementedException();

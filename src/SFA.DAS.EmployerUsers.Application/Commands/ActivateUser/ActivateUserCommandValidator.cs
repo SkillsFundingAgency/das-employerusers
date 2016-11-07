@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
             
             if (!item.User.SecurityCodes.Any(sc => sc.CodeType == Domain.SecurityCodeType.AccessCode 
                                                 && sc.Code.Equals(item.AccessCode, StringComparison.CurrentCultureIgnoreCase)
-                                                && sc.ExpiryTime >= DateTime.Now))
+                                                && sc.ExpiryTime >= DateTime.UtcNow))
             {
                 validationResult.ValidationDictionary = new Dictionary<string, string> { { "", "" } };
                 return validationResult;

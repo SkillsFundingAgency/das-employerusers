@@ -10,6 +10,7 @@ using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using System.Collections.Generic;
+using SFA.DAS.TimeProvider;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 {
@@ -23,7 +24,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
         private readonly IValidator<RegisterUserCommand> _registerUserCommandValidator;
         private readonly IPasswordService _passwordService;
 
-        public RegisterUserCommandHandler(IValidator<RegisterUserCommand> registerUserCommandValidator, IPasswordService passwordService, IUserRepository userRepository, ICommunicationService communicationService, ICodeGenerator codeGenerator)
+        public RegisterUserCommandHandler(IValidator<RegisterUserCommand> registerUserCommandValidator,
+                                          IPasswordService passwordService,
+                                          IUserRepository userRepository,
+                                          ICommunicationService communicationService,
+                                          ICodeGenerator codeGenerator)
         {
             _userRepository = userRepository;
             _communicationService = communicationService;
@@ -59,6 +64,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
             {
                 var registerUser = Create(message, securedPassword);
 
+                await AddSecurityCode(registerUser);
                 await _userRepository.Create(registerUser);
                 await SendUserRegistrationMessage(registerUser);
             }
@@ -87,17 +93,40 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 
         private User Create(RegisterUserCommand message, SecuredPassword securedPassword)
         {
+
             var user = new User
             {
                 Id = message.Id,
-                Email = message.Email,
-                AccessCode = _codeGenerator.GenerateAlphaNumeric(),
+                Email = message.Email
             };
 
             Update(user, message, securedPassword);
 
             return user;
         }
+
+        private async Task AddSecurityCode(User user)
+        {
+            var securityCode = new SecurityCode
+            {
+                Code = _codeGenerator.GenerateAlphaNumeric(),
+                CodeType = SecurityCodeType.AccessCode,
+                ExpiryTime = DateTimeProvider.Current.UtcNow.AddMinutes(30) //TODO: Make time configurable
+            };
+            await _userRepository.StoreSecurityCode(user, securityCode.Code, securityCode.CodeType, securityCode.ExpiryTime);
+
+            if (user.SecurityCodes == null)
+            {
+                user.SecurityCodes = new[]
+                {
+                    securityCode
+                };
+            }
+            else
+            {
+                user.SecurityCodes = user.SecurityCodes.Concat(new[] { securityCode }).ToArray();
+            }
+        }
     }
-    
+
 }
