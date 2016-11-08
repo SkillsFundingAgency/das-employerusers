@@ -253,7 +253,15 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
                 Password = "SomePassword",
                 IsActive = true,
                 Id = userId,
-                AccessCode = accessCode
+                SecurityCodes = new[]
+                {
+                    new SecurityCode
+                    {
+                        Code = accessCode,
+                        CodeType = SecurityCodeType.AccessCode,
+                        ExpiryTime = DateTime.MaxValue
+                    }
+                }
             };
             var activateUserCommand = new ActivateUserCommand
             {
@@ -261,7 +269,11 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
                 AccessCode = accessCode
             };
             _userRepository.Setup(x => x.GetById(userId)).ReturnsAsync(user);
-            _activateUserCommandValidator.Setup(x => x.Validate(It.Is<ActivateUserCommand>(p => p.AccessCode == accessCode && p.UserId == userId && p.User.AccessCode == accessCode))).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
+            _activateUserCommandValidator.Setup(x => x.Validate(It.Is<ActivateUserCommand>(p => p.AccessCode == accessCode
+                                                                                             && p.UserId == userId
+                                                                                             && p.User.SecurityCodes.Any(sc => sc.Code == accessCode
+                                                                                                                            && sc.CodeType == SecurityCodeType.AccessCode))))
+                                         .Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
 
             //Act
             await _activateUserCommand.Handle(activateUserCommand);

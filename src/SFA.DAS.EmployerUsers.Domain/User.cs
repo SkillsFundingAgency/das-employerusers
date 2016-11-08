@@ -12,7 +12,6 @@ namespace SFA.DAS.EmployerUsers.Domain
         public string Salt { get; set; }
         public string PasswordProfileId { get; set; }
         public bool IsActive { get; set; }
-        public string AccessCode { get; set; }
         public int FailedLoginAttempts { get; set; }
         public bool IsLocked { get; set; }
         public string UnlockCode { get; set; }

@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         private Mock<IMediator> _mediator;
         private Mock<ICommunicationService> _communicationService;
         private const string AccessCode = "ABC123456PLM";
-        private const string ExpectedEmail =  "test@user.local";
+        private const string ExpectedEmail = "test@user.local";
         private const string NotAUser = "not@user.local";
 
         [SetUp]
@@ -32,7 +32,21 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             _userRepositry = new Mock<IUserRepository>();
             _mediator = new Mock<IMediator>();
             _communicationService = new Mock<ICommunicationService>();
-            _userRepositry.Setup(x => x.GetByEmailAddress(ExpectedEmail)).ReturnsAsync(new User {Email = ExpectedEmail, AccessCode = AccessCode, IsLocked = true });
+            _userRepositry.Setup(x => x.GetByEmailAddress(ExpectedEmail))
+                          .ReturnsAsync(new User
+                          {
+                              Email = ExpectedEmail,
+                              IsLocked = true,
+                              SecurityCodes = new[]
+                              {
+                                  new SecurityCode
+                                  {
+                                      Code = AccessCode,
+                                      CodeType = SecurityCodeType.AccessCode,
+                                      ExpiryTime = DateTime.MaxValue
+                                  }
+                              }
+                          });
             _userRepositry.Setup(x => x.GetByEmailAddress(NotAUser)).ReturnsAsync(null);
             _unlockUserCommand = new UnlockUserCommandHandler(_unlockUserCommandValidator.Object, _userRepositry.Object, _mediator.Object, _communicationService.Object);
         }
@@ -77,7 +91,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         public async Task ThenTheUserIsRetrievedFromTheUserRepository()
         {
             //Arrange
-            var unlockUserCommand = new UnlockUserCommand {Email = ExpectedEmail};
+            var unlockUserCommand = new UnlockUserCommand { Email = ExpectedEmail };
 
             //Act
             await _unlockUserCommand.Handle(unlockUserCommand);
@@ -102,7 +116,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             //Assert
             _userRepositry.Verify(x => x.Update(It.Is<User>(c => !c.IsActive && c.Email == ExpectedEmail && !c.IsLocked && c.FailedLoginAttempts == 0 && c.UnlockCode == string.Empty && c.UnlockCodeExpiry == null)), Times.Once);
         }
-        
+
         [Test]
         public void ThenTheUserRepositoryIsNotUpdatedIfTheUserDoesNotExist()
         {
@@ -137,7 +151,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _unlockUserCommand.Handle(unlockUserCommand));
 
             //Assert
-            _communicationService.Verify(x => x.SendUserUnlockedMessage(It.IsAny<User>(),It.IsAny<string>()), Times.Never);
+            _communicationService.Verify(x => x.SendUserUnlockedMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
         }
 
         [Test]
@@ -159,7 +173,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _unlockUserCommand.Handle(unlockUserCommand));
 
             //Assert
-            _mediator.Verify(x=>x.PublishAsync(It.Is<AccountLockedEvent>(c=>c.User.Email.Equals(ExpectedEmail))),Times.Once);
+            _mediator.Verify(x => x.PublishAsync(It.Is<AccountLockedEvent>(c => c.User.Email.Equals(ExpectedEmail))), Times.Once);
         }
 
 
@@ -178,7 +192,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _unlockUserCommand.Handle(unlockUserCommand));
 
             //Assert
-            _mediator.Verify(x => x.PublishAsync(It.IsAny<AccountLockedEvent>()),Times.Never());
+            _mediator.Verify(x => x.PublishAsync(It.IsAny<AccountLockedEvent>()), Times.Never());
         }
 
         [Test]
@@ -202,15 +216,29 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             await _unlockUserCommand.Handle(unlockUserCommand);
 
             //Assert
-            _communicationService.Verify(x=>x.SendUserUnlockedMessage(It.Is<User>(c => !c.IsActive && c.Email == ExpectedEmail && !c.IsLocked && c.FailedLoginAttempts == 0),It.IsAny<string>()));
-           
+            _communicationService.Verify(x => x.SendUserUnlockedMessage(It.Is<User>(c => !c.IsActive && c.Email == ExpectedEmail && !c.IsLocked && c.FailedLoginAttempts == 0), It.IsAny<string>()));
+
         }
 
         [Test]
         public async Task ThenTheRespostioryWontBeUpdatedIfTheAccountIsNotLocked()
         {
             //Arrange
-            _userRepositry.Setup(x => x.GetByEmailAddress(ExpectedEmail)).ReturnsAsync(new User { Email = ExpectedEmail, AccessCode = AccessCode, IsLocked = false});
+            _userRepositry.Setup(x => x.GetByEmailAddress(ExpectedEmail))
+                          .ReturnsAsync(new User
+                          {
+                              Email = ExpectedEmail,
+                              IsLocked = false,
+                              SecurityCodes = new[]
+                              {
+                                  new SecurityCode
+                                  {
+                                      Code = AccessCode,
+                                      CodeType = SecurityCodeType.AccessCode,
+                                      ExpiryTime = DateTime.MaxValue
+                                  }
+                              }
+                          });
             var unlockUserCommand = new UnlockUserCommand
             {
                 UnlockCode = "ASDASDASD",
