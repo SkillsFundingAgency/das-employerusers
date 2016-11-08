@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using SFA.DAS.EmployerUsers.Application.Validation;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
@@ -10,11 +11,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
             var result = new ValidationResult();
             if (string.IsNullOrEmpty(item.Email))
             {
-                result.ValidationDictionary.Add("Email","Email has not been supplied");
+                result.ValidationDictionary.Add("Email", "Email has not been supplied");
             }
             if (string.IsNullOrEmpty(item.UnlockCode))
             {
-                result.ValidationDictionary.Add("UnlockCode","Unlock Code has not been supplied");
+                result.ValidationDictionary.Add("UnlockCode", "Unlock Code has not been supplied");
             }
 
             if (item.User == null)
@@ -23,16 +24,18 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
                 return result;
             }
 
-            if (item.User.UnlockCodeExpiry < DateTime.UtcNow )
+            var matchingUnlockCode = item.User.SecurityCodes?.OrderByDescending(sc => sc.ExpiryTime)
+                                                             .FirstOrDefault(sc => sc.Code.Equals(item.UnlockCode, StringComparison.CurrentCultureIgnoreCase)
+                                                                                && sc.CodeType == Domain.SecurityCodeType.UnlockCode);
+
+            if (matchingUnlockCode == null)
+            {
+                result.ValidationDictionary.Add("UnlockCodeMatch", "Unlock Code is not correct");
+            }
+            else if (matchingUnlockCode.ExpiryTime < DateTime.UtcNow)
             {
                 result.ValidationDictionary.Add("UnlockCodeExpiry", "Unlock Code has expired");
                 return result;
-            }
-
-
-            if(!item.UnlockCode.Equals(item.User.UnlockCode,StringComparison.CurrentCultureIgnoreCase))
-            {
-                result.ValidationDictionary.Add("UnlockCodeMatch", "Unlock Code is not correct");
             }
 
             return result;

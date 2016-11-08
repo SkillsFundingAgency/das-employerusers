@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using NUnit.Framework;
@@ -42,7 +43,19 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
                                   new SecurityCode
                                   {
                                       Code = AccessCode,
+                                      CodeType = SecurityCodeType.UnlockCode,
+                                      ExpiryTime = DateTime.MaxValue
+                                  },
+                                  new SecurityCode
+                                  {
+                                      Code = AccessCode + "A",
                                       CodeType = SecurityCodeType.AccessCode,
+                                      ExpiryTime = DateTime.MaxValue
+                                  },
+                                  new SecurityCode
+                                  {
+                                      Code = AccessCode + "B",
+                                      CodeType = SecurityCodeType.PasswordResetCode,
                                       ExpiryTime = DateTime.MaxValue
                                   }
                               }
@@ -101,7 +114,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         }
 
         [Test]
-        public async Task ThenTheUserRespositoryIsCalledWithTheUserFromTheCommandAndTheUserIsSetToActive()
+        public async Task ThenTheUserIsUnlockedAndUnlockCodesExpired()
         {
             //Arrange
             var unlockUserCommand = new UnlockUserCommand
@@ -114,7 +127,12 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             await _unlockUserCommand.Handle(unlockUserCommand);
 
             //Assert
-            _userRepositry.Verify(x => x.Update(It.Is<User>(c => !c.IsActive && c.Email == ExpectedEmail && !c.IsLocked && c.FailedLoginAttempts == 0 && c.UnlockCode == string.Empty && c.UnlockCodeExpiry == null)), Times.Once);
+            _userRepositry.Verify(x => x.Update(It.Is<User>(c => !c.IsActive 
+                                                              && c.Email == ExpectedEmail 
+                                                              && !c.IsLocked
+                                                              && c.FailedLoginAttempts == 0
+                                                              && !c.SecurityCodes.Any(sc => sc.CodeType == SecurityCodeType.UnlockCode))), 
+                                  Times.Once);
         }
 
         [Test]

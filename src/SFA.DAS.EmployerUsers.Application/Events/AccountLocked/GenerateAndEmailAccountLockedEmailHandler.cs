@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using NLog;
@@ -35,8 +36,8 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
         {
             Logger.Debug($"Handling AccountLockedEvent for user '{notification.User?.Email}' (id: {notification.User?.Id})");
 
-            var user = !string.IsNullOrEmpty(notification.User.Id) 
-                            ? await _userRepository.GetById(notification.User.Id) 
+            var user = !string.IsNullOrEmpty(notification.User.Id)
+                            ? await _userRepository.GetById(notification.User.Id)
                             : await _userRepository.GetByEmailAddress(notification.User.Email);
 
             if (user == null)
@@ -46,20 +47,28 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
 
             var sendNotification = false;
 
-            if ((user.UnlockCodeExpiry < DateTime.UtcNow && !string.IsNullOrEmpty(user.UnlockCode)) || string.IsNullOrEmpty(user.UnlockCode))
+            var unlockCode = user.SecurityCodes?.OrderByDescending(sc => sc.ExpiryTime)
+                                                .FirstOrDefault(sc => sc.CodeType == Domain.SecurityCodeType.UnlockCode);
+
+            if (unlockCode == null || unlockCode.ExpiryTime < DateTime.UtcNow)
             {
-                
-                user.UnlockCode = await GenerateCode();
-                user.UnlockCodeExpiry = DateTime.Now.AddDays(1);
+                unlockCode = new Domain.SecurityCode
+                {
+                    Code = await GenerateCode(),
+                    CodeType = Domain.SecurityCodeType.UnlockCode,
+                    ExpiryTime = DateTime.UtcNow.AddDays(1)
+                };
+                user.AddSecurityCode(unlockCode);
                 await _userRepository.Update(user);
 
-                Logger.Debug($"Generated new unlock code of '{user.UnlockCode}' for user '{user.Id}'");
+                Logger.Debug($"Generated new unlock code of '{unlockCode.Code}' for user '{user.Id}'");
                 sendNotification = true;
             }
 
-            if(notification.ResendUnlockCode || sendNotification)
+            if (notification.ResendUnlockCode || sendNotification)
+            {
                 await _communicationService.SendAccountLockedMessage(user, Guid.NewGuid().ToString());
-            
+            }
         }
 
         private async Task<string> GenerateCode()

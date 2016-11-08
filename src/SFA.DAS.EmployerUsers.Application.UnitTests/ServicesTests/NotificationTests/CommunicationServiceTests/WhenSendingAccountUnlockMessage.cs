@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
@@ -10,6 +11,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
     public class WhenSendingAccountUnlockMessage
     {
         private const string MessageId = "MESSAGE_ID";
+        private const string UnlockCode = "UNLOCK_CODE";
 
         private Mock<IHttpClientWrapper> _httpClient;
         private CommunicationService _communicationService;
@@ -28,7 +30,15 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
             {
                 Id = "USER_ID",
                 Email = "unit.tests@testing.local",
-                UnlockCode = "UNLOCK_CODE"
+                SecurityCodes = new[]
+                {
+                    new SecurityCode
+                    {
+                        Code = UnlockCode,
+                        CodeType = SecurityCodeType.UnlockCode,
+                        ExpiryTime = DateTime.MaxValue
+                    }
+                }
             };
         }
 
@@ -44,7 +54,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
             _httpClient.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.RecipientsAddress == _user.Email)), Times.Once);
             _httpClient.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.ReplyToAddress == "info@sfa.das.gov.uk")), Times.Once);
             _httpClient.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.ForceFormat)), Times.Once);
-            _httpClient.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.Data.ContainsKey("UnlockCode") && s.Data["UnlockCode"] == _user.UnlockCode)), Times.Once);
+            _httpClient.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.Data.ContainsKey("UnlockCode") && s.Data["UnlockCode"] == UnlockCode)), Times.Once);
             _httpClient.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.Data.ContainsKey("MessageId") && s.Data["MessageId"] == MessageId)), Times.Once);
         }
 

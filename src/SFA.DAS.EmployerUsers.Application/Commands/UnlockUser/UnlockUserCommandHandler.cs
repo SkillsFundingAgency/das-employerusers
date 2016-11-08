@@ -50,8 +50,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
 
             message.User.FailedLoginAttempts = 0;
             message.User.IsLocked = false;
-            message.User.UnlockCode = string.Empty;
-            message.User.UnlockCodeExpiry = null;
+            message.User.ExpireSecurityCodesOfType(Domain.SecurityCodeType.UnlockCode);
 
 
             await _userRepository.Update(message.User);

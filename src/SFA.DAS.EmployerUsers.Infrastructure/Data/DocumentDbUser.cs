@@ -34,7 +34,6 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
                 PasswordProfileId = user.PasswordProfileId,
                 FailedLoginAttempts = user.FailedLoginAttempts,
                 IsLocked = user.IsLocked,
-                UnlockCode = user.UnlockCode,
                 SecurityCodes = user.SecurityCodes
             };
         }
@@ -53,7 +52,6 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data
                 PasswordProfileId = PasswordProfileId,
                 FailedLoginAttempts = FailedLoginAttempts,
                 IsLocked = IsLocked,
-                UnlockCode = UnlockCode,
                 SecurityCodes = SecurityCodes
             };
         }

@@ -38,8 +38,15 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
                     UnlockCode = "SomeCode",
                     User = new User
                     {
-                        UnlockCode = "SomeCode",
-                        UnlockCodeExpiry = DateTime.Now.AddMinutes(1)
+                        SecurityCodes = new[]
+                        {
+                          new SecurityCode
+                          {
+                              Code = "SomeCode",
+                              CodeType = SecurityCodeType.UnlockCode,
+                              ExpiryTime = DateTime.UtcNow.AddMinutes(1)
+                          }  
+                        }
                     }
                 });
 
@@ -59,8 +66,15 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
                     UnlockCode = "SomeCode",
                     User = new User
                     {
-                        UnlockCode = "AnotherCode",
-                        UnlockCodeExpiry = DateTime.Now.AddMinutes(1)
+                        SecurityCodes = new[]
+                        {
+                          new SecurityCode
+                          {
+                              Code = "AnotherCode",
+                              CodeType = SecurityCodeType.UnlockCode,
+                              ExpiryTime = DateTime.Now.AddMinutes(1)
+                          }
+                        }
                     }
                 });
 
@@ -69,10 +83,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             Assert.Contains(new KeyValuePair<string, string>("UnlockCodeMatch", "Unlock Code is not correct"), actual.ValidationDictionary);
             Assert.IsFalse(actual.IsValid());
         }
-
-        [TestCase("AnotherCode")]
-        [TestCase("SomeCode")]
-        public void ThenTheDictionaryIsNotEmptyIfTheAccessCodeHasExpiredForValidAndNonValidUnlockCodes(string accessCode)
+        
+        [Test]
+        public void ThenTheDictionaryIsNotEmptyIfTheAccessCodeHasExpiredForAValidUnlockCode()
         {
             //Act
             var actual =
@@ -82,8 +95,15 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
                     UnlockCode = "SomeCode",
                     User = new User
                     {
-                        UnlockCode = accessCode,
-                        UnlockCodeExpiry = DateTime.UtcNow.AddMinutes(-1)
+                        SecurityCodes = new[]
+                        {
+                          new SecurityCode
+                          {
+                              Code = "SomeCode",
+                              CodeType = SecurityCodeType.UnlockCode,
+                              ExpiryTime = DateTime.Now.AddMinutes(-1)
+                          }
+                        }
                     }
                 });
 

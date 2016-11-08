@@ -63,7 +63,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 ForceFormat = true,
                 Data = new Dictionary<string, string>
                 {
-                    { "UnlockCode", user.UnlockCode },
+                    { "UnlockCode", GetUserUnlockCode(user) },
                     { "MessageId", messageId }
                 }
             };
@@ -151,6 +151,13 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
         private string GetUserAccessCode(User user)
         {
             return user.SecurityCodes.Where(sc => sc.CodeType == SecurityCodeType.AccessCode)
+                                     .OrderByDescending(sc => sc.ExpiryTime)
+                                     .Select(sc => sc.Code)
+                                     .FirstOrDefault();
+        }
+        private string GetUserUnlockCode(User user)
+        {
+            return user.SecurityCodes.Where(sc => sc.CodeType == SecurityCodeType.UnlockCode)
                                      .OrderByDescending(sc => sc.ExpiryTime)
                                      .Select(sc => sc.Code)
                                      .FirstOrDefault();

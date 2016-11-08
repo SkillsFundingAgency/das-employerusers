@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
@@ -41,9 +42,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
             _user = new User
             {
                 Id = "xxx",
-                Email = UserEmail,
-                UnlockCodeExpiry = DateTime.UtcNow.AddMinutes(1)
-                
+                Email = UserEmail
             };
             _userRepository = new Mock<IUserRepository>();
             _userRepository.Setup(r => r.GetById("xxx")).Returns(Task.FromResult(_user));
@@ -72,27 +71,36 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
         }
 
         [Test]
-        public async Task ThenItShouldUpdateUserWithNewlyGeneratedCodeIfOneNotAttachedWithAnExpiryOfADay()
+        public async Task ThenItShouldUpdateUserWithNewlyGeneratedCodeAndAnExpiryOf1DayIfNoCodeAttached()
         {
             // Act
             await _handler.Handle(_event);
 
             // Assert
-            _userRepository.Verify(r => r.Update(It.Is<User>(u => u.UnlockCode == UnlockCode 
-                                        && u.UnlockCodeExpiry.Value.ToString("yyyy mm dd").Equals(DateTime.UtcNow.AddDays(1).ToString("yyyy mm dd")))), Times.Once());
+            _userRepository.Verify(r => r.Update(It.Is<User>(u => u.SecurityCodes.Any(sc => sc.Code == UnlockCode
+                                                                                         && sc.CodeType == SecurityCodeType.UnlockCode
+                                                                                         && sc.ExpiryTime.Date == DateTime.Today.AddDays(1)))));
         }
 
         [Test]
-        public async Task ThenItShouldNotUpdateUserWithNewlyGeneratedCodeIfOneAlreadyAttached()
+        public async Task ThenItShouldNotUpdateUserWithNewlyGeneratedCodeIfOneAlreadyAttachedAndNotExpired()
         {
             // Arrange
-            _user.UnlockCode = "UNLOCK_CODE";
+            _user.SecurityCodes = new[]
+            {
+                new SecurityCode
+                {
+                    Code = "UNLOCK_CODE",
+                    CodeType = SecurityCodeType.UnlockCode,
+                    ExpiryTime = DateTime.MaxValue
+                }
+            };
 
             // Act
             await _handler.Handle(_event);
 
             // Assert
-            _userRepository.Verify(r => r.Update(It.Is<User>(u => u.UnlockCode == UnlockCode)), Times.Never());
+            _userRepository.Verify(r => r.Update(It.Is<User>(u => u.SecurityCodes.Any(sc => sc.Code == UnlockCode && sc.CodeType == SecurityCodeType.UnlockCode))), Times.Never());
         }
 
         [Test]
@@ -102,14 +110,26 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
             await _handler.Handle(_event);
 
             // Assert
-            _communicationService.Verify(s => s.SendAccountLockedMessage(_user, It.IsAny<string>()), Times.Once());
+            _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.SecurityCodes.Any(sc => sc.Code == UnlockCode
+                                                                                                                 && sc.CodeType == SecurityCodeType.UnlockCode)
+                                                                                       && c.Id == _user.Id
+                                                                                       && c.Email == _user.Email),
+                                                                         It.IsAny<string>()), Times.Once());
         }
 
         [Test]
         public async Task ThenItShouldNotSendUserNotificationIfNewCodeNotGenerated()
         {
             // Arrange
-            _user.UnlockCode = "UNLOCK_CODE";
+            _user.SecurityCodes = new[]
+            {
+                new SecurityCode
+                {
+                    Code = "UNLOCK_CODE",
+                    CodeType = SecurityCodeType.UnlockCode,
+                    ExpiryTime = DateTime.MaxValue
+                }
+            };
 
             // Act
             await _handler.Handle(_event);
@@ -122,28 +142,51 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
         public async Task ThenItShouldGenerateANewCodeIfTheCurrentCodeHasExpired()
         {
             // Arrange
-            _user.UnlockCodeExpiry = DateTime.UtcNow.AddMinutes(-1);
-            _user.UnlockCode = "UNLOCK_CODE";
+            _user.SecurityCodes = new[]
+            {
+                new SecurityCode
+                {
+                    Code = "UNLOCK_CODE",
+                    CodeType = SecurityCodeType.UnlockCode,
+                    ExpiryTime = DateTime.MinValue
+                }
+            };
 
             // Act
             await _handler.Handle(_event);
 
             // Assert
-            _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c=>c.UnlockCode == _user.UnlockCode && c.Id == _user.Id && c.Email == _user.Email), It.IsAny<string>()), Times.Once());
+            _userRepository.Verify(r => r.Update(It.Is<User>(u => u.SecurityCodes.Any(sc => sc.Code == UnlockCode
+                                                                                         && sc.CodeType == SecurityCodeType.UnlockCode
+                                                                                         && sc.ExpiryTime.Date == DateTime.Today.AddDays(1)))));
+            _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.SecurityCodes.Any(sc => sc.Code == UnlockCode
+                                                                                                                 && sc.CodeType == SecurityCodeType.UnlockCode)
+                                                                                       && c.Id == _user.Id 
+                                                                                       && c.Email == _user.Email), 
+                                                                         It.IsAny<string>()), Times.Once());
         }
 
         [Test]
         public async Task ThenItShouldNotGenerateANewCodeIfTheCurrentCodeHasNotExpired()
         {
             // Arrange
-            _user.UnlockCodeExpiry = DateTime.UtcNow.AddMinutes(1);
-            _user.UnlockCode = "UNLOCK_CODE";
+            _user.SecurityCodes = new[]
+            {
+                new SecurityCode
+                {
+                    Code = "UNLOCK_CODE",
+                    CodeType = SecurityCodeType.UnlockCode,
+                    ExpiryTime = DateTime.MaxValue
+                }
+            };
 
             // Act
             await _handler.Handle(_event);
 
             // Assert
-            _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.UnlockCode == _user.UnlockCode && c.Id == _user.Id && c.Email == _user.Email), It.IsAny<string>()), Times.Never());
+            _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.SecurityCodes.Any(sc => sc.Code == UnlockCode && sc.CodeType == SecurityCodeType.UnlockCode) 
+                                                                                       && c.Id == _user.Id 
+                                                                                       && c.Email == _user.Email), It.IsAny<string>()), Times.Never());
         }
 
         [Test]
@@ -151,13 +194,23 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
         {
             // Arrange
             _event.ResendUnlockCode = true;
-            _user.UnlockCode = "UNLOCK_CODE";
+            _user.SecurityCodes = new[]
+            {
+                new SecurityCode
+                {
+                    Code = "UNLOCK_CODE",
+                    CodeType = SecurityCodeType.UnlockCode,
+                    ExpiryTime = DateTime.MaxValue
+                }
+            };
 
             // Act
             await _handler.Handle(_event);
 
             // Assert
-            _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.UnlockCode == _user.UnlockCode && c.Id == _user.Id && c.Email == _user.Email), It.IsAny<string>()), Times.Once());
+            _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.SecurityCodes.Any(sc => sc.Code == "UNLOCK_CODE" && sc.CodeType == SecurityCodeType.UnlockCode) 
+                                                                                       && c.Id == _user.Id 
+                                                                                       && c.Email == _user.Email), It.IsAny<string>()), Times.Once());
         }
 
         [Test]
@@ -165,13 +218,25 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
         {
             // Arrange
             _event.ResendUnlockCode = true;
-            _event.User.UnlockCodeExpiry = DateTime.UtcNow.AddMinutes(-1);
+            _user.SecurityCodes = new[]
+            {
+                new SecurityCode
+                {
+                    Code = "UNLOCK_CODE",
+                    CodeType = SecurityCodeType.UnlockCode,
+                    ExpiryTime = DateTime.MinValue
+                }
+            };
 
             //Act
             await _handler.Handle(_event);
 
             // Assert
-            _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.UnlockCode == UnlockCode && c.Id == _user.Id && c.Email == _user.Email), It.IsAny<string>()), Times.Once());
+            _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.SecurityCodes.Any(sc => sc.Code == UnlockCode
+                                                                                                                 && sc.CodeType == SecurityCodeType.UnlockCode)
+                                                                                       && c.Id == _user.Id
+                                                                                       && c.Email == _user.Email),
+                                                                         It.IsAny<string>()), Times.Once());
         }
 
         [Test]
@@ -185,7 +250,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
             await _handler.Handle(_event);
 
             //Assert
-            _userRepository.Verify(x=>x.GetByEmailAddress(_event.User.Email),Times.Once);
+            _userRepository.Verify(x => x.GetByEmailAddress(_event.User.Email), Times.Once);
         }
 
         [Test]
