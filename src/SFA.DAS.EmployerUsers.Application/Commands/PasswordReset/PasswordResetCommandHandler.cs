@@ -59,10 +59,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             await _userRepository.Update(message.User);
             Logger.Info($"Password changed for user '{message.Email}'");
 
-            //await _userRepository.ExpirySecurityCodes(message.User, Domain.SecurityCodeType.AccessCode);
-            //await _userRepository.ExpirySecurityCodes(message.User, Domain.SecurityCodeType.PasswordResetCode);
-
-            
             await _communicationService.SendPasswordResetConfirmationMessage(user, Guid.NewGuid().ToString());
 
             if (sendPasswordResetConfirmationMessage)

@@ -13,7 +13,6 @@ using SFA.DAS.EmployerUsers.WebClientComponents;
 
 namespace SFA.DAS.EmployerUsers.Web.Controllers
 {
-    //[RoutePrefix("identity/employer")]
     public class AccountController : ControllerBase
     {
         private readonly AccountOrchestrator _accountOrchestrator;
@@ -234,6 +233,9 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
             return View("ResetPassword", model);
         }
+
+
+
 
         private string GetLoggedInUserId()
         {

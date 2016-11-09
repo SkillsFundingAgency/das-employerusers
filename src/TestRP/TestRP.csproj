@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.Net.Compilers.1.3.2\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.3.2\build\Microsoft.Net.Compilers.props')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,19 +9,19 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{0B267087-A640-4075-90CA-44B7A12C1B85}</ProjectGuid>
+    <ProjectGuid>{15B8E7F1-F061-47CE-9938-1440CE18DBD7}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SFA.DAS.EmployerUsers.Web</RootNamespace>
-    <AssemblyName>SFA.DAS.EmployerUsers.Web</AssemblyName>
+    <RootNamespace>TestRP</RootNamespace>
+    <AssemblyName>TestRP</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>44334</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -44,14 +44,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IdentityServer3, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IdentityServer3.2.5.0\lib\net45\IdentityServer3.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="MediatR, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediatR.2.0.2\lib\net45\MediatR.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
       <Private>True</Private>
@@ -93,12 +85,8 @@
       <HintPath>..\packages\Microsoft.Owin.Security.OpenIdConnect.3.0.1\lib\net45\Microsoft.Owin.Security.OpenIdConnect.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Configuration, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.3.2.1\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAzure.Configuration, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.2.0.3\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.WindowsAzure.Diagnostics, Version=2.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
@@ -115,44 +103,8 @@
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.3.4\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NLog.Extensions.AzureTableStorage, Version=1.0.0.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AzureTableStorageNLogTarget.1.0.8\lib\NLog.Extensions.AzureTableStorage.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SFA.DAS.CodeGenerator, Version=1.0.0.4198, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SFA.DAS.CodeGenerator.1.0.0.4198\lib\net45\SFA.DAS.CodeGenerator.dll</HintPath>
-    </Reference>
-    <Reference Include="SFA.DAS.Configuration, Version=1.0.0.6634, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Configuration.1.0.0.6634\lib\net45\SFA.DAS.Configuration.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SFA.DAS.Configuration.AzureTableStorage, Version=1.0.0.6634, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Configuration.AzureTableStorage.1.0.0.6634\lib\net45\SFA.DAS.Configuration.AzureTableStorage.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SFA.DAS.Configuration.FileStorage, Version=1.0.0.4757, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Configuration.FileStorage.1.0.0.4757\lib\net45\SFA.DAS.Configuration.FileStorage.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="StructureMap, Version=3.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\structuremap.3.1.1.134\lib\net40\StructureMap.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="StructureMap.Net4, Version=3.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\structuremap.3.1.1.134\lib\net40\StructureMap.Net4.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="StructureMap.Web, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\structuremap.web.3.1.0.133\lib\net40\StructureMap.Web.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -222,10 +174,6 @@
       <HintPath>..\packages\Thinktecture.IdentityModel.Client.4.0.1\lib\net45\Thinktecture.IdentityModel.Client.Net45.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
-      <HintPath>..\packages\WebActivatorEx.2.0.5\lib\net40\WebActivatorEx.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
@@ -236,153 +184,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System.Net.Http.Formatting">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Http">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Http.WebHost">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\SharedAssemblyInfo.cs">
-      <Link>Properties\SharedAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="AggregateExceptionExtensions.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\LoggingConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="App_Start\Startup.RelyingParty.cs" />
-    <Compile Include="App_Start\StructuremapMvc.cs" />
-    <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="AttemptAuthoriseAttribute.cs" />
-    <Compile Include="Authentication\IdentityServerServiceFactoryExtensions.cs" />
-    <Compile Include="Authentication\IOWinWrapper.cs" />
-    <Compile Include="Authentication\OwinWrapper.cs" />
-    <Compile Include="Authentication\UserService.cs" />
-    <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\TermsAndConditionsController.cs" />
-    <Compile Include="DependencyResolution\ControllerConvention.cs" />
-    <Compile Include="DependencyResolution\DefaultRegistry.cs" />
-    <Compile Include="DependencyResolution\IoC.cs" />
-    <Compile Include="DependencyResolution\StructureMapDependencyScope.cs" />
-    <Compile Include="DependencyResolution\StructureMapScopeModule.cs" />
+    <Compile Include="DasClaimTypes.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AccessCodeViewModel.cs" />
-    <Compile Include="Models\ConfirmationViewModel.cs" />
-    <Compile Include="Models\LoginResultModel.cs" />
-    <Compile Include="Models\LoginViewModel.cs" />
-    <Compile Include="Models\PasswordResetViewModel.cs" />
-    <Compile Include="Models\RegisterViewModel.cs" />
-    <Compile Include="Models\RequestPasswordResetViewModel.cs" />
-    <Compile Include="Models\ResendActivationCodeViewModel.cs" />
-    <Compile Include="Models\UnlockUserViewModel.cs" />
-    <Compile Include="Models\ViewModelBase.cs" />
-    <Compile Include="Orchestrators\AccountOrchestrator.cs" />
-    <Compile Include="Orchestrators\IOrchestrator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="WebRole.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\images\accordian-arrow-2x.png" />
-    <Content Include="Content\images\accordian-arrow.png" />
-    <Content Include="Content\images\apple-touch-icon-120x120.png" />
-    <Content Include="Content\images\apple-touch-icon-152x152.png" />
-    <Content Include="Content\images\apple-touch-icon-60x60.png" />
-    <Content Include="Content\images\apple-touch-icon-76x76.png" />
-    <Content Include="Content\images\arrow-sprite.png" />
-    <Content Include="Content\images\favicon.ico" />
-    <Content Include="Content\images\gov.uk_logotype_crown_invert.png" />
-    <Content Include="Content\images\gov.uk_logotype_crown_invert_trans.png" />
-    <Content Include="Content\images\icon-arrow-left.png" />
-    <Content Include="Content\images\icon-calendar-2x.png" />
-    <Content Include="Content\images\icon-calendar.png" />
-    <Content Include="Content\images\icon-file-download-2x.png" />
-    <Content Include="Content\images\icon-file-download.png" />
-    <Content Include="Content\images\icon-important-2x.png" />
-    <Content Include="Content\images\icon-important.png" />
-    <Content Include="Content\images\icon-information-2x.png" />
-    <Content Include="Content\images\icon-information.png" />
-    <Content Include="Content\images\icon-locator-2x.png" />
-    <Content Include="Content\images\icon-locator.png" />
-    <Content Include="Content\images\icon-pointer-2x.png" />
-    <Content Include="Content\images\icon-pointer-black-2x.png" />
-    <Content Include="Content\images\icon-pointer-black.png" />
-    <Content Include="Content\images\icon-pointer-indexed.png" />
-    <Content Include="Content\images\icon-pointer.png" />
-    <Content Include="Content\images\icon-search-2x.png" />
-    <Content Include="Content\images\icon-search.png" />
-    <Content Include="Content\images\opengraph-image.png" />
-    <Content Include="Content\images\player-icon-forward.png" />
-    <Content Include="Content\images\player-icon-pause.png" />
-    <Content Include="Content\images\player-icon-play.png" />
-    <Content Include="Content\images\player-icon-rewind.png" />
-    <Content Include="Content\images\player-icon-volume.png" />
-    <Content Include="Content\images\separator-2x.png" />
-    <Content Include="Content\images\separator.png" />
-    <Content Include="Content\stylesheets\das-controls.css" />
-    <Content Include="Content\stylesheets\elements.css" />
-    <Content Include="Content\stylesheets\external-links\external-link-24x24.png" />
-    <Content Include="Content\stylesheets\external-links\external-link-black-12x12.png" />
-    <Content Include="Content\stylesheets\external-links\external-link-black-24x24.png" />
-    <Content Include="Content\stylesheets\external-links\external-link.png" />
-    <Content Include="Content\stylesheets\fonts-ie8.css" />
-    <Content Include="Content\stylesheets\fonts.css" />
-    <Content Include="Content\stylesheets\govuk-template-ie6.css" />
-    <Content Include="Content\stylesheets\govuk-template-ie7.css" />
-    <Content Include="Content\stylesheets\govuk-template-ie8.css" />
-    <Content Include="Content\stylesheets\govuk-template-print.css" />
-    <Content Include="Content\stylesheets\govuk-template.css" />
-    <Content Include="Content\stylesheets\images\close.png" />
-    <Content Include="Content\stylesheets\images\gov.uk_logotype_crown-1x.png" />
-    <Content Include="Content\stylesheets\images\gov.uk_logotype_crown.png" />
-    <Content Include="Content\stylesheets\images\govuk-crest-2x.png" />
-    <Content Include="Content\stylesheets\images\govuk-crest-ie.png" />
-    <Content Include="Content\stylesheets\images\govuk-crest.png" />
-    <Content Include="Content\stylesheets\images\open-government-licence.png" />
-    <Content Include="Content\stylesheets\images\open-government-licence_2x.png" />
-    <Content Include="Content\stylesheets\patterns.css" />
-    <Content Include="Content\stylesheets\users-dashboard.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Content\stylesheets\users-main.css" />
-    <Compile Include="App_Start\Startup.IdentityServer.cs" />
-    <Content Include="DasIDPCert.pfx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Data\RelyingParties\employerportal.json" />
-    <Content Include="App_Data\LOCAL_SFA.DAS.EmployerUsers.Web_1.0.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\stylesheets\fonts\GDSTransportWebsite.eot" />
-    <Content Include="Content\stylesheets\fonts\GDSTransportWebsite-Bold.eot" />
-    <Content Include="Content\stylesheets\fonts\GDSTransportTabular-Light.eot" />
-    <Content Include="Content\stylesheets\fonts\GDSTransportTabular-Bold.eot" />
-    <Content Include="App_Data\RelyingParties\testrp.json" />
-    <None Include="Properties\PublishProfiles\SFA.DAS.EmployerUsers.WebPublishProfile.pubxml" />
-    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
-    <Content Include="Scripts\additional-methods.min.js" />
-    <Content Include="Scripts\das.validate.js" />
-    <Content Include="Scripts\govuk-template.js" />
-    <Content Include="Scripts\ie.js" />
-    <Content Include="Scripts\jquery-1.10.2.js" />
-    <Content Include="Scripts\jquery-1.10.2.min.js" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery.validate.js" />
-    <Content Include="Scripts\jquery.validate.min.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Scripts\respond.js" />
-    <Content Include="Scripts\respond.min.js" />
-    <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -395,37 +211,12 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Account\Register.cshtml" />
-    <Content Include="Views\Account\Confirm.cshtml" />
-    <Content Include="Views\Account\Login.cshtml" />
-    <Content Include="Views\Account\Unlock.cshtml" />
-    <Content Include="Views\Account\ForgottenCredentials.cshtml" />
-    <Content Include="Views\TermsAndConditions\Index.cshtml" />
-    <Content Include="Views\TermsAndConditions\_TermsAndConditionBody.cshtml" />
-    <Content Include="Views\Account\ResetPassword.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <Content Include="Scripts\jquery-1.10.2.min.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.EmployerUsers.Application\SFA.DAS.EmployerUsers.Application.csproj">
-      <Project>{2243A091-EE5A-4641-B02E-D7BA560C0086}</Project>
-      <Name>SFA.DAS.EmployerUsers.Application</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.EmployerUsers.Domain\SFA.DAS.EmployerUsers.Domain.csproj">
-      <Project>{2686243C-201A-45C1-ADBC-99B05BD83D73}</Project>
-      <Name>SFA.DAS.EmployerUsers.Domain</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.EmployerUsers.Infrastructure\SFA.DAS.EmployerUsers.Infrastructure.csproj">
-      <Project>{A38872C3-513F-4FD4-8917-E5BA21D5E3A6}</Project>
-      <Name>SFA.DAS.EmployerUsers.Infrastructure</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.EmployerUsers.WebClientComponents\SFA.DAS.EmployerUsers.WebClientComponents.csproj">
-      <Project>{06C4FA3C-23A2-462B-AEA8-D2F1F1EB3246}</Project>
-      <Name>SFA.DAS.EmployerUsers.WebClientComponents</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -443,9 +234,9 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>4236</DevelopmentServerPort>
+          <DevelopmentServerPort>17995</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:4236/</IISUrl>
+          <IISUrl>http://localhost:17995/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
@@ -459,8 +250,8 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.3.2\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.3.2\build\Microsoft.Net.Compilers.props'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
