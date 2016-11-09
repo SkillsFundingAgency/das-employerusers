@@ -14,10 +14,4 @@
       <Certificate name="DasIDPCert" thumbprint="C0ADAB0D15F856216B7BBDA548DA47CFAB871CEF" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
-  <Role name="TestRP">
-    <Instances count="1" />
-    <ConfigurationSettings>
-      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
-    </ConfigurationSettings>
-  </Role>
 </ServiceConfiguration>

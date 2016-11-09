@@ -45,22 +45,12 @@
       <RoleName>SFA.DAS.EmployerUsers.Web</RoleName>
       <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
     </ProjectReference>
-    <ProjectReference Include="..\TestRP\TestRP.csproj">
-      <Name>TestRP</Name>
-      <Project>{15b8e7f1-f061-47ce-9938-1440ce18dbd7}</Project>
-      <Private>True</Private>
-      <RoleType>Web</RoleType>
-      <RoleName>TestRP</RoleName>
-      <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="SFA.DAS.EmployerUsers.WebContent\" />
-    <Folder Include="TestRPContent\" />
   </ItemGroup>
   <ItemGroup>
     <DiagnosticsConfiguration Include="SFA.DAS.EmployerUsers.WebContent\diagnostics.wadcfgx" />
-    <DiagnosticsConfiguration Include="TestRPContent\diagnostics.wadcfgx" />
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>
