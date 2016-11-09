@@ -57,9 +57,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
             await _commandHandler.Handle(command);
 
             //Assert
-            _communicationSerivce.Verify(x=>x.SendPasswordResetCodeMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
-            _userRepository.Verify(x=>x.Update(It.IsAny<User>()), Times.Never);
-            
+            _communicationSerivce.Verify(x => x.SendPasswordResetCodeMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
+            _userRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
+
         }
 
         [Test]
@@ -67,18 +67,31 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
         {
             var command = GetRequestPasswordResetCodeCommand();
 
+            var code = "ABCDEF";
+            var expiryTime = DateTimeProvider.Current.UtcNow.AddHours(1);
             var existingUser = new User
             {
                 Email = command.Email,
-                PasswordResetCode = "ABCDEF",
-                PasswordResetCodeExpiry = DateTimeProvider.Current.UtcNow.AddHours(1)
+                SecurityCodes = new[]
+                {
+                    new SecurityCode
+                    {
+                        Code = code,
+                        CodeType = SecurityCodeType.PasswordResetCode,
+                        ExpiryTime = expiryTime
+                    }
+                }
             };
 
             _userRepository.Setup(x => x.GetByEmailAddress(command.Email)).ReturnsAsync(existingUser);
 
             await _commandHandler.Handle(command);
 
-            _communicationSerivce.Verify(x => x.SendPasswordResetCodeMessage(It.Is<User>(u => u.Email == existingUser.Email && u.PasswordResetCode == existingUser.PasswordResetCode && u.PasswordResetCodeExpiry == existingUser.PasswordResetCodeExpiry), It.IsAny<string>()), Times.Once);
+            _communicationSerivce.Verify(x => x.SendPasswordResetCodeMessage(It.Is<User>(u => u.Email == existingUser.Email 
+                                                                                           && u.SecurityCodes.Any(sc => sc.Code == code
+                                                                                                                     && sc.CodeType == SecurityCodeType.PasswordResetCode
+                                                                                                                     && sc.ExpiryTime == expiryTime)
+                                                                                        ), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -92,8 +105,15 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
             var existingUser = new User
             {
                 Email = command.Email,
-                PasswordResetCode = "ABCDEF",
-                PasswordResetCodeExpiry = DateTimeProvider.Current.UtcNow.AddHours(-1)
+                SecurityCodes = new[]
+                {
+                    new SecurityCode
+                    {
+                        Code = "ABCDEF",
+                        CodeType = SecurityCodeType.PasswordResetCode,
+                        ExpiryTime = DateTimeProvider.Current.UtcNow.AddHours(-1)
+                    }
+                }
             };
 
             _codeGenerator.Setup(x => x.GenerateAlphaNumeric(6)).Returns(newCode);
@@ -102,55 +122,11 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
 
             await _commandHandler.Handle(command);
 
-            _communicationSerivce.Verify(x => x.SendPasswordResetCodeMessage(It.Is<User>(u => u.Email == existingUser.Email && u.PasswordResetCode == newCode && u.PasswordResetCodeExpiry == DateTimeProvider.Current.UtcNow.AddDays(1)), It.IsAny<string>()), Times.Once);
-        }
-
-        [Test]
-        public async Task KnownUserWithNoCodeButExpiryDateSendsNewCode()
-        {
-            DateTimeProvider.Current = new FakeTimeProvider(DateTime.UtcNow);
-            const string newCode = "FEDCBA";
-
-            var command = GetRequestPasswordResetCodeCommand();
-
-            var existingUser = new User
-            {
-                Email = command.Email,
-                PasswordResetCode = "",
-                PasswordResetCodeExpiry = DateTimeProvider.Current.UtcNow.AddHours(1)
-            };
-
-            _codeGenerator.Setup(x => x.GenerateAlphaNumeric(6)).Returns(newCode);
-
-            _userRepository.Setup(x => x.GetByEmailAddress(command.Email)).ReturnsAsync(existingUser);
-
-            await _commandHandler.Handle(command);
-
-            _communicationSerivce.Verify(x => x.SendPasswordResetCodeMessage(It.Is<User>(u => u.Email == existingUser.Email && u.PasswordResetCode == newCode && u.PasswordResetCodeExpiry == DateTimeProvider.Current.UtcNow.AddDays(1)), It.IsAny<string>()), Times.Once);
-        }
-
-        [Test]
-        public async Task KnownUserWithCodeButNoExpiryDateSendsNewCode()
-        {
-            DateTimeProvider.Current = new FakeTimeProvider(DateTime.UtcNow);
-            const string newCode = "FEDCBA";
-
-            var command = GetRequestPasswordResetCodeCommand();
-
-            var existingUser = new User
-            {
-                Email = command.Email,
-                PasswordResetCode = "ABCDEF",
-                PasswordResetCodeExpiry = null
-            };
-
-            _codeGenerator.Setup(x => x.GenerateAlphaNumeric(6)).Returns(newCode);
-
-            _userRepository.Setup(x => x.GetByEmailAddress(command.Email)).ReturnsAsync(existingUser);
-
-            await _commandHandler.Handle(command);
-
-            _communicationSerivce.Verify(x => x.SendPasswordResetCodeMessage(It.Is<User>(u => u.Email == existingUser.Email && u.PasswordResetCode == newCode && u.PasswordResetCodeExpiry == DateTimeProvider.Current.UtcNow.AddDays(1)), It.IsAny<string>()), Times.Once);
+            _communicationSerivce.Verify(x => x.SendPasswordResetCodeMessage(It.Is<User>(u => u.Email == existingUser.Email 
+                                                                                                      && u.SecurityCodes.Any(sc => sc.Code == newCode
+                                                                                                                                && sc.CodeType == SecurityCodeType.PasswordResetCode
+                                                                                                                                && sc.ExpiryTime == DateTimeProvider.Current.UtcNow.AddDays(1))
+                                                                                        ), It.IsAny<string>()), Times.Once);
         }
 
         private RequestPasswordResetCodeCommand GetRequestPasswordResetCodeCommand()

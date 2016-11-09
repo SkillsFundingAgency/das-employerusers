@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.PasswordReset;
@@ -35,7 +36,22 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         public void ThenFalseIsReturnedIfThePasscodeDoesNotMatch()
         {
             //Act
-            var actual = _validator.Validate(new PasswordResetCommand { PasswordResetCode = "123456", User = new User { PasswordResetCode = "654321" } });
+            var actual = _validator.Validate(new PasswordResetCommand
+            {
+                PasswordResetCode = "123456",
+                User = new User
+                {
+                    SecurityCodes = new[]
+                    {
+                        new SecurityCode
+                        {
+                            Code = "654321",
+                            CodeType = SecurityCodeType.PasswordResetCode,
+                            ExpiryTime = DateTime.MaxValue
+                        }
+                    }
+                }
+            });
 
             //Assert
             Assert.IsFalse(actual.IsValid());
@@ -43,18 +59,57 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         }
 
         [Test]
-        public void ThenFalseIsReturnedfIfThePasswordsDoNotMatch()
+        public void ThenFalseIsReturnedIfThePasscodeMatchesButHasExpired()
         {
             //Act
-            var actual = _validator.Validate(new PasswordResetCommand {
-                PasswordResetCode = "654321",
-                Password = "654321abc",
-                ConfirmPassword = "654321aBc",
-                User = new User { PasswordResetCode = "654321" } });
+            var actual = _validator.Validate(new PasswordResetCommand
+            {
+                PasswordResetCode = "123456",
+                User = new User
+                {
+                    SecurityCodes = new[]
+                    {
+                        new SecurityCode
+                        {
+                            Code = "123456",
+                            CodeType = SecurityCodeType.PasswordResetCode,
+                            ExpiryTime = DateTime.MinValue
+                        }
+                    }
+                }
+            });
 
             //Assert
             Assert.IsFalse(actual.IsValid());
-            Assert.Contains(new KeyValuePair<string,string>("ConfirmPassword", "Sorry, your passwords don’t match"), actual.ValidationDictionary );
+            Assert.Contains(new KeyValuePair<string, string>("PasswordResetCode", "Reset code has expired, try again"), actual.ValidationDictionary);
+        }
+
+        [Test]
+        public void ThenFalseIsReturnedfIfThePasswordsDoNotMatch()
+        {
+            //Act
+            var actual = _validator.Validate(new PasswordResetCommand
+            {
+                PasswordResetCode = "654321",
+                Password = "654321abc",
+                ConfirmPassword = "654321aBc",
+                User = new User
+                {
+                    SecurityCodes = new[]
+                    {
+                        new SecurityCode
+                        {
+                            Code = "654321",
+                            CodeType = SecurityCodeType.PasswordResetCode,
+                            ExpiryTime = DateTime.MaxValue
+                        }
+                    }
+                }
+            });
+
+            //Assert
+            Assert.IsFalse(actual.IsValid());
+            Assert.Contains(new KeyValuePair<string, string>("ConfirmPassword", "Sorry, your passwords don’t match"), actual.ValidationDictionary);
         }
 
         [Test]
@@ -68,7 +123,15 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
                 ConfirmPassword = "abc123YHN",
                 User = new User
                 {
-                    PasswordResetCode = "123456abc"
+                    SecurityCodes = new[]
+                    {
+                        new SecurityCode
+                        {
+                            Code = "123456abc",
+                            CodeType = SecurityCodeType.PasswordResetCode,
+                            ExpiryTime = DateTime.MaxValue
+                        }
+                    }
                 }
             });
 
@@ -88,13 +151,24 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
                 PasswordResetCode = "654321",
                 Password = "123456",
                 ConfirmPassword = "123456",
-                User = new User { PasswordResetCode = "654321" }
+                User = new User
+                {
+                    SecurityCodes = new[]
+                    {
+                        new SecurityCode
+                        {
+                            Code = "654321",
+                            CodeType = SecurityCodeType.PasswordResetCode,
+                            ExpiryTime = DateTime.MaxValue
+                        }
+                    }
+                }
             });
 
             //Assert
             Assert.IsFalse(actual.IsValid());
             Assert.Contains(new KeyValuePair<string, string>("Password", "Password requires upper and lowercase letters, a number and at least 8 characters"), actual.ValidationDictionary);
         }
-        
+
     }
 }

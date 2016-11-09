@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 
@@ -17,9 +18,17 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
         {
             var validationResult = new ValidationResult();
 
-            if (item.User == null || !item.User.PasswordResetCode.Equals(item.PasswordResetCode, StringComparison.InvariantCultureIgnoreCase))
+            var resetCode = item.User?.SecurityCodes?.OrderByDescending(sc => sc.ExpiryTime)
+                                                     .FirstOrDefault(sc => sc.Code.Equals(item.PasswordResetCode, StringComparison.InvariantCultureIgnoreCase)
+                                                                        && sc.CodeType == Domain.SecurityCodeType.PasswordResetCode);
+
+            if (resetCode == null)
             {
                 validationResult.AddError(nameof(item.PasswordResetCode), "Reset code is invalid, try again");
+            }
+            else if (resetCode.ExpiryTime < DateTime.UtcNow)
+            {
+                validationResult.AddError(nameof(item.PasswordResetCode), "Reset code has expired, try again");
             }
 
             if (string.IsNullOrEmpty(item.Password))
@@ -43,6 +52,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 
             return validationResult;
         }
-        
+
     }
 }

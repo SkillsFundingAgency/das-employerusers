@@ -32,8 +32,23 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
             _passwordService.Setup(x => x.GenerateAsync(It.IsAny<string>())).ReturnsAsync(new SecuredPassword());
 
             _userRepository = new Mock<IUserRepository>();
-            _userRepository.Setup(x => x.GetByEmailAddress(It.IsAny<string>())).ReturnsAsync(null);
-            _userRepository.Setup(x => x.GetByEmailAddress(ActualEmailAddress)).ReturnsAsync(new User { Email = ActualEmailAddress, PasswordResetCode = PasswordResetCode, IsActive = true });
+            _userRepository.Setup(x => x.GetByEmailAddress(It.IsAny<string>()))
+                .ReturnsAsync(null);
+            _userRepository.Setup(x => x.GetByEmailAddress(ActualEmailAddress))
+                .ReturnsAsync(new User
+                {
+                    Email = ActualEmailAddress,
+                    IsActive = true,
+                    SecurityCodes = new[]
+                    {
+                        new SecurityCode
+                        {
+                            Code = PasswordResetCode,
+                            CodeType = SecurityCodeType.PasswordResetCode,
+                            ExpiryTime = DateTime.MaxValue
+                        }
+                    }
+                });
 
             _validator = new Mock<IValidator<PasswordResetCommand>>();
             _validator.Setup(x => x.Validate(It.IsAny<PasswordResetCommand>())).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
@@ -99,7 +114,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
             {
                 Id = "USER1",
                 Email = ActualEmailAddress,
-                PasswordResetCode = PasswordResetCode,
                 IsActive = true,
                 SecurityCodes = new[]
                 {
@@ -117,7 +131,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
                     },
                     new SecurityCode
                     {
-                        Code = "333333",
+                        Code = PasswordResetCode,
                         CodeType = SecurityCodeType.PasswordResetCode,
                         ExpiryTime = DateTime.MaxValue
                     },
@@ -148,19 +162,18 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
             {
                 Id = "USER1",
                 Email = ActualEmailAddress,
-                PasswordResetCode = PasswordResetCode,
                 IsActive = true,
                 SecurityCodes = new[]
                 {
                     new SecurityCode
                     {
-                        Code = "111111",
+                        Code = PasswordResetCode,
                         CodeType = SecurityCodeType.PasswordResetCode,
                         ExpiryTime = DateTime.MaxValue
                     },
                     new SecurityCode
                     {
-                        Code = "222222",
+                        Code = PasswordResetCode,
                         CodeType = SecurityCodeType.PasswordResetCode,
                         ExpiryTime = DateTime.MaxValue
                     },
@@ -242,7 +255,21 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         public async Task ThenAnEmailIsSentToConfirmAccountActiviationIfItWasNotActive()
         {
             //Arrange
-            _userRepository.Setup(x => x.GetByEmailAddress(ActualEmailAddress)).ReturnsAsync(new User { Email = ActualEmailAddress, PasswordResetCode = PasswordResetCode, IsActive = false });
+            _userRepository.Setup(x => x.GetByEmailAddress(ActualEmailAddress))
+                .ReturnsAsync(new User
+                {
+                    Email = ActualEmailAddress,
+                    IsActive = false,
+                    SecurityCodes = new[]
+                    {
+                        new SecurityCode
+                        {
+                            Code = PasswordResetCode,
+                            CodeType = SecurityCodeType.PasswordResetCode,
+                            ExpiryTime = DateTime.MaxValue
+                        }
+                    }
+                });
 
             //Act
             await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = ActualEmailAddress, Password = "somePassword", ConfirmPassword = "someConfirmPassword" });

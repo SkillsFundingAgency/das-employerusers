@@ -110,6 +110,8 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 
         public async Task SendPasswordResetCodeMessage(User user, string messageId)
         {
+            var resetCode = GetUserPasswordResetCode(user);
+
             var message = new EmailNotification
             {
                 MessageType = "PasswordReset",
@@ -120,8 +122,8 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 Data = new Dictionary<string, string>
                 {
                     { "MessageId", messageId },
-                    { "Code", user.PasswordResetCode },
-                    { "ExpiryDate", user.PasswordResetCodeExpiry.Value.ToString() }
+                    { "Code", resetCode.Code },
+                    { "ExpiryDate", resetCode.ExpiryTime.ToString() }
                 }
             };
 
@@ -160,6 +162,12 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
             return user.SecurityCodes.Where(sc => sc.CodeType == SecurityCodeType.UnlockCode)
                                      .OrderByDescending(sc => sc.ExpiryTime)
                                      .Select(sc => sc.Code)
+                                     .FirstOrDefault();
+        }
+        private SecurityCode GetUserPasswordResetCode(User user)
+        {
+            return user.SecurityCodes.Where(sc => sc.CodeType == SecurityCodeType.PasswordResetCode)
+                                     .OrderByDescending(sc => sc.ExpiryTime)
                                      .FirstOrDefault();
         }
     }

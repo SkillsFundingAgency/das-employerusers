@@ -20,9 +20,34 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.QueriesTests.PasswordReset
         public void Arrange()
         {
             _userRepository = new Mock<IUserRepository>();
-            _userRepository.Setup(x => x.GetByEmailAddress(It.IsAny<string>())).ReturnsAsync(null);
-            _userRepository.Setup(x => x.GetByEmailAddress(ActualEmailAddress)).ReturnsAsync(new User {PasswordResetCode = PasswordResetCode});
-            _userRepository.Setup(x => x.GetByEmailAddress(ExpiredEmailAddress)).ReturnsAsync(new User {PasswordResetCode = PasswordResetCode,PasswordResetCodeExpiry = DateTime.UtcNow.AddMinutes(-1)});
+            _userRepository.Setup(x => x.GetByEmailAddress(It.IsAny<string>()))
+                .ReturnsAsync(null);
+            _userRepository.Setup(x => x.GetByEmailAddress(ActualEmailAddress))
+                .ReturnsAsync(new User
+                {
+                    SecurityCodes = new[]
+                    {
+                        new SecurityCode
+                        {
+                            Code = PasswordResetCode,
+                            CodeType = SecurityCodeType.PasswordResetCode,
+                            ExpiryTime = DateTime.MaxValue
+                        }
+                    }
+                });
+            _userRepository.Setup(x => x.GetByEmailAddress(ExpiredEmailAddress))
+                .ReturnsAsync(new User
+                {
+                    SecurityCodes = new[]
+                    {
+                        new SecurityCode
+                        {
+                            Code = PasswordResetCode,
+                            CodeType = SecurityCodeType.PasswordResetCode,
+                            ExpiryTime = DateTime.MinValue
+                        }
+                    }
+                });
 
             _isPasswordResetCodeValidQueryHandler = new IsPasswordResetCodeValidQueryHandler(_userRepository.Object);
         }

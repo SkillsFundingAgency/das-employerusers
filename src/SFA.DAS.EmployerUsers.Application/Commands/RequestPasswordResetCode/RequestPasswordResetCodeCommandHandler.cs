@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using NLog;
@@ -54,8 +55,12 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
 
             if (RequiresPasswordResetCode(existingUser))
             {
-                existingUser.PasswordResetCode = _codeGenerator.GenerateAlphaNumeric();
-                existingUser.PasswordResetCodeExpiry = DateTimeProvider.Current.UtcNow.AddDays(1);
+                existingUser.AddSecurityCode(new SecurityCode
+                {
+                    Code = _codeGenerator.GenerateAlphaNumeric(),
+                    CodeType = SecurityCodeType.PasswordResetCode,
+                    ExpiryTime = DateTimeProvider.Current.UtcNow.AddDays(1)
+                });
 
                 await _userRepository.Update(existingUser);
             }
@@ -65,10 +70,8 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
 
         private static bool RequiresPasswordResetCode(User user)
         {
-            if (string.IsNullOrEmpty(user.PasswordResetCode) || !user.PasswordResetCodeExpiry.HasValue)
-                return true;
-
-            return user.PasswordResetCodeExpiry.Value <= DateTimeProvider.Current.UtcNow;
+            return !user.SecurityCodes.Any(sc => sc.CodeType == SecurityCodeType.PasswordResetCode
+                                             && sc.ExpiryTime >= DateTime.UtcNow);
         }
     }
 }
