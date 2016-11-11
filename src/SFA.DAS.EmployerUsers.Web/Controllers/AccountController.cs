@@ -115,6 +115,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View("Register", model);
         }
 
+
         [HttpGet]
         [Authorize]
         [Route("account/confirm")]
@@ -162,6 +163,8 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             }
         }
 
+
+
         [HttpGet]
         [AttemptAuthorise]
         [Route("account/unlock")]
@@ -197,6 +200,8 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             }
         }
 
+
+
         [HttpGet]
         [Route("account/forgottencredentials")]
         public ActionResult ForgottenCredentials()
@@ -219,6 +224,8 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View("ResetPassword", new PasswordResetViewModel {Email = requestPasswordResetViewModel.Email});
         }
 
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("identity/employer/resetpassword")]
@@ -235,6 +242,25 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
 
+
+        [HttpGet]
+        [Authorize]
+        [Route("account/changeemail")]
+        public ActionResult ChangeEmail(string returnUrl)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [Route("account/changeemail")]
+        public async Task<ActionResult> ChangeEmail(ChangeEmailViewModel model, string returnUrl)
+        {
+            model.UserId = GetLoggedInUserId();
+            await _accountOrchestrator.RequestChangeEmail(model);
+            return View();
+        }
 
 
         private string GetLoggedInUserId()

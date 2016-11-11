@@ -80,6 +80,9 @@
     <Compile Include="Commands\RegisterUser\RegisterUserCommand.cs" />
     <Compile Include="Commands\RegisterUser\RegisterUserCommandHandler.cs" />
     <Compile Include="Commands\RegisterUser\RegisterUserCommandValidator.cs" />
+    <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommand.cs" />
+    <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandHandler.cs" />
+    <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandValidator.cs" />
     <Compile Include="Commands\RequestPasswordResetCode\RequestPasswordResetCodeCommand.cs" />
     <Compile Include="Commands\RequestPasswordResetCode\RequestPasswordResetCodeCommandHandler.cs" />
     <Compile Include="Commands\RequestPasswordResetCode\RequestPasswordResetCodeCommandValidator.cs" />

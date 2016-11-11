@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.EmployerUsers.Domain
+﻿namespace SFA.DAS.EmployerUsers.Domain
 {
     public class User
     {
@@ -15,5 +13,6 @@ namespace SFA.DAS.EmployerUsers.Domain
         public int FailedLoginAttempts { get; set; }
         public bool IsLocked { get; set; }
         public SecurityCode[] SecurityCodes { get; set; }
+        public string PendingEmail { get; set; }
     }
 }

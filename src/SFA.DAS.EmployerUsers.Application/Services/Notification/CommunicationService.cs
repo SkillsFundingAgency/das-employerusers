@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.EmployerUsers.Domain;
@@ -7,6 +8,8 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 {
     public class CommunicationService : ICommunicationService
     {
+        private const string ReplyToAddress = "info@sfa.das.gov.uk";
+
         private readonly IHttpClientWrapper _httpClientWrapper;
 
         public CommunicationService(IHttpClientWrapper httpClientWrapper)
@@ -22,7 +25,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 MessageType = "UserRegistration",
                 UserId = user.Id,
                 RecipientsAddress = user.Email,
-                ReplyToAddress = "info@sfa.das.gov.uk",
+                ReplyToAddress = ReplyToAddress,
                 ForceFormat = true,
                 Data = new Dictionary<string, string>
                 {
@@ -41,7 +44,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 MessageType = "UserAccountConfirmation",
                 UserId = user.Id,
                 RecipientsAddress = user.Email,
-                ReplyToAddress = "info@sfa.das.gov.uk",
+                ReplyToAddress = ReplyToAddress,
                 ForceFormat = true,
                 Data = new Dictionary<string, string>
                 {
@@ -59,7 +62,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 MessageType = "AccountLocked",
                 UserId = user.Id,
                 RecipientsAddress = user.Email,
-                ReplyToAddress = "info@sfa.das.gov.uk",
+                ReplyToAddress = ReplyToAddress,
                 ForceFormat = true,
                 Data = new Dictionary<string, string>
                 {
@@ -78,7 +81,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 MessageType = "ResendActivationCode",
                 UserId = user.Id,
                 RecipientsAddress = user.Email,
-                ReplyToAddress = "info@sfa.das.gov.uk",
+                ReplyToAddress = ReplyToAddress,
                 ForceFormat = true,
                 Data = new Dictionary<string, string>
                 {
@@ -97,7 +100,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 MessageType = "AccountUnLocked",
                 UserId = user.Id,
                 RecipientsAddress = user.Email,
-                ReplyToAddress = "info@sfa.das.gov.uk",
+                ReplyToAddress = ReplyToAddress,
                 ForceFormat = true,
                 Data = new Dictionary<string, string>
                 {
@@ -117,7 +120,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 MessageType = "PasswordReset",
                 UserId = user.Id,
                 RecipientsAddress = user.Email,
-                ReplyToAddress = "info@sfa.das.gov.uk",
+                ReplyToAddress = ReplyToAddress,
                 ForceFormat = true,
                 Data = new Dictionary<string, string>
                 {
@@ -137,11 +140,30 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 MessageType = "PasswordResetConfirmation",
                 UserId = user.Id,
                 RecipientsAddress = user.Email,
-                ReplyToAddress = "info@sfa.das.gov.uk",
+                ReplyToAddress = ReplyToAddress,
                 ForceFormat = true,
                 Data = new Dictionary<string, string>
                 {
                     { "MessageId", messageId }
+                }
+            };
+
+            await _httpClientWrapper.SendMessage(message);
+        }
+
+        public async Task SendConfirmEmailChangeMessage(User user, string messageId)
+        {
+            var message = new EmailNotification
+            {
+                MessageType = "ConfirmEmailChange",
+                UserId = user.Id,
+                RecipientsAddress = user.PendingEmail,
+                ReplyToAddress = ReplyToAddress,
+                ForceFormat = true,
+                Data = new Dictionary<string, string>
+                {
+                    { "MessageId", messageId },
+                    { "ConfirmEmailCode", GetUserConfirmEmailCode(user) }
                 }
             };
 
@@ -168,6 +190,13 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
         {
             return user.SecurityCodes.Where(sc => sc.CodeType == SecurityCodeType.PasswordResetCode)
                                      .OrderByDescending(sc => sc.ExpiryTime)
+                                     .FirstOrDefault();
+        }
+        private string GetUserConfirmEmailCode(User user)
+        {
+            return user.SecurityCodes.Where(sc => sc.CodeType == SecurityCodeType.ConfirmEmailCode)
+                                     .OrderByDescending(sc => sc.ExpiryTime)
+                                     .Select(sc => sc.Code)
                                      .FirstOrDefault();
         }
     }

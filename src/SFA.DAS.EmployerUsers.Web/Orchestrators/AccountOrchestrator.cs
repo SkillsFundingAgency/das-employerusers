@@ -7,6 +7,7 @@ using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.PasswordReset;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
+using SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail;
 using SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode;
@@ -157,7 +158,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
         public virtual async Task<bool> RequestConfirmAccount(string userId)
         {
-            var isUserActive = await _mediator.SendAsync(new IsUserActiveQuery {UserId = userId});
+            var isUserActive = await _mediator.SendAsync(new IsUserActiveQuery { UserId = userId });
             return !isUserActive;
         }
 
@@ -175,7 +176,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 {
                     Email = unlockUserViewModel.Email
                 });
-                
+
                 return unlockUserViewModel;
             }
             catch (InvalidRequestException ex)
@@ -200,10 +201,9 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
         }
 
-
         public virtual async Task<UnlockUserViewModel> ResendUnlockCode(UnlockUserViewModel model)
         {
-            
+
             try
             {
                 await _mediator.SendAsync(new ResendUnlockCodeCommand
@@ -221,7 +221,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 model.ErrorDictionary = ex.ErrorMessages;
                 return model;
             }
-            
+
         }
 
         public virtual async Task<RequestPasswordResetViewModel> RequestPasswordResetCode(RequestPasswordResetViewModel model)
@@ -275,6 +275,31 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 return model;
             }
         }
+
+        public virtual async Task<ChangeEmailViewModel> RequestChangeEmail(ChangeEmailViewModel model)
+        {
+            try
+            {
+                await _mediator.SendAsync(new RequestChangeEmailCommand
+                {
+                    UserId = model.UserId,
+                    NewEmailAddress = model.NewEmailAddress,
+                    ConfirmEmailAddress = model.ConfirmEmailAddress
+                });
+            }
+            catch (InvalidRequestException ex)
+            {
+                model.ErrorDictionary = ex.ErrorMessages;
+            }
+            catch (Exception ex)
+            {
+                model.ErrorDictionary.Add("", ex.Message);
+            }
+            return model;
+        }
+
+
+
         private void LoginUser(string id, string firstName, string lastName)
         {
             _owinWrapper.IssueLoginCookie(id, $"{firstName} {lastName}");

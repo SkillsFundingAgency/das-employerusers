@@ -276,6 +276,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccessCodeViewModel.cs" />
+    <Compile Include="Models\ChangeEmailViewModel.cs" />
     <Compile Include="Models\ConfirmationViewModel.cs" />
     <Compile Include="Models\LoginResultModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
@@ -403,6 +404,7 @@
     <Content Include="Views\TermsAndConditions\Index.cshtml" />
     <Content Include="Views\TermsAndConditions\_TermsAndConditionBody.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
+    <Content Include="Views\Account\ChangeEmail.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

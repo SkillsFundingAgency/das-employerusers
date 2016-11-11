@@ -79,6 +79,8 @@
     <Compile Include="CommandsTests\PasswordResetTests\PasswordResetCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="CommandsTests\RegisterUserTests\RegisterUserCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="CommandsTests\RegisterUserTests\RegisterUserCommandValidatorTests\WhenValidatingTheRequest.cs" />
+    <Compile Include="CommandsTests\RequestChangeEmailTests\RequestChangeEmailCommandHandlerTests\WhenHandling.cs" />
+    <Compile Include="CommandsTests\RequestChangeEmailTests\RequestChangeEmailCommandValidatorTests\WhenValidatingCommand.cs" />
     <Compile Include="CommandsTests\RequestPasswordResetCodeTests\RequestPasswordResetCodeCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="CommandsTests\RequestPasswordResetCodeTests\RequestPasswordResetCodeCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="CommandsTests\ResendActivationCodeTests\ResendActivationCodeCommandTests\WhenHandlingTheCommand.cs" />
@@ -95,6 +97,7 @@
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenRegisteringAUser.cs" />
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenSendingAccountUnlockMessage.cs" />
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenResendingActivationCode.cs" />
+    <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenSendingConfirmEmailChangeMessage.cs" />
     <Compile Include="ServicesTests\PasswordTests\PasswordServiceTests\WhenCheckingThePasswordComplexity.cs" />
     <Compile Include="ServicesTests\PasswordTests\PasswordServiceTests\WhenGenerating.cs" />
     <Compile Include="ServicesTests\PasswordTests\PasswordServiceTests\WhenVerifying.cs" />

@@ -7,7 +7,14 @@
 </head>
 <body>
     <div>
-        <span><a href="@Url.Action("Login", "Home")">Login</a></span>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <span><a href="https://localhost:44334/account/changeemail">Change Email</a></span>
+        }
+        else
+        {
+            <span><a href="@Url.Action("Login", "Home")">Login</a></span>
+        }
     </div>
     <div>
         @RenderBody()
