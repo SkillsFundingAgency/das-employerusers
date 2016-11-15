@@ -75,6 +75,8 @@
     <Compile Include="CommandsTests\ActivateUserTests\ActivateUserCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="CommandsTests\ActivateUserTests\ActivateUserCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="CommandsTests\AuthenticateUserTests\AuthenticateUserCommandHandlerTests\WhenHandling.cs" />
+    <Compile Include="CommandsTests\ChangeEmailTests\ChangeEmailCommandHandlerTests\WhenHandling.cs" />
+    <Compile Include="CommandsTests\ChangeEmailTests\ChangeEmailCommandValidatorTests\WhenValidating.cs" />
     <Compile Include="CommandsTests\PasswordResetTests\PasswordResetCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="CommandsTests\PasswordResetTests\PasswordResetCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="CommandsTests\RegisterUserTests\RegisterUserCommandTests\WhenHandlingTheCommand.cs" />
@@ -101,6 +103,7 @@
     <Compile Include="ServicesTests\PasswordTests\PasswordServiceTests\WhenCheckingThePasswordComplexity.cs" />
     <Compile Include="ServicesTests\PasswordTests\PasswordServiceTests\WhenGenerating.cs" />
     <Compile Include="ServicesTests\PasswordTests\PasswordServiceTests\WhenVerifying.cs" />
+    <Compile Include="TestExtensions.cs" />
     <Compile Include="TestHelpers\FakeTimeProvider.cs" />
   </ItemGroup>
   <ItemGroup>

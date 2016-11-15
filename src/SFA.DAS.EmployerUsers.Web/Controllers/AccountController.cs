@@ -259,7 +259,33 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         {
             model.UserId = GetLoggedInUserId();
             await _accountOrchestrator.RequestChangeEmail(model);
+            return RedirectToAction("ConfirmChangeEmail");
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("account/confirmchangeemail")]
+        public ActionResult ConfirmChangeEmail()
+        {
             return View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("account/confirmchangeemail")]
+        public async Task<ActionResult> ConfirmChangeEmail(ConfirmChangeEmailViewModel model)
+        {
+            model.UserId = GetLoggedInUserId();
+
+            model = await _accountOrchestrator.ConfirmChangeEmail(model);
+            if (model.Valid)
+            {
+                return Redirect(model.ReturnUrl);
+            }
+
+            model.SecurityCode = string.Empty;
+            model.Password = string.Empty;
+            return View(model);
         }
 
 

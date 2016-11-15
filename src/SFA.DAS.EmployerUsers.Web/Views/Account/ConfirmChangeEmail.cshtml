@@ -1,0 +1,20 @@
+﻿<h1 class="heading-xlarge">Enter your security code</h1>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+
+    <fieldset>
+        <legend class="visuallyhidden">Enter your security code</legend>
+
+        <div class="form-group">
+            <label class="form-label-bold" for="SecurityCode">Enter security code</label>
+            <input autofocus="autofocus" aria-required="true" class="form-control" id="SecurityCode" name="SecurityCode">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label-bold" for="Password">Password</label>
+            <input type="password" aria-required="true" class="form-control" id="Password" name="Password">
+        </div>
+    </fieldset>
+    <button type="submit" class="button">Continue</button>
+</form>

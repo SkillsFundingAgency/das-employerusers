@@ -98,6 +98,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Controllers\AccountControllerTests\WhenConfirmingChangeEmail.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenEnteringMyAccessCode.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenLoggingIn.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenRegistering.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Controllers\AccountControllerTests\WhenResetingMyPassword.cs" />
     <Compile Include="Controllers\AccountControllerTests\WhenUnlockingMyAccount.cs" />
     <Compile Include="Controllers\ControllerTestBase.cs" />
+    <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenConfirmingChangeEmail.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenEnteringMyAccessCode.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenEnteringPasswordResetCode.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenLoggingIn.cs" />

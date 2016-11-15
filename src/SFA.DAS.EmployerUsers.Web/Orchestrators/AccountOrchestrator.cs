@@ -5,6 +5,7 @@ using NLog;
 using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
+using SFA.DAS.EmployerUsers.Application.Commands.ChangeEmail;
 using SFA.DAS.EmployerUsers.Application.Commands.PasswordReset;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail;
@@ -13,6 +14,7 @@ using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode;
 using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserByEmailAddress;
+using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.Application.Queries.IsUserActive;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
@@ -298,6 +300,33 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             return model;
         }
 
+        public virtual async Task<ConfirmChangeEmailViewModel> ConfirmChangeEmail(ConfirmChangeEmailViewModel model)
+        {
+            try
+            {
+                var user = await _mediator.SendAsync(new GetUserByIdQuery
+                {
+                    UserId = model.UserId
+                });
+
+                await _mediator.SendAsync(new ChangeEmailCommand
+                {
+                    User = user,
+                    SecurityCode = model.SecurityCode,
+                    Password = model.Password
+                });
+            }
+            catch (InvalidRequestException ex)
+            {
+                model.ErrorDictionary = ex.ErrorMessages;
+            }
+            catch (Exception ex)
+            {
+                model.ErrorDictionary.Add("", ex.Message);
+            }
+            return model;
+        }
+
 
 
         private void LoginUser(string id, string firstName, string lastName)
@@ -306,5 +335,6 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
             _owinWrapper.RemovePartialLoginCookie();
         }
+
     }
 }
