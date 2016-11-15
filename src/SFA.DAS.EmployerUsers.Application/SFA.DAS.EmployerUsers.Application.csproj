@@ -76,6 +76,7 @@
     <Compile Include="Commands\AuthenticateUser\AuthenticateUserCommandHandler.cs" />
     <Compile Include="Commands\ChangeEmail\ChangeEmailCommand.cs" />
     <Compile Include="Commands\ChangeEmail\ChangeEmailCommandHandler.cs" />
+    <Compile Include="Commands\ChangeEmail\ChangeEmailCommandResult.cs" />
     <Compile Include="Commands\ChangeEmail\ChangeEmailCommandValidator.cs" />
     <Compile Include="Commands\PasswordReset\PasswordResetCommand.cs" />
     <Compile Include="Commands\PasswordReset\PasswordResetCommandHandler.cs" />

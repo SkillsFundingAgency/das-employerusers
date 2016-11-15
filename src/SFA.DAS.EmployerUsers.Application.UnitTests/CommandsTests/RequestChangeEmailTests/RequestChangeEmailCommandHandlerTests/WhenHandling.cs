@@ -18,6 +18,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestChang
         private const string NewEmailAddress = "user.one@unit.tests";
         private const string OldEmailAddress = "user1@unit.tests";
         private const string ConfirmEmailCode = "AB234B";
+        private const string ReturnUrl = "http://unit.test";
 
         private RequestChangeEmailCommand _command;
         private Mock<IValidator<RequestChangeEmailCommand>> _validator;
@@ -33,7 +34,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestChang
             {
                 UserId = UserId,
                 NewEmailAddress = NewEmailAddress,
-                ConfirmEmailAddress = NewEmailAddress
+                ConfirmEmailAddress = NewEmailAddress,
+                ReturnUrl = ReturnUrl
             };
 
             _validator = new Mock<IValidator<RequestChangeEmailCommand>>();
@@ -105,7 +107,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestChang
             // Assert
             _userRepository.Verify(r => r.Update(It.Is<User>(u => u.Id == UserId
                                                                && u.SecurityCodes.Any(sc => sc.Code == ConfirmEmailCode
-                                                                                         && sc.CodeType == SecurityCodeType.ConfirmEmailCode))
+                                                                                         && sc.CodeType == SecurityCodeType.ConfirmEmailCode
+                                                                                         && sc.ReturnUrl == ReturnUrl))
                                                 ), Times.Once);
         }
 

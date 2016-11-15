@@ -286,7 +286,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 {
                     UserId = model.UserId,
                     NewEmailAddress = model.NewEmailAddress,
-                    ConfirmEmailAddress = model.ConfirmEmailAddress
+                    ConfirmEmailAddress = model.ConfirmEmailAddress,
+                    ReturnUrl = model.ReturnUrl
                 });
             }
             catch (InvalidRequestException ex)
@@ -309,12 +310,13 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     UserId = model.UserId
                 });
 
-                await _mediator.SendAsync(new ChangeEmailCommand
+                var changeEmailResult = await _mediator.SendAsync(new ChangeEmailCommand
                 {
                     User = user,
                     SecurityCode = model.SecurityCode,
                     Password = model.Password
                 });
+                model.ReturnUrl = changeEmailResult.ReturnUrl;
             }
             catch (InvalidRequestException ex)
             {

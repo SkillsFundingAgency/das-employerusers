@@ -3,7 +3,7 @@ using SFA.DAS.EmployerUsers.Domain;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.ChangeEmail
 {
-    public class ChangeEmailCommand : IAsyncRequest<Unit>
+    public class ChangeEmailCommand : IAsyncRequest<ChangeEmailCommandResult>
     {
         public User User { get; set; }
         public string SecurityCode { get; set; }

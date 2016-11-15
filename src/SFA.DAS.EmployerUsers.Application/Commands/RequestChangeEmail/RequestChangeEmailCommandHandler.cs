@@ -43,7 +43,8 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail
             {
                 Code = _codeGenerator.GenerateAlphaNumeric(),
                 CodeType = Domain.SecurityCodeType.ConfirmEmailCode,
-                ExpiryTime = DateTime.UtcNow.AddDays(1)
+                ExpiryTime = DateTime.UtcNow.AddDays(1),
+                ReturnUrl = message.ReturnUrl
             });
             await _userRepository.Update(user);
 

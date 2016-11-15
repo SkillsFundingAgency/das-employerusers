@@ -258,6 +258,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         public async Task<ActionResult> ChangeEmail(ChangeEmailViewModel model, string returnUrl)
         {
             model.UserId = GetLoggedInUserId();
+            model.ReturnUrl = returnUrl;
             await _accountOrchestrator.RequestChangeEmail(model);
             return RedirectToAction("ConfirmChangeEmail");
         }

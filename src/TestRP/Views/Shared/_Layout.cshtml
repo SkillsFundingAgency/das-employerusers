@@ -9,7 +9,7 @@
     <div>
         @if (User.Identity.IsAuthenticated)
         {
-            <span><a href="https://localhost:44334/account/changeemail">Change Email</a></span>
+            <span><a href="https://localhost:44334/account/changeemail?returnUrl=@Url.Action("Index", "Home", null, Request.Url.Scheme)">Change Email</a></span>
         }
         else
         {

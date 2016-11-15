@@ -18,6 +18,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangeEmailT
         private const string Password = "password";
         private const string OldEmail = "user.one@unit.tests";
         private const string NewEmail = "user1@unit.tests";
+        private const string ReturnUrl = "http://unit.tests";
 
         private Mock<IValidator<ChangeEmailCommand>> _validator;
         private Mock<IUserRepository> _userRepository;
@@ -48,13 +49,41 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangeEmailT
                         {
                             Code = SecurityCode,
                             CodeType = Domain.SecurityCodeType.ConfirmEmailCode,
-                            ExpiryTime = DateTime.MaxValue
+                            ExpiryTime = DateTime.MaxValue,
+                            ReturnUrl = ReturnUrl
+                        },
+                        new Domain.SecurityCode
+                        {
+                            Code = "WRONG-CODE",
+                            CodeType = Domain.SecurityCodeType.ConfirmEmailCode,
+                            ExpiryTime = DateTime.Now.AddDays(30),
+                            ReturnUrl = "http://not-here"
                         }
                     }
                 },
                 SecurityCode = SecurityCode,
                 Password = Password
             };
+        }
+
+        [Test]
+        public async Task ThenItShouldReturnAnInstanceOfChangeEmailCommandResult()
+        {
+            // Act
+            var actual = await _handler.Handle(_command);
+
+            // Assert
+            Assert.IsNotNull(actual);
+        }
+
+        [Test]
+        public async Task ThenItShouldReturnReturnUrlFromSpecificSecurityCode()
+        {
+            // Act
+            var actual = await _handler.Handle(_command);
+
+            // Assert
+            Assert.AreEqual(ReturnUrl, actual.ReturnUrl);
         }
 
         [Test]

@@ -6,5 +6,6 @@
         public string ConfirmEmailAddress { get; set; }
 
         public string UserId { get; set; }
+        public string ReturnUrl { get; set; }
     }
 }

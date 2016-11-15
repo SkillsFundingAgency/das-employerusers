@@ -21,6 +21,8 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         private const string UserId = "USER1";
         private const string SecurityCode = "1A2B3C";
         private const string Password = "password";
+        private const string ReturnUrl = "http://unit.test";
+
         private Mock<IMediator> _mediator;
         private Mock<IOwinWrapper> _owinWrapper;
         private AccountOrchestrator _orchestrator;
@@ -41,7 +43,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             _mediator.Setup(m => m.SendAsync(It.IsAny<ChangeEmailCommand>()))
                 .ThrowsAsync(new Exception("Called mediator with incorrect ChangeEmailCommand"));
             _mediator.Setup(m => m.SendAsync(It.Is<ChangeEmailCommand>(c => c.User == _user && c.SecurityCode == SecurityCode && c.Password == Password)))
-                .Returns(Task.FromResult<Unit>(Unit.Value));
+                .Returns(Task.FromResult(new ChangeEmailCommandResult
+                {
+                    ReturnUrl = ReturnUrl
+                }));
 
             _owinWrapper = new Mock<IOwinWrapper>();
 
@@ -64,6 +69,16 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             // Assert
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual.Valid);
+        }
+
+        [Test]
+        public async Task ThenItShouldReturnTheReturnUrlForTheChange()
+        {
+            // Act
+            var actual = await _orchestrator.ConfirmChangeEmail(_model);
+
+            // Assert
+            Assert.AreEqual(ReturnUrl, actual.ReturnUrl);
         }
 
         [Test]

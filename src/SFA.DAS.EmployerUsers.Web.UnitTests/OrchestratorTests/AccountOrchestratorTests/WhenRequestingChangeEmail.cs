@@ -16,6 +16,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
     {
         private const string UserId = "USER1";
         private const string EmailAddress = "user.one@unit.test";
+        private const string ReturnUrl = "http://unit.test";
 
         private ChangeEmailViewModel _model;
         private Mock<IMediator> _mediator;
@@ -29,7 +30,8 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             {
                 UserId = UserId,
                 NewEmailAddress = EmailAddress,
-                ConfirmEmailAddress = EmailAddress
+                ConfirmEmailAddress = EmailAddress,
+                ReturnUrl = ReturnUrl
             };
 
             _mediator = new Mock<IMediator>();
@@ -99,7 +101,8 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         {
             return It.Is<RequestChangeEmailCommand>(c => c.UserId == _model.UserId
                                                       && c.NewEmailAddress == _model.NewEmailAddress
-                                                      && c.ConfirmEmailAddress == _model.ConfirmEmailAddress);
+                                                      && c.ConfirmEmailAddress == _model.ConfirmEmailAddress
+                                                      && c.ReturnUrl == ReturnUrl);
         }
     }
 }
