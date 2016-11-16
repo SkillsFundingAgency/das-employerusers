@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace SFA.DAS.EmployerUsers.Infrastructure.Data
+namespace SFA.DAS.EmployerUsers.Infrastructure.Data.DocumentDb
 {
     public class DocumentDbRelyingParty
     {

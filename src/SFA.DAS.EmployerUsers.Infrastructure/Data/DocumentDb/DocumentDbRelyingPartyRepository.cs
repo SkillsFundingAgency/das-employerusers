@@ -5,7 +5,7 @@ using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
-namespace SFA.DAS.EmployerUsers.Infrastructure.Data
+namespace SFA.DAS.EmployerUsers.Infrastructure.Data.DocumentDb
 {
     public class DocumentDbRelyingPartyRepository : DocumentDbRepository, IRelyingPartyRepository
     {

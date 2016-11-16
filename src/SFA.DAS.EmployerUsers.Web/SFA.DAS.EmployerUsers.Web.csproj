@@ -277,6 +277,7 @@
     </Compile>
     <Compile Include="Models\AccessCodeViewModel.cs" />
     <Compile Include="Models\ChangeEmailViewModel.cs" />
+    <Compile Include="Models\ChangePasswordViewModel.cs" />
     <Compile Include="Models\ConfirmationViewModel.cs" />
     <Compile Include="Models\ConfirmChangeEmailViewModel.cs" />
     <Compile Include="Models\LoginResultModel.cs" />
@@ -407,6 +408,7 @@
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\ChangeEmail.cshtml" />
     <Content Include="Views\Account\ConfirmChangeEmail.cshtml" />
+    <Content Include="Views\Account\ChangePassword.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

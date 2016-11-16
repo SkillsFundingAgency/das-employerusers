@@ -77,6 +77,8 @@
     <Compile Include="CommandsTests\AuthenticateUserTests\AuthenticateUserCommandHandlerTests\WhenHandling.cs" />
     <Compile Include="CommandsTests\ChangeEmailTests\ChangeEmailCommandHandlerTests\WhenHandling.cs" />
     <Compile Include="CommandsTests\ChangeEmailTests\ChangeEmailCommandValidatorTests\WhenValidating.cs" />
+    <Compile Include="CommandsTests\ChangePasswordTests\ChangePasswordCommandHandlerTests\WhenHandling.cs" />
+    <Compile Include="CommandsTests\ChangePasswordTests\ChangePasswordCommandValidatorTests\WhenValidating.cs" />
     <Compile Include="CommandsTests\PasswordResetTests\PasswordResetCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="CommandsTests\PasswordResetTests\PasswordResetCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="CommandsTests\RegisterUserTests\RegisterUserCommandTests\WhenHandlingTheCommand.cs" />

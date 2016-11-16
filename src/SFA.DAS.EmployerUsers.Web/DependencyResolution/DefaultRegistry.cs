@@ -28,6 +28,8 @@ using SFA.DAS.Configuration.FileStorage;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Data;
+using SFA.DAS.EmployerUsers.Infrastructure.Data.DocumentDb;
+using SFA.DAS.EmployerUsers.Infrastructure.Data.FileSystem;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using StructureMap.Web.Pipeline;
 

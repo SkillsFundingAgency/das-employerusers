@@ -8,7 +8,7 @@ using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using User = SFA.DAS.EmployerUsers.Domain.User;
 
-namespace SFA.DAS.EmployerUsers.Infrastructure.Data
+namespace SFA.DAS.EmployerUsers.Infrastructure.Data.DocumentDb
 {
     public class DocumentDbUserRepository : DocumentDbRepository, IUserRepository
     {

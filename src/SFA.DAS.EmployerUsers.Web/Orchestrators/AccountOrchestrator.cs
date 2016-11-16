@@ -6,6 +6,7 @@ using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.ChangeEmail;
+using SFA.DAS.EmployerUsers.Application.Commands.ChangePassword;
 using SFA.DAS.EmployerUsers.Application.Commands.PasswordReset;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
 using SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail;
@@ -326,6 +327,35 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             {
                 model.ErrorDictionary.Add("", ex.Message);
             }
+            return model;
+        }
+
+        public virtual async Task<ChangePasswordViewModel> ChangePassword(ChangePasswordViewModel model)
+        {
+            try
+            {
+                var user = await _mediator.SendAsync(new GetUserByIdQuery
+                {
+                    UserId = model.UserId
+                });
+
+                await _mediator.SendAsync(new ChangePasswordCommand
+                {
+                    User = user,
+                    CurrentPassword = model.CurrentPassword,
+                    NewPassword = model.NewPassword,
+                    ConfirmPassword = model.ConfirmPassword
+                });
+            }
+            catch (InvalidRequestException ex)
+            {
+                model.ErrorDictionary = ex.ErrorMessages;
+            }
+            catch (Exception ex)
+            {
+                model.ErrorDictionary.Add("", ex.Message);
+            }
+
             return model;
         }
 

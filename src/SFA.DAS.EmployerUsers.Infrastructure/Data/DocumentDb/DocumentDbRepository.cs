@@ -4,7 +4,7 @@ using Microsoft.Azure.Documents.Client;
 using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 
-namespace SFA.DAS.EmployerUsers.Infrastructure.Data
+namespace SFA.DAS.EmployerUsers.Infrastructure.Data.DocumentDb
 {
     public abstract class DocumentDbRepository
     {

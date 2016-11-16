@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace SFA.DAS.EmployerUsers.Infrastructure.Data
+namespace SFA.DAS.EmployerUsers.Infrastructure.Data.FileSystem
 {
     public abstract class FileSystemRepository
     {

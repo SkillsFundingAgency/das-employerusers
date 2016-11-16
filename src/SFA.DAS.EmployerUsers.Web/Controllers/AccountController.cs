@@ -273,6 +273,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateAntiForgeryToken]
         [Route("account/confirmchangeemail")]
         public async Task<ActionResult> ConfirmChangeEmail(ConfirmChangeEmailViewModel model)
         {
@@ -288,6 +289,37 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             model.Password = string.Empty;
             return View(model);
         }
+
+
+        [HttpGet]
+        [Authorize]
+        [Route("account/changepassword")]
+        public ActionResult ChangePassword(string returnUrl)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [Route("account/changepassword")]
+        public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model, string returnUrl)
+        {
+            model.UserId = GetLoggedInUserId();
+
+            model = await _accountOrchestrator.ChangePassword(model);
+            if (model.Valid)
+            {
+                return Redirect(returnUrl);
+            }
+
+            model.CurrentPassword = string.Empty;
+            model.NewPassword = string.Empty;
+            model.ConfirmPassword = string.Empty;
+            return View(model);
+        }
+
+
 
 
         private string GetLoggedInUserId()

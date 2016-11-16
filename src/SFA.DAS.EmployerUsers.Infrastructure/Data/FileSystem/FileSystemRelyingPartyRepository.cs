@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
-namespace SFA.DAS.EmployerUsers.Infrastructure.Data
+namespace SFA.DAS.EmployerUsers.Infrastructure.Data.FileSystem
 {
     public class FileSystemRelyingPartyRepository : FileSystemRepository, IRelyingPartyRepository
     {
