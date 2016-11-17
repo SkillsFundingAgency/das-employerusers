@@ -6,6 +6,7 @@ using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Domain.Data;
+using SFA.DAS.EmployerUsers.Infrastructure.Data.DocumentDb.Entities;
 using User = SFA.DAS.EmployerUsers.Domain.User;
 
 namespace SFA.DAS.EmployerUsers.Infrastructure.Data.DocumentDb

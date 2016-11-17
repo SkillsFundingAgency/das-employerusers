@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SFA.DAS.EmployerUsers.Domain;
 
-namespace SFA.DAS.EmployerUsers.Infrastructure.Data.DocumentDb
+namespace SFA.DAS.EmployerUsers.Infrastructure.Data.DocumentDb.Entities
 {
     internal class DocumentDbUser
     {
