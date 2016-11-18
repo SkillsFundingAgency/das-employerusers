@@ -8,5 +8,20 @@ namespace SFA.DAS.EmployerUsers.Domain
         public SecurityCodeType CodeType { get; set; }
         public DateTime ExpiryTime { get; set; }
         public string ReturnUrl { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is SecurityCode))
+            {
+                return false;
+            }
+
+            var securityCode = (SecurityCode)obj;
+            return Code == securityCode.Code;
+        }
+        public override int GetHashCode()
+        {
+            return Code.GetHashCode();
+        }
     }
 }

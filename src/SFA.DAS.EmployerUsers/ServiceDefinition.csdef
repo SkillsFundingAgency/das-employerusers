@@ -13,6 +13,7 @@
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
       <Setting name="StorageConnectionString" />
       <Setting name="ConfigurationStorageConnectionString" />
+      <Setting name="UsersConnectionString" />
       <Setting name="EnvironmentName" />
       <Setting name="LogLevel" />
     </ConfigurationSettings>

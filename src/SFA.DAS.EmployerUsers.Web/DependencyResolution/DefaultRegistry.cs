@@ -30,6 +30,7 @@ using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Data.DocumentDb;
 using SFA.DAS.EmployerUsers.Infrastructure.Data.FileSystem;
+using SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using StructureMap.Web.Pipeline;
 
@@ -91,8 +92,8 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
         }
         private void AddDevelopmentRegistrations()
         {
-            For<IUserRepository>().Use<FileSystemUserRepository>();
-            For<IRelyingPartyRepository>().Use<FileSystemRelyingPartyRepository>();
+            For<IUserRepository>().Use<SqlServerUserRepository>();
+            For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
             For<IPasswordProfileRepository>().Use<InMemoryPasswordProfileRepository>();
             For<IHttpClientWrapper>().Use<StubHttpClientWrapper>();
         }
