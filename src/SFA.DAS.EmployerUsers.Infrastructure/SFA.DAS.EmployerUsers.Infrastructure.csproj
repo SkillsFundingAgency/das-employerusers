@@ -82,6 +82,7 @@
     <Compile Include="Data\FileSystem\FileSystemRepository.cs" />
     <Compile Include="Data\FileSystem\FileSystemUserRepository.cs" />
     <Compile Include="Data\InMemoryPasswordProfileRepository.cs" />
+    <Compile Include="Data\SqlServer\SqlServerPasswordProfileRepository.cs" />
     <Compile Include="Data\SqlServer\SqlServerRelyingPartyRepository.cs" />
     <Compile Include="Data\SqlServer\SqlServerRepository.cs" />
     <Compile Include="Data\SqlServer\SqlServerUserRepository.cs" />

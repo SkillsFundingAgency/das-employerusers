@@ -29,7 +29,6 @@ using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Data.DocumentDb;
-using SFA.DAS.EmployerUsers.Infrastructure.Data.FileSystem;
 using SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using StructureMap.Web.Pipeline;
@@ -94,7 +93,7 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
         {
             For<IUserRepository>().Use<SqlServerUserRepository>();
             For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
-            For<IPasswordProfileRepository>().Use<InMemoryPasswordProfileRepository>();
+            For<IPasswordProfileRepository>().Use<SqlServerPasswordProfileRepository>();
             For<IHttpClientWrapper>().Use<StubHttpClientWrapper>();
         }
         private void AddProductionRegistrations()

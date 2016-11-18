@@ -14,6 +14,7 @@
       <Setting name="StorageConnectionString" />
       <Setting name="ConfigurationStorageConnectionString" />
       <Setting name="UsersConnectionString" />
+      <Setting name="ProfileConnectionString" />
       <Setting name="EnvironmentName" />
       <Setting name="LogLevel" />
     </ConfigurationSettings>

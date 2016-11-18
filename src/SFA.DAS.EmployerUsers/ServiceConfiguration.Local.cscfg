@@ -7,6 +7,7 @@
       <Setting name="StorageConnectionString" value="UseDevelopmentStorage=true" />
       <Setting name="ConfigurationStorageConnectionString" value="UseDevelopmentStorage=true" />
       <Setting name="UsersConnectionString" value="server=(local);database=EmployerUsers;trusted_connection=true;" />
+      <Setting name="ProfileConnectionString" value="server=(local);database=EmployerUsers;trusted_connection=true;" />
       <Setting name="EnvironmentName" value="LOCAL" />
       <Setting name="LogLevel" value="Debug" />
     </ConfigurationSettings>
