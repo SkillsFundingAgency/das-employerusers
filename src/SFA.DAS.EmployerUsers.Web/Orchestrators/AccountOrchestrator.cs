@@ -73,7 +73,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
         }
 
-        public virtual async Task<RegisterViewModel> Register(RegisterViewModel registerUserViewModel)
+        public virtual async Task<RegisterViewModel> Register(RegisterViewModel registerUserViewModel, string returnUrl)
         {
             try
             {
@@ -85,7 +85,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     Email = registerUserViewModel.Email,
                     Password = registerUserViewModel.Password,
                     ConfirmPassword = registerUserViewModel.ConfirmPassword,
-                    HasAcceptedTermsAndConditions = registerUserViewModel.HasAcceptedTermsAndConditions
+                    HasAcceptedTermsAndConditions = registerUserViewModel.HasAcceptedTermsAndConditions,
+                    ReturnUrl = returnUrl
                 });
 
                 var user = await _mediator.SendAsync(new GetUserByEmailAddressQuery

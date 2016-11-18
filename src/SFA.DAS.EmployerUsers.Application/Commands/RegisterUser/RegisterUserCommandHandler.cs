@@ -105,7 +105,8 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
                     {
                         Code = _codeGenerator.GenerateAlphaNumeric(),
                         CodeType = SecurityCodeType.AccessCode,
-                        ExpiryTime = DateTimeProvider.Current.UtcNow.AddMinutes(30) //TODO: Make time configurable
+                        ExpiryTime = DateTimeProvider.Current.UtcNow.AddMinutes(30), //TODO: Make time configurable
+                        ReturnUrl = message.ReturnUrl
                     }
                 }
             };

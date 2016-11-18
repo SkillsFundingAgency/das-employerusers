@@ -11,5 +11,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
         public string ConfirmPassword { get; set; }
         public bool HasAcceptedTermsAndConditions { get; set; }
         public string Id { get; set; }
+        public string ReturnUrl { get; set; }
     }
 }

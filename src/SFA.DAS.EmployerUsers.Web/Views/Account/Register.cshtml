@@ -47,7 +47,7 @@
     </div>
 }
 
-<form method="post" action="@Url.Content("~/identity/employer/register")">
+<form method="post" action="@Url.Content("~/identity/employer/register")?returnUrl=@Url.Encode(Model.ReturnUrl)">
     @Html.AntiForgeryToken()
 
     <fieldset>

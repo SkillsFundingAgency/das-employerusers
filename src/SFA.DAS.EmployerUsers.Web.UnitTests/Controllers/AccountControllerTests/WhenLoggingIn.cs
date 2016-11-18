@@ -35,7 +35,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
                     ReturnUrl = ReturnUrl
                 });
 
-            
+
 
             _controller = new AccountController(_orchestrator.Object, _owinWrapper.Object, null);
             _controller.ControllerContext = _controllerContext.Object;
@@ -52,13 +52,13 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         }
 
         [Test]
-        public async Task ThenItShouldReturnTrueAsModelIfUnsuccessful()
+        public async Task ThenItShouldReturnInvalidModelIfUnsuccessful()
         {
             // Act
             var actual = (ViewResult)await _controller.Login(Id, new LoginViewModel());
 
             // Assert
-            Assert.IsTrue((bool)actual.Model);
+            Assert.IsTrue(((LoginViewModel)actual.Model).InvalidLoginAttempt);
         }
 
         [Test]

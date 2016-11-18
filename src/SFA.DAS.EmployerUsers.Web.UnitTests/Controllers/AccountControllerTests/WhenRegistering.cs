@@ -14,6 +14,8 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 {
     public class WhenRegistering : ControllerTestBase
     {
+        private const string ReturnUrl = "http://unit.test";
+
         private AccountController _accountController;
         private Mock<AccountOrchestrator> _accountOrchestator;
         private Mock<ControllerContext> _controllerContext;
@@ -46,23 +48,25 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public async Task ThenTheAccountOrchestratorRegisterIsCalled()
         {
             //Arrange
-            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>())).ReturnsAsync(new RegisterViewModel());
+            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>(), It.IsAny<string>()))
+                .ReturnsAsync(new RegisterViewModel());
 
             //Act
-            await _accountController.Register(new RegisterViewModel());
+            await _accountController.Register(new RegisterViewModel(), ReturnUrl);
 
             //Assert
-            _accountOrchestator.Verify(x => x.Register(It.IsAny<RegisterViewModel>()));
+            _accountOrchestator.Verify(x => x.Register(It.IsAny<RegisterViewModel>(), ReturnUrl));
         }
 
         [Test]
         public async Task ThenTheConfirmViewIsReturnedWhenTheOrchestratorReturnsTrue()
         {
             //Arrange
-            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>())).ReturnsAsync(new RegisterViewModel());
+            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>(), It.IsAny<string>()))
+                .ReturnsAsync(new RegisterViewModel());
 
             //Act
-            var actual = await _accountController.Register(new RegisterViewModel());
+            var actual = await _accountController.Register(new RegisterViewModel(), ReturnUrl);
 
             //Assert
             Assert.IsNotNull(actual);
@@ -76,10 +80,11 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public async Task ThenTheRegisterViewIsReturnedWhenTheOrchestratorReturnsFalse()
         {
             //Arrange
-            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>())).ReturnsAsync(new RegisterViewModel { ErrorDictionary = new Dictionary<string, string> { { "Error", "Error" } } });
+            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>(), It.IsAny<string>()))
+                .ReturnsAsync(new RegisterViewModel { ErrorDictionary = new Dictionary<string, string> { { "Error", "Error" } } });
 
             //Act
-            var actual = await _accountController.Register(new RegisterViewModel());
+            var actual = await _accountController.Register(new RegisterViewModel(), ReturnUrl);
 
             //Assert
             Assert.IsNotNull(actual);
@@ -97,10 +102,11 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             //Arrange
             ArrangeControllerContext("123456");
             _accountController.ControllerContext = _controllerContext.Object;
-            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>())).ReturnsAsync(new RegisterViewModel());
+            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>(), It.IsAny<string>()))
+                .ReturnsAsync(new RegisterViewModel());
 
             //Act
-            var actual = _accountController.Register();
+            var actual = _accountController.Register(ReturnUrl);
 
             //Assert
             Assert.IsNotNull(actual);
@@ -116,13 +122,14 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             //Arrange
             ArrangeControllerContext("123456");
             _accountController.ControllerContext = _controllerContext.Object;
-            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>())).ReturnsAsync(new RegisterViewModel());
+            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>(), It.IsAny<string>()))
+                .ReturnsAsync(new RegisterViewModel());
 
             //Act
-            var actual = await _accountController.Register(new RegisterViewModel());
+            var actual = await _accountController.Register(new RegisterViewModel(), ReturnUrl);
 
             //Assert
-            _accountOrchestator.Verify(x=>x.Register(It.IsAny<RegisterViewModel>()),Times.Never);
+            _accountOrchestator.Verify(x=>x.Register(It.IsAny<RegisterViewModel>(), It.IsAny<string>()),Times.Never);
             Assert.IsNotNull(actual);
             var redirectToRouteResult = actual as RedirectToRouteResult;
             Assert.IsNotNull(redirectToRouteResult);

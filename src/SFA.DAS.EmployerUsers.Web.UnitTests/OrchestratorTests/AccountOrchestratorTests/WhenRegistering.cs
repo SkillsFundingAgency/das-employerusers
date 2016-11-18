@@ -16,6 +16,8 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 {
     public class WhenRegistering
     {
+        private const string ReturnUrl = "";
+
         private AccountOrchestrator _accountOrchestrator;
         private Mock<IMediator> _mediator;
         private Mock<IOwinWrapper> _owinWrapper;
@@ -44,7 +46,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         public async Task ThenABooleanValueIsReturned()
         {
             //Act
-            var actual = await _accountOrchestrator.Register(_registerUserViewModel);
+            var actual = await _accountOrchestrator.Register(_registerUserViewModel, ReturnUrl);
 
             //Assert
             Assert.IsNotNull(actual);
@@ -63,10 +65,17 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             });
 
             //Act
-            var actual = await _accountOrchestrator.Register(_registerUserViewModel);
+            var actual = await _accountOrchestrator.Register(_registerUserViewModel, ReturnUrl);
 
             //Assert
-            _mediator.Verify(x => x.SendAsync(It.Is<RegisterUserCommand>(p => !string.IsNullOrEmpty(p.Id) && p.Email.Equals(_registerUserViewModel.Email) && p.FirstName.Equals(_registerUserViewModel.FirstName) && p.LastName.Equals(_registerUserViewModel.LastName) && p.Password.Equals(_registerUserViewModel.Password) && p.ConfirmPassword.Equals(_registerUserViewModel.ConfirmPassword) && p.HasAcceptedTermsAndConditions==_registerUserViewModel.HasAcceptedTermsAndConditions)), Times.Once);
+            _mediator.Verify(x => x.SendAsync(It.Is<RegisterUserCommand>(p => !string.IsNullOrEmpty(p.Id)
+                                                                           && p.Email.Equals(_registerUserViewModel.Email)
+                                                                           && p.FirstName.Equals(_registerUserViewModel.FirstName)
+                                                                           && p.LastName.Equals(_registerUserViewModel.LastName)
+                                                                           && p.Password.Equals(_registerUserViewModel.Password)
+                                                                           && p.ConfirmPassword.Equals(_registerUserViewModel.ConfirmPassword)
+                                                                           && p.HasAcceptedTermsAndConditions == _registerUserViewModel.HasAcceptedTermsAndConditions
+                                                                           && p.ReturnUrl == ReturnUrl)), Times.Once);
             Assert.IsTrue(actual.Valid);
         }
 
@@ -84,7 +93,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             _mediator.Setup(x => x.SendAsync(It.IsAny<GetUserByEmailAddressQuery>())).ReturnsAsync(user);
 
             //Act
-            await _accountOrchestrator.Register(_registerUserViewModel);
+            await _accountOrchestrator.Register(_registerUserViewModel, ReturnUrl);
 
             //Assert
             _owinWrapper.Verify(x => x.IssueLoginCookie(user.Id, $"{user.FirstName} {user.LastName}"), Times.Once);
@@ -105,7 +114,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             _mediator.Setup(x => x.SendAsync(It.IsAny<GetUserByEmailAddressQuery>())).ReturnsAsync(user);
 
             //Act
-            await _accountOrchestrator.Register(_registerUserViewModel);
+            await _accountOrchestrator.Register(_registerUserViewModel, ReturnUrl);
 
             //Assert
             _owinWrapper.Verify(x => x.IssueLoginCookie(It.IsAny<string>(), $"{_registerUserViewModel.FirstName} {_registerUserViewModel.LastName}"), Times.Once);
@@ -118,7 +127,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             _mediator.Setup(x => x.SendAsync(It.IsAny<RegisterUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { { "FirstName", "Some Error" } }));
 
             //Act
-            var actual = await _accountOrchestrator.Register(_registerUserViewModel);
+            var actual = await _accountOrchestrator.Register(_registerUserViewModel, ReturnUrl);
 
             //Assert
             Assert.IsFalse(actual.Valid);
@@ -132,7 +141,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             _mediator.Setup(x => x.SendAsync(It.IsAny<RegisterUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { { "FirstName", "Some Error" } }));
 
             //Act
-            var actual = await _accountOrchestrator.Register(_registerUserViewModel);
+            var actual = await _accountOrchestrator.Register(_registerUserViewModel, ReturnUrl);
 
             //Assert
             Assert.IsAssignableFrom<RegisterViewModel>(actual);
@@ -156,11 +165,11 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
                 { "Email", emailError },
                 { "Password", passwordError },
                 { "ConfirmPassword", confirmPasswordError }
-                
+
             }));
 
             //Act
-            var actual = await _accountOrchestrator.Register(_registerUserViewModel);
+            var actual = await _accountOrchestrator.Register(_registerUserViewModel, ReturnUrl);
 
             //Assert
             Assert.AreEqual(firstNameError, actual.FirstNameError);

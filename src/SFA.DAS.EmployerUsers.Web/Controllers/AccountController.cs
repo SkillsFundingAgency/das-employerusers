@@ -32,7 +32,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("identity/employer/login")]
         public ActionResult Login(string id)
         {
-            return View(false);
+            var signinMessage = _owinWrapper.GetSignInMessage(id);
+            var model = new LoginViewModel
+            {
+                InvalidLoginAttempt = false,
+                ReturnUrl = signinMessage.ReturnUrl
+            };
+            return View(model);
         }
 
         [HttpPost]
@@ -59,7 +65,8 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 return RedirectToAction("Unlock");
             }
 
-            return View(true);
+            model.InvalidLoginAttempt = true;
+            return View(model);
         }
 
 
@@ -77,7 +84,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/register")]
         [OutputCache(Duration = 0)]
         [AttemptAuthorise]
-        public ActionResult Register()
+        public ActionResult Register(string returnUrl)
         {
             var id = GetLoggedInUserId();
 
@@ -86,14 +93,14 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 return RedirectToAction("Confirm");
             }
 
-            return View(new RegisterViewModel());
+            return View(new RegisterViewModel { ReturnUrl = returnUrl});
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("identity/employer/register")]
         [OutputCache(Duration = 0)]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model, string returnUrl)
         {
             var id = GetLoggedInUserId();
 
@@ -102,7 +109,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 return RedirectToAction("Confirm");
             }
 
-            var registerResult = await _accountOrchestrator.Register(model);
+            var registerResult = await _accountOrchestrator.Register(model, returnUrl);
 
             if (registerResult.Valid)
             {
@@ -111,6 +118,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
             model.ConfirmPassword = string.Empty;
             model.Password = string.Empty;
+            model.ReturnUrl = returnUrl;
 
             return View("Register", model);
         }
@@ -127,7 +135,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            return View("Confirm", new AccessCodeViewModel {Valid = true});
+            return View("Confirm", new AccessCodeViewModel { Valid = true });
         }
 
         [HttpPost]
@@ -171,7 +179,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         public ActionResult Unlock()
         {
             var email = GetLoggedInUserEmail();
-            var model = new UnlockUserViewModel {Email = email};
+            var model = new UnlockUserViewModel { Email = email };
             return View("Unlock", model);
         }
 
@@ -184,7 +192,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             if (command.ToLower() == "resend")
             {
                 var result = await _accountOrchestrator.ResendUnlockCode(unlockUserViewModel);
-                
+
                 return View("Unlock", result);
             }
             else
@@ -221,7 +229,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 return View("ForgottenCredentials", requestPasswordResetViewModel);
             }
 
-            return View("ResetPassword", new PasswordResetViewModel {Email = requestPasswordResetViewModel.Email});
+            return View("ResetPassword", new PasswordResetViewModel { Email = requestPasswordResetViewModel.Email });
         }
 
 
@@ -338,7 +346,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         {
             var claimsIdentity = User?.Identity as ClaimsIdentity;
             var idClaim = claimsIdentity?.Claims?.FirstOrDefault(c => c.Type == DasClaimTypes.Email);
-            
+
             var id = idClaim?.Value;
             return id;
         }

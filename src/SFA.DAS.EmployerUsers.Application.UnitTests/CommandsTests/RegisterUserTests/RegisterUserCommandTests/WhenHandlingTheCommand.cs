@@ -17,6 +17,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
 {
     public class WhenHandlingTheCommand
     {
+        private const string ReturnUrl = "http://unit.test";
+
         private DateTime _now;
         private RegisterUserCommandHandler _registerUserCommandHandler;
         private Mock<IValidator<RegisterUserCommand>> _registerUserCommandValidator;
@@ -37,18 +39,27 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
             _registerUserCommandValidator = new Mock<IValidator<RegisterUserCommand>>();
 
             _passwordService = new Mock<IPasswordService>();
-            _passwordService.Setup(s => s.GenerateAsync(It.IsAny<string>())).Returns(Task.FromResult(new SecuredPassword
-            {
-                HashedPassword = "Secured_Password",
-                Salt = "Generated_Salt",
-                ProfileId = "Password_Profile_Id"
-            }));
+            _passwordService.Setup(s => s.GenerateAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult(new SecuredPassword
+                {
+                    HashedPassword = "Secured_Password",
+                    Salt = "Generated_Salt",
+                    ProfileId = "Password_Profile_Id"
+                }));
 
             _userRepository = new Mock<IUserRepository>();
+
             _communicationService = new Mock<ICommunicationService>();
+
             _codeGenerator = new Mock<ICodeGenerator>();
-            _codeGenerator.Setup(x => x.GenerateAlphaNumeric(6)).Returns("ABC123XYZ");
-            _registerUserCommandHandler = new RegisterUserCommandHandler(_registerUserCommandValidator.Object, _passwordService.Object, _userRepository.Object, _communicationService.Object, _codeGenerator.Object);
+            _codeGenerator.Setup(x => x.GenerateAlphaNumeric(6))
+                .Returns("ABC123XYZ");
+
+            _registerUserCommandHandler = new RegisterUserCommandHandler(_registerUserCommandValidator.Object,
+                                                                         _passwordService.Object,
+                                                                         _userRepository.Object,
+                                                                         _communicationService.Object,
+                                                                         _codeGenerator.Object);
         }
 
         [Test]
@@ -79,7 +90,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
                 LastName = lastName,
                 Email = emailAddress,
                 Password = password,
-                ConfirmPassword = password
+                ConfirmPassword = password,
+                ReturnUrl = ReturnUrl
             };
             _registerUserCommandValidator.Setup(x => x.Validate(registerUserCommand)).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
 
@@ -92,7 +104,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
                                                                && x.Email.Equals(emailAddress)
                                                                && !x.Password.Equals(password)
                                                                && x.SecurityCodes.Any(sc => sc.Code == "ABC123XYZ"
-                                                                                         && sc.CodeType == SecurityCodeType.AccessCode))));
+                                                                                         && sc.CodeType == SecurityCodeType.AccessCode
+                                                                                         && sc.ReturnUrl == ReturnUrl))));
         }
 
         [Test]
