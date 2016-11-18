@@ -72,6 +72,7 @@
     <Compile Include="ApplicationExtensions.cs" />
     <Compile Include="Commands\ActivateUser\ActivateUserCommand.cs" />
     <Compile Include="Commands\ActivateUser\ActivateUserCommandHandler.cs" />
+    <Compile Include="Commands\ActivateUser\ActivateUserCommandResult.cs" />
     <Compile Include="Commands\ActivateUser\ActivateUserCommandValidator.cs" />
     <Compile Include="Commands\AuthenticateUser\AuthenticateUserCommand.cs" />
     <Compile Include="Commands\AuthenticateUser\AuthenticateUserCommandHandler.cs" />

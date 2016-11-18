@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using NLog;
@@ -8,7 +9,7 @@ using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
 {
-    public class ActivateUserCommandHandler : AsyncRequestHandler<ActivateUserCommand>
+    public class ActivateUserCommandHandler : IAsyncRequestHandler<ActivateUserCommand, ActivateUserCommandResult>
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
@@ -24,25 +25,34 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
             _communicationService = communicationService;
         }
 
-        protected override async Task HandleCore(ActivateUserCommand message)
+        public async Task<ActivateUserCommandResult> Handle(ActivateUserCommand message)
         {
             Logger.Debug($"Received ActivateUserCommand for userId '{message.UserId}', Email Address '{message.Email}' with access code '{message.AccessCode}'");
 
-            var user = (!string.IsNullOrEmpty(message.Email) && string.IsNullOrEmpty(message.UserId) && string.IsNullOrEmpty(message.AccessCode)) 
-                            ? await _userRepository.GetByEmailAddress(message.Email) 
+            var user = (!string.IsNullOrEmpty(message.Email) && string.IsNullOrEmpty(message.UserId) && string.IsNullOrEmpty(message.AccessCode))
+                            ? await _userRepository.GetByEmailAddress(message.Email)
                             : await _userRepository.GetById(message.UserId);
 
             message.User = user;
-            var result = _activateUserCommandValidator.Validate(message);
+            var validationResult = _activateUserCommandValidator.Validate(message);
 
-            if (!result.IsValid())
+            if (!validationResult.IsValid())
             {
-                throw new InvalidRequestException(result.ValidationDictionary);
+                throw new InvalidRequestException(validationResult.ValidationDictionary);
             }
+
+
+            var securityCode = message.User.SecurityCodes?.SingleOrDefault(sc => sc.Code == message.AccessCode
+                                                                    && sc.CodeType == Domain.SecurityCodeType.AccessCode);
+            var result = new ActivateUserCommandResult
+            {
+                ReturnUrl = securityCode?.ReturnUrl
+            };
+
 
             if (user.IsActive)
             {
-                return;
+                return result;
             }
 
             user.IsActive = true;
@@ -50,6 +60,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
             await _userRepository.Update(user);
 
             await _communicationService.SendUserAccountConfirmationMessage(user, Guid.NewGuid().ToString());
+            return result;
         }
     }
 }

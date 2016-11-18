@@ -93,7 +93,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 return RedirectToAction("Confirm");
             }
 
-            return View(new RegisterViewModel { ReturnUrl = returnUrl});
+            return View(new RegisterViewModel { ReturnUrl = returnUrl });
         }
 
         [HttpPost]
@@ -135,39 +135,39 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            return View("Confirm", new AccessCodeViewModel { Valid = true });
+            return View("Confirm", new ActivateUserViewModel { Valid = true });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
         [Route("account/confirm")]
-        public async Task<ActionResult> Confirm(AccessCodeViewModel accessCodeViewModel, string command)
+        public async Task<ActionResult> Confirm(ActivateUserViewModel activateUserViewModel, string command)
         {
             var id = GetLoggedInUserId();
 
             if (command.Equals("activate"))
             {
-                var activatedSuccessfully =
+                activateUserViewModel =
                     await
-                        _accountOrchestrator.ActivateUser(new AccessCodeViewModel
+                        _accountOrchestrator.ActivateUser(new ActivateUserViewModel
                         {
-                            AccessCode = accessCodeViewModel.AccessCode,
+                            AccessCode = activateUserViewModel.AccessCode,
                             UserId = id
                         });
 
-                if (activatedSuccessfully)
+                if (activateUserViewModel.Valid)
                 {
-                    return await RedirectToEmployerPortal();
+                    return Redirect(activateUserViewModel.ReturnUrl);
                 }
 
-                return View("Confirm", new AccessCodeViewModel { Valid = false });
+                return View("Confirm", new ActivateUserViewModel { Valid = false });
             }
             else
             {
                 var result = await _accountOrchestrator.ResendActivationCode(new ResendActivationCodeViewModel { UserId = id });
 
-                return View("Confirm", new AccessCodeViewModel { Valid = result });
+                return View("Confirm", new ActivateUserViewModel { Valid = result });
             }
         }
 

@@ -113,27 +113,33 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             return registerUserViewModel;
         }
 
-        public virtual async Task<bool> ActivateUser(AccessCodeViewModel accessCodeviewModel)
+        public virtual async Task<ActivateUserViewModel> ActivateUser(ActivateUserViewModel model)
         {
             try
             {
-                await _mediator.SendAsync(new ActivateUserCommand
+                var result = await _mediator.SendAsync(new ActivateUserCommand
                 {
-                    AccessCode = accessCodeviewModel.AccessCode,
-                    UserId = accessCodeviewModel.UserId
+                    AccessCode = model.AccessCode,
+                    UserId = model.UserId
                 });
 
-                return true;
+                model.Valid = true;
+                model.ReturnUrl = result.ReturnUrl;
+                return model;
             }
             catch (InvalidRequestException ex)
             {
                 Logger.Info(ex, ex.Message);
-                return false;
+
+                model.Valid = false;
+                return model;
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, ex.Message);
-                return false;
+
+                model.Valid = false;
+                return model;
             }
         }
 

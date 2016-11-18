@@ -54,7 +54,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         [Test]
         public async Task ThenTheViewModelValuesArePassedToTheOrchestrator()
         {
-            var accessCodeViewModel = new AccessCodeViewModel();
+            var accessCodeViewModel = new ActivateUserViewModel();
 
             var actual = await _accountController.Confirm(accessCodeViewModel, Action);
 

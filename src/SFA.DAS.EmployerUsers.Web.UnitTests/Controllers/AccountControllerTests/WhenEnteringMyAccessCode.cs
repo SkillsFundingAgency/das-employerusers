@@ -12,7 +12,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 {
     public class WhenEnteringMyAccessCode : ControllerTestBase
     {
-        private const string EmployerPortalUrl = "http://employerportal.local";
+        private const string ReturnUrl = "http://unit.test";
         private const string Action = "activate";
 
         private Mock<AccountOrchestrator> _accountOrchestrator;
@@ -27,16 +27,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             AddUserToContext("myid");
 
             _accountOrchestrator = new Mock<AccountOrchestrator>();
+            _accountOrchestrator.Setup(x => x.ActivateUser(It.IsAny<ActivateUserViewModel>()))
+                .ReturnsAsync(new ActivateUserViewModel { Valid = true, ReturnUrl = ReturnUrl });
 
             _configurationService = new Mock<IConfigurationService>();
-            _configurationService.Setup(s => s.GetAsync<EmployerUsersConfiguration>())
-                .Returns(Task.FromResult(new EmployerUsersConfiguration
-                {
-                    IdentityServer = new IdentityServerConfiguration
-                    {
-                        EmployerPortalUrl = EmployerPortalUrl
-                    }
-                }));
 
             _accountController = new AccountController(_accountOrchestrator.Object, null, _configurationService.Object);
             _accountController.ControllerContext = _controllerContext.Object;
@@ -47,43 +41,41 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public async Task ThenTheAccountOrchestratorAccessCodeIsCalled()
         {
             //Act
-            await _accountController.Confirm(new AccessCodeViewModel(), Action);
+            await _accountController.Confirm(new ActivateUserViewModel(), Action);
 
             //Assert
-            _accountOrchestrator.Verify(x=>x.ActivateUser(It.IsAny<AccessCodeViewModel>()),Times.Once);
+            _accountOrchestrator.Verify(x=>x.ActivateUser(It.IsAny<ActivateUserViewModel>()),Times.Once);
         }
 
         [Test]
-        public async Task ThenTheEmployerPortalIsReturnedWhenTheOrchestratorReturnsTrue()
+        public async Task ThenRedirectsToOriginWhenActivationSuccessful()
         {
-            //Arrange
-            _accountOrchestrator.Setup(x => x.ActivateUser(It.IsAny<AccessCodeViewModel>())).ReturnsAsync(true);
-
             //Act
-            var actual = await _accountController.Confirm(new AccessCodeViewModel(), Action);
+            var actual = await _accountController.Confirm(new ActivateUserViewModel(), Action);
 
             //Assert
             Assert.IsNotNull(actual);
             var redirectResult = actual as RedirectResult;
             Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(EmployerPortalUrl, redirectResult.Url);
+            Assert.AreEqual(ReturnUrl, redirectResult.Url);
         }
 
         [Test]
         public async Task ThenTheConfirmViewIsReturnedWhenTheOrchestratorReturnsFalse()
         {
             //Arrange
-            _accountOrchestrator.Setup(x => x.ActivateUser(It.IsAny<AccessCodeViewModel>())).ReturnsAsync(false);
+            _accountOrchestrator.Setup(x => x.ActivateUser(It.IsAny<ActivateUserViewModel>()))
+                .ReturnsAsync(new ActivateUserViewModel { Valid = false });
 
             //Act
-            var actual = await _accountController.Confirm(new AccessCodeViewModel(), Action);
+            var actual = await _accountController.Confirm(new ActivateUserViewModel(), Action);
 
             //Assert
             Assert.IsNotNull(actual);
             var viewResult = actual as ViewResult;
             Assert.IsNotNull(viewResult);
             Assert.AreEqual("Confirm", viewResult.ViewName);
-            var model = viewResult.Model as AccessCodeViewModel;
+            var model = viewResult.Model as ActivateUserViewModel;
             Assert.IsNotNull(model);
             Assert.IsFalse(model.Valid);
         }
@@ -94,11 +86,11 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             //Act
             var accessCode = "myCode";
             var userId = "myid";
-            var accessCodeViewModel = new AccessCodeViewModel {AccessCode = accessCode, UserId = userId};
+            var accessCodeViewModel = new ActivateUserViewModel {AccessCode = accessCode, UserId = userId};
             await _accountController.Confirm(accessCodeViewModel, Action);
 
             //Assert
-            _accountOrchestrator.Verify(x => x.ActivateUser(It.Is<AccessCodeViewModel>(p=>p.AccessCode.Equals(accessCode) && p.UserId.Equals(userId))), Times.Once);
+            _accountOrchestrator.Verify(x => x.ActivateUser(It.Is<ActivateUserViewModel>(p=>p.AccessCode.Equals(accessCode) && p.UserId.Equals(userId))), Times.Once);
         }
     }
 }

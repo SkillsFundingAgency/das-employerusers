@@ -275,7 +275,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AccessCodeViewModel.cs" />
+    <Compile Include="Models\ActivateUserViewModel.cs" />
     <Compile Include="Models\ChangeEmailViewModel.cs" />
     <Compile Include="Models\ChangePasswordViewModel.cs" />
     <Compile Include="Models\ConfirmationViewModel.cs" />
