@@ -4,6 +4,8 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Domain;
+using SFA.DAS.Notifications.Api.Client;
+using SFA.DAS.Notifications.Api.Types;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.NotificationTests.CommunicationServiceTests
 {
@@ -15,7 +17,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
         public const string MessageId = "MESSAGE1";
 
         private User _user;
-        private Mock<IHttpClientWrapper> _httpClientWrapper;
+        private Mock<INotificationsApi> _notificationsApi;
         private CommunicationService _communicationService;
 
         [SetUp]
@@ -36,9 +38,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
                     }
                 }
             };
-            _httpClientWrapper = new Mock<IHttpClientWrapper>();
 
-            _communicationService = new CommunicationService(_httpClientWrapper.Object);
+            _notificationsApi = new Mock<INotificationsApi>();
+
+            _communicationService = new CommunicationService(_notificationsApi.Object);
         }
 
         [Test]
@@ -48,17 +51,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
             await _communicationService.SendConfirmEmailChangeMessage(_user, MessageId);
 
             // Assert
-            _httpClientWrapper.Verify(c => c.SendMessage(It.Is<EmailNotification>(n => n.MessageType == "ConfirmEmailChange")), Times.Once);
-        }
-
-        [Test]
-        public async Task ThenItShouldSendAMessageWithTheUserId()
-        {
-            // Act
-            await _communicationService.SendConfirmEmailChangeMessage(_user, MessageId);
-
-            // Assert
-            _httpClientWrapper.Verify(c => c.SendMessage(It.Is<EmailNotification>(n => n.UserId == UserId)), Times.Once);
+            _notificationsApi.Verify(c => c.SendEmail(It.Is<Email>(n => n.TemplateId == "ConfirmEmailChange")), Times.Once);
         }
 
         [Test]
@@ -68,7 +61,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
             await _communicationService.SendConfirmEmailChangeMessage(_user, MessageId);
 
             // Assert
-            _httpClientWrapper.Verify(c => c.SendMessage(It.Is<EmailNotification>(n => n.RecipientsAddress == NewEmailAddress)), Times.Once);
+            _notificationsApi.Verify(c => c.SendEmail(It.Is<Email>(n => n.RecipientsAddress == NewEmailAddress)), Times.Once);
         }
 
         [Test]
@@ -78,17 +71,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
             await _communicationService.SendConfirmEmailChangeMessage(_user, MessageId);
 
             // Assert
-            _httpClientWrapper.Verify(c => c.SendMessage(It.Is<EmailNotification>(n => n.ReplyToAddress == "info@sfa.das.gov.uk")), Times.Once);
-        }
-
-        [Test]
-        public async Task ThenItShouldSendAMessageThatIncludesTheMessageId()
-        {
-            // Act
-            await _communicationService.SendConfirmEmailChangeMessage(_user, MessageId);
-
-            // Assert
-            _httpClientWrapper.Verify(c => c.SendMessage(It.Is<EmailNotification>(n => n.Data.ContainsKey("MessageId") && n.Data["MessageId"] == MessageId)), Times.Once);
+            _notificationsApi.Verify(c => c.SendEmail(It.Is<Email>(n => n.ReplyToAddress == "info@sfa.das.gov.uk")), Times.Once);
         }
 
         [Test]
@@ -98,7 +81,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
             await _communicationService.SendConfirmEmailChangeMessage(_user, MessageId);
 
             // Assert
-            _httpClientWrapper.Verify(c => c.SendMessage(It.Is<EmailNotification>(n => n.Data.ContainsKey("ConfirmEmailCode") && n.Data["ConfirmEmailCode"] == ConfirmationCode)), Times.Once);
+            _notificationsApi.Verify(c => c.SendEmail(It.Is<Email>(n => n.Tokens.ContainsKey("ConfirmEmailCode") && n.Tokens["ConfirmEmailCode"] == ConfirmationCode)), Times.Once);
         }
 
     }

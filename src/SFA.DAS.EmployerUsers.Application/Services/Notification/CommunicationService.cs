@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.EmployerUsers.Domain;
+using SFA.DAS.Notifications.Api.Client;
+using SFA.DAS.Notifications.Api.Types;
 
 namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 {
@@ -9,6 +12,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
     {
         private const string ReplyToAddress = "info@sfa.das.gov.uk";
 
+        private readonly INotificationsApi _notificationsApi;
         private readonly IHttpClientWrapper _httpClientWrapper;
 
         public CommunicationService(IHttpClientWrapper httpClientWrapper)
@@ -17,23 +21,25 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 
         }
 
+        public CommunicationService(INotificationsApi notificationsApi)
+        {
+            _notificationsApi = notificationsApi;
+        }
+
         public async Task SendUserRegistrationMessage(User user, string messageId)
         {
-            var message = new EmailNotification
+            await _notificationsApi.SendEmail(new Email
             {
-                MessageType = "UserRegistration",
-                UserId = user.Id,
+                SystemId = Guid.NewGuid().ToString(),
+                TemplateId = "UserRegistration",
                 RecipientsAddress = user.Email,
                 ReplyToAddress = ReplyToAddress,
-                ForceFormat = true,
-                Data = new Dictionary<string, string>
+                Subject = "Access your apprenticeship levy account",
+                Tokens = new Dictionary<string, string>
                 {
-                    { "AccessCode", GetUserAccessCode(user) },
-                    { "MessageId", messageId }
+                    { "AccessCode", GetUserAccessCode(user) }
                 }
-            };
-
-            await _httpClientWrapper.SendMessage(message);
+            });
         }
 
         public async Task SendUserAccountConfirmationMessage(User user, string messageId)
@@ -56,40 +62,34 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 
         public async Task SendAccountLockedMessage(User user, string messageId)
         {
-            var message = new EmailNotification
+            await _notificationsApi.SendEmail(new Email
             {
-                MessageType = "AccountLocked",
-                UserId = user.Id,
+                SystemId = Guid.NewGuid().ToString(),
+                TemplateId = "AccountLocked",
                 RecipientsAddress = user.Email,
                 ReplyToAddress = ReplyToAddress,
-                ForceFormat = true,
-                Data = new Dictionary<string, string>
+                Subject = "Unlock Code: apprenticeship levy account",
+                Tokens = new Dictionary<string, string>
                 {
-                    { "UnlockCode", GetUserUnlockCode(user) },
-                    { "MessageId", messageId }
+                    { "UnlockCode", GetUserUnlockCode(user) }
                 }
-            };
-
-            await _httpClientWrapper.SendMessage(message);
+            });
         }
 
         public async Task ResendActivationCodeMessage(User user, string messageId)
         {
-            var message = new EmailNotification
+            await _notificationsApi.SendEmail(new Email
             {
-                MessageType = "ResendActivationCode",
-                UserId = user.Id,
+                SystemId = Guid.NewGuid().ToString(),
+                TemplateId = "ResendActivationCode",
                 RecipientsAddress = user.Email,
                 ReplyToAddress = ReplyToAddress,
-                ForceFormat = true,
-                Data = new Dictionary<string, string>
+                Subject = "Access your apprenticeship levy account",
+                Tokens = new Dictionary<string, string>
                 {
-                    { "AccessCode", GetUserAccessCode(user) },
-                    { "MessageId", messageId }
+                    { "AccessCode", GetUserAccessCode(user) }
                 }
-            };
-
-            await _httpClientWrapper.SendMessage(message);
+            });
         }
 
         public async Task SendUserUnlockedMessage(User user, string messageId)
@@ -152,21 +152,18 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 
         public async Task SendConfirmEmailChangeMessage(User user, string messageId)
         {
-            var message = new EmailNotification
+            await _notificationsApi.SendEmail(new Email
             {
-                MessageType = "ConfirmEmailChange",
-                UserId = user.Id,
+                SystemId = Guid.NewGuid().ToString(),
+                TemplateId = "ConfirmEmailChange",
                 RecipientsAddress = user.PendingEmail,
                 ReplyToAddress = ReplyToAddress,
-                ForceFormat = true,
-                Data = new Dictionary<string, string>
+                Subject = "Change your apprenticeship levy account email address",
+                Tokens = new Dictionary<string, string>
                 {
-                    { "MessageId", messageId },
                     { "ConfirmEmailCode", GetUserConfirmEmailCode(user) }
                 }
-            };
-
-            await _httpClientWrapper.SendMessage(message);
+            });
         }
 
 

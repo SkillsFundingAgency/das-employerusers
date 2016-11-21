@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Domain;
+using SFA.DAS.Notifications.Api.Client;
+using SFA.DAS.Notifications.Api.Types;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.NotificationTests.CommunicationServiceTests
 {
@@ -13,18 +14,16 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
         private const string MessageId = "MESSAGE_ID";
         private const string UnlockCode = "UNLOCK_CODE";
 
-        private Mock<IHttpClientWrapper> _httpClient;
+        private Mock<INotificationsApi> _notificationsApi;
         private CommunicationService _communicationService;
         private User _user;
 
         [SetUp]
         public void Arrange()
         {
-            _httpClient = new Mock<IHttpClientWrapper>();
-            _httpClient.Setup(c => c.SendMessage(It.IsAny<Dictionary<string, string>>()))
-                .Returns(Task.FromResult<object>(null));
+            _notificationsApi = new Mock<INotificationsApi>();
 
-            _communicationService = new CommunicationService(_httpClient.Object);
+            _communicationService = new CommunicationService(_notificationsApi.Object);
 
             _user = new User
             {
@@ -49,19 +48,11 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
             await _communicationService.SendAccountLockedMessage(_user, MessageId);
 
             // Assert
-            _httpClient.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.MessageType == "AccountLocked")), Times.Once);
-            _httpClient.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.UserId == _user.Id)), Times.Once);
-            _httpClient.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.RecipientsAddress == _user.Email)), Times.Once);
-            _httpClient.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.ReplyToAddress == "info@sfa.das.gov.uk")), Times.Once);
-            _httpClient.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.ForceFormat)), Times.Once);
-            _httpClient.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.Data.ContainsKey("UnlockCode") && s.Data["UnlockCode"] == UnlockCode)), Times.Once);
-            _httpClient.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.Data.ContainsKey("MessageId") && s.Data["MessageId"] == MessageId)), Times.Once);
+            _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.TemplateId == "AccountLocked")), Times.Once);
+            _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.RecipientsAddress == _user.Email)), Times.Once);
+            _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.ReplyToAddress == "info@sfa.das.gov.uk")), Times.Once);
+            _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.Tokens.ContainsKey("UnlockCode") && s.Tokens["UnlockCode"] == UnlockCode)), Times.Once);
         }
-
-
-        private Dictionary<string, string> ItIsDictionaryContaining(string key, string value)
-        {
-            return It.Is<Dictionary<string, string>>(d => d.ContainsKey(key) && d[key] == value);
-        }
+        
     }
 }

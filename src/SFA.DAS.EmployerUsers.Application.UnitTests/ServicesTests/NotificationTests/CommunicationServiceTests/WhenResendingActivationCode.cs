@@ -4,20 +4,23 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Domain;
+using SFA.DAS.Notifications.Api.Client;
+using SFA.DAS.Notifications.Api.Types;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.NotificationTests.CommunicationServiceTests
 {
     [TestFixture]
     public class WhenResendingActivationCode
     {
-        private Mock<IHttpClientWrapper> _httpClientWrapper;
+        private Mock<INotificationsApi> _notificationsApi;
         private CommunicationService _communicationService;
 
         [SetUp]
         public void Setup()
         {
-            _httpClientWrapper = new Mock<IHttpClientWrapper>();
-            _communicationService = new CommunicationService(_httpClientWrapper.Object);
+            _notificationsApi = new Mock<INotificationsApi>();
+
+            _communicationService = new CommunicationService(_notificationsApi.Object);
         }
 
         [Test]
@@ -51,13 +54,11 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
             await _communicationService.ResendActivationCodeMessage(user, messageId);
 
             // Assert
-            _httpClientWrapper.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.MessageType == "ResendActivationCode")), Times.Once);
-            _httpClientWrapper.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.UserId == user.Id)), Times.Once);
-            _httpClientWrapper.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.RecipientsAddress == user.Email)), Times.Once);
-            _httpClientWrapper.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.ReplyToAddress == "info@sfa.das.gov.uk")), Times.Once);
-            _httpClientWrapper.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.ForceFormat)), Times.Once);
-            _httpClientWrapper.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.Data.ContainsKey("AccessCode") && s.Data["AccessCode"] == accessCode)), Times.Once);
-            _httpClientWrapper.Verify(x => x.SendMessage(It.Is<EmailNotification>(s => s.Data.ContainsKey("MessageId") && s.Data["MessageId"] == messageId)), Times.Once);
+            _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.TemplateId == "ResendActivationCode")), Times.Once);
+            _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.RecipientsAddress == user.Email)), Times.Once);
+            _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.ReplyToAddress == "info@sfa.das.gov.uk")), Times.Once);
+            _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.Subject == "Access your apprenticeship levy account")), Times.Once);
+            _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.Tokens.ContainsKey("AccessCode") && s.Tokens["AccessCode"] == accessCode)), Times.Once);
         }
     }
 }
