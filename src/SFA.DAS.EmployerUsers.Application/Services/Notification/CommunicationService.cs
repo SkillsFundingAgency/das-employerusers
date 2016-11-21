@@ -44,20 +44,14 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 
         public async Task SendUserAccountConfirmationMessage(User user, string messageId)
         {
-            var message = new EmailNotification
+            await _notificationsApi.SendEmail(new Email
             {
-                MessageType = "UserAccountConfirmation",
-                UserId = user.Id,
+                SystemId = messageId,
+                TemplateId = "UserAccountConfirmation",
                 RecipientsAddress = user.Email,
                 ReplyToAddress = ReplyToAddress,
-                ForceFormat = true,
-                Data = new Dictionary<string, string>
-                {
-                    { "MessageId", messageId }
-                }
-            };
-
-            await _httpClientWrapper.SendMessage(message);
+                Subject = "Welcome to your apprenticeship levy account"
+            });
         }
 
         public async Task SendAccountLockedMessage(User user, string messageId)
@@ -94,60 +88,44 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 
         public async Task SendUserUnlockedMessage(User user, string messageId)
         {
-            var message = new EmailNotification
+            await _notificationsApi.SendEmail(new Email
             {
-                MessageType = "AccountUnLocked",
-                UserId = user.Id,
+                SystemId = messageId,
+                TemplateId = "AccountUnLocked",
                 RecipientsAddress = user.Email,
                 ReplyToAddress = ReplyToAddress,
-                ForceFormat = true,
-                Data = new Dictionary<string, string>
-                {
-                    { "MessageId", messageId }
-                }
-            };
-
-            await _httpClientWrapper.SendMessage(message);
+                Subject = "Your account had been unlocked"
+            });
         }
 
         public async Task SendPasswordResetCodeMessage(User user, string messageId)
         {
             var resetCode = GetUserPasswordResetCode(user);
 
-            var message = new EmailNotification
+            await _notificationsApi.SendEmail(new Email
             {
-                MessageType = "PasswordReset",
-                UserId = user.Id,
+                SystemId = messageId,
+                TemplateId = "PasswordReset",
                 RecipientsAddress = user.Email,
                 ReplyToAddress = ReplyToAddress,
-                ForceFormat = true,
-                Data = new Dictionary<string, string>
+                Subject = "Reset Password: apprenticeship levy account",
+                Tokens = new Dictionary<string, string>
                 {
-                    { "MessageId", messageId },
-                    { "Code", resetCode.Code },
-                    { "ExpiryDate", resetCode.ExpiryTime.ToString() }
+                    { "Code", resetCode.Code }
                 }
-            };
-
-            await _httpClientWrapper.SendMessage(message);
+            });
         }
 
         public async Task SendPasswordResetConfirmationMessage(User user, string messageId)
         {
-            var message = new EmailNotification
+            await _notificationsApi.SendEmail(new Email
             {
-                MessageType = "PasswordResetConfirmation",
-                UserId = user.Id,
+                SystemId = messageId,
+                TemplateId = "PasswordResetConfirmation",
                 RecipientsAddress = user.Email,
                 ReplyToAddress = ReplyToAddress,
-                ForceFormat = true,
-                Data = new Dictionary<string, string>
-                {
-                    { "MessageId", messageId }
-                }
-            };
-
-            await _httpClientWrapper.SendMessage(message);
+                Subject = "Your password has been reset"
+            });
         }
 
         public async Task SendConfirmEmailChangeMessage(User user, string messageId)
