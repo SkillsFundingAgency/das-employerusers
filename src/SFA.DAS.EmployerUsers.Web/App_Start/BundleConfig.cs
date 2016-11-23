@@ -17,13 +17,10 @@ namespace SFA.DAS.EmployerUsers.Web
             bundles.Add(new ScriptBundle("~/bundles/scripts").Include(
                 "~/scripts/govuk-template.js"));
 
-            bundles.Add(new StyleBundle("~/Content/stylesheets/bundled-css").Include(
-                      "~/Content/stylesheets/govuk-template.css",
-                      "~/Content/stylesheets/elements.css",
-                      "~/Content/stylesheets/fonts.css",
-                      "~/Content/stylesheets/das-controls.css",
-                      "~/Content/stylesheets/users-main.css",
-                      "~/Content/stylesheets/users-dashboard.css"));
+            bundles.Add(new StyleBundle("~/bundles/screenie6").Include("~/dist/css/screen-ie6.css"));
+            bundles.Add(new StyleBundle("~/bundles/screenie7").Include("~/dist/css/screen-ie7.css"));
+            bundles.Add(new StyleBundle("~/bundles/screenie8").Include("~/dist/css/screen-ie8.css"));
+            bundles.Add(new StyleBundle("~/bundles/screen").Include("~/dist/css/screen.css"));
         }
     }
 }
