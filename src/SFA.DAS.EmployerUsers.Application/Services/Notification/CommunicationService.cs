@@ -13,13 +13,6 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
         private const string ReplyToAddress = "info@sfa.das.gov.uk";
 
         private readonly INotificationsApi _notificationsApi;
-        private readonly IHttpClientWrapper _httpClientWrapper;
-
-        public CommunicationService(IHttpClientWrapper httpClientWrapper)
-        {
-            _httpClientWrapper = httpClientWrapper;
-
-        }
 
         public CommunicationService(INotificationsApi notificationsApi)
         {

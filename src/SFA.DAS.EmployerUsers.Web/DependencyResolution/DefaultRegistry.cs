@@ -30,7 +30,9 @@ using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Data.DocumentDb;
 using SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer;
+using SFA.DAS.EmployerUsers.Infrastructure.Notification;
 using SFA.DAS.EmployerUsers.Web.Authentication;
+using SFA.DAS.Notifications.Api.Client;
 using StructureMap.Web.Pipeline;
 
 namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
@@ -95,6 +97,7 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
             For<IPasswordProfileRepository>().Use<SqlServerPasswordProfileRepository>();
             For<IHttpClientWrapper>().Use<StubHttpClientWrapper>();
+            For<INotificationsApi>().Use<StubNotificationsApi>();
         }
         private void AddProductionRegistrations()
         {
@@ -102,6 +105,7 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             For<IRelyingPartyRepository>().Use<DocumentDbRelyingPartyRepository>();
             For<IPasswordProfileRepository>().Use<InMemoryPasswordProfileRepository>();
             For<IHttpClientWrapper>().Use<HttpClientWrapper>();
+            For<INotificationsApi>().Use<StubNotificationsApi>();
         }
 
         private void AddMediatrRegistrations()
