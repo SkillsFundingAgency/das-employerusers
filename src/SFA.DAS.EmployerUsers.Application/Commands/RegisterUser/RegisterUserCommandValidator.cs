@@ -18,22 +18,22 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
             
             if (string.IsNullOrWhiteSpace(item.Email))
             {
-                validationResult.AddError(nameof(item.Email), "Please enter email address");
+                validationResult.AddError(nameof(item.Email), "Enter a valid email address");
             }
 
             if (string.IsNullOrEmpty(item.FirstName))
             {
-                validationResult.AddError(nameof(item.FirstName), "Please enter first name");
+                validationResult.AddError(nameof(item.FirstName), "Enter first name");
             }
 
             if (string.IsNullOrEmpty(item.LastName))
             {
-                validationResult.AddError(nameof(item.LastName), "Please enter last name");
+                validationResult.AddError(nameof(item.LastName), "Enter last name");
             }
 
             if (string.IsNullOrEmpty(item.Password))
             {
-                validationResult.AddError(nameof(item.Password), "Please enter password");
+                validationResult.AddError(nameof(item.Password), "Enter password");
             }
             else if (!_passwordService.CheckPasswordMatchesRequiredComplexity(item.Password))
             {
@@ -42,16 +42,16 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 
             if (string.IsNullOrEmpty(item.ConfirmPassword))
             {
-                validationResult.AddError(nameof(item.ConfirmPassword), "Please confirm password");
+                validationResult.AddError(nameof(item.ConfirmPassword), "Re-type password");
             }
             else if (!string.IsNullOrEmpty(item.Password) && !item.ConfirmPassword.Equals(item.Password))
             {
-                validationResult.AddError(nameof(item.ConfirmPassword), "Sorry, your passwords don’t match");
+                validationResult.AddError(nameof(item.ConfirmPassword), "Passwords don't match");
             }
 
             if (!item.HasAcceptedTermsAndConditions)
             {
-                validationResult.AddError(nameof(item.HasAcceptedTermsAndConditions), "Please accept the terms and conditions");
+                validationResult.AddError(nameof(item.HasAcceptedTermsAndConditions), "You need to accept the terms of use");
             }
 
             return validationResult;
