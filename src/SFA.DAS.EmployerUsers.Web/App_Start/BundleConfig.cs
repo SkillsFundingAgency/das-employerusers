@@ -21,6 +21,12 @@ namespace SFA.DAS.EmployerUsers.Web
             bundles.Add(new StyleBundle("~/bundles/screenie7").Include("~/dist/css/screen-ie7.css"));
             bundles.Add(new StyleBundle("~/bundles/screenie8").Include("~/dist/css/screen-ie8.css"));
             bundles.Add(new StyleBundle("~/bundles/screen").Include("~/dist/css/screen.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/sfajs").Include(
+                      "~/dist/javascripts/jquery-1.11.0.min.js",
+                      "~/dist/javascripts/govuk-template.js",
+                      "~/dist/javascripts/selection-buttons.js",
+                      "~/dist/javascripts/app.js"));
         }
     }
 }
