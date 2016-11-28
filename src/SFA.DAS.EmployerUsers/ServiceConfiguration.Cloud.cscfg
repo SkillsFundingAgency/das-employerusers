@@ -10,6 +10,8 @@
       <Setting name="ProfileConnectionString" value="__ProfileConnectionString__" />
       <Setting name="EnvironmentName" value="__EnvironmentName__" />
       <Setting name="LogLevel" value="Warn" />
+      <Setting name="NotificationsApiBaseUrl" value="__NotificationsApiBaseUrl__" />
+      <Setting name="NotificationsApiClientToken" value="__NotificationsApiClientToken__" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="WebSslCert" thumbprint="87A28DF77BBA73983918DF4288A132588AE820F4" thumbprintAlgorithm="sha1" />

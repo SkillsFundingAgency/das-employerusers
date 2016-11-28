@@ -27,12 +27,14 @@ using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.Configuration.FileStorage;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Domain.Data;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Data.DocumentDb;
 using SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer;
 using SFA.DAS.EmployerUsers.Infrastructure.Notification;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.Notifications.Api.Client;
+using SFA.DAS.Notifications.Api.Client.Configuration;
 using StructureMap.Web.Pipeline;
 
 namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
@@ -98,6 +100,9 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             For<IPasswordProfileRepository>().Use<SqlServerPasswordProfileRepository>();
             For<IHttpClientWrapper>().Use<StubHttpClientWrapper>();
             For<INotificationsApi>().Use<StubNotificationsApi>();
+
+            //For<INotificationsApiClientConfiguration>().Use<NotificationsApiConfiguration>();
+            //For<INotificationsApi>().Use<NotificationsApi>();
         }
         private void AddProductionRegistrations()
         {

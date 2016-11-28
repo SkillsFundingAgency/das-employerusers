@@ -81,6 +81,7 @@
     <Compile Include="Configuration\EmployerUsersConfiguration.cs" />
     <Compile Include="Configuration\IdentityServerConfiguration.cs" />
     <Compile Include="Configuration\AccountConfiguration.cs" />
+    <Compile Include="Configuration\NotificationsApiConfiguration.cs" />
     <Compile Include="Data\DocumentDb\Entities\DocumentDbRelyingParty.cs" />
     <Compile Include="Data\DocumentDb\DocumentDbRelyingPartyRepository.cs" />
     <Compile Include="Data\DocumentDb\DocumentDbRepository.cs" />

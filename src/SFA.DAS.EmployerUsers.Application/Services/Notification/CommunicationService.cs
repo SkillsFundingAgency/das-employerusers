@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 
         public async Task SendUserRegistrationMessage(User user, string messageId)
         {
-            await _notificationsApi.SendEmail(new Email
+            var email = new Email
             {
                 SystemId = Guid.NewGuid().ToString(),
                 TemplateId = "UserRegistration",
@@ -32,7 +32,8 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 {
                     { "AccessCode", GetUserAccessCode(user) }
                 }
-            });
+            };
+            await _notificationsApi.SendEmail(email);
         }
 
         public async Task SendUserAccountConfirmationMessage(User user, string messageId)
