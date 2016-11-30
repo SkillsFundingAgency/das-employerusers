@@ -51,7 +51,7 @@
     </div>
 }
 
-<h1 class="heading-xlarge">Add your details</h1>
+<h1 class="heading-xlarge">Get set up as a user</h1>
 
 <form method="post" action="@Url.Content("~/identity/employer/register")?returnUrl=@Url.Encode(Model.ReturnUrl)" novalidate>
     @Html.AntiForgeryToken()
@@ -75,6 +75,7 @@
         <div class="form-group @(!string.IsNullOrEmpty(Model.EmailError) ? "error" : "") ">
             <label for="Email">
                 <span class="form-label-bold">Email</span>
+                <span class="form-hint">We'll send you an email to confirm your identity.</span>
                 <span class="error-message" aria-live="polite">@Model.EmailError</span>
             </label>
             <input class="form-control" id="Email" name="Email" type="text" value="@Model.Email" required="required" aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.EmailError) ? "true" : "false")">
@@ -95,15 +96,10 @@
             <input class="form-control" id="ConfirmPassword" type="password" name="ConfirmPassword" required="required" aria-required="true" aria-invalid="@(!string.IsNullOrEmpty(Model.ConfirmPasswordError) ? "true" : "false")">
             
         </div>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.HasAcceptedTermsAndConditionsError) ? " error" : "")">
-            <span class="field-validation-error" aria-live="polite" data-valmsg-for="HasAcceptedTermsAndConditions">@Model.HasAcceptedTermsAndConditionsError</span>
-            <label class="block-label">
-                <input type="checkbox" class="form-checkbox" id="HasAcceptedTermsAndConditions" name="HasAcceptedTermsAndConditions" value="true"
-                       required="required" aria-required="true" aria-invalid="@(string.IsNullOrEmpty(Model.HasAcceptedTermsAndConditionsError) ? "false" : "true")" />
-                <span class="form-label-bold">I accept the <a href="@Url.Action("Index", "TermsAndConditions")" target="_blank">terms of use</a></span>
-            </label>
+        <div class="panel">
+            <input type="hidden" class="form-checkbox" id="HasAcceptedTermsAndConditions" name="HasAcceptedTermsAndConditions" value="true" />
+            By continuing you accept the <a href="@Url.Action("Index", "TermsAndConditions")" target="_blank">terms of use</a>.
         </div>
     </fieldset>
-    <p>To confirm your identity, we need to send you an email</p>
-    <button type="submit" class="button">Send me an email</button>
+    <button type="submit" class="button">Set me up</button>
 </form>
