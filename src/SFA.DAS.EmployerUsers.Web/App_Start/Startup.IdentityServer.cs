@@ -147,17 +147,16 @@ namespace SFA.DAS.EmployerUsers.Web
                 }
             };
             var clients = new List<Client> { self };
-
-            var clientSecret = "super-secret".Sha256();
+            
             var relyingParties = relyingPartyRepository.GetAllAsync().Result;
             clients.AddRange(relyingParties.Select(rp => new Client
             {
                 ClientName = rp.Name,
                 ClientId = rp.Id,
-                Flow = (Flows)rp.Flow, //Flows.AuthorizationCode,
+                Flow = (Flows)rp.Flow,
                 ClientSecrets = new List<Secret>
                 {
-                    new Secret(clientSecret)
+                    new Secret(rp.ClientSecret)
                 },
                 RequireConsent = false,
                 RedirectUris = new List<string>

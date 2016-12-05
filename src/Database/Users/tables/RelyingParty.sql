@@ -5,5 +5,6 @@ CREATE TABLE dbo.RelyingParty (
 	[ApplicationUrl] varchar(max) NOT NULL,
 	[LogoutUrl] varchar(max) NOT NULL,
 	[Flow] int NOT NULL DEFAULT(1),
+	[ClientSecret] nvarchar(255) NULL,
 	CONSTRAINT [PK_RelyingParty] PRIMARY KEY (Id)
 )
