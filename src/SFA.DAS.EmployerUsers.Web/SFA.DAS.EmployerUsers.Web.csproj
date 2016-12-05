@@ -272,6 +272,7 @@
     <Compile Include="Authentication\OwinWrapper.cs" />
     <Compile Include="Authentication\UserService.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\TermsAndConditionsController.cs" />
@@ -417,6 +418,8 @@
     <Content Include="Views\Account\ChangeEmail.cshtml" />
     <Content Include="Views\Account\ConfirmChangeEmail.cshtml" />
     <Content Include="Views\Account\ChangePassword.cshtml" />
+    <Content Include="Views\Error\General.cshtml" />
+    <Content Include="Views\Error\NotFound.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
