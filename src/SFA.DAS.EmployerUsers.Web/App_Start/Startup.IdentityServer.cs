@@ -9,6 +9,7 @@ using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services;
 using IdentityServer3.Core.Validation;
 using MediatR;
+using NLog;
 using Owin;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
@@ -19,15 +20,22 @@ namespace SFA.DAS.EmployerUsers.Web
 {
     public class StartsWithRedirectUriValidator : IRedirectUriValidator
     {
+        private ILogger _logger = LogManager.GetCurrentClassLogger();
+
         public Task<bool> IsRedirectUriValidAsync(string requestedUri, Client client)
         {
+            _logger.Info($"Attempting to match {requestedUri} for client {client.ClientId}");
+
             foreach (var uri in client.RedirectUris)
             {
                 if (requestedUri.ToLower().StartsWith(uri.ToLower()))
                 {
+                    _logger.Info($"Matched {requestedUri} to {uri} for client {client.ClientId}");
                     return Task.FromResult(true);
                 }
             }
+
+            _logger.Info($"Failed to match {requestedUri} for client {client.ClientId}");
             return Task.FromResult(false);
         }
 
