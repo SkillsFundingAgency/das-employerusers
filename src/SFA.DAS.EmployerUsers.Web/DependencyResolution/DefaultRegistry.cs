@@ -102,7 +102,7 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
         private void AddProductionRegistrations()
         {
             For<IUserRepository>().Use<SqlServerUserRepository>();
-            For<IRelyingPartyRepository>().Use<DocumentDbRelyingPartyRepository>();
+            For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
             For<IPasswordProfileRepository>().Use<InMemoryPasswordProfileRepository>();
             For<IHttpClientWrapper>().Use<HttpClientWrapper>();
             For<INotificationsApi>().Use<StubNotificationsApi>();
