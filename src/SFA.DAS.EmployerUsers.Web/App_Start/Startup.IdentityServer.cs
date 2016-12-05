@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using System.Web.Helpers;
 using IdentityServer3.Core.Configuration;
 using IdentityServer3.Core.Models;
+using IdentityServer3.Core.Services;
+using IdentityServer3.Core.Validation;
+using MediatR;
 using Owin;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
@@ -13,6 +17,43 @@ using SFA.DAS.EmployerUsers.WebClientComponents;
 
 namespace SFA.DAS.EmployerUsers.Web
 {
+    public class StartsWithRedirectUriValidator : IRedirectUriValidator
+    {
+        public Task<bool> IsRedirectUriValidAsync(string requestedUri, Client client)
+        {
+            foreach (var uri in client.RedirectUris)
+            {
+                if (requestedUri.ToLower().StartsWith(uri.ToLower()))
+                {
+                    return Task.FromResult(true);
+                }
+            }
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> IsPostLogoutRedirectUriValidAsync(string requestedUri, Client client)
+        {
+            foreach (var uri in client.PostLogoutRedirectUris)
+            {
+                if (requestedUri.ToLower().StartsWith(uri.ToLower()))
+                {
+                    return Task.FromResult(true);
+                }
+            }
+            return Task.FromResult(false);
+        }
+    }
+
+    public class SecretValidator : ISecretValidator
+    {
+        public Task<SecretValidationResult> ValidateAsync(IEnumerable<Secret> secrets, ParsedSecret parsedSecret)
+        {
+            return Task.FromResult(new SecretValidationResult
+            {
+                Success = true
+            });
+        }
+    }
 
     public partial class Startup
     {
@@ -29,6 +70,10 @@ namespace SFA.DAS.EmployerUsers.Web
                     .UseInMemoryClients(GetClients(configuration, relyingPartyRepository))
                     .UseInMemoryScopes(GetScopes())
                     .RegisterDasServices(StructuremapMvc.Container);
+                factory.RedirectUriValidator = new Registration<IRedirectUriValidator>((dr) => new StartsWithRedirectUriValidator());
+
+                factory.SecretValidators.Clear();
+                factory.SecretValidators.Add(new Registration<ISecretValidator>((dr) => new SecretValidator()));
 
                 //factory.ConfigureDefaultViewService<CustomIdsViewService>(new DefaultViewServiceOptions());
 
@@ -95,11 +140,17 @@ namespace SFA.DAS.EmployerUsers.Web
             };
             var clients = new List<Client> { self };
 
+            var clientSecret = "super-secret".Sha256();
             var relyingParties = relyingPartyRepository.GetAllAsync().Result;
             clients.AddRange(relyingParties.Select(rp => new Client
             {
-                ClientName = rp.Name, ClientId = rp.Id,
-                Flow = Flows.Implicit,
+                ClientName = rp.Name,
+                ClientId = rp.Id,
+                Flow = (Flows)rp.Flow, //Flows.AuthorizationCode,
+                ClientSecrets = new List<Secret>
+                {
+                    new Secret(clientSecret)
+                },
                 RequireConsent = false,
                 RedirectUris = new List<string>
                 {
@@ -111,7 +162,8 @@ namespace SFA.DAS.EmployerUsers.Web
                 },
                 AllowedScopes = new List<string>
                 {
-                    "openid", "profile"
+                    "openid",
+                    "profile"
                 }
             }));
 
