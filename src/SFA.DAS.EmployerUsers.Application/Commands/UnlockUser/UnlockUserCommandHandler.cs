@@ -37,7 +37,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
                 return;
             }
 
-            var result = _unlockUserCommandValidator.Validate(message);
+            var result = await _unlockUserCommandValidator.ValidateAsync(message);
 
             if (!result.IsValid())
             {

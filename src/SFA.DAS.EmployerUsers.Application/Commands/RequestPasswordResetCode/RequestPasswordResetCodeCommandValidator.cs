@@ -1,10 +1,11 @@
-﻿using SFA.DAS.EmployerUsers.Application.Validation;
+﻿using System.Threading.Tasks;
+using SFA.DAS.EmployerUsers.Application.Validation;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
 {
     public class RequestPasswordResetCodeCommandValidator : IValidator<RequestPasswordResetCodeCommand>
     {
-        public ValidationResult Validate(RequestPasswordResetCodeCommand item)
+        public Task<ValidationResult> ValidateAsync(RequestPasswordResetCodeCommand item)
         {
             var validationResult = new ValidationResult();
 
@@ -13,7 +14,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
                 validationResult.AddError(nameof(item.Email), "Please enter email address");
             }
 
-            return validationResult;
+            return Task.FromResult(validationResult);
         }
     }
 }

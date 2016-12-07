@@ -1,4 +1,5 @@
-﻿using SFA.DAS.EmployerUsers.Application.Services.Password;
+﻿using System.Threading.Tasks;
+using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
@@ -12,7 +13,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
             _passwordService = passwordService;
         }
 
-        public ValidationResult Validate(RegisterUserCommand item)
+        public Task<ValidationResult> ValidateAsync(RegisterUserCommand item)
         {
             var validationResult = new ValidationResult();
             
@@ -54,7 +55,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
                 validationResult.AddError(nameof(item.HasAcceptedTermsAndConditions), "You need to accept the terms of use");
             }
 
-            return validationResult;
+            return Task.FromResult(validationResult);
         }
         
     }

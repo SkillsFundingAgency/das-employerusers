@@ -40,7 +40,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
         {
             Logger.Debug($"Received RegisterUserCommand for user '{message.Email}'");
 
-            var validationResult = _registerUserCommandValidator.Validate(message);
+            var validationResult = await _registerUserCommandValidator.ValidateAsync(message);
 
             if (!validationResult.IsValid())
             {

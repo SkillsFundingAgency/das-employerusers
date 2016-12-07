@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ChangePassword
 
         public async Task<Unit> Handle(ChangePasswordCommand message)
         {
-            var validationResult = _validator.Validate(message);
+            var validationResult = await _validator.ValidateAsync(message);
             if (!validationResult.IsValid())
             {
                 throw new InvalidRequestException(validationResult.ValidationDictionary);

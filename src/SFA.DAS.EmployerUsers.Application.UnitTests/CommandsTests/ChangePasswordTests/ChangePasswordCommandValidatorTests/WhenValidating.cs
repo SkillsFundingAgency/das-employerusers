@@ -47,10 +47,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
         }
 
         [Test]
-        public void ThenItShouldReturnAValidResultIfNoProblems()
+        public async Task ThenItShouldReturnAValidResultIfNoProblems()
         {
             // Act
-            var actual = _validator.Validate(_command);
+            var actual = await _validator.ValidateAsync(_command);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -58,39 +58,39 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
         }
 
         [Test]
-        public void ThenItShouldReturnAnInvalidResultWithErrorIfCurrentPasswordDoesNotMatchUser()
+        public async Task ThenItShouldReturnAnInvalidResultWithErrorIfCurrentPasswordDoesNotMatchUser()
         {
             // Arrange
             _command.CurrentPassword = CurrentPassword + "_invalid";
 
             // Act
-            var actual = _validator.Validate(_command);
+            var actual = await _validator.ValidateAsync(_command);
 
             // Assert
             AssertExpectedValidationErrorExists(actual, "CurrentPassword", "Invalid password");
         }
 
         [Test]
-        public void ThenItShouldReturnAnInvalidResultWithErrorIfConfirmPasswordDoesNotMatchNewPassword()
+        public async Task ThenItShouldReturnAnInvalidResultWithErrorIfConfirmPasswordDoesNotMatchNewPassword()
         {
             // Arrange
             _command.ConfirmPassword = NewPassword + "_invalid";
 
             // Act
-            var actual = _validator.Validate(_command);
+            var actual = await _validator.ValidateAsync(_command);
 
             // Assert
             AssertExpectedValidationErrorExists(actual, "ConfirmPassword", "Passwords do not match");
         }
 
         [Test]
-        public void ThenItShouldReturnAnInvalidResultWithErrorIfNewPasswordIsNotBetween8And16Characters()
+        public async Task ThenItShouldReturnAnInvalidResultWithErrorIfNewPasswordIsNotBetween8And16Characters()
         {
             // Arrange
             _command.NewPassword = "1234567";
 
             // Act
-            var actual = _validator.Validate(_command);
+            var actual = await _validator.ValidateAsync(_command);
 
             // Assert
             AssertExpectedValidationErrorExists(actual, "NewPassword", "Password does not meet requirements");
@@ -98,26 +98,26 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
 
         [TestCase("abcdefghijk1")]
         [TestCase("ABCDEFGHIJK1")]
-        public void ThenItShouldReturnAnInvalidResultWithErrorIfNewPasswordDoesNotHave1UpperAnd1Lower(string password)
+        public async Task ThenItShouldReturnAnInvalidResultWithErrorIfNewPasswordDoesNotHave1UpperAnd1Lower(string password)
         {
             // Arrange
             _command.NewPassword = password;
 
             // Act
-            var actual = _validator.Validate(_command);
+            var actual = await _validator.ValidateAsync(_command);
 
             // Assert
             AssertExpectedValidationErrorExists(actual, "NewPassword", "Password does not meet requirements");
         }
 
         [Test]
-        public void ThenItShouldReturnAnInvalidResultWithErrorIfNewPasswordDoesNotContainAtLeast1Number()
+        public async Task ThenItShouldReturnAnInvalidResultWithErrorIfNewPasswordDoesNotContainAtLeast1Number()
         {
             // Arrange
             _command.NewPassword = "abcdefghijk";
 
             // Act
-            var actual = _validator.Validate(_command);
+            var actual = await _validator.ValidateAsync(_command);
 
             // Assert
             AssertExpectedValidationErrorExists(actual, "NewPassword", "Password does not meet requirements");

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 
@@ -14,7 +15,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             _passwordService = passwordService;
         }
 
-        public ValidationResult Validate(PasswordResetCommand item)
+        public Task<ValidationResult> ValidateAsync(PasswordResetCommand item)
         {
             var validationResult = new ValidationResult();
 
@@ -50,7 +51,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             }
 
 
-            return validationResult;
+            return Task.FromResult(validationResult);
         }
 
     }

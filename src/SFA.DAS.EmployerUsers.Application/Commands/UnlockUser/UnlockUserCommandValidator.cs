@@ -1,12 +1,13 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using SFA.DAS.EmployerUsers.Application.Validation;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
 {
     public class UnlockUserCommandValidator : IValidator<UnlockUserCommand>
     {
-        public ValidationResult Validate(UnlockUserCommand item)
+        public Task<ValidationResult> ValidateAsync(UnlockUserCommand item)
         {
             var result = new ValidationResult();
             if (string.IsNullOrEmpty(item.Email))
@@ -21,7 +22,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
             if (item.User == null)
             {
                 result.ValidationDictionary.Add("User", "User Does Not Exist");
-                return result;
+                return Task.FromResult(result);
             }
 
             var matchingUnlockCode = item.User.SecurityCodes?.OrderByDescending(sc => sc.ExpiryTime)
@@ -35,10 +36,10 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
             else if (matchingUnlockCode.ExpiryTime < DateTime.UtcNow)
             {
                 result.ValidationDictionary.Add("UnlockCodeExpiry", "Unlock Code has expired");
-                return result;
+                return Task.FromResult(result);
             }
 
-            return result;
+            return Task.FromResult(result);
         }
     }
 }

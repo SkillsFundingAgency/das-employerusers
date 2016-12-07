@@ -28,13 +28,13 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendUnlock
         {
 
             //Arrange
-            _resendUnlockCodeCommandValidator.Setup(x => x.Validate(It.IsAny<ResendUnlockCodeCommand>())).Returns(new ValidationResult() );
+            _resendUnlockCodeCommandValidator.Setup(x => x.ValidateAsync(It.IsAny<ResendUnlockCodeCommand>())).ReturnsAsync(new ValidationResult() );
 
             //Act
             await _resendUnlockCodeCommandHandler.Handle(new ResendUnlockCodeCommand());
 
             //Assert
-            _resendUnlockCodeCommandValidator.Verify(x => x.Validate(It.IsAny<ResendUnlockCodeCommand>()),Times.Once());
+            _resendUnlockCodeCommandValidator.Verify(x => x.ValidateAsync(It.IsAny<ResendUnlockCodeCommand>()),Times.Once());
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendUnlock
         {
             //Arrange
             var email = "test@local";
-            _resendUnlockCodeCommandValidator.Setup(x => x.Validate(It.IsAny<ResendUnlockCodeCommand>())).Returns(new ValidationResult());
+            _resendUnlockCodeCommandValidator.Setup(x => x.ValidateAsync(It.IsAny<ResendUnlockCodeCommand>())).ReturnsAsync(new ValidationResult());
 
             //Act
             await _resendUnlockCodeCommandHandler.Handle(new ResendUnlockCodeCommand {Email = email});
@@ -56,7 +56,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendUnlock
         {
             //Arrange
             var email = "test@local";
-            _resendUnlockCodeCommandValidator.Setup(x => x.Validate(It.IsAny<ResendUnlockCodeCommand>())).Returns(new ValidationResult {ValidationDictionary = new Dictionary<string, string> { { "", ""} }});
+            _resendUnlockCodeCommandValidator.Setup(x => x.ValidateAsync(It.IsAny<ResendUnlockCodeCommand>())).ReturnsAsync(new ValidationResult {ValidationDictionary = new Dictionary<string, string> { { "", ""} }});
 
             //Act
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _resendUnlockCodeCommandHandler.Handle(new ResendUnlockCodeCommand { Email = email }));

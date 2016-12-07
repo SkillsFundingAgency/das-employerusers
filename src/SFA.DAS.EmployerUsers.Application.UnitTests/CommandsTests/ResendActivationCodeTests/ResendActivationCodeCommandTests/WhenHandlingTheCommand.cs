@@ -76,11 +76,11 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendActiva
         {
             if (isValid)
             {
-                _validator.Setup(x => x.Validate(It.IsAny<ResendActivationCodeCommand>())).Returns(new ValidationResult {ValidationDictionary = new Dictionary<string,string>()});
+                _validator.Setup(x => x.ValidateAsync(It.IsAny<ResendActivationCodeCommand>())).ReturnsAsync(new ValidationResult {ValidationDictionary = new Dictionary<string,string>()});
             }
             else
             {
-                _validator.Setup(x => x.Validate(It.IsAny<ResendActivationCodeCommand>())).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { {"",""} }});
+                _validator.Setup(x => x.ValidateAsync(It.IsAny<ResendActivationCodeCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { {"",""} }});
             }
         }
 

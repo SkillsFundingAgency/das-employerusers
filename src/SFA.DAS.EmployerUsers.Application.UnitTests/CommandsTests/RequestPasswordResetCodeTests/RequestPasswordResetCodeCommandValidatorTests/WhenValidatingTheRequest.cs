@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Threading.Tasks;
+using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPasswordResetCodeTests.RequestPasswordResetCodeCommandValidatorTests
@@ -15,9 +16,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
         }
 
         [Test]
-        public void ThenTrueIsReturnedIfValidCommandIsPassed()
+        public async Task ThenTrueIsReturnedIfValidCommandIsPassed()
         {
-            var validationResult = _validator.Validate(new RequestPasswordResetCodeCommand
+            var validationResult = await _validator.ValidateAsync(new RequestPasswordResetCodeCommand
             {
                 Email = "test.user@test.org"
             });
@@ -26,9 +27,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
         }
 
         [Test]
-        public void ThenFalseIsReturnedIfEmptyCommandIsPassed()
+        public async Task ThenFalseIsReturnedIfEmptyCommandIsPassed()
         {
-            var validationResult = _validator.Validate(new RequestPasswordResetCodeCommand());
+            var validationResult = await _validator.ValidateAsync(new RequestPasswordResetCodeCommand());
 
             Assert.IsFalse(validationResult.IsValid());
         }

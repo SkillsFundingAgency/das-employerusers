@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.Application.Validation;
@@ -17,10 +18,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
         }
 
         [Test]
-        public void ThenFalseIsReturnedIfAllFieldsArentPopulated()
+        public async Task ThenFalseIsReturnedIfAllFieldsArentPopulated()
         {
             //Act
-            var actual = _activateUserCommandValidator.Validate(new ActivateUserCommand());
+            var actual = await _activateUserCommandValidator.ValidateAsync(new ActivateUserCommand());
 
             //Assert
             Assert.IsAssignableFrom<ValidationResult>(actual);
@@ -29,17 +30,17 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
 
 
         [Test]
-        public void ThenFalseIsReturnedIfNullIsPassed()
+        public async Task ThenFalseIsReturnedIfNullIsPassed()
         {
             //Act
-            var actual = _activateUserCommandValidator.Validate(null);
+            var actual = await _activateUserCommandValidator.ValidateAsync(null);
 
             //Assert
             Assert.IsFalse(actual.IsValid());
         }
 
         [Test]
-        public void ThenTrueIsReturnedIfAllFieldsAreProvidedAndTheAccessCodeMatchesCaseInsensitive()
+        public async Task ThenTrueIsReturnedIfAllFieldsAreProvidedAndTheAccessCodeMatchesCaseInsensitive()
         {
             //Act
             var command = new ActivateUserCommand
@@ -59,14 +60,14 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
                     }
                 }
             };
-            var actual = _activateUserCommandValidator.Validate(command);
+            var actual = await _activateUserCommandValidator.ValidateAsync(command);
 
             //Assert
             Assert.IsTrue(actual.IsValid());
         }
 
         [Test]
-        public void ThenFalseIsReturnedIfTheAccessCodeDoesntMatchTheAnyOnTheUser()
+        public async Task ThenFalseIsReturnedIfTheAccessCodeDoesntMatchTheAnyOnTheUser()
         {
             //Act
             var command = new ActivateUserCommand
@@ -86,14 +87,14 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
                     }
                 }
             };
-            var actual = _activateUserCommandValidator.Validate(command);
+            var actual = await _activateUserCommandValidator.ValidateAsync(command);
 
             //Assert
             Assert.IsFalse(actual.IsValid());
         }
 
         [Test]
-        public void ThenFalseIsReturnedIfTheAccessCodeMatchAnyOnTheUserButItHasExpired()
+        public async Task ThenFalseIsReturnedIfTheAccessCodeMatchAnyOnTheUserButItHasExpired()
         {
             //Act
             var command = new ActivateUserCommand
@@ -113,14 +114,14 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
                     }
                 }
             };
-            var actual = _activateUserCommandValidator.Validate(command);
+            var actual = await _activateUserCommandValidator.ValidateAsync(command);
 
             //Assert
             Assert.IsFalse(actual.IsValid());
         }
 
         [Test]
-        public void ThenTrueIsReturnedIfOnlyTheEmailHasBeenSuppliedAndTheUserIdIsNull()
+        public async Task ThenTrueIsReturnedIfOnlyTheEmailHasBeenSuppliedAndTheUserIdIsNull()
         {
             //Act
             var command = new ActivateUserCommand
@@ -132,7 +133,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
                     Email = "user@email"
                 }
             };
-            var actual = _activateUserCommandValidator.Validate(command);
+            var actual = await _activateUserCommandValidator.ValidateAsync(command);
 
             //Assert
             Assert.IsTrue(actual.IsValid());

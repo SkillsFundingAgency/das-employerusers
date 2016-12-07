@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
@@ -22,10 +23,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
         }
 
         [Test]
-        public void ThenAValidationResultObjectThatIsValidIsReturnedIfAllFieldsArePopulated()
+        public async Task ThenAValidationResultObjectThatIsValidIsReturnedIfAllFieldsArePopulated()
         {
             //Act
-            var actual = _validator.Validate(new RegisterUserCommand
+            var actual = await _validator.ValidateAsync(new RegisterUserCommand
             {
                 Email = "test",
                 FirstName = "Testing",
@@ -48,7 +49,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
         [TestCase("", "", "aaa", "aaa", "")]
         [TestCase("", "aaa", "aaa", "aaa", "")]
         [TestCase("aaa", "aaa", "aaa", "aaa", "")]
-        public void ThenFalseIsReturnedIfThereAreMissingFields(string firstName, string lastName, string email, string password, string confirmPassword)
+        public async Task ThenFalseIsReturnedIfThereAreMissingFields(string firstName, string lastName, string email, string password, string confirmPassword)
         {
             //Arrange
             var registerUserCommand = new RegisterUserCommand
@@ -62,17 +63,17 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
             };
 
             //Act
-            var actual = _validator.Validate(registerUserCommand);
+            var actual = await _validator.ValidateAsync(registerUserCommand);
 
             //Assert
             Assert.IsFalse(actual.IsValid());
         }
         
         [Test]
-        public void ThenFalseIsReturnedIftheConfirmPasswordIsNull()
+        public async Task ThenFalseIsReturnedIftheConfirmPasswordIsNull()
         {
             //Act
-            var actual = _validator.Validate(new RegisterUserCommand
+            var actual = await _validator.ValidateAsync(new RegisterUserCommand
             {
                 Email = "test",
                 FirstName = "Testing",
@@ -88,10 +89,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
         }
 
         [Test]
-        public void ThenFalseIsReturnedIftheTermsAndConditionsHaveNotBeenAccepted()
+        public async Task ThenFalseIsReturnedIftheTermsAndConditionsHaveNotBeenAccepted()
         {
             //Act
-            var actual = _validator.Validate(new RegisterUserCommand
+            var actual = await _validator.ValidateAsync(new RegisterUserCommand
             {
                 Email = "test",
                 FirstName = "Testing",
@@ -106,10 +107,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
         }
 
         [Test]
-        public void ThenTheDictionaryIsPopulatedWithTheFailedFieldAndReasonWhenTheCommandIsNotValid()
+        public async Task ThenTheDictionaryIsPopulatedWithTheFailedFieldAndReasonWhenTheCommandIsNotValid()
         {
             //Act
-            var actual = _validator.Validate(new RegisterUserCommand
+            var actual = await _validator.ValidateAsync(new RegisterUserCommand
             {
                 Email = "",
                 FirstName = "",
@@ -130,13 +131,13 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
         }
 
         [Test]
-        public void ThenThedictionaryIsPopulatedWithTheFailedMessagesWhenThePasswordValidationHasFailed()
+        public async Task ThenThedictionaryIsPopulatedWithTheFailedMessagesWhenThePasswordValidationHasFailed()
         {
             //Arrange
             _passwordService.Setup(x => x.CheckPasswordMatchesRequiredComplexity(It.IsAny<string>())).Returns(false);
 
             //Act
-            var actual = _validator.Validate(new RegisterUserCommand
+            var actual = await _validator.ValidateAsync(new RegisterUserCommand
             {
                 Email = "a",
                 FirstName = "a",
@@ -151,10 +152,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
         }
 
         [Test]
-        public void ThenThedictionaryIsPopulatedWithTheFailedMessagesWhenThePasswordsDoNotMatch()
+        public async Task ThenThedictionaryIsPopulatedWithTheFailedMessagesWhenThePasswordsDoNotMatch()
         {
             //Act
-            var actual = _validator.Validate(new RegisterUserCommand
+            var actual = await _validator.ValidateAsync(new RegisterUserCommand
             {
                 Email = "a",
                 FirstName = "a",

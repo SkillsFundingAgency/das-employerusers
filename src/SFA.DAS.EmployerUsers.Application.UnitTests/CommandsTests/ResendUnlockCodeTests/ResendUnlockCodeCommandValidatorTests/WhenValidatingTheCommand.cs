@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode;
 
@@ -15,10 +16,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendUnlock
         }
 
         [Test]
-        public void ThenFalseIsReturnedIfTheValuesAreEmpty()
+        public async Task ThenFalseIsReturnedIfTheValuesAreEmpty()
         {
             //Act
-            var actual = _validator.Validate(new ResendUnlockCodeCommand());
+            var actual = await _validator.ValidateAsync(new ResendUnlockCodeCommand());
 
             //Assert
             Assert.IsFalse(actual.IsValid());
@@ -26,20 +27,20 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendUnlock
 
         [Test]
 
-        public void ThenTrueIsReturnedIfTheValuesAreNotEmpty()
+        public async Task ThenTrueIsReturnedIfTheValuesAreNotEmpty()
         {
             //act
-            var actual = _validator.Validate(new ResendUnlockCodeCommand {Email = "someEmail"});
+            var actual = await _validator.ValidateAsync(new ResendUnlockCodeCommand {Email = "someEmail"});
 
             //Assert
             Assert.IsTrue(actual.IsValid());
         }
 
         [Test]
-        public void ThenTheErrorDictionaryIsPopulatedCorrectlyWhenThereIsAnError()
+        public async Task ThenTheErrorDictionaryIsPopulatedCorrectlyWhenThereIsAnError()
         {
             //Act
-            var actual = _validator.Validate(new ResendUnlockCodeCommand());
+            var actual = await _validator.ValidateAsync(new ResendUnlockCodeCommand());
 
             //Assert
             Assert.IsNotNull(actual);

@@ -30,8 +30,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
         public void Arrange()
         {
             _activateUserCommandValidator = new Mock<IValidator<ActivateUserCommand>>();
-            _activateUserCommandValidator.Setup(x => x.Validate(It.IsAny<ActivateUserCommand>()))
-                .Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
+            _activateUserCommandValidator.Setup(x => x.ValidateAsync(It.IsAny<ActivateUserCommand>()))
+                .ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
 
             _user = new User
             {
@@ -67,7 +67,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
             await _handler.Handle(_command);
 
             //Assert
-            _activateUserCommandValidator.Verify(x => x.Validate(It.Is<ActivateUserCommand>(c => c.UserId == UserId && c.AccessCode == AccessCode)), Times.Once);
+            _activateUserCommandValidator.Verify(x => x.ValidateAsync(It.Is<ActivateUserCommand>(c => c.UserId == UserId && c.AccessCode == AccessCode)), Times.Once);
         }
 
         [Test]
@@ -86,8 +86,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
         public void ThenTheUserRepositoryIsNotCalledIfTheCommandIsInValid()
         {
             //Arrange
-            _activateUserCommandValidator.Setup(x => x.Validate(It.IsAny<ActivateUserCommand>()))
-                .Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
+            _activateUserCommandValidator.Setup(x => x.ValidateAsync(It.IsAny<ActivateUserCommand>()))
+                .ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
 
             //Act
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _handler.Handle(_command));
@@ -101,8 +101,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
         public void ThenAInvalidDataExceptionIsThrownIfTheCommandIsInValid()
         {
             //Arrange
-            _activateUserCommandValidator.Setup(x => x.Validate(It.IsAny<ActivateUserCommand>()))
-                .Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
+            _activateUserCommandValidator.Setup(x => x.ValidateAsync(It.IsAny<ActivateUserCommand>()))
+                .ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
 
             //Act
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _handler.Handle(_command));
@@ -156,7 +156,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
                 AccessCode = accessCode
             };
             _userRepository.Setup(x => x.GetById(userId)).ReturnsAsync(user);
-            _activateUserCommandValidator.Setup(x => x.Validate(It.Is<ActivateUserCommand>(p => p.AccessCode == accessCode && p.UserId == userId))).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
+            _activateUserCommandValidator.Setup(x => x.ValidateAsync(It.Is<ActivateUserCommand>(p => p.AccessCode == accessCode && p.UserId == userId))).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
 
             //Act
             await _handler.Handle(activateUserCommand);
@@ -213,7 +213,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
                 AccessCode = accessCode
             };
             _userRepository.Setup(x => x.GetById(userId)).ReturnsAsync(user);
-            _activateUserCommandValidator.Setup(x => x.Validate(It.Is<ActivateUserCommand>(p => p.AccessCode == accessCode && p.UserId == userId))).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
+            _activateUserCommandValidator.Setup(x => x.ValidateAsync(It.Is<ActivateUserCommand>(p => p.AccessCode == accessCode && p.UserId == userId))).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
 
             //Act
             await _handler.Handle(activateUserCommand);
@@ -240,8 +240,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
         public void ThenTheUserIsNotEmailedAboutThereAccountCreationIfItFailsValidation()
         {
             //Arrange
-            _activateUserCommandValidator.Setup(x => x.Validate(It.IsAny<ActivateUserCommand>()))
-                .Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
+            _activateUserCommandValidator.Setup(x => x.ValidateAsync(It.IsAny<ActivateUserCommand>()))
+                .ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
 
             //Act
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _handler.Handle(new ActivateUserCommand()));
@@ -280,11 +280,11 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
                 AccessCode = accessCode
             };
             _userRepository.Setup(x => x.GetById(userId)).ReturnsAsync(user);
-            _activateUserCommandValidator.Setup(x => x.Validate(It.Is<ActivateUserCommand>(p => p.AccessCode == accessCode
+            _activateUserCommandValidator.Setup(x => x.ValidateAsync(It.Is<ActivateUserCommand>(p => p.AccessCode == accessCode
                                                                                              && p.UserId == userId
                                                                                              && p.User.SecurityCodes.Any(sc => sc.Code == accessCode
                                                                                                                             && sc.CodeType == SecurityCodeType.AccessCode))))
-                                         .Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
+                                         .ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
 
             //Act
             await _handler.Handle(activateUserCommand);

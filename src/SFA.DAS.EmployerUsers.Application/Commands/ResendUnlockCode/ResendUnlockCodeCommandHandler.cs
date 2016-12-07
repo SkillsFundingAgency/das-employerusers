@@ -19,7 +19,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode
 
         protected override async Task HandleCore(ResendUnlockCodeCommand message)
         {
-            var result = _validator.Validate(message);
+            var result = await _validator.ValidateAsync(message);
 
             if (!result.IsValid())
             {

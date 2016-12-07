@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 
@@ -14,7 +15,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ChangeEmail
             _passwordService = passwordService;
         }
 
-        public ValidationResult Validate(ChangeEmailCommand item)
+        public async Task<ValidationResult> ValidateAsync(ChangeEmailCommand item)
         {
             var result = new ValidationResult();
 
@@ -23,7 +24,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ChangeEmail
                 return result;
             }
 
-            ValidatePassword(item, result);
+            await ValidatePassword(item, result);
             ValidateSecurityCode(item, result);
 
             return result;
@@ -54,9 +55,10 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ChangeEmail
 
             return hasAllPropertiesSet;
         }
-        private void ValidatePassword(ChangeEmailCommand command, ValidationResult result)
+        private async Task ValidatePassword(ChangeEmailCommand command, ValidationResult result)
         {
-            if (!_passwordService.VerifyAsync(command.Password, command.User.Password, command.User.Salt, command.User.PasswordProfileId).Result)
+            var passwordIsValid = await _passwordService.VerifyAsync(command.Password, command.User.Password, command.User.Salt, command.User.PasswordProfileId);
+            if (!passwordIsValid)
             {
                 result.AddError("Password", "Password is incorrect");
             }

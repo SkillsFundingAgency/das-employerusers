@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
 
@@ -16,24 +17,27 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendActiva
         }
 
         [Test]
-        public void ThenTrueIsReturnedIfValidCommandIsPassed()
+        public async Task ThenTrueIsReturnedIfValidCommandIsPassed()
         {
-            Assert.IsTrue(_validator.Validate(new ResendActivationCodeCommand
+            var result = await _validator.ValidateAsync(new ResendActivationCodeCommand
             {
                 UserId = Guid.NewGuid().ToString()
-            }).IsValid());
+            });
+            Assert.IsTrue(result.IsValid());
         }
 
         [Test]
-        public void ThenFalseIsReturnedIfEmptyCommandIsPassed()
+        public async Task ThenFalseIsReturnedIfEmptyCommandIsPassed()
         {
-            Assert.IsFalse(_validator.Validate(new ResendActivationCodeCommand()).IsValid());
+            var result = await _validator.ValidateAsync(new ResendActivationCodeCommand());
+            Assert.IsFalse(result.IsValid());
         }
 
         [Test]
-        public void ThenFalseIsReturnedIfNullIsPassed()
+        public async Task ThenFalseIsReturnedIfNullIsPassed()
         {
-            Assert.IsFalse(_validator.Validate(null).IsValid());
+            var result = await _validator.ValidateAsync(null);
+            Assert.IsFalse(result.IsValid());
         }
     }
 }

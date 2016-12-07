@@ -1,4 +1,5 @@
-﻿using SFA.DAS.EmployerUsers.Application.Services.Password;
+﻿using System.Threading.Tasks;
+using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.ChangePassword
@@ -12,7 +13,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ChangePassword
             _passwordService = passwordService;
         }
 
-        public ValidationResult Validate(ChangePasswordCommand item)
+        public Task<ValidationResult> ValidateAsync(ChangePasswordCommand item)
         {
             var result = new ValidationResult();
 
@@ -20,7 +21,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ChangePassword
             ValidateNewPasswordMeetsSecurityRequirements(item, result);
             ValidateConfirmPasswordMatchesNewPassword(item, result);
 
-            return result;
+            return Task.FromResult(result);
         }
 
         private void ValidateCurrentPasswordMatchesUser(ChangePasswordCommand command, ValidationResult result)

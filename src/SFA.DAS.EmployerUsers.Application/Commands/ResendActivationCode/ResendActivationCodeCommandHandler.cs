@@ -34,7 +34,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode
         {
             Logger.Debug($"Received ResendActivationCodeCommand for user '{message.UserId}'");
 
-            var validationResult = _commandValidator.Validate(message);
+            var validationResult = await _commandValidator.ValidateAsync(message);
             if (!validationResult.IsValid())
                 throw new InvalidRequestException(validationResult.ValidationDictionary);
 

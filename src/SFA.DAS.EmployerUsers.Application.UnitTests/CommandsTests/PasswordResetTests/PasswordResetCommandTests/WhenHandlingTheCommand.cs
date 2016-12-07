@@ -51,7 +51,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
                 });
 
             _validator = new Mock<IValidator<PasswordResetCommand>>();
-            _validator.Setup(x => x.Validate(It.IsAny<PasswordResetCommand>())).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
+            _validator.Setup(x => x.ValidateAsync(It.IsAny<PasswordResetCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
 
             _passwordResetCommandHandler = new PasswordResetCommandHandler(_userRepository.Object, _validator.Object, _communicationService.Object, _passwordService.Object);
         }
@@ -74,7 +74,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
             await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = ActualEmailAddress });
 
             //Assert
-            _validator.Verify(x => x.Validate(It.IsAny<PasswordResetCommand>()), Times.Once);
+            _validator.Verify(x => x.ValidateAsync(It.IsAny<PasswordResetCommand>()), Times.Once);
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
             await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = ActualEmailAddress });
 
             //Assert
-            _validator.Verify(x => x.Validate(It.Is<PasswordResetCommand>(c => c.User != null)), Times.Once);
+            _validator.Verify(x => x.ValidateAsync(It.Is<PasswordResetCommand>(c => c.User != null)), Times.Once);
         }
 
         [Test]
@@ -205,7 +205,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         public void ThenAInvliadRequestExceptionIsThrownIfTheMessageIsNotValid()
         {
             //Arrange
-            _validator.Setup(x => x.Validate(It.IsAny<PasswordResetCommand>())).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
+            _validator.Setup(x => x.ValidateAsync(It.IsAny<PasswordResetCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
 
             //Act
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _passwordResetCommandHandler.Handle(new PasswordResetCommand()));
@@ -218,7 +218,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         public void ThenTheUserIsNotUpdatedIfTheValidatorIsInValid()
         {
             //Arrange
-            _validator.Setup(x => x.Validate(It.IsAny<PasswordResetCommand>())).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
+            _validator.Setup(x => x.ValidateAsync(It.IsAny<PasswordResetCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
 
             //Act
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = "someotheremail@local" }));
@@ -232,7 +232,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         public void ThenTheUserIsNotEmailedIfTheValidatorIsInValid()
         {
             //Arrange
-            _validator.Setup(x => x.Validate(It.IsAny<PasswordResetCommand>())).Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
+            _validator.Setup(x => x.ValidateAsync(It.IsAny<PasswordResetCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
 
             //Act
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = "someotheremail@local" }));

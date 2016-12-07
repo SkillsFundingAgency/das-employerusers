@@ -1,26 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SFA.DAS.EmployerUsers.Application.Validation;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
 {
     public class ActivateUserCommandValidator : IValidator<ActivateUserCommand>
     {
-        public ValidationResult Validate(ActivateUserCommand item)
+        public Task<ValidationResult> ValidateAsync(ActivateUserCommand item)
         {
             var validationResult = new ValidationResult();
             validationResult.ValidationDictionary = new Dictionary<string, string>();
 
             if (TheUserIsBeingClassedAsValidFromJustHavingAMatchingEmail(item))
             {
-                return validationResult;
+                return Task.FromResult(validationResult);
             }
 
             if (string.IsNullOrEmpty(item?.AccessCode) || string.IsNullOrEmpty(item.UserId))
             {
                 validationResult.ValidationDictionary = new Dictionary<string, string> { { "", "" } };
-                return validationResult;
+                return Task.FromResult(validationResult);
             }
             
             if (!item.User.SecurityCodes.Any(sc => sc.CodeType == Domain.SecurityCodeType.AccessCode 
@@ -28,10 +29,10 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
                                                 && sc.ExpiryTime >= DateTime.UtcNow))
             {
                 validationResult.ValidationDictionary = new Dictionary<string, string> { { "", "" } };
-                return validationResult;
+                return Task.FromResult(validationResult);
             }
 
-            return validationResult;
+            return Task.FromResult(validationResult);
         }
 
         private static bool TheUserIsBeingClassedAsValidFromJustHavingAMatchingEmail(ActivateUserCommand item)

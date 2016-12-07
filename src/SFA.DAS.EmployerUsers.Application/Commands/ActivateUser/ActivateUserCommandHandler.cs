@@ -34,7 +34,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
                             : await _userRepository.GetById(message.UserId);
 
             message.User = user;
-            var validationResult = _activateUserCommandValidator.Validate(message);
+            var validationResult = await _activateUserCommandValidator.ValidateAsync(message);
 
             if (!validationResult.IsValid())
             {

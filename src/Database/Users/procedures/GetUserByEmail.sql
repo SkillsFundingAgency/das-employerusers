@@ -11,8 +11,7 @@ AS
 		PasswordProfileId,
 		IsActive,
 		FailedLoginAttempts,
-		IsLocked,
-		PendingEmail
+		IsLocked
 	FROM dbo.[User]
 	WHERE Email = @Email
 GO
