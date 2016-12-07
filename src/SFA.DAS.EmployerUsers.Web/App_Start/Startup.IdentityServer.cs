@@ -52,17 +52,6 @@ namespace SFA.DAS.EmployerUsers.Web
         }
     }
 
-    public class SecretValidator : ISecretValidator
-    {
-        public Task<SecretValidationResult> ValidateAsync(IEnumerable<Secret> secrets, ParsedSecret parsedSecret)
-        {
-            return Task.FromResult(new SecretValidationResult
-            {
-                Success = true
-            });
-        }
-    }
-
     public partial class Startup
     {
         private void ConfigureIdentityServer(IAppBuilder app, IdentityServerConfiguration configuration, IRelyingPartyRepository relyingPartyRepository)
@@ -79,9 +68,6 @@ namespace SFA.DAS.EmployerUsers.Web
                     .UseInMemoryScopes(GetScopes())
                     .RegisterDasServices(StructuremapMvc.Container);
                 factory.RedirectUriValidator = new Registration<IRedirectUriValidator>((dr) => new StartsWithRedirectUriValidator());
-
-                factory.SecretValidators.Clear();
-                factory.SecretValidators.Add(new Registration<ISecretValidator>((dr) => new SecretValidator()));
 
                 //factory.ConfigureDefaultViewService<CustomIdsViewService>(new DefaultViewServiceOptions());
 
