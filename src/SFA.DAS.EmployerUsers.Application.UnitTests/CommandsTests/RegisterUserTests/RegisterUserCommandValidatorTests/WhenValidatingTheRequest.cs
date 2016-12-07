@@ -165,7 +165,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
 
             //Assert
             Assert.IsNotEmpty(actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("ConfirmPassword", "Sorry, your passwords don’t match"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("ConfirmPassword", "Passwords don't match"), actual.ValidationDictionary);
         }
 
     }
