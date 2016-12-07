@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -108,12 +109,19 @@ namespace TestRP
             app.UseCodeFlowAuthentication(new OidcMiddlewareOptions
             {
                 ClientId = "testrp",
-                ClientSecret = "rsgISEW0GmlS1Gy6ocm3mGWUh//RM3ltldBbpF2QlsI=",
+                ClientSecret = "super-secret",
                 Scopes = "openid profile",
                 BaseUrl = "https://localhost:44334/identity",
                 TokenEndpoint = "https://localhost:44334/identity/connect/token",
                 UserInfoEndpoint = "https://localhost:44334/identity/connect/userinfo",
-                AuthorizeEndpoint = "https://localhost:44334/identity/connect/authorize"
+                AuthorizeEndpoint = "https://localhost:44334/identity/connect/authorize",
+                TokenValidationMethod = TokenValidationMethod.SigningKey,
+                TokenSigningCertificateLoader = () =>
+                {
+                    var slnDirectory = Path.GetDirectoryName(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory));
+                    var idpDirectory = Path.Combine(slnDirectory, "SFA.DAS.EmployerUsers.Web");
+                    return new System.Security.Cryptography.X509Certificates.X509Certificate2($@"{idpDirectory}\DasIDPCert.pfx", "idsrv3test");
+                }
             });
         }
     }
