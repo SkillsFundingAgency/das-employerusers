@@ -1,7 +1,17 @@
 ﻿@{
-    ViewBag.Title = "GOV.UK DAS ALPHA";
+    ViewBag.Title = "Home";
 }
 
 
-<h1 class="heading-large">Welcome</h1>
-<p><strong>NOT</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nec pulvinar quam, a consequat dui. Suspendisse a justo non justo consectetur aliquam. Sed dignissim, metus id pellentesque tempus, lectus urna fermentum sapien, et tempor est lacus sit amet nibh. Aenean facilisis felis ligula, id egestas libero ultrices ut. Nullam porttitor felis a lacus lobortis volutpat vel ac erat. Morbi luctus quam sit amet tellus iaculis, id porta magna aliquam. Suspendisse porttitor risus leo, ac convallis ex hendrerit quis.</p>
+<h1 class="heading-xlarge">Welcome</h1>
+
+<div class="form-group">
+@if (HttpContext.Current.User.Identity.IsAuthenticated)
+{
+    <a href="@Url.Action("Logout", "Account")" class="button">Log out</a>
+} else {
+    <a href="@Url.Action("Login","Home")" class="button">Sign in</a> 
+    <a href="@Url.Action("Register","Account")" class="button-link">Register</a>
+}
+   
+</div>

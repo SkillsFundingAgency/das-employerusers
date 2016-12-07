@@ -1,120 +1,105 @@
 ﻿@model SFA.DAS.EmployerUsers.Web.Models.RegisterViewModel
+@{
+    ViewBag.PageID = "page-register";
+    ViewBag.Title = "Add your details";
+    ViewBag.HideSigninLink = "true";
+}
 
-<h1 class="heading-large">Register</h1>
 @if (!Model.Valid)
 {
-    <div class="validation-summary-errors panel-danger" style="margin-bottom: 10px;">
-        <div class="panel-body">
-            <ul>
-                @if (!string.IsNullOrEmpty(Model.FirstNameError))
-                {
-                    <li>
-                        <a class="fake-link" href="#@(nameof(Model.FirstName))">@Model.FirstNameError</a>
-                    </li>
-                }
-                @if (!string.IsNullOrEmpty(Model.LastNameError))
-                {
-                    <li>
-                        <a class="fake-link" href="#@(nameof(Model.LastName))">@Model.LastNameError</a>
-                    </li>
-                }
-                @if (!string.IsNullOrEmpty(Model.EmailError))
-                {
-                    <li>
-                        <a class="fake-link" href="#@(nameof(Model.Email))">@Model.EmailError</a>
-                    </li>
-                }
-                @if (!string.IsNullOrEmpty(Model.PasswordError))
-                {
-                    <li>
-                        <a class="fake-link" href="#@(nameof(Model.Password))">@Model.PasswordError</a>
-                    </li>
-                }
-                @if (!string.IsNullOrEmpty(Model.ConfirmPasswordError))
-                {
-                    <li>
-                        <a class="fake-link" href="#@(nameof(Model.ConfirmPassword))">@Model.ConfirmPasswordError</a>
-                    </li>
-                }
-                @if (!string.IsNullOrEmpty(Model.HasAcceptedTermsAndConditionsError))
-                {
-                    <li>
-                        <a class="fake-link" href="#@(nameof(Model.HasAcceptedTermsAndConditions))">@Model.HasAcceptedTermsAndConditionsError</a>
-                    </li>
-                }
-            </ul>
-        </div>
+    <div class="error-summary" role="group" tabindex="-1">
+        <h1 class="heading-medium error-summary-heading" id="error-summary-heading"> Errors to fix </h1>
+        <p>Check the following details:</p>
+        <ul class="error-summary-list">
+        @if (!string.IsNullOrEmpty(Model.FirstNameError))
+        {
+            <li>
+                <a class="fake-link" href="#@(nameof(Model.FirstName))">@Model.FirstNameError</a>
+            </li>
+        }
+        @if (!string.IsNullOrEmpty(Model.LastNameError))
+        {
+            <li>
+                <a class="fake-link" href="#@(nameof(Model.LastName))">@Model.LastNameError</a>
+            </li>
+        }
+        @if (!string.IsNullOrEmpty(Model.EmailError))
+        {
+            <li>
+                <a class="fake-link" href="#@(nameof(Model.Email))">@Model.EmailError</a>
+            </li>
+        }
+        @if (!string.IsNullOrEmpty(Model.PasswordError))
+        {
+            <li>
+                <a class="fake-link" href="#@(nameof(Model.Password))">@Model.PasswordError</a>
+            </li>
+        }
+        @if (!string.IsNullOrEmpty(Model.ConfirmPasswordError))
+        {
+            <li>
+                <a class="fake-link" href="#@(nameof(Model.ConfirmPassword))">@Model.ConfirmPasswordError</a>
+            </li>
+        }
+        @if (!string.IsNullOrEmpty(Model.HasAcceptedTermsAndConditionsError))
+        {
+            <li>
+                <a class="fake-link" href="#@(nameof(Model.HasAcceptedTermsAndConditions))">@Model.HasAcceptedTermsAndConditionsError</a>
+            </li>
+        }
+        </ul>
     </div>
 }
 
-<form method="post" action="@Url.Content("~/identity/employer/register")?returnUrl=@Url.Encode(Model.ReturnUrl)">
+<h1 class="heading-xlarge">Get set up as a user</h1>
+
+<form method="post" action="@Url.Content("~/identity/employer/register")?returnUrl=@Url.Encode(Model.ReturnUrl)" novalidate>
     @Html.AntiForgeryToken()
 
     <fieldset>
         <legend class="visuallyhidden">email address and password to sign in</legend>
-
-        <div class="form-group @(!string.IsNullOrEmpty(Model.FirstNameError) ? "input-validation-error" : "") ">
-            <a name="@nameof(Model.FirstName)"></a>
-            <label class="form-label" for="FirstName">First Name</label>
-            <input class="form-control" id="FirstName" name="FirstName" value="@Model.FirstName"
-                   required="required" data-rule-required="true" data-msg-required="Please enter first name"
-                   aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.FirstNameError) ? "True" : "False")">
-            <span class="field-validation-error" aria-live="polite" data-valmsg-for="FirstName">@Model.FirstNameError</span>
-        </div>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.LastNameError) ? "input-validation-error" : "") ">
-            <a name="@nameof(Model.LastName)"></a>
-            <label class="form-label" for="LastName">Last Name</label>
-            <input class="form-control" id="LastName" name="LastName" value="@Model.LastName"
-                   required="required" data-rule-required="true" data-msg-required="Please enter last name"
-                   aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.LastNameError) ? "True" : "False")">
-            <span class="field-validation-error" aria-live="polite" data-valmsg-for="LastName">@Model.LastNameError</span>
-        </div>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.EmailError) ? "input-validation-error" : "") ">
-            <a name="@nameof(Model.Email)"></a>
-            <label class="form-label" for="Email">Email address</label>
-            <input class="form-control" id="Email" name="Email" type="text" value="@Model.Email" 
-                   required="required" data-rule-required="true" data-msg-required="Please enter email address"
-                   aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.EmailError) ? "True" : "False")">
-            <span class="field-validation-error" aria-live="polite" data-valmsg-for="Email">@Model.EmailError</span>
-        </div>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.PasswordError) ? "input-validation-error" : "") ">
-            <a name="@nameof(Model.Password)"></a>
-            <label class="form-label" for="Password">Password</label>
-            <input class="form-control" id="Password" type="password" name="Password"
-                   required="required" data-rule-required="true" data-msg-required="Please enter password"
-                   data-rule-pattern="^(?=(.*[0-9].*))(?=(.*[a-z].*))(?=(.*[A-Z].*)).{8,}$" data-msg-pattern="Password requires upper and lowercase letters, a number and at least 8 characters"
-                   aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.PasswordError) ? "True" : "False")">
-            <span class="field-validation-error" aria-live="polite" data-valmsg-for="Password">@Model.PasswordError</span>
-        </div>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.ConfirmPasswordError) ? "input-validation-error" : "") ">
-            <a name="@nameof(Model.ConfirmPassword)"></a>
-            <label class="form-label" for="ConfirmPassword">Confirm Password</label>
-            <input class="form-control" id="ConfirmPassword" type="password" name="ConfirmPassword"
-                   required="required" data-rule-required="true" data-msg-required="Please confirm password"
-                   data-rule-equalto="#Password" data-msg-equalto="Sorry, your passwords don’t match"
-                   aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.ConfirmPasswordError) ? "True" : "False")">
-            <span class="field-validation-error" aria-live="polite" data-valmsg-for="ConfirmPassword">@Model.ConfirmPasswordError</span>
-        </div>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.HasAcceptedTermsAndConditionsError) ? "input-validation-error" : "")">
-            <a name="@nameof(Model.HasAcceptedTermsAndConditions)"></a>
-            <label class="block-label">
-                <input type="checkbox" class="form-checkbox" id="HasAcceptedTermsAndConditions" name="HasAcceptedTermsAndConditions" value="true"
-                       required="required" data-rule-required="true" data-msg-required="Please accept the terms and conditions"
-                       aria-required="True" aria-invalid="@(string.IsNullOrEmpty(Model.HasAcceptedTermsAndConditionsError) ? "false" : "true")" />
-                I accept the <a href="@Url.Action("Index", "TermsAndConditions")" target="_blank">terms and conditions</a>
+        <div class="form-group @(!string.IsNullOrEmpty(Model.FirstNameError) ? "error" : "") ">
+            <label for="FirstName">
+                <span class="form-label-bold">First name</span>
+                <span class="error-message" aria-live="polite">@Model.FirstNameError</span>
             </label>
-            <span class="field-validation-error" aria-live="polite" data-valmsg-for="HasAcceptedTermsAndConditions">@Model.HasAcceptedTermsAndConditionsError</span>
+            <input class="form-control" id="FirstName" name="FirstName" value="@Model.FirstName" required="required" aria-required="true" aria-invalid="@(!string.IsNullOrEmpty(Model.FirstNameError) ? "true" : "false")">
+        </div>
+        <div class="form-group @(!string.IsNullOrEmpty(Model.LastNameError) ? "error" : "") ">
+            <label for="LastName">
+                <span class="form-label-bold">Last name</span>
+                <span class="error-message" aria-live="polite">@Model.LastNameError</span>
+            </label>
+            <input class="form-control" id="LastName" name="LastName" value="@Model.LastName" required="required" aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.LastNameError) ? "true" : "false")">
+        </div>
+        <div class="form-group @(!string.IsNullOrEmpty(Model.EmailError) ? "error" : "") ">
+            <label for="Email">
+                <span class="form-label-bold">Email</span>
+                <span class="form-hint">We'll send you an email to confirm your identity.</span>
+                <span class="error-message" aria-live="polite">@Model.EmailError</span>
+            </label>
+            <input class="form-control" id="Email" name="Email" type="text" value="@Model.Email" required="required" aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.EmailError) ? "true" : "false")">
+        </div>
+        <div class="form-group @(!string.IsNullOrEmpty(Model.PasswordError) ? "error" : "") ">
+            <label for="Password">
+                <span class="form-label-bold">Create new password</span>
+                <span class="form-hint">Password requires upper and lowercase letters, a number and at least 8 characters</span>
+                <span class="error-message" aria-live="polite" data-valmsg-for="Password">@Model.PasswordError</span>     
+            </label> 
+            <input class="form-control" id="Password" type="password" name="Password" required="required" aria-required="true" aria-invalid="@(!string.IsNullOrEmpty(Model.PasswordError) ? "true" : "false")">        
+        </div>
+        <div class="form-group @(!string.IsNullOrEmpty(Model.ConfirmPasswordError) ? "error" : "") ">
+            <label for="ConfirmPassword">
+                <span class="form-label-bold">Confirm password</span>
+                <span class="error-message" aria-live="polite" data-valmsg-for="ConfirmPassword">@Model.ConfirmPasswordError</span>
+            </label>
+            <input class="form-control" id="ConfirmPassword" type="password" name="ConfirmPassword" required="required" aria-required="true" aria-invalid="@(!string.IsNullOrEmpty(Model.ConfirmPasswordError) ? "true" : "false")">
+            
+        </div>
+        <div class="panel">
+            <input type="hidden" class="form-checkbox" id="HasAcceptedTermsAndConditions" name="HasAcceptedTermsAndConditions" value="true" />
+            By continuing you accept the <a href="@Url.Action("Index", "TermsAndConditions")" target="_blank">terms of use</a>.
         </div>
     </fieldset>
-    <button type="submit" class="button">Register</button>
+    <button type="submit" class="button">Set me up</button>
 </form>
-
-@section Scripts
-{
-    @Scripts.Render("~/bundles/jqueryval")
-
-    <script src="@Url.Content("~/Scripts/das.validate.js")"></script>
-    <script>
-        window.das.validation.enableValidation();
-    </script>
-}
