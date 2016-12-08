@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -9,6 +11,7 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Owin;
 using Thinktecture.IdentityModel.Client;
+using SFA.DAS.OidcMiddleware;
 
 [assembly: OwinStartup(typeof(TestRP.Startup))]
 namespace TestRP
@@ -17,24 +20,33 @@ namespace TestRP
     {
         public void Configuration(IAppBuilder app)
         {
+            JwtSecurityTokenHandler.InboundClaimTypeMap = new Dictionary<string, string>();
+
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = "Cookies"
             });
 
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AuthenticationType = "TempState",
+                AuthenticationMode = AuthenticationMode.Passive
+            });
+
+            UseCodeOidcFlow(app);
+        }
+
+        private void UseImplicitOidcFlow(IAppBuilder app)
+        {
             app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
             {
                 Authority = "https://localhost:44334/identity/",
-
                 ClientId = "testrp",
                 Scope = "openid profile",
                 ResponseType = "id_token token",
                 RedirectUri = "http://localhost:17995/",
-
                 SignInAsAuthenticationType = "Cookies",
                 UseTokenLifetime = false,
-
-
                 Notifications = new OpenIdConnectAuthenticationNotifications
                 {
                     SecurityTokenValidated = async n =>
@@ -59,13 +71,13 @@ namespace TestRP
                         nid.AddClaim(new Claim("access_token", n.ProtocolMessage.AccessToken));
 
                         // keep track of access token expiration
-                        nid.AddClaim(new Claim("expires_at", DateTimeOffset.Now.AddSeconds(int.Parse(n.ProtocolMessage.ExpiresIn)).ToString()));
+                        nid.AddClaim(new Claim("expires_at",
+                            DateTimeOffset.Now.AddSeconds(int.Parse(n.ProtocolMessage.ExpiresIn)).ToString()));
 
                         n.AuthenticationTicket = new AuthenticationTicket(
                             nid,
                             n.AuthenticationTicket.Properties);
                     },
-
                     RedirectToIdentityProvider = n =>
                     {
                         // Do not fiddle with api request please.
@@ -88,6 +100,20 @@ namespace TestRP
                         return Task.FromResult(0);
                     }
                 }
+            });
+        }
+
+        private void UseCodeOidcFlow(IAppBuilder app)
+        {
+            app.UseCodeFlowAuthentication(new OidcMiddlewareOptions
+            {
+                ClientId = "testrp",
+                ClientSecret = "rsgISEW0GmlS1Gy6ocm3mGWUh//RM3ltldBbpF2QlsI=",
+                Scopes = "openid profile",
+                BaseUrl = "https://localhost:44334/identity",
+                TokenEndpoint = "https://localhost:44334/identity/connect/token",
+                UserInfoEndpoint = "https://localhost:44334/identity/connect/userinfo",
+                AuthorizeEndpoint = "https://localhost:44334/identity/connect/authorize"
             });
         }
     }

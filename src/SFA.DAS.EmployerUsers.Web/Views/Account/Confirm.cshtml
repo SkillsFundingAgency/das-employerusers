@@ -1,32 +1,32 @@
 ﻿@model SFA.DAS.EmployerUsers.Web.Models.ActivateUserViewModel
-
 @{
+    ViewBag.PageID = "page-confirm-identity";
+    ViewBag.Title = "Confirm your identity";
+    ViewBag.HideSigninLink = "true";
+
     var invalidAttributes = Model.Valid ? "aria-invalid=\"true\" aria-labeledby=\"invalidMessage\"" : "";
 }
 
-
-<h1 class="heading-large">Register</h1>
-
-@if (!Model.Valid)
-{
-    <div id="invalidMessage" class="error" style="margin-bottom: 10px;">
-        <p class="error-message">
-            Invalid Code
-        </p>
-    </div>
-}
-
+<h1 class="heading-xlarge">Confirm your identity</h1>
 <form method="post">
     @Html.AntiForgeryToken()
-
     <fieldset>
         <legend class="visuallyhidden">Access code for user registration</legend>
-
-        <div class="form-group">
-            <label class="form-label" for="AccessCode">Access Code</label>
+        <div class="form-group  @(!Model.Valid ? "error" : "")">
+            <label for="AccessCode">
+                <span class="form-label-bold">Enter code</span>
+                @if (!Model.Valid)
+                {
+                    <span class="error-message" id="invalidMessage">Invalid code</span>
+                }
+            </label>
             <input @invalidAttributes autofocus="autofocus" aria-required="true" class="form-control" id="AccessCode" name="AccessCode">
         </div>
+        <div class="form-group">
+            <button type="submit" class="button" name="command" value="activate">Continue</button>
+        </div>
     </fieldset>
-    <button type="submit" class="button" name="command" value="activate">Activate Account</button>
-    <button type="submit" class="button button-secondary" name="command" value="resend">Resend Activation Code</button>
+    
+    <h2 class="heading-small">Not received an email?</h2>
+    <button type="submit" class="button button-link" name="command" value="resend">You can request another email</button>
 </form>

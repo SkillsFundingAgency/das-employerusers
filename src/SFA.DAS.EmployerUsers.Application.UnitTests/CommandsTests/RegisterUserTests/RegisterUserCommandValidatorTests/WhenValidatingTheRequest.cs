@@ -121,12 +121,12 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
 
             //Assert
             Assert.IsNotEmpty(actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("Email", "Please enter email address"), actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("FirstName", "Please enter first name"), actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("LastName", "Please enter last name"), actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("Password", "Please enter password"), actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("ConfirmPassword", "Please confirm password"), actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("HasAcceptedTermsAndConditions", "Please accept the terms and conditions"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("Email", "Enter a valid email address"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("FirstName", "Enter first name"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("LastName", "Enter last name"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("Password", "Enter password"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("ConfirmPassword", "Re-type password"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("HasAcceptedTermsAndConditions", "You need to accept the terms of use"), actual.ValidationDictionary);
         }
 
         [Test]
@@ -165,7 +165,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
 
             //Assert
             Assert.IsNotEmpty(actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("ConfirmPassword", "Sorry, your passwords don’t match"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("ConfirmPassword", "Passwords don't match"), actual.ValidationDictionary);
         }
 
     }
