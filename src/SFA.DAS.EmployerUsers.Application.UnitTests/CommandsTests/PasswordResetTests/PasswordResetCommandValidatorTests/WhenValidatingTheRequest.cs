@@ -55,7 +55,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
 
             //Assert
             Assert.IsFalse(actual.IsValid());
-            Assert.Contains(new KeyValuePair<string, string>("PasswordResetCode", "Reset code is invalid, try again"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("PasswordResetCode", "Reset code is invalid"), actual.ValidationDictionary);
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
 
             //Assert
             Assert.IsFalse(actual.IsValid());
-            Assert.Contains(new KeyValuePair<string, string>("PasswordResetCode", "Reset code has expired, try again"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("PasswordResetCode", "Reset code has expired"), actual.ValidationDictionary);
         }
 
         [Test]
@@ -109,7 +109,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
 
             //Assert
             Assert.IsFalse(actual.IsValid());
-            Assert.Contains(new KeyValuePair<string, string>("ConfirmPassword", "Sorry, your passwords don’t match"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("ConfirmPassword", "Passwords don’t match"), actual.ValidationDictionary);
         }
 
         [Test]
