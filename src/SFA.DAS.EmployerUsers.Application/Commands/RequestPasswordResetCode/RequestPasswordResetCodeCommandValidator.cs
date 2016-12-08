@@ -10,7 +10,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
 
             if (string.IsNullOrWhiteSpace(item.Email))
             {
-                validationResult.AddError(nameof(item.Email), "Please enter email address");
+                validationResult.AddError(nameof(item.Email), "Enter a valid email address");
             }
 
             return validationResult;
