@@ -81,7 +81,9 @@ namespace SFA.DAS.EmployerUsers.Web
 
                     AuthenticationOptions = new AuthenticationOptions
                     {
-                        EnablePostSignOutAutoRedirect = true
+                        EnablePostSignOutAutoRedirect = true,
+                        EnableSignOutPrompt = false,
+                        PostSignOutAutoRedirectDelay = 0
                     }
                 });
             });
