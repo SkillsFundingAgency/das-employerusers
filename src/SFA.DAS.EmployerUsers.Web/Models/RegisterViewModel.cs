@@ -13,6 +13,7 @@
 
 
 
+        public string GeneralError => GetErrorMessage("");
         public string FirstNameError => GetErrorMessage(nameof(FirstName));
         public string LastNameError => GetErrorMessage(nameof(LastName));
         public string EmailError => GetErrorMessage(nameof(Email));

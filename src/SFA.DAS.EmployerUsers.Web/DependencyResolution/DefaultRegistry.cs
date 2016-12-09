@@ -110,7 +110,8 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
             For<IPasswordProfileRepository>().Use<InMemoryPasswordProfileRepository>();
             For<IHttpClientWrapper>().Use<HttpClientWrapper>();
-            For<INotificationsApi>().Use<StubNotificationsApi>();
+            For<INotificationsApiClientConfiguration>().Use<NotificationsApiConfiguration>();
+            For<INotificationsApi>().Use<NotificationsApi>();
         }
 
         private void AddMediatrRegistrations()
