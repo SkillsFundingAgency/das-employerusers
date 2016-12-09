@@ -25,16 +25,16 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 
             if (resetCode == null)
             {
-                validationResult.AddError(nameof(item.PasswordResetCode), "Reset code is invalid, try again");
+                validationResult.AddError(nameof(item.PasswordResetCode), "Reset code is invalid");
             }
             else if (resetCode.ExpiryTime < DateTime.UtcNow)
             {
-                validationResult.AddError(nameof(item.PasswordResetCode), "Reset code has expired, try again");
+                validationResult.AddError(nameof(item.PasswordResetCode), "Reset code has expired");
             }
 
             if (string.IsNullOrEmpty(item.Password))
             {
-                validationResult.AddError(nameof(item.Password), "Please enter password");
+                validationResult.AddError(nameof(item.Password), "Enter a password");
             }
             else if (!_passwordService.CheckPasswordMatchesRequiredComplexity(item.Password))
             {
@@ -43,11 +43,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 
             if (string.IsNullOrEmpty(item.ConfirmPassword))
             {
-                validationResult.AddError(nameof(item.ConfirmPassword), "Please confirm password");
+                validationResult.AddError(nameof(item.ConfirmPassword), "Re-type password");
             }
             else if (!string.IsNullOrEmpty(item.Password) && !item.ConfirmPassword.Equals(item.Password))
             {
-                validationResult.AddError(nameof(item.ConfirmPassword), "Sorry, your passwords don’t match");
+                validationResult.AddError(nameof(item.ConfirmPassword), "Passwords don’t match");
             }
 
 
