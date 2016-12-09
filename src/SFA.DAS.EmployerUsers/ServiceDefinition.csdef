@@ -19,6 +19,8 @@
       <Setting name="LogLevel" />
       <Setting name="NotificationsApiBaseUrl" />
       <Setting name="NotificationsApiClientToken" />
+      <Setting name="LoggingRedisConnectionString" />
+      <Setting name="LoggingRedisKey" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="HttpIn" protocol="http" port="80" />

@@ -12,6 +12,8 @@
       <Setting name="LogLevel" value="Debug" />
       <Setting name="NotificationsApiBaseUrl" value="" />
       <Setting name="NotificationsApiClientToken" value="" />
+      <Setting name="LoggingRedisConnectionString" value="" />
+      <Setting name="LoggingRedisKey" value="" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="WebSslCert" thumbprint="FE14C6E906B1E94E93C6AF8FA113EA1221D5DE9C" thumbprintAlgorithm="sha1" />
