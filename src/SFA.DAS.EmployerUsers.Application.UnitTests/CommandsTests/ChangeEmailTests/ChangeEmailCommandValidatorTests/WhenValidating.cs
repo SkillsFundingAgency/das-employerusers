@@ -55,10 +55,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangeEmailT
         }
 
         [Test]
-        public void ThenItShouldAValidResultIfNoErrors()
+        public async Task ThenItShouldAValidResultIfNoErrors()
         {
             // Act
-            var actual = _validator.Validate(_command);
+            var actual = await _validator.ValidateAsync(_command);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -66,91 +66,91 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangeEmailT
         }
 
         [Test]
-        public void ThenItShouldReturnAnErrorIfTheUserIsNotSpecified()
+        public async Task ThenItShouldReturnAnErrorIfTheUserIsNotSpecified()
         {
             // Arrange
             _command.User = null;
 
             // Act
-            var actual = _validator.Validate(_command);
+            var actual = await _validator.ValidateAsync(_command);
 
             // Assert
             AssertResultContainsError(actual, "User", "User Does Not Exist");
         }
 
         [Test]
-        public void ThenItShouldReturnAnErrorIfTheSecurityCodeIsNotSpecified()
+        public async Task ThenItShouldReturnAnErrorIfTheSecurityCodeIsNotSpecified()
         {
             // Arrange
             _command.SecurityCode = null;
 
             // Act
-            var actual = _validator.Validate(_command);
+            var actual = await _validator.ValidateAsync(_command);
 
             // Assert
             AssertResultContainsError(actual, "SecurityCode", "Security code has not been provided");
         }
 
         [Test]
-        public void ThenItShouldReturnAnErrorIfThePasswordIsNotSpecified()
+        public async Task ThenItShouldReturnAnErrorIfThePasswordIsNotSpecified()
         {
             // Arrange
             _command.Password = null;
 
             // Act
-            var actual = _validator.Validate(_command);
+            var actual = await _validator.ValidateAsync(_command);
 
             // Assert
             AssertResultContainsError(actual, "Password", "Password has not been provided");
         }
 
         [Test]
-        public void ThenItShouldReturnAnErrorIfThePasswordDoesNotMatchUsers()
+        public async Task ThenItShouldReturnAnErrorIfThePasswordDoesNotMatchUsers()
         {
             // Arrange
             _command.Password = Password + "_INVALID";
 
             // Act
-            var actual = _validator.Validate(_command);
+            var actual = await _validator.ValidateAsync(_command);
 
             // Assert
             AssertResultContainsError(actual, "Password", "Password is incorrect");
         }
 
         [Test]
-        public void ThenItShouldReturnAnErrorIfTheSecurityCodeDoesNotExistForTheUser()
+        public async Task ThenItShouldReturnAnErrorIfTheSecurityCodeDoesNotExistForTheUser()
         {
             // Arrange
             _command.SecurityCode = SecurityCode + "_INVALID";
 
             // Act
-            var actual = _validator.Validate(_command);
+            var actual = await _validator.ValidateAsync(_command);
 
             // Assert
             AssertResultContainsError(actual, "SecurityCode", "Security code is incorrect");
         }
 
         [Test]
-        public void ThenItShouldReturnAnErrorIfTheSecurityCodeExistsButHasExpired()
+        public async Task ThenItShouldReturnAnErrorIfTheSecurityCodeExistsButHasExpired()
         {
             // Arrange
             _command.User.SecurityCodes[0].ExpiryTime = DateTime.UtcNow.AddMinutes(-1);
 
             // Act
-            var actual = _validator.Validate(_command);
+            var actual = await _validator.ValidateAsync(_command);
 
             // Assert
             AssertResultContainsError(actual, "SecurityCode", "Security code has expired");
         }
 
         [Test]
-        public void ThenItShouldCompareSecurityCodesByIgnoringCase()
+        public async Task ThenItShouldCompareSecurityCodesByIgnoringCase()
         {
             // Arrange
             _command.SecurityCode = SecurityCode.ToInverseCase();
 
             // Act
-            var actual = _validator.Validate(_command);
+            var actual = await _validator.ValidateAsync(_command);
 
             // Assert
             Assert.IsNotNull(actual);

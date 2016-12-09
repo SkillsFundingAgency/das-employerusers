@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using SFA.DAS.EmployerUsers.Application.Validation;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode
 {
     public class ResendActivationCodeCommandValidator : IValidator<ResendActivationCodeCommand>
     {
-        public ValidationResult Validate(ResendActivationCodeCommand item)
+        public Task<ValidationResult> ValidateAsync(ResendActivationCodeCommand item)
         {
             var validationErrors = new Dictionary<string, string>();
 
@@ -14,7 +15,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode
                 validationErrors.Add("UserId", "UserId has not been specified");
             }
 
-            return new ValidationResult {ValidationDictionary = validationErrors};
+            return Task.FromResult(new ValidationResult {ValidationDictionary = validationErrors});
         }
     }
 }

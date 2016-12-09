@@ -29,8 +29,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangeEmailT
         public void Arrange()
         {
             _validator = new Mock<IValidator<ChangeEmailCommand>>();
-            _validator.Setup(v => v.Validate(It.IsAny<ChangeEmailCommand>()))
-                .Returns(new ValidationResult());
+            _validator.Setup(v => v.ValidateAsync(It.IsAny<ChangeEmailCommand>()))
+                .ReturnsAsync(new ValidationResult());
 
             _userRepository = new Mock<IUserRepository>();
 
@@ -42,7 +42,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangeEmailT
                 {
                     Id = UserId,
                     Email = OldEmail,
-                    PendingEmail = NewEmail,
                     SecurityCodes = new[]
                     {
                         new Domain.SecurityCode
@@ -50,7 +49,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangeEmailT
                             Code = SecurityCode,
                             CodeType = Domain.SecurityCodeType.ConfirmEmailCode,
                             ExpiryTime = DateTime.MaxValue,
-                            ReturnUrl = ReturnUrl
+                            ReturnUrl = ReturnUrl,
+                            PendingValue = NewEmail
                         },
                         new Domain.SecurityCode
                         {
@@ -90,8 +90,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangeEmailT
         public void ThenItShouldThrowAnInvalidRequestExceptionIfTheCommandIsNotValid()
         {
             // Arrange
-            _validator.Setup(v => v.Validate(It.IsAny<ChangeEmailCommand>()))
-                .Returns(new ValidationResult
+            _validator.Setup(v => v.ValidateAsync(It.IsAny<ChangeEmailCommand>()))
+                .ReturnsAsync(new ValidationResult
                 {
                     ValidationDictionary = new Dictionary<string, string>
                     {
@@ -104,23 +104,13 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangeEmailT
         }
 
         [Test]
-        public async Task ThenItShouldUpdateTheUserWithThePendingEmail()
+        public async Task ThenItShouldUpdateTheUserWithThePendingEmailFromSecurityCode()
         {
             // Act
             await _handler.Handle(_command);
 
             // Assert
             _userRepository.Verify(r => r.Update(It.Is<User>(u => u.Id == UserId && u.Email == NewEmail)), Times.Once);
-        }
-
-        [Test]
-        public async Task ThenItShouldUpdateTheUserToRemoveThePendingEmail()
-        {
-            // Act
-            await _handler.Handle(_command);
-
-            // Assert
-            _userRepository.Verify(r => r.Update(It.Is<User>(u => u.Id == UserId && string.IsNullOrEmpty(u.PendingEmail))), Times.Once);
         }
 
         [Test]

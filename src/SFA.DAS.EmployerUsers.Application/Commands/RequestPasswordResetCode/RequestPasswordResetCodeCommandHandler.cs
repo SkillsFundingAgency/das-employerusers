@@ -41,7 +41,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
         {
             Logger.Debug($"Received RequestPasswordResetCodeCommand for user '{message.Email}'");
 
-            var validationResult = _validator.Validate(message);
+            var validationResult = await _validator.ValidateAsync(message);
 
             if (!validationResult.IsValid())
             {

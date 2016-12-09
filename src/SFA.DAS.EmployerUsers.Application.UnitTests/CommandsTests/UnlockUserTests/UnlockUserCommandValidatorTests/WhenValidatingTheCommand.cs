@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
 using SFA.DAS.EmployerUsers.Domain;
@@ -17,10 +18,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         }
 
         [Test]
-        public void ThenTheDictionaryIsPopulatedIfTheCommandIsNotPopulated()
+        public async Task ThenTheDictionaryIsPopulatedIfTheCommandIsNotPopulated()
         {
             //Act
-            var actual = _unlockUserCommandValidator.Validate(new UnlockUserCommand());
+            var actual = await _unlockUserCommandValidator.ValidateAsync(new UnlockUserCommand());
 
             //Assert
             Assert.IsNotEmpty(actual.ValidationDictionary);
@@ -28,11 +29,11 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         }
 
         [Test]
-        public void ThenTheDicionaryIsEmptyIfTheCommmandIsPopulated()
+        public async Task ThenTheDicionaryIsEmptyIfTheCommmandIsPopulated()
         {
             //Act
-            var actual =
-                _unlockUserCommandValidator.Validate(new UnlockUserCommand
+            var actual = await
+                _unlockUserCommandValidator.ValidateAsync(new UnlockUserCommand
                 {
                     Email = "test@local",
                     UnlockCode = "SomeCode",
@@ -56,11 +57,11 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         }
 
         [Test]
-        public void ThenTheDictionaryIsNotEmptyIfTheUnlockCodesDoNotMatch()
+        public async Task ThenTheDictionaryIsNotEmptyIfTheUnlockCodesDoNotMatch()
         {
             //Act
-            var actual =
-                _unlockUserCommandValidator.Validate(new UnlockUserCommand
+            var actual = await
+                _unlockUserCommandValidator.ValidateAsync(new UnlockUserCommand
                 {
                     Email = "test@local",
                     UnlockCode = "SomeCode",
@@ -85,11 +86,11 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         }
         
         [Test]
-        public void ThenTheDictionaryIsNotEmptyIfTheAccessCodeHasExpiredForAValidUnlockCode()
+        public async Task ThenTheDictionaryIsNotEmptyIfTheAccessCodeHasExpiredForAValidUnlockCode()
         {
             //Act
-            var actual =
-                _unlockUserCommandValidator.Validate(new UnlockUserCommand
+            var actual = await
+                _unlockUserCommandValidator.ValidateAsync(new UnlockUserCommand
                 {
                     Email = "test@local",
                     UnlockCode = "SomeCode",
@@ -114,10 +115,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         }
         
         [Test]
-        public void ThenTheDictionaryContainsTheCorrectErrorMessagesWhenNotValid()
+        public async Task ThenTheDictionaryContainsTheCorrectErrorMessagesWhenNotValid()
         {
             //Act
-            var actual = _unlockUserCommandValidator.Validate(new UnlockUserCommand());
+            var actual = await _unlockUserCommandValidator.ValidateAsync(new UnlockUserCommand());
 
             //Assert
             Assert.IsNotEmpty(actual.ValidationDictionary);

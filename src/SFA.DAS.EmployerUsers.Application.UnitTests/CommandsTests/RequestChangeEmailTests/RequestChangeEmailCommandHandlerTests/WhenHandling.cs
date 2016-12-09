@@ -39,8 +39,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestChang
             };
 
             _validator = new Mock<IValidator<RequestChangeEmailCommand>>();
-            _validator.Setup(v => v.Validate(_command))
-                .Returns(new ValidationResult());
+            _validator.Setup(v => v.ValidateAsync(_command))
+                .ReturnsAsync(new ValidationResult());
 
             _userRepository = new Mock<IUserRepository>();
             _userRepository.Setup(r => r.GetById(UserId))
@@ -65,8 +65,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestChang
         {
             // Arrange
             var errors = new Dictionary<string, string> { { "", "" } };
-            _validator.Setup(v => v.Validate(_command))
-                .Returns(new ValidationResult { ValidationDictionary = errors });
+            _validator.Setup(v => v.ValidateAsync(_command))
+                .ReturnsAsync(new ValidationResult { ValidationDictionary = errors });
 
             // Act + Assert
             var actual = Assert.ThrowsAsync<InvalidRequestException>(async () => await _handler.Handle(_command));
@@ -87,18 +87,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestChang
         }
 
         [Test]
-        public async Task ThenItShouldUpdateTheUserWithAPendingAddress()
-        {
-            // Act
-            await _handler.Handle(_command);
-
-            // Assert
-            _userRepository.Verify(r => r.Update(It.Is<User>(u => u.Id == UserId
-                                                               && u.Email == OldEmailAddress
-                                                               && u.PendingEmail == NewEmailAddress)), Times.Once);
-        }
-
-        [Test]
         public async Task ThenItShouldUpdateTheUserWithANewConfirmEmailSecurityCode()
         {
             // Act
@@ -108,7 +96,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestChang
             _userRepository.Verify(r => r.Update(It.Is<User>(u => u.Id == UserId
                                                                && u.SecurityCodes.Any(sc => sc.Code == ConfirmEmailCode
                                                                                          && sc.CodeType == SecurityCodeType.ConfirmEmailCode
-                                                                                         && sc.ReturnUrl == ReturnUrl))
+                                                                                         && sc.ReturnUrl == ReturnUrl
+                                                                                         && sc.PendingValue == NewEmailAddress))
                                                 ), Times.Once);
         }
 

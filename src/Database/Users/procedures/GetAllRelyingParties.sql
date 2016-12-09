@@ -6,5 +6,6 @@ AS
 		RequireConsent,
 		ApplicationUrl,
 		LogoutUrl,
-		Flow
+		Flow,
+		ClientSecret
 	FROM dbo.RelyingParty

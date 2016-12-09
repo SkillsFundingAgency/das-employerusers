@@ -8,11 +8,10 @@ CREATE PROCEDURE CreateUser
 	@PasswordProfileId varchar(50),
 	@IsActive bit,
 	@FailedLoginAttempts int,
-	@IsLocked bit,
-	@PendingEmail varchar(max)
+	@IsLocked bit
 AS
 	INSERT INTO [User]
-	(Id, FirstName, LastName, Email, Password, Salt, PasswordProfileId, IsActive, FailedLoginAttempts, IsLocked, PendingEmail)
+	(Id, FirstName, LastName, Email, Password, Salt, PasswordProfileId, IsActive, FailedLoginAttempts, IsLocked)
 	VALUES
-	(@Id, @FirstName, @LastName, @Email, @Password, @Salt, @PasswordProfileId, @IsActive, @FailedLoginAttempts, @IsLocked, @PendingEmail)
+	(@Id, @FirstName, @LastName, @Email, @Password, @Salt, @PasswordProfileId, @IsActive, @FailedLoginAttempts, @IsLocked)
 GO

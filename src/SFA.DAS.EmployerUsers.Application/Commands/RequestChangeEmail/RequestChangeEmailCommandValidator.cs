@@ -1,17 +1,18 @@
-﻿using SFA.DAS.EmployerUsers.Application.Validation;
+﻿using System.Threading.Tasks;
+using SFA.DAS.EmployerUsers.Application.Validation;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail
 {
     public class RequestChangeEmailCommandValidator : IValidator<RequestChangeEmailCommand>
     {
-        public ValidationResult Validate(RequestChangeEmailCommand item)
+        public Task<ValidationResult> ValidateAsync(RequestChangeEmailCommand item)
         {
             var result = new ValidationResult();
 
             if (string.IsNullOrEmpty(item.UserId) || string.IsNullOrEmpty(item.NewEmailAddress))
             {
                 result.ValidationDictionary.Add("", "");
-                return result;
+                return Task.FromResult(result);
             }
 
             if (!item.NewEmailAddress.Equals(item.ConfirmEmailAddress, System.StringComparison.CurrentCultureIgnoreCase))
@@ -19,7 +20,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail
                 result.ValidationDictionary.Add("ConfirmEmailAddress", "Confirm email address does not match new email address");
             }
 
-            return result;
+            return Task.FromResult(result);
         }
     }
 }

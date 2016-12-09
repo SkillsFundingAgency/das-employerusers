@@ -19,7 +19,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ChangeEmail
 
         public async Task<ChangeEmailCommandResult> Handle(ChangeEmailCommand message)
         {
-            var validationResult = _validator.Validate(message);
+            var validationResult = await _validator.ValidateAsync(message);
             if (!validationResult.IsValid())
             {
                 throw new InvalidRequestException(validationResult.ValidationDictionary);
@@ -28,8 +28,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ChangeEmail
             var securityCode = message.User.SecurityCodes.Single(sc => sc.Code == message.SecurityCode
                                                                     && sc.CodeType == Domain.SecurityCodeType.ConfirmEmailCode);
 
-            message.User.Email = message.User.PendingEmail;
-            message.User.PendingEmail = null;
+            message.User.Email = securityCode.PendingValue;
             message.User.ExpireSecurityCodesOfType(Domain.SecurityCodeType.ConfirmEmailCode);
             await _userRepository.Update(message.User);
 

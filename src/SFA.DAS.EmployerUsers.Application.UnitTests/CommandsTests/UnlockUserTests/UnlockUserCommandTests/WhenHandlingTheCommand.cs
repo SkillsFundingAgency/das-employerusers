@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         {
 
             _unlockUserCommandValidator = new Mock<IValidator<UnlockUserCommand>>();
-            _unlockUserCommandValidator.Setup(x => x.Validate(It.IsAny<UnlockUserCommand>())).Returns(new ValidationResult());
+            _unlockUserCommandValidator.Setup(x => x.ValidateAsync(It.IsAny<UnlockUserCommand>())).ReturnsAsync(new ValidationResult());
             _userRepositry = new Mock<IUserRepository>();
             _mediator = new Mock<IMediator>();
             _communicationService = new Mock<ICommunicationService>();
@@ -74,14 +74,14 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             await _unlockUserCommand.Handle(unlockUserCommand);
 
             //Assert
-            _unlockUserCommandValidator.Verify(x => x.Validate(unlockUserCommand), Times.Once);
+            _unlockUserCommandValidator.Verify(x => x.ValidateAsync(unlockUserCommand), Times.Once);
         }
 
         [Test]
         public void ThenAnInvalidRequestExceptionIsThrownIfTheCommandIsNotValid()
         {
             //Arrange
-            _unlockUserCommandValidator.Setup(x => x.Validate(It.IsAny<UnlockUserCommand>())).Returns(new ValidationResult { ValidationDictionary = { { "", "" } } });
+            _unlockUserCommandValidator.Setup(x => x.ValidateAsync(It.IsAny<UnlockUserCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = { { "", "" } } });
 
             //Act
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _unlockUserCommand.Handle(new UnlockUserCommand()));
@@ -139,7 +139,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         public void ThenTheUserRepositoryIsNotUpdatedIfTheUserDoesNotExist()
         {
             //Arrange
-            _unlockUserCommandValidator.Setup(x => x.Validate(It.IsAny<UnlockUserCommand>())).Returns(new ValidationResult { ValidationDictionary = { { "", "" } } });
+            _unlockUserCommandValidator.Setup(x => x.ValidateAsync(It.IsAny<UnlockUserCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = { { "", "" } } });
             var unlockUserCommand = new UnlockUserCommand
             {
                 UnlockCode = AccessCode,
@@ -158,7 +158,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         public void ThenTheCommunicationServiceIsNotCalledIfThereIsAValidationException()
         {
             //Arrange
-            _unlockUserCommandValidator.Setup(x => x.Validate(It.IsAny<UnlockUserCommand>())).Returns(new ValidationResult { ValidationDictionary = { { "", "" } } });
+            _unlockUserCommandValidator.Setup(x => x.ValidateAsync(It.IsAny<UnlockUserCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = { { "", "" } } });
             var unlockUserCommand = new UnlockUserCommand
             {
                 UnlockCode = AccessCode,
@@ -176,7 +176,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         public void ThenAnAccountLockedEventIsRaisedIfTheValidationFailsAndTheUserIsNotNull()
         {
             //Arrange
-            _unlockUserCommandValidator.Setup(x => x.Validate(It.IsAny<UnlockUserCommand>())).Returns(new ValidationResult { ValidationDictionary = { { "", "" } } });
+            _unlockUserCommandValidator.Setup(x => x.ValidateAsync(It.IsAny<UnlockUserCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = { { "", "" } } });
             var unlockUserCommand = new UnlockUserCommand
             {
                 UnlockCode = AccessCode,
@@ -199,7 +199,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         public void ThenAnAccountLockedEventIsNotRaisedIfTheValidationFailsAndTheUserIsNull()
         {
             //Arrange
-            _unlockUserCommandValidator.Setup(x => x.Validate(It.IsAny<UnlockUserCommand>())).Returns(new ValidationResult { ValidationDictionary = { { "", "" } } });
+            _unlockUserCommandValidator.Setup(x => x.ValidateAsync(It.IsAny<UnlockUserCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = { { "", "" } } });
             var unlockUserCommand = new UnlockUserCommand
             {
                 UnlockCode = AccessCode,

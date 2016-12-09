@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.PasswordReset;
@@ -23,20 +24,20 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         }
 
         [Test]
-        public void ThenFalseIsReturnedWhenTheMessageHasNoUser()
+        public async Task ThenFalseIsReturnedWhenTheMessageHasNoUser()
         {
             //Act
-            var actual = _validator.Validate(new PasswordResetCommand());
+            var actual = await _validator.ValidateAsync(new PasswordResetCommand());
 
             //Assert
             Assert.IsFalse(actual.IsValid());
         }
 
         [Test]
-        public void ThenFalseIsReturnedIfThePasscodeDoesNotMatch()
+        public async Task ThenFalseIsReturnedIfThePasscodeDoesNotMatch()
         {
             //Act
-            var actual = _validator.Validate(new PasswordResetCommand
+            var actual = await _validator.ValidateAsync(new PasswordResetCommand
             {
                 PasswordResetCode = "123456",
                 User = new User
@@ -59,10 +60,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         }
 
         [Test]
-        public void ThenFalseIsReturnedIfThePasscodeMatchesButHasExpired()
+        public async Task ThenFalseIsReturnedIfThePasscodeMatchesButHasExpired()
         {
             //Act
-            var actual = _validator.Validate(new PasswordResetCommand
+            var actual = await _validator.ValidateAsync(new PasswordResetCommand
             {
                 PasswordResetCode = "123456",
                 User = new User
@@ -85,10 +86,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         }
 
         [Test]
-        public void ThenFalseIsReturnedfIfThePasswordsDoNotMatch()
+        public async Task ThenFalseIsReturnedfIfThePasswordsDoNotMatch()
         {
             //Act
-            var actual = _validator.Validate(new PasswordResetCommand
+            var actual = await _validator.ValidateAsync(new PasswordResetCommand
             {
                 PasswordResetCode = "654321",
                 Password = "654321abc",
@@ -113,10 +114,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         }
 
         [Test]
-        public void ThenTrueIsReturnedIfAllFieldsHaveBeenSupplied()
+        public async Task ThenTrueIsReturnedIfAllFieldsHaveBeenSupplied()
         {
             //Act
-            var actual = _validator.Validate(new PasswordResetCommand
+            var actual = await _validator.ValidateAsync(new PasswordResetCommand
             {
                 PasswordResetCode = "123456ABC",
                 Password = "abc123YHN",
@@ -140,13 +141,13 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         }
 
         [Test]
-        public void ThenTheErrorDictionaryIsPopulatedIfThePasswordIsNotComplexEnough()
+        public async Task ThenTheErrorDictionaryIsPopulatedIfThePasswordIsNotComplexEnough()
         {
             //arrange 
             _passwordService.Setup(x => x.CheckPasswordMatchesRequiredComplexity(It.IsAny<string>())).Returns(false);
 
             //Act
-            var actual = _validator.Validate(new PasswordResetCommand
+            var actual = await _validator.ValidateAsync(new PasswordResetCommand
             {
                 PasswordResetCode = "654321",
                 Password = "123456",

@@ -115,8 +115,8 @@
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SFA.DAS.OidcMiddleware, Version=1.0.0.8638, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.OidcMiddleware.1.0.0.8638\lib\net45\SFA.DAS.OidcMiddleware.dll</HintPath>
+    <Reference Include="SFA.DAS.OidcMiddleware, Version=2.0.0.17484, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.OidcMiddleware.2.0.0.17484\lib\net45\SFA.DAS.OidcMiddleware.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

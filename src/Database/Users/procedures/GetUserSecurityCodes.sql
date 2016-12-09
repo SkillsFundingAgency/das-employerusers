@@ -5,7 +5,8 @@ AS
 		Code,
 		CodeType,
 		ExpiryTime,
-		ReturnUrl
+		ReturnUrl,
+		PendingValue
 	FROM UserSecurityCode
 	WHERE UserId = @UserId
 GO

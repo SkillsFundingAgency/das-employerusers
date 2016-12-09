@@ -29,11 +29,11 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
         public void Arrange()
         {
             _validator = new Mock<IValidator<ChangePasswordCommand>>();
-            _validator.Setup(v => v.Validate(It.Is<ChangePasswordCommand>(c => c.User.Id == UserId
+            _validator.Setup(v => v.ValidateAsync(It.Is<ChangePasswordCommand>(c => c.User.Id == UserId
                                                                             && c.CurrentPassword == CurrentPassword
                                                                             && c.NewPassword == NewPassword
                                                                             && c.ConfirmPassword == NewPassword)))
-                .Returns(new ValidationResult());
+                .ReturnsAsync(new ValidationResult());
 
             _passwordService = new Mock<IPasswordService>();
             _passwordService.Setup(s => s.GenerateAsync(NewPassword))
@@ -67,8 +67,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
         public void ThenItShouldThrowAnInvalidRequestExceptionIfCommandInvalid()
         {
             // Arrange
-            _validator.Setup(v => v.Validate(It.IsAny<ChangePasswordCommand>()))
-                .Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "Error" } } });
+            _validator.Setup(v => v.ValidateAsync(It.IsAny<ChangePasswordCommand>()))
+                .ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "Error" } } });
 
             // Act + Assert
             var actual = Assert.ThrowsAsync<InvalidRequestException>(async () => await _handler.Handle(_command));
@@ -94,8 +94,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
         public async Task ThenItShouldNotUpdateUserIfCommandInvalid()
         {
             // Arrange
-            _validator.Setup(v => v.Validate(It.IsAny<ChangePasswordCommand>()))
-                .Returns(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "Error" } } });
+            _validator.Setup(v => v.ValidateAsync(It.IsAny<ChangePasswordCommand>()))
+                .ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "Error" } } });
 
             // Act
             try

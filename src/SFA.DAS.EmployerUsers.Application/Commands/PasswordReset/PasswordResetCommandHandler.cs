@@ -34,7 +34,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             var user = await _userRepository.GetByEmailAddress(message.Email);
             message.User = user;
 
-            var validationResult = _validator.Validate(message);
+            var validationResult = await _validator.ValidateAsync(message);
             
             if (!validationResult.IsValid())
             {

@@ -8,6 +8,7 @@ namespace SFA.DAS.EmployerUsers.Domain
         public SecurityCodeType CodeType { get; set; }
         public DateTime ExpiryTime { get; set; }
         public string ReturnUrl { get; set; }
+        public string PendingValue { get; set; }
 
         public override bool Equals(object obj)
         {

@@ -26,7 +26,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail
 
         public async Task<Unit> Handle(RequestChangeEmailCommand message)
         {
-            var validationResult = _validator.Validate(message);
+            var validationResult = await _validator.ValidateAsync(message);
             if (!validationResult.IsValid())
             {
                 throw new InvalidRequestException(validationResult.ValidationDictionary);
@@ -38,13 +38,13 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail
                 throw new InvalidRequestException(new Dictionary<string, string> { { "", "Cannot find user" } });
             }
 
-            user.PendingEmail = message.NewEmailAddress;
             user.AddSecurityCode(new Domain.SecurityCode
             {
                 Code = _codeGenerator.GenerateAlphaNumeric(),
                 CodeType = Domain.SecurityCodeType.ConfirmEmailCode,
                 ExpiryTime = DateTime.UtcNow.AddDays(1),
-                ReturnUrl = message.ReturnUrl
+                ReturnUrl = message.ReturnUrl,
+                PendingValue = message.NewEmailAddress
             });
             await _userRepository.Update(user);
 

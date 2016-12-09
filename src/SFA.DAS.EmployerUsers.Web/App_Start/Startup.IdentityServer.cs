@@ -52,17 +52,6 @@ namespace SFA.DAS.EmployerUsers.Web
         }
     }
 
-    public class SecretValidator : ISecretValidator
-    {
-        public Task<SecretValidationResult> ValidateAsync(IEnumerable<Secret> secrets, ParsedSecret parsedSecret)
-        {
-            return Task.FromResult(new SecretValidationResult
-            {
-                Success = true
-            });
-        }
-    }
-
     public partial class Startup
     {
         private void ConfigureIdentityServer(IAppBuilder app, IdentityServerConfiguration configuration, IRelyingPartyRepository relyingPartyRepository)
@@ -80,9 +69,6 @@ namespace SFA.DAS.EmployerUsers.Web
                     .RegisterDasServices(StructuremapMvc.Container);
                 factory.RedirectUriValidator = new Registration<IRedirectUriValidator>((dr) => new StartsWithRedirectUriValidator());
 
-                factory.SecretValidators.Clear();
-                factory.SecretValidators.Add(new Registration<ISecretValidator>((dr) => new SecretValidator()));
-
                 //factory.ConfigureDefaultViewService<CustomIdsViewService>(new DefaultViewServiceOptions());
 
                 idsrvApp.UseIdentityServer(new IdentityServerOptions
@@ -95,7 +81,9 @@ namespace SFA.DAS.EmployerUsers.Web
 
                     AuthenticationOptions = new AuthenticationOptions
                     {
-                        EnablePostSignOutAutoRedirect = true
+                        EnablePostSignOutAutoRedirect = true,
+                        EnableSignOutPrompt = false,
+                        PostSignOutAutoRedirectDelay = 0
                     }
                 });
             });
@@ -147,17 +135,16 @@ namespace SFA.DAS.EmployerUsers.Web
                 }
             };
             var clients = new List<Client> { self };
-
-            var clientSecret = "super-secret".Sha256();
+            
             var relyingParties = relyingPartyRepository.GetAllAsync().Result;
             clients.AddRange(relyingParties.Select(rp => new Client
             {
                 ClientName = rp.Name,
                 ClientId = rp.Id,
-                Flow = (Flows)rp.Flow, //Flows.AuthorizationCode,
+                Flow = (Flows)rp.Flow,
                 ClientSecrets = new List<Secret>
                 {
-                    new Secret(clientSecret)
+                    new Secret(rp.ClientSecret)
                 },
                 RequireConsent = false,
                 RedirectUris = new List<string>

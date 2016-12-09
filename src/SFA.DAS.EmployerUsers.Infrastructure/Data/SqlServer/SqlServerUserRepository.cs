@@ -38,14 +38,14 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
 
         public async Task Create(User registerUser)
         {
-            await Execute("CreateUser @Id, @FirstName, @LastName, @Email, @Password, @Salt, @PasswordProfileId, @IsActive, @FailedLoginAttempts, @IsLocked, @PendingEmail",
+            await Execute("CreateUser @Id, @FirstName, @LastName, @Email, @Password, @Salt, @PasswordProfileId, @IsActive, @FailedLoginAttempts, @IsLocked",
                 registerUser);
             await UpdateUserSecurityCodes(registerUser);
         }
 
         public async Task Update(User user)
         {
-            await Execute("UpdateUser @Id, @FirstName, @LastName, @Email, @Password, @Salt, @PasswordProfileId, @IsActive, @FailedLoginAttempts, @IsLocked, @PendingEmail",
+            await Execute("UpdateUser @Id, @FirstName, @LastName, @Email, @Password, @Salt, @PasswordProfileId, @IsActive, @FailedLoginAttempts, @IsLocked",
                 user);
             await UpdateUserSecurityCodes(user);
         }
@@ -64,8 +64,8 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             {
                 if (!existingCodes.Remove(code))
                 {
-                    await Execute("CreateUserSecurityCode @Code, @UserId, @CodeType, @ExpiryTime, @ReturnUrl",
-                        new { code.Code, UserId = user.Id, code.CodeType, code.ExpiryTime, code.ReturnUrl });
+                    await Execute("CreateUserSecurityCode @Code, @UserId, @CodeType, @ExpiryTime, @ReturnUrl, @PendingValue",
+                        new { code.Code, UserId = user.Id, code.CodeType, code.ExpiryTime, code.ReturnUrl, code.PendingValue });
                 }
             }
 

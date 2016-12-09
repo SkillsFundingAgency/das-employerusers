@@ -27,14 +27,14 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
             {
                 Id = UserId,
                 Email = "user.one@unit.tests",
-                PendingEmail = NewEmailAddress,
                 SecurityCodes = new[]
                 {
                     new SecurityCode
                     {
                         Code = ConfirmationCode,
                         CodeType = SecurityCodeType.ConfirmEmailCode,
-                        ExpiryTime = DateTime.MaxValue
+                        ExpiryTime = DateTime.MaxValue,
+                        PendingValue = NewEmailAddress
                     }
                 }
             };

@@ -124,16 +124,18 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 
         public async Task SendConfirmEmailChangeMessage(User user, string messageId)
         {
+            var code = GetUserConfirmEmailCode(user);
+
             await _notificationsApi.SendEmail(new Email
             {
                 SystemId = Guid.NewGuid().ToString(),
                 TemplateId = "ConfirmEmailChange",
-                RecipientsAddress = user.PendingEmail,
+                RecipientsAddress = code.PendingValue,
                 ReplyToAddress = ReplyToAddress,
                 Subject = "Change your apprenticeship levy account email address",
                 Tokens = new Dictionary<string, string>
                 {
-                    { "ConfirmEmailCode", GetUserConfirmEmailCode(user) }
+                    { "ConfirmEmailCode", code.Code }
                 }
             });
         }
@@ -160,11 +162,10 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                                      .OrderByDescending(sc => sc.ExpiryTime)
                                      .FirstOrDefault();
         }
-        private string GetUserConfirmEmailCode(User user)
+        private SecurityCode GetUserConfirmEmailCode(User user)
         {
             return user.SecurityCodes.Where(sc => sc.CodeType == SecurityCodeType.ConfirmEmailCode)
                                      .OrderByDescending(sc => sc.ExpiryTime)
-                                     .Select(sc => sc.Code)
                                      .FirstOrDefault();
         }
     }
