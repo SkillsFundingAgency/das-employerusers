@@ -159,6 +159,31 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
         }
 
         [Test]
+        public async Task ThenTheUserIsCreatedWithSecurePasswordDetailsInHistory()
+        {
+            // Arrange
+            var registerUserCommand = new RegisterUserCommand
+            {
+                FirstName = "Unit",
+                LastName = "Tests",
+                Email = "unit.tests@test.local",
+                Password = "SomePassword",
+                ConfirmPassword = "SomePassword"
+            };
+            _registerUserCommandValidator.Setup(x => x.ValidateAsync(registerUserCommand)).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
+
+            // Act
+            await _registerUserCommandHandler.Handle(registerUserCommand);
+
+            // Assert
+            _userRepository.Verify(r => r.Create(It.Is<User>(u => u.PasswordHistory != null
+                                                               && u.PasswordHistory.Length == 1
+                                                               && u.PasswordHistory[0].Password == "Secured_Password"
+                                                               && u.PasswordHistory[0].PasswordProfileId == "Password_Profile_Id"
+                                                               && u.PasswordHistory[0].Salt == "Generated_Salt")));
+        }
+
+        [Test]
         public async Task ThenTheCommunicationServiceIsCalledOnSuccessfulCommand()
         {
             // Arrange

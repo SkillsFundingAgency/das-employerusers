@@ -1,35 +1,56 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.ChangePassword
 {
     public class ChangePasswordCommandValidator : IValidator<ChangePasswordCommand>
     {
         private readonly IPasswordService _passwordService;
+        private readonly IConfigurationService _configurationService;
 
-        public ChangePasswordCommandValidator(IPasswordService passwordService)
+        public ChangePasswordCommandValidator(IPasswordService passwordService, IConfigurationService configurationService)
         {
             _passwordService = passwordService;
+            _configurationService = configurationService;
         }
 
-        public Task<ValidationResult> ValidateAsync(ChangePasswordCommand item)
+        public async Task<ValidationResult> ValidateAsync(ChangePasswordCommand item)
         {
             var result = new ValidationResult();
 
-            ValidateCurrentPasswordMatchesUser(item, result);
+            await ValidateCurrentPasswordMatchesUser(item, result);
+            await ValidateNewPasswordNotInRecentHistory(item, result);
             ValidateNewPasswordMeetsSecurityRequirements(item, result);
             ValidateConfirmPasswordMatchesNewPassword(item, result);
 
-            return Task.FromResult(result);
+            return result;
         }
 
-        private void ValidateCurrentPasswordMatchesUser(ChangePasswordCommand command, ValidationResult result)
+        private async Task ValidateCurrentPasswordMatchesUser(ChangePasswordCommand command, ValidationResult result)
         {
-            if (!_passwordService.VerifyAsync(command.CurrentPassword, command.User.Password,
-                command.User.Salt, command.User.PasswordProfileId).Result)
+            var passwordsMatch = await _passwordService.VerifyAsync(command.CurrentPassword, command.User.Password,
+                command.User.Salt, command.User.PasswordProfileId);
+            if (!passwordsMatch)
             {
                 result.AddError("CurrentPassword", "Invalid password");
+            }
+        }
+        private async Task ValidateNewPasswordNotInRecentHistory(ChangePasswordCommand command, ValidationResult result)
+        {
+            var config = await _configurationService.GetAsync<EmployerUsersConfiguration>();
+            var recentPasswords = command.User.PasswordHistory.OrderByDescending(p => p.DateSet).Take(config.Account.NumberOfPasswordsInHistory);
+
+            foreach (var historicPassword in recentPasswords)
+            {
+                if (await _passwordService.VerifyAsync(command.NewPassword, historicPassword.Password, historicPassword.Salt, historicPassword.PasswordProfileId))
+                {
+                    result.AddError("NewPassword", $"Password has been used too recently. You cannot use your last {config.Account.NumberOfPasswordsInHistory} passwords");
+                    return;
+                }
             }
         }
         private void ValidateNewPasswordMeetsSecurityRequirements(ChangePasswordCommand command, ValidationResult result)

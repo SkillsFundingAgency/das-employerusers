@@ -304,7 +304,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/changepassword")]
         public ActionResult ChangePassword(string returnUrl)
         {
-            return View();
+            return View(new ChangePasswordViewModel());
         }
 
         [HttpPost]

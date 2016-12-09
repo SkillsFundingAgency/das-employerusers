@@ -1,9 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Commands.ChangePassword;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswordTests.ChangePasswordCommandValidatorTests
 {
@@ -17,6 +20,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
         private const string NewPassword = "Password1";
 
         private Mock<IPasswordService> _passwordService;
+        private Mock<IConfigurationService> _configurationService;
         private ChangePasswordCommandValidator _validator;
         private ChangePasswordCommand _command;
 
@@ -29,7 +33,17 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
             _passwordService.Setup(s => s.VerifyAsync(CurrentPassword, CurrentPasswordHash, Salt, PasswordProfileId))
                 .Returns(Task.FromResult(true));
 
-            _validator = new ChangePasswordCommandValidator(_passwordService.Object);
+            _configurationService = new Mock<IConfigurationService>();
+            _configurationService.Setup(s => s.GetAsync<EmployerUsersConfiguration>())
+                .ReturnsAsync(new EmployerUsersConfiguration
+                {
+                    Account = new AccountConfiguration
+                    {
+                        NumberOfPasswordsInHistory = 3
+                    }
+                });
+
+            _validator = new ChangePasswordCommandValidator(_passwordService.Object, _configurationService.Object);
 
             _command = new ChangePasswordCommand
             {
@@ -38,11 +52,12 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
                     Id = UserId,
                     Password = CurrentPasswordHash,
                     PasswordProfileId = PasswordProfileId,
-                    Salt = Salt
+                    Salt = Salt,
+                    PasswordHistory = new Domain.HistoricalPassword[0]
                 },
                 CurrentPassword = CurrentPassword,
                 NewPassword = NewPassword,
-                ConfirmPassword = NewPassword
+                ConfirmPassword = NewPassword,
             };
         }
 
@@ -121,6 +136,46 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
 
             // Assert
             AssertExpectedValidationErrorExists(actual, "NewPassword", "Password does not meet requirements");
+        }
+
+        [Test]
+        public async Task ThenItShouldReturnAnInvalidResultWithErrorIfNewPasswordIsInConfiguredRecentHistory()
+        {
+            // Arrange
+            _command.User.PasswordHistory = new[]
+            {
+                new Domain.HistoricalPassword { Password = "HistoricalPassword1", Salt = "Salt1", PasswordProfileId = PasswordProfileId, DateSet = new DateTime(2016, 1, 1) }
+            };
+            _passwordService.Setup(s => s.VerifyAsync(NewPassword, "HistoricalPassword1", "Salt1", PasswordProfileId))
+                .Returns(Task.FromResult(true));
+
+            // Act
+            var actual = await _validator.ValidateAsync(_command);
+
+            // Assert
+            AssertExpectedValidationErrorExists(actual, "NewPassword", "Password has been used too recently. You cannot use your last 3 passwords");
+        }
+
+        [Test]
+        public async Task ThenItShouldReturnAnValidResultWithErrorIfNewPasswordIsInHistoryButNotConfiguredRecentHistory()
+        {
+            // Arrange
+            _command.User.PasswordHistory = new[]
+            {
+                new Domain.HistoricalPassword { Password = "HistoricalPassword1", Salt = "Salt1", PasswordProfileId = PasswordProfileId, DateSet = new DateTime(2016, 1, 1) },
+                new Domain.HistoricalPassword { Password = "HistoricalPassword2", Salt = "Salt2", PasswordProfileId = PasswordProfileId, DateSet = new DateTime(2016, 2, 1) },
+                new Domain.HistoricalPassword { Password = "HistoricalPassword3", Salt = "Salt3", PasswordProfileId = PasswordProfileId, DateSet = new DateTime(2016, 3, 1) },
+                new Domain.HistoricalPassword { Password = "HistoricalPassword4", Salt = "Salt4", PasswordProfileId = PasswordProfileId, DateSet = new DateTime(2016, 4, 1) },
+            };
+            _passwordService.Setup(s => s.VerifyAsync(NewPassword, "HistoricalPassword1", "Salt1", PasswordProfileId))
+                .Returns(Task.FromResult(true));
+
+            // Act
+            var actual = await _validator.ValidateAsync(_command);
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual.IsValid());
         }
 
 

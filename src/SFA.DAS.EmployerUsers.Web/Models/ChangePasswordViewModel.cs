@@ -6,5 +6,9 @@
         public string CurrentPassword { get; set; }
         public string NewPassword { get; set; }
         public string ConfirmPassword { get; set; }
+
+        public string CurrentPasswordError => GetErrorMessage(nameof(CurrentPassword));
+        public string NewPasswordError => GetErrorMessage(nameof(NewPassword));
+        public string ConfirmPasswordError => GetErrorMessage(nameof(ConfirmPassword));
     }
 }
