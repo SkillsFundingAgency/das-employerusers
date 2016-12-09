@@ -13,5 +13,6 @@
         public int FailedLoginAttempts { get; set; }
         public bool IsLocked { get; set; }
         public SecurityCode[] SecurityCodes { get; set; }
+        public HistoricalPassword[] PasswordHistory { get; set; }
     }
 }

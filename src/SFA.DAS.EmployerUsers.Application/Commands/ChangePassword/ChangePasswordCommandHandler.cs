@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
@@ -41,6 +43,17 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ChangePassword
             user.Password = securePassword.HashedPassword;
             user.Salt = securePassword.Salt;
             user.PasswordProfileId = securePassword.ProfileId;
+
+            user.PasswordHistory = user.PasswordHistory.Concat(new[]
+            {
+                new HistoricalPassword
+                {
+                    Password = user.Password,
+                    Salt = user.Salt,
+                    PasswordProfileId = user.PasswordProfileId,
+                    DateSet = DateTime.Now
+                }
+            }).ToArray();
         }
     }
 }

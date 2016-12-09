@@ -6,5 +6,6 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Configuration
 
         public int AllowedFailedLoginAttempts { get; set; }
         public int UnlockCodeLength { get; set; }
+        public int NumberOfPasswordsInHistory { get; set; }
     }
 }

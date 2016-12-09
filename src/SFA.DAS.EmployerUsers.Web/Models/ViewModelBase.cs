@@ -14,6 +14,7 @@ namespace SFA.DAS.EmployerUsers.Web.Models
 
         public Dictionary<string, string> ErrorDictionary { get; set; }
 
+        public string GeneralError => GetErrorMessage("");
         protected string GetErrorMessage(string propertyName)
         {
             return ErrorDictionary.Any() && ErrorDictionary.ContainsKey(propertyName) ? ErrorDictionary[propertyName] : "";

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
@@ -18,6 +19,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
         private const string NewHash = "NEWHASH";
         private const string NewProfileId = "NEWPROFILE";
         private const string NewSalt = "NEWSALT";
+        private const string OldPassword = "OLDHASH";
+        private const string OldPasswordProfileId = "OLDPROFILE";
+        private const string OldSalt = "OLDSALT";
 
         private Mock<IValidator<ChangePasswordCommand>> _validator;
         private Mock<IPasswordService> _passwordService;
@@ -53,9 +57,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
                 User = new User
                 {
                     Id = UserId,
-                    Password = "OLDHASH",
-                    PasswordProfileId = "OLDPROFILE",
-                    Salt = "OLDSALT"
+                    Password = OldPassword,
+                    PasswordProfileId = OldPasswordProfileId,
+                    Salt = OldSalt,
+                    PasswordHistory = new HistoricalPassword[0]
                 },
                 CurrentPassword = CurrentPassword,
                 NewPassword = NewPassword,
@@ -88,6 +93,19 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
                                                                && u.Password == NewHash
                                                                && u.PasswordProfileId == NewProfileId
                                                                && u.Salt == NewSalt)), Times.Once);
+        }
+
+        [Test]
+        public async Task ThenItShouldUpdateTheUsersPasswordHistoryWithThePassword()
+        {
+            // Act
+            await _handler.Handle(_command);
+
+            // Arrange
+            _userRepository.Verify(r => r.Update(It.Is<User>(u => u.Id == UserId
+                                                               && u.PasswordHistory.Any(ph => ph.Password == NewHash
+                                                                                           && ph.PasswordProfileId == NewProfileId
+                                                                                           && ph.Salt == NewSalt))), Times.Once);
         }
 
         [Test]

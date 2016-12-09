@@ -9,6 +9,7 @@ using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.TimeProvider;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
@@ -90,6 +91,16 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
             user.Password = securedPassword.HashedPassword;
             user.Salt = securedPassword.Salt;
             user.PasswordProfileId = securedPassword.ProfileId;
+            user.PasswordHistory = (user.PasswordHistory ?? new HistoricalPassword[0]).Concat(new[]
+             {
+                new HistoricalPassword
+                {
+                    Password = user.Password,
+                    Salt = user.Salt,
+                    PasswordProfileId = user.PasswordProfileId,
+                    DateSet = DateTime.Now
+                }
+            }).ToArray();
         }
 
         private User Create(RegisterUserCommand message, SecuredPassword securedPassword)
