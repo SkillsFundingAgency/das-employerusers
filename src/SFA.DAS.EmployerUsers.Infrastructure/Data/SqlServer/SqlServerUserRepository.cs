@@ -99,7 +99,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             foreach (var historicalPassword in existingHistory)
             {
                 await Execute("DeleteHistoricalPassword @UserId, @Password",
-                    new { UserId = user.Id, historicalPassword.PasswordProfileId });
+                    new { UserId = user.Id, historicalPassword.Password });
             }
         }
     }
