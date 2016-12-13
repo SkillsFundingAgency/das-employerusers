@@ -11,6 +11,6 @@ AS
 			INSERT INTO UserSecurityCode
 			(Code, UserId, CodeType, ExpiryTime, ReturnUrl, PendingValue)
 			VALUES
-			(@Code, @UserId, @CodeType, @ExpiryTime, @ReturnUrl, PendingValue)
+			(@Code, @UserId, @CodeType, @ExpiryTime, @ReturnUrl, @PendingValue)
 		END
 GO
