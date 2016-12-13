@@ -106,15 +106,17 @@ namespace TestRP
 
         private void UseCodeOidcFlow(IAppBuilder app)
         {
+            var baseUrl = "https://localhost:44334/identity";
+
             app.UseCodeFlowAuthentication(new OidcMiddlewareOptions
             {
                 ClientId = "testrp",
                 ClientSecret = "super-secret",
                 Scopes = "openid profile",
-                BaseUrl = "https://localhost:44334/identity",
-                TokenEndpoint = "https://localhost:44334/identity/connect/token",
-                UserInfoEndpoint = "https://localhost:44334/identity/connect/userinfo",
-                AuthorizeEndpoint = "https://localhost:44334/identity/connect/authorize",
+                BaseUrl = baseUrl,
+                TokenEndpoint = $"{baseUrl}/connect/token",
+                UserInfoEndpoint = $"{baseUrl}/connect/userinfo",
+                AuthorizeEndpoint = $"{baseUrl}/connect/authorize",
                 TokenValidationMethod = TokenValidationMethod.SigningKey,
                 TokenSigningCertificateLoader = () =>
                 {
