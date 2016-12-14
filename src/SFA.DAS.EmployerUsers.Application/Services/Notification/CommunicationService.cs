@@ -21,6 +21,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 
         public async Task SendUserRegistrationMessage(User user, string messageId)
         {
+            var userAccessCode = GetUserAccessCode(user);
             var email = new Email
             {
                 SystemId = Guid.NewGuid().ToString(),
@@ -30,7 +31,9 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 Subject = "Access your apprenticeship levy account",
                 Tokens = new Dictionary<string, string>
                 {
-                    { "AccessCode", GetUserAccessCode(user) }
+                    { "AccessCode", userAccessCode.Code },
+                    { "CodeExpiry", userAccessCode.ExpiryTime.ToString("d MMMM yyyy") },
+                    { "ReturnUrl" , userAccessCode.ReturnUrl }
                 }
             };
             await _notificationsApi.SendEmail(email);
@@ -50,6 +53,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 
         public async Task SendAccountLockedMessage(User user, string messageId)
         {
+            var userUnlockCode = GetUserUnlockCode(user);
             await _notificationsApi.SendEmail(new Email
             {
                 SystemId = Guid.NewGuid().ToString(),
@@ -59,13 +63,17 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 Subject = "Unlock Code: apprenticeship levy account",
                 Tokens = new Dictionary<string, string>
                 {
-                    { "UnlockCode", GetUserUnlockCode(user) }
+                    { "UnlockCode", userUnlockCode.Code },
+                    { "CodeExpiry", userUnlockCode.ExpiryTime.ToString("d MMMM yyyy") },
+                    { "ReturnUrl", userUnlockCode.ReturnUrl }
                 }
             });
         }
 
         public async Task ResendActivationCodeMessage(User user, string messageId)
         {
+            var userAccessCode = GetUserAccessCode(user);
+
             await _notificationsApi.SendEmail(new Email
             {
                 SystemId = Guid.NewGuid().ToString(),
@@ -75,7 +83,9 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 Subject = "Access your apprenticeship levy account",
                 Tokens = new Dictionary<string, string>
                 {
-                    { "AccessCode", GetUserAccessCode(user) }
+                    { "AccessCode", userAccessCode.Code },
+                    { "CodeExpiry", userAccessCode.ExpiryTime.ToString("d MMMM yyyy") },
+                    { "ReturnUrl" , userAccessCode.ReturnUrl }
                 }
             });
         }
@@ -142,18 +152,17 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 
 
 
-        private string GetUserAccessCode(User user)
+        private SecurityCode GetUserAccessCode(User user)
         {
             return user.SecurityCodes.Where(sc => sc.CodeType == SecurityCodeType.AccessCode)
                                      .OrderByDescending(sc => sc.ExpiryTime)
-                                     .Select(sc => sc.Code)
+                                     //.Select(sc => sc.Code)
                                      .FirstOrDefault();
         }
-        private string GetUserUnlockCode(User user)
+        private SecurityCode GetUserUnlockCode(User user)
         {
             return user.SecurityCodes.Where(sc => sc.CodeType == SecurityCodeType.UnlockCode)
                                      .OrderByDescending(sc => sc.ExpiryTime)
-                                     .Select(sc => sc.Code)
                                      .FirstOrDefault();
         }
         private SecurityCode GetUserPasswordResetCode(User user)
