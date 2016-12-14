@@ -69,8 +69,10 @@
     <Compile Include="Contexts\RegistrationContext.cs" />
     <Compile Include="Contexts\SampleData.cs" />
     <Compile Include="DataHelper.cs" />
+    <Compile Include="EmployerUsersSite\AccountConfirmationPage.cs" />
     <Compile Include="EmployerUsersSite\LandingPage.cs" />
     <Compile Include="EmployerUsersSite\PageObject.cs" />
+    <Compile Include="EmployerUsersSite\RegistrationPage.cs" />
     <Compile Include="EmployerUsersSite\SignInPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationTests.cs" />
