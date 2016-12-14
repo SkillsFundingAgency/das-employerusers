@@ -66,39 +66,44 @@
         <div class="form-group @(!string.IsNullOrEmpty(Model.FirstNameError) ? "error" : "") ">
             <label for="FirstName">
                 <span class="form-label-bold">First name</span>
-                <span class="error-message">@Model.FirstNameError</span>
+                <span class="error-message" id="error-firstname">@Model.FirstNameError</span>
             </label>
-            <input class="form-control" id="FirstName" name="FirstName" value="@Model.FirstName" required="required" aria-required="true" aria-invalid="@(!string.IsNullOrEmpty(Model.FirstNameError) ? "true" : "false")">
+            <input class="form-control" id="FirstName" name="FirstName" value="@Model.FirstName" required="required" aria-required="true" 
+                   @(!string.IsNullOrEmpty(Model.FirstNameError) ? "aria-invalid=true aria-describedby=error-firstname" : "" )>
         </div>
         <div class="form-group @(!string.IsNullOrEmpty(Model.LastNameError) ? "error" : "") ">
             <label for="LastName">
                 <span class="form-label-bold">Last name</span>
-                <span class="error-message">@Model.LastNameError</span>
+                <span class="error-message" id="error-lastname">@Model.LastNameError</span>
             </label>
-            <input class="form-control" id="LastName" name="LastName" value="@Model.LastName" required="required" aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.LastNameError) ? "true" : "false")">
+            <input class="form-control" id="LastName" name="LastName" value="@Model.LastName" required="required" aria-required="true" 
+                   @(!string.IsNullOrEmpty(Model.LastNameError) ? "aria-invalid=true aria-describedby=error-lastname" : "" )>
         </div>
         <div class="form-group @(!string.IsNullOrEmpty(Model.EmailError) ? "error" : "") ">
             <label for="Email">
                 <span class="form-label-bold">Email</span>
                 <span class="form-hint">We'll send you an email to confirm your identity.</span>
-                <span class="error-message">@Model.EmailError</span>
+                <span class="error-message" id="error-email">@Model.EmailError</span>
             </label>
-            <input class="form-control" id="Email" name="Email" type="text" value="@Model.Email" required="required" aria-required="True" aria-invalid="@(!string.IsNullOrEmpty(Model.EmailError) ? "true" : "false")">
+            <input class="form-control" id="Email" name="Email" type="text" value="@Model.Email" required="required" aria-required="true" 
+                   @(!string.IsNullOrEmpty(Model.EmailError) ? "aria-invalid=true aria-describedby=error-email" : "" )>
         </div>
         <div class="form-group @(!string.IsNullOrEmpty(Model.PasswordError) ? "error" : "") ">
             <label for="Password">
                 <span class="form-label-bold">Create new password</span>
                 <span class="form-hint">Password requires upper and lowercase letters, a number and at least 8 characters</span>
-                <span class="error-message">@Model.PasswordError</span>     
+                <span class="error-message" id="error-password">@Model.PasswordError</span>     
             </label> 
-            <input class="form-control" id="Password" type="password" name="Password" required="required" aria-required="true" aria-invalid="@(!string.IsNullOrEmpty(Model.PasswordError) ? "true" : "false")">        
+            <input class="form-control" id="Password" type="password" name="Password" required="required" aria-required="true" 
+                   @(!string.IsNullOrEmpty(Model.PasswordError) ? "aria-invalid=true aria-describedby=error-password" : "" )>        
         </div>
         <div class="form-group @(!string.IsNullOrEmpty(Model.ConfirmPasswordError) ? "error" : "") ">
             <label for="ConfirmPassword">
                 <span class="form-label-bold">Confirm password</span>
-                <span class="error-message">@Model.ConfirmPasswordError</span>
+                <span class="error-message" id="error-confirmpassword">@Model.ConfirmPasswordError</span>
             </label>
-            <input class="form-control" id="ConfirmPassword" type="password" name="ConfirmPassword" required="required" aria-required="true" aria-invalid="@(!string.IsNullOrEmpty(Model.ConfirmPasswordError) ? "true" : "false")">
+            <input class="form-control" id="ConfirmPassword" type="password" name="ConfirmPassword" required="required" aria-required="true" 
+                   @(!string.IsNullOrEmpty(Model.ConfirmPasswordError) ? "aria-invalid=true aria-describedby=error-confirmpassword" : "" )>
             
         </div>
         <div class="panel">
