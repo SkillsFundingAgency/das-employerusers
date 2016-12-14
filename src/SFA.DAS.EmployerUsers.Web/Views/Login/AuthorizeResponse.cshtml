@@ -1,6 +1,11 @@
 ﻿@model IdentityServer3.Core.ViewModels.AuthorizeResponseViewModel
+@{
+    ViewBag.PageID = "authorize-response";
+    ViewBag.Title = "Login Successful";
+    ViewBag.HideSigninLink = "true";
+}
 
-<h1 class="heading-large">Login successful</h1>
+<h1 class="heading-xlarge">Login successful</h1>
 <form id="mainForm" method="post" action="@Model.ResponseFormUri">
     <div id="autoRedirect" style="display: none;">Please wait...</div>
 
