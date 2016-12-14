@@ -25,6 +25,14 @@ namespace SFA.DAS.EmployerUsers.EndToEndTests
         {
             WebDriver = new ChromeDriver();
         }
+        protected void DestroyWebDriver()
+        {
+
+            WebDriver.Close();
+            WebDriver.Quit();
+            WebDriver.Dispose();
+        }
+
         protected void NavigateToSigninPage()
         {
             WebDriver.Navigate().GoToUrl(Settings.EmployerUsersUrl);
@@ -68,6 +76,19 @@ namespace SFA.DAS.EmployerUsers.EndToEndTests
             AccountConfirmationPage.AccessCode = accessCode;
             AccountConfirmationPage.ClickContinue();
             AccountConfirmationPage = null;
+        }
+
+        protected void SignIn(string emailAddress, string password)
+        {
+            if (SignInPage == null)
+            {
+                throw new Exception("Not on signin page");
+            }
+
+            SignInPage.EmailAddress = emailAddress;
+            SignInPage.Password = password;
+            SignInPage.ClickSignIn();
+            SignInPage = null;
         }
 
     }

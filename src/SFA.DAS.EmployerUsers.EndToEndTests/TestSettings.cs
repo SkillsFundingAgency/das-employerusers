@@ -8,8 +8,10 @@ namespace SFA.DAS.EmployerUsers.EndToEndTests
         {
             EmployerUsersUrl = ConfigurationManager.AppSettings["EmployerUsersUrl"];
             UsersConnectionString = ConfigurationManager.AppSettings["UsersConnectionString"];
+            ProfilesConnectionString = ConfigurationManager.AppSettings["ProfilesConnectionString"];
         }
         public string EmployerUsersUrl { get; }
         public string UsersConnectionString { get; }
+        public string ProfilesConnectionString { get; }
     }
 }

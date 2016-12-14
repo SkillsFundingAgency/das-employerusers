@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using SFA.DAS.EmployerUsers.EndToEndTests.Contexts;
 
-namespace SFA.DAS.EmployerUsers.EndToEndTests
+namespace SFA.DAS.EmployerUsers.EndToEndTests.Tests
 {
     public class RegistrationTests : TestBase
     {
@@ -18,9 +18,7 @@ namespace SFA.DAS.EmployerUsers.EndToEndTests
         [TearDown]
         public void TearDown()
         {
-            WebDriver.Close();
-            WebDriver.Quit();
-            WebDriver.Dispose();
+            DestroyWebDriver();
         }
 
         [Test]
