@@ -276,6 +276,7 @@
     <Compile Include="App_Start\StructuremapMvc.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="AttemptAuthoriseAttribute.cs" />
+    <Compile Include="Authentication\CustomIdsViewService.cs" />
     <Compile Include="Authentication\IdentityServerServiceFactoryExtensions.cs" />
     <Compile Include="Authentication\IOWinWrapper.cs" />
     <Compile Include="Authentication\OwinWrapper.cs" />
@@ -284,6 +285,7 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\TermsAndConditionsController.cs" />
     <Compile Include="DependencyResolution\ControllerConvention.cs" />
     <Compile Include="DependencyResolution\DefaultRegistry.cs" />
@@ -478,6 +480,7 @@
     <Content Include="Views\Account\ChangePassword.cshtml" />
     <Content Include="Views\Error\General.cshtml" />
     <Content Include="Views\Error\NotFound.cshtml" />
+    <Content Include="Views\Login\AuthorizeResponse.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

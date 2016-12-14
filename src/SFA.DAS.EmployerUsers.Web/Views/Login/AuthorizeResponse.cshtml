@@ -1,0 +1,22 @@
+﻿@model IdentityServer3.Core.ViewModels.AuthorizeResponseViewModel
+
+<h1 class="heading-large">Login successful</h1>
+<form id="mainForm" method="post" action="@Model.ResponseFormUri">
+    <div id="autoRedirect" style="display: none;">Please wait...</div>
+
+    @Html.Raw(Model.ResponseFormFields)
+
+    <div id="manualLoginContainer">
+        <p>It appears you do not have javascript enabled. Please click the continue button to complete your login.</p>
+        <button type="submit" class="button" autofocus="autofocus">Continue</button>
+    </div>
+</form>
+
+@section scripts
+{
+    <script>
+        $('#manualLoginContainer').hide();
+        $('#autoRedirect').show();
+        $('#mainForm').submit();
+    </script>
+}
