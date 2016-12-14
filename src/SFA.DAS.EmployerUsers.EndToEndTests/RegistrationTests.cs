@@ -31,6 +31,12 @@ namespace SFA.DAS.EmployerUsers.EndToEndTests
             StartRegistation();
 
             CreateAccount(_context.FirstName, _context.LastName, _context.EmailAddress, _context.Password, _context.Password);
+
+            _context.AccessCode = Data.GetAccessCodeForUser(_context.EmailAddress);
+            ConfirmAccount(_context.AccessCode);
+
+            var isUserActive = Data.IsUserActive(_context.EmailAddress);
+            Assert.IsTrue(isUserActive);
         }
     }
 }

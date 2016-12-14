@@ -59,5 +59,16 @@ namespace SFA.DAS.EmployerUsers.EndToEndTests.EmployerUsersSite
         public AccountConfirmationPage(IWebDriver webDriver) : base(webDriver)
         {
         }
+
+        public string AccessCode
+        {
+            get { return GetElement("#AccessCode").GetValue(); }
+            set { GetElement("#AccessCode").SendKeys(value); }
+        }
+
+        public void ClickContinue()
+        {
+            GetElement("button[type=submit]").Click();
+        }
     }
 }

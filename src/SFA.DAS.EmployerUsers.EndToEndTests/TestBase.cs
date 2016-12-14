@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using SFA.DAS.EmployerUsers.EndToEndTests.EmployerUsersSite;
@@ -11,6 +7,15 @@ namespace SFA.DAS.EmployerUsers.EndToEndTests
 {
     public abstract class TestBase
     {
+        protected TestBase()
+        {
+            Settings = new TestSettings();
+            Data = new DataHelper(Settings);
+        }
+
+        protected TestSettings Settings { get; }
+        protected DataHelper Data { get; }
+
         protected IWebDriver WebDriver { get; private set; }
         protected SignInPage SignInPage { get; private set; }
         protected RegistrationPage RegistationPage { get; private set; }
@@ -22,7 +27,7 @@ namespace SFA.DAS.EmployerUsers.EndToEndTests
         }
         protected void NavigateToSigninPage()
         {
-            WebDriver.Navigate().GoToUrl("https://dev-employer.apprenticeships.sfa.bis.gov.uk/");
+            WebDriver.Navigate().GoToUrl(Settings.EmployerUsersUrl);
             var landingPage =  new LandingPage(WebDriver);
 
             SignInPage =landingPage.ClickSignInButton();
@@ -52,6 +57,17 @@ namespace SFA.DAS.EmployerUsers.EndToEndTests
             RegistationPage.ConfirmPassword = confirmPassword;
             AccountConfirmationPage = RegistationPage.ClickSetUp();
             RegistationPage = null;
+        }
+        protected void ConfirmAccount(string accessCode)
+        {
+            if (AccountConfirmationPage == null)
+            {
+                throw new Exception("Not on registration page");
+            }
+
+            AccountConfirmationPage.AccessCode = accessCode;
+            AccountConfirmationPage.ClickContinue();
+            AccountConfirmationPage = null;
         }
 
     }
