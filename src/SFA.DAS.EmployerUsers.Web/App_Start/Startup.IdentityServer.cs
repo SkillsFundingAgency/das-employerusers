@@ -7,6 +7,7 @@ using System.Web.Helpers;
 using IdentityServer3.Core.Configuration;
 using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services;
+using IdentityServer3.Core.Services.Default;
 using IdentityServer3.Core.Validation;
 using MediatR;
 using NLog;
@@ -69,7 +70,7 @@ namespace SFA.DAS.EmployerUsers.Web
                     .RegisterDasServices(StructuremapMvc.Container);
                 factory.RedirectUriValidator = new Registration<IRedirectUriValidator>((dr) => new StartsWithRedirectUriValidator());
 
-                //factory.ConfigureDefaultViewService<CustomIdsViewService>(new DefaultViewServiceOptions());
+                factory.ConfigureDefaultViewService<CustomIdsViewService>(new DefaultViewServiceOptions());
 
                 idsrvApp.UseIdentityServer(new IdentityServerOptions
                 {

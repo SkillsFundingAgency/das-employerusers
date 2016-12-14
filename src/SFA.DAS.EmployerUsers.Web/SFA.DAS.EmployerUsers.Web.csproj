@@ -276,6 +276,7 @@
     <Compile Include="App_Start\StructuremapMvc.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="AttemptAuthoriseAttribute.cs" />
+    <Compile Include="Authentication\CustomIdsViewService.cs" />
     <Compile Include="Authentication\IdentityServerServiceFactoryExtensions.cs" />
     <Compile Include="Authentication\IOWinWrapper.cs" />
     <Compile Include="Authentication\OwinWrapper.cs" />
@@ -284,6 +285,7 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\TermsAndConditionsController.cs" />
     <Compile Include="DependencyResolution\ControllerConvention.cs" />
     <Compile Include="DependencyResolution\DefaultRegistry.cs" />
@@ -440,6 +442,7 @@
     <None Include="Properties\PublishProfiles\SFA.DAS.EmployerUsers.WebPublishProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\additional-methods.min.js" />
+    <Content Include="Scripts\AuthorizeResponse.js" />
     <Content Include="Scripts\das.validate.js" />
     <Content Include="Scripts\govuk-template.js" />
     <Content Include="Scripts\ie.js" />
@@ -478,6 +481,7 @@
     <Content Include="Views\Account\ChangePassword.cshtml" />
     <Content Include="Views\Error\General.cshtml" />
     <Content Include="Views\Error\NotFound.cshtml" />
+    <Content Include="Views\Login\AuthorizeResponse.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
