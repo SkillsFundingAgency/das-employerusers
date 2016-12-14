@@ -43,7 +43,7 @@
 
     <!--[if lt IE 9]><script src="/dist/javascripts/respond.min.js"></script><![endif]-->
 </head>
-<body>
+<body id="@ViewBag.PageID">
     <!-- Google Tag Manager (noscript) -->
     <noscript>
         <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T3CZC2"
@@ -59,43 +59,63 @@
         </div>
     </div>
     <div id="global-cookie-message">
-        <p>GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
+        <p>
+            GOV.UK uses cookies to make the site simpler. <a href="@Url.Action("Privacy","Home")">Find out more about cookies</a>
+        </p>
     </div>
-    <header role="banner" id="global-header">
+
+    <header role="banner" id="global-header" class="">
         <div class="header-wrapper">
             <div class="header-global">
                 <div class="header-global__title">
-                    <a title="Skills Funding Agency" href="/">Apprenticeships</a>
+                    <a title="Skills Funding Agency" href="/">
+                        Apprenticeships
+                    </a>
                 </div>
             </div>
         </div>
     </header>
-    <div id="global-header-bar"></div>
-    <main id="content" role="main">
-        <div class="service-info">
-            <div class="phase-banner-beta">
+
+    <div class="header-user">
+        <div class="header-inner">
+            <div class="phase-banner">
                 <p>
                     <strong class="phase-tag">BETA</strong>
                     <span>This is a new service – your <a href="https://www.surveymonkey.co.uk/r/accessmylevysurvey" target="_blank">feedback</a> will help us to improve it. </span>
                 </p>
             </div>
+
+            @if (HttpContext.Current.User.Identity.IsAuthenticated || Model?.GetType().GetProperty("HideHeaderSignInLink") == null)
+            {
+                <div class="account-information" role="navigation">
+                    <a href="#user-nav" id="link-settings" aria-hidden="true" aria-label="Access your settings">Settings</a>
+                    <nav id="user-nav">
+                        <ul role="menubar">
+                            @if (HttpContext.Current.User.Identity.IsAuthenticated)
+                            {
+                                <li class="has-sub-menu">
+                                    <a href="/" role="menuitem">@HttpContext.Current.User.Identity.Name</a>
+                                    <ul role="menu">
+                                        <li><a href="@Url.Action("Logout", "Account")" role="menuitem">Log out</a></li>
+                                    </ul>
+                                </li>
+                            }
+                            else
+                            {
+                                if (Model?.GetType().GetProperty("HideHeaderSignInLink") == null)
+                                {
+                                    <li><a href="@Url.Action("Login","Home")" role="menuitem">Sign in</a></li>
+                                    <li><a href="@Url.Action("Register","Account")" role="menuitem">Register</a></li>
+                                }
+                            }
+                        </ul>
+                    </nav>
+
+                </div>
+            }
         </div>
-        <div class="user-menu @(HttpContext.Current.User.Identity.IsAuthenticated ? "logged-in" : string.Empty)">
-            <ul id="service-info-list" role="navigation">
-                @if (HttpContext.Current.User.Identity.IsAuthenticated)
-                {
-                    <li>@HttpContext.Current.User.Identity.Name</li>
-                    <li><a href="@Url.Action("Logout", "Account")">Log out</a></li>
-                }
-                else
-                {
-                    if (ViewBag.HideSigninLink != "true")
-                    {
-                    <li><a href="@Url.Action("Login", "Home")">Sign in / Register</a></li>
-                    }
-                }
-            </ul>
-        </div>
+    </div>
+    <main id="content" role="main">
         @RenderBody()
     </main><!-- / #content -->
     <footer class="group js-footer" id="footer" role="contentinfo">
