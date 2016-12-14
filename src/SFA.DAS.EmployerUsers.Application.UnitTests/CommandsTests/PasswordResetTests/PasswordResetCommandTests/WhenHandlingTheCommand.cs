@@ -250,43 +250,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
             //Assert
             _communicationService.Verify(x => x.SendPasswordResetConfirmationMessage(It.Is<User>(c => c.Email == ActualEmailAddress), It.IsAny<string>()), Times.Once);
         }
-
-        [Test]
-        public async Task ThenAnEmailIsSentToConfirmAccountActiviationIfItWasNotActive()
-        {
-            //Arrange
-            _userRepository.Setup(x => x.GetByEmailAddress(ActualEmailAddress))
-                .ReturnsAsync(new User
-                {
-                    Email = ActualEmailAddress,
-                    IsActive = false,
-                    SecurityCodes = new[]
-                    {
-                        new SecurityCode
-                        {
-                            Code = PasswordResetCode,
-                            CodeType = SecurityCodeType.PasswordResetCode,
-                            ExpiryTime = DateTime.MaxValue
-                        }
-                    }
-                });
-
-            //Act
-            await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = ActualEmailAddress, Password = "somePassword", ConfirmPassword = "someConfirmPassword" });
-
-            //Assert
-            _communicationService.Verify(x => x.SendUserAccountConfirmationMessage(It.Is<User>(c => c.Email == ActualEmailAddress), It.IsAny<string>()), Times.Once);
-        }
-
-
-        [Test]
-        public async Task ThenAnEmailIsNotSentToConfirmAccountActiviationIfItWasActive()
-        {
-            //Act
-            await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = ActualEmailAddress, Password = "somePassword", ConfirmPassword = "someConfirmPassword" });
-
-            //Assert
-            _communicationService.Verify(x => x.SendUserAccountConfirmationMessage(It.Is<User>(c => c.Email == ActualEmailAddress), It.IsAny<string>()), Times.Never);
-        }
+        
     }
 }
