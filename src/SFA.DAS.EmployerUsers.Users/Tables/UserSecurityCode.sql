@@ -5,6 +5,6 @@ CREATE TABLE dbo.UserSecurityCode (
 	[ExpiryTime]	datetime		NOT NULL,
 	[ReturnUrl]		varchar(max)	NULL,
 	[PendingValue]	nvarchar(255)	NULL,
-	CONSTRAINT [PK_UserSecurityCode] PRIMARY KEY (Code),
+	CONSTRAINT [PK_UserSecurityCode] PRIMARY KEY (Code,UserId,CodeType),
 	CONSTRAINT [FK_UserSecurityCode_User] FOREIGN KEY (UserId) REFERENCES [User](Id)
 )

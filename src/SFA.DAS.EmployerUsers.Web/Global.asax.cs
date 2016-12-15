@@ -4,6 +4,8 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.Azure;
 
 namespace SFA.DAS.EmployerUsers.Web
 {
@@ -11,6 +13,9 @@ namespace SFA.DAS.EmployerUsers.Web
     {
         protected void Application_Start()
         {
+
+            TelemetryConfiguration.Active.InstrumentationKey = CloudConfigurationManager.GetSetting("InstrumentationKey");
+
             MvcHandler.DisableMvcResponseHeader = true;
 
             LoggingConfig.ConfigureLogging();

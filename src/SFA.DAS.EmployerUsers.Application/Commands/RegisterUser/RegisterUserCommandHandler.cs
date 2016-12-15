@@ -10,7 +10,6 @@ using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.TimeProvider;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 {
@@ -105,7 +104,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 
         private User Create(RegisterUserCommand message, SecuredPassword securedPassword)
         {
-
             var user = new User
             {
                 Id = message.Id,
@@ -116,7 +114,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
                     {
                         Code = _codeGenerator.GenerateAlphaNumeric(),
                         CodeType = SecurityCodeType.AccessCode,
-                        ExpiryTime = DateTimeProvider.Current.UtcNow.AddMinutes(30), //TODO: Make time configurable
+                        ExpiryTime =   DateTime.Today.AddDays(8).AddSeconds(-1),
                         ReturnUrl = message.ReturnUrl
                     }
                 }
