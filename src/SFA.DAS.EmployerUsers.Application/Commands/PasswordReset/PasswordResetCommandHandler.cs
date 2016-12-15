@@ -28,7 +28,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 
         protected override async Task HandleCore(PasswordResetCommand message)
         {
-            var sendPasswordResetConfirmationMessage = false;
             Logger.Info($"Received PasswordResetCommand for user '{message.Email}'");
 
             var user = await _userRepository.GetByEmailAddress(message.Email);
@@ -43,28 +42,17 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 
             var securedPassword = await _passwordService.GenerateAsync(message.Password);
 
-
-            if (!message.User.IsActive)
-            {
-                sendPasswordResetConfirmationMessage = true;
-            }
-            
             message.User.Password = securedPassword.HashedPassword;
             message.User.PasswordProfileId = securedPassword.ProfileId;
             message.User.Salt = securedPassword.Salt;
             message.User.IsActive = true;
             message.User.ExpireSecurityCodesOfType(Domain.SecurityCodeType.AccessCode);
-        message.User.ExpireSecurityCodesOfType(Domain.SecurityCodeType.PasswordResetCode);
+            message.User.ExpireSecurityCodesOfType(Domain.SecurityCodeType.PasswordResetCode);
 
             await _userRepository.Update(message.User);
             Logger.Info($"Password changed for user '{message.Email}'");
 
             await _communicationService.SendPasswordResetConfirmationMessage(user, Guid.NewGuid().ToString());
-
-            if (sendPasswordResetConfirmationMessage)
-            {
-                await _communicationService.SendUserAccountConfirmationMessage(user, Guid.NewGuid().ToString());
-            }
             
         }
     }

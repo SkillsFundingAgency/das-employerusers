@@ -13,6 +13,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
     {
         private const string MessageId = "MESSAGE_ID";
         private const string UnlockCode = "UNLOCK_CODE";
+        private const string ReturnUrl = "http://myurl";
 
         private Mock<INotificationsApi> _notificationsApi;
         private CommunicationService _communicationService;
@@ -35,7 +36,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
                     {
                         Code = UnlockCode,
                         CodeType = SecurityCodeType.UnlockCode,
-                        ExpiryTime = DateTime.MaxValue
+                        ExpiryTime = DateTime.MaxValue,
+                        ReturnUrl = ReturnUrl
                     }
                 }
             };
@@ -52,6 +54,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
             _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.RecipientsAddress == _user.Email)), Times.Once);
             _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.ReplyToAddress == "info@sfa.das.gov.uk")), Times.Once);
             _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.Tokens.ContainsKey("UnlockCode") && s.Tokens["UnlockCode"] == UnlockCode)), Times.Once);
+            _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.Tokens.ContainsKey("ReturnUrl") && s.Tokens["ReturnUrl"] == ReturnUrl)), Times.Once);
+            _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.Tokens.ContainsKey("CodeExpiry") && s.Tokens["CodeExpiry"].Equals(DateTime.MaxValue.ToString("d MMMM yyyy")))), Times.Once);
         }
         
     }

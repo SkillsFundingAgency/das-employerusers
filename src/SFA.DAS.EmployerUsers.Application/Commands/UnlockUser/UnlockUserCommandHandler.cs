@@ -13,14 +13,12 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
         private readonly IValidator<UnlockUserCommand> _unlockUserCommandValidator;
         private readonly IUserRepository _userRepository;
         private readonly IMediator _mediator;
-        private readonly ICommunicationService _communicationService;
 
-        public UnlockUserCommandHandler(IValidator<UnlockUserCommand> unlockUserCommandValidator, IUserRepository userRepository, IMediator mediator, ICommunicationService communicationService)
+        public UnlockUserCommandHandler(IValidator<UnlockUserCommand> unlockUserCommandValidator, IUserRepository userRepository, IMediator mediator)
         {
             _unlockUserCommandValidator = unlockUserCommandValidator;
             _userRepository = userRepository;
             _mediator = mediator;
-            _communicationService = communicationService;
         }
 
         protected override async Task HandleCore(UnlockUserCommand message)
@@ -55,7 +53,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
 
             await _userRepository.Update(message.User);
 
-            await _communicationService.SendUserUnlockedMessage(message.User, Guid.NewGuid().ToString());
+            
         }
     }
 }
