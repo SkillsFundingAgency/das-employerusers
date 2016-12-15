@@ -76,9 +76,13 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangeEmailT
             Assert.IsNotNull(actual);
         }
 
-        [Test]
-        public async Task ThenItShouldReturnReturnUrlFromSpecificSecurityCode()
+        [TestCase("1A2B3C0")]
+        [TestCase("1a2b3c0")]
+        public async Task ThenItShouldReturnReturnUrlFromSpecificSecurityCode(string enteredSecurityCode)
         {
+            // Arrange
+            _command.SecurityCode = enteredSecurityCode;
+
             // Act
             var actual = await _handler.Handle(_command);
 

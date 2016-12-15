@@ -268,9 +268,13 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
             _userRepository.Verify(x => x.Update(It.Is<User>(p => p.IsActive && p.Id == userId)), Times.Never);
         }
 
-        [Test]
-        public async Task ThenTheSecurityCodeReturnUrlIsReturned()
+        [TestCase("ABC123")]
+        [TestCase("abc123")]
+        public async Task ThenTheSecurityCodeReturnUrlIsReturned(string enteredAccessCode)
         {
+            // Arrange
+            _command.AccessCode = enteredAccessCode;
+
             // Act
             var actual = await _handler.Handle(_command);
 

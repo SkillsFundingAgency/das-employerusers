@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ChangeEmail
                 throw new InvalidRequestException(validationResult.ValidationDictionary);
             }
 
-            var securityCode = message.User.SecurityCodes.Single(sc => sc.Code == message.SecurityCode
+            var securityCode = message.User.SecurityCodes.Single(sc => sc.Code.Equals(message.SecurityCode, System.StringComparison.CurrentCultureIgnoreCase)
                                                                     && sc.CodeType == Domain.SecurityCodeType.ConfirmEmailCode);
 
             message.User.Email = securityCode.PendingValue;

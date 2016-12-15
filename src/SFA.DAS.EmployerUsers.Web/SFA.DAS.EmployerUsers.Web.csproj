@@ -310,6 +310,7 @@
     <Compile Include="Models\ViewModelBase.cs" />
     <Compile Include="Orchestrators\AccountOrchestrator.cs" />
     <Compile Include="Orchestrators\IOrchestrator.cs" />
+    <Compile Include="Plumbing\Mvc\LogAndHandleErrorAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="WebRole.cs" />
@@ -479,7 +480,6 @@
     <Content Include="Views\Account\ChangeEmail.cshtml" />
     <Content Include="Views\Account\ConfirmChangeEmail.cshtml" />
     <Content Include="Views\Account\ChangePassword.cshtml" />
-    <Content Include="Views\Error\General.cshtml" />
     <Content Include="Views\Error\NotFound.cshtml" />
     <Content Include="Views\Login\AuthorizeResponse.cshtml" />
   </ItemGroup>
