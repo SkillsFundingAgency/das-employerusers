@@ -51,7 +51,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
         {
             //Arrange
             var command = GetRequestPasswordResetCodeCommand();
-            _userRepository.Setup(x => x.GetByEmailAddress(command.Email)).ReturnsAsync(null);
+            _userRepository.Setup(x => x.GetByEmailAddress(command.Email)).ReturnsAsync((User)null);
 
             //Act
             await _commandHandler.Handle(command);
