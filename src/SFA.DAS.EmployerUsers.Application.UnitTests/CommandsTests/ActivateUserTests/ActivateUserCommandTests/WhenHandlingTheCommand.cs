@@ -224,34 +224,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
                                                                && !u.SecurityCodes.Any(sc => sc.CodeType == SecurityCodeType.AccessCode))),
                                    Times.Once);
         }
-
+        
         [Test]
-        public async Task ThenTheUserIsEmailedAboutThereAccountCreation()
-        {
-            //Act
-            await _handler.Handle(_command);
-
-            //Assert
-            _communicationSerivce.Verify(x => x.SendUserAccountConfirmationMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Once);
-        }
-
-
-        [Test]
-        public void ThenTheUserIsNotEmailedAboutThereAccountCreationIfItFailsValidation()
-        {
-            //Arrange
-            _activateUserCommandValidator.Setup(x => x.ValidateAsync(It.IsAny<ActivateUserCommand>()))
-                .ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
-
-            //Act
-            Assert.ThrowsAsync<InvalidRequestException>(async () => await _handler.Handle(new ActivateUserCommand()));
-
-            //Assert
-            _communicationSerivce.Verify(x => x.SendUserAccountConfirmationMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
-        }
-
-        [Test]
-        public async Task ThenTheUserIsNotEmailedAndTheUserIsNotUpdatedIfTheUserIsAlreadyActive()
+        public async Task ThenTheUserIsNotUpdatedIfTheUserIsAlreadyActive()
         {
             //Arrange
             var userId = Guid.NewGuid().ToString();
@@ -291,7 +266,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
 
             //Assert
             _userRepository.Verify(x => x.Update(It.Is<User>(p => p.IsActive && p.Id == userId)), Times.Never);
-            _communicationSerivce.Verify(x => x.SendUserAccountConfirmationMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
         }
 
         [Test]

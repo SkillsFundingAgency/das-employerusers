@@ -28,6 +28,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
         {
             // Arrange
             var accessCode = "123456";
+            var returnUrl = "http://abc";
+            var expiryTime = DateTime.Now.AddMinutes(10);
+
             var user = new User
             {
                 Email = "test@test.com",
@@ -44,7 +47,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
                     {
                         Code = accessCode,
                         CodeType = SecurityCodeType.AccessCode,
-                        ExpiryTime = DateTime.Now.AddMinutes(10)
+                        ExpiryTime = expiryTime,
+                        ReturnUrl = returnUrl
                     }
                 }
             };
@@ -59,6 +63,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
             _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.ReplyToAddress == "info@sfa.das.gov.uk")), Times.Once);
             _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.Subject == "Access your apprenticeship levy account")), Times.Once);
             _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.Tokens.ContainsKey("AccessCode") && s.Tokens["AccessCode"] == accessCode)), Times.Once);
+            _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.Tokens.ContainsKey("CodeExpiry") && s.Tokens["CodeExpiry"].Equals(expiryTime.ToString("d MMMM yyyy")))), Times.Once);
+            _notificationsApi.Verify(x => x.SendEmail(It.Is<Email>(s => s.Tokens.ContainsKey("ReturnUrl") && s.Tokens["ReturnUrl"] == returnUrl)), Times.Once);
+            
+            
         }
     }
 }

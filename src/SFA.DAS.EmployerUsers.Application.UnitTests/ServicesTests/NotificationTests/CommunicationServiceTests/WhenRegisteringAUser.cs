@@ -59,7 +59,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
                                                                      && e.RecipientsAddress == "test@test.com"
                                                                      && e.Subject == "Access your apprenticeship levy account"
                                                                      && e.ReplyToAddress == "info@sfa.das.gov.uk"
-                                                                     && e.Tokens.ContainsKey("AccessCode") && e.Tokens["AccessCode"] == accessCode)), Times.Once);
+                                                                     && e.Tokens.ContainsKey("AccessCode") 
+                                                                     && e.Tokens.ContainsKey("CodeExpiry") 
+                                                                     && e.Tokens.ContainsKey("ReturnUrl") 
+                                                                     && e.Tokens["AccessCode"] == accessCode)), Times.Once);
         }
     }
 }
