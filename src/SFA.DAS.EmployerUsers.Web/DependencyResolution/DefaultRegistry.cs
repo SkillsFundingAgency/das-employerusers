@@ -55,8 +55,8 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
                 });
 
             For<IOwinWrapper>().Transient().Use(() => new OwinWrapper(HttpContext.Current.GetOwinContext())).SetLifecycleTo(new HttpContextLifecycle());
-            For<ICodeGenerator>().Use(new RandomCodeGenerator());
 
+            AddConfigSpecifiedRegistrations();
             AddEnvironmentSpecificRegistrations();
             AddMediatrRegistrations();
         }
@@ -119,6 +119,19 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => ctx.GetInstance(t));
             For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => ctx.GetAllInstances(t));
             For<IMediator>().Use<Mediator>();
+        }
+
+        private void AddConfigSpecifiedRegistrations()
+        {
+            var useStaticCodeGenerator = CloudConfigurationManager.GetSetting("UseStaticCodeGenerator").Equals("true", StringComparison.CurrentCultureIgnoreCase);
+            if (useStaticCodeGenerator)
+            {
+                For<ICodeGenerator>().Use(new StaticCodeGenerator());
+            }
+            else
+            {
+                For<ICodeGenerator>().Use(new RandomCodeGenerator());
+            }
         }
     }
 }
