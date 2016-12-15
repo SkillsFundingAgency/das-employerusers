@@ -150,6 +150,22 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
             });
         }
 
+        public async Task SendNoAccountToPasswordResetMessage(string emailAddress, string messageId, string registerUrl)
+        {
+            await _notificationsApi.SendEmail(new Email
+            {
+                SystemId = messageId,
+                TemplateId = "ForgottenPasswordNoAccount",
+                RecipientsAddress = emailAddress,
+                ReplyToAddress = ReplyToAddress,
+                Subject = "Reset Password: apprenticeship levy account",
+                Tokens = new Dictionary<string, string>
+                {
+                    {"RegisterUrl",registerUrl}
+                }
+            });
+        }
+
 
 
         private SecurityCode GetUserAccessCode(User user)

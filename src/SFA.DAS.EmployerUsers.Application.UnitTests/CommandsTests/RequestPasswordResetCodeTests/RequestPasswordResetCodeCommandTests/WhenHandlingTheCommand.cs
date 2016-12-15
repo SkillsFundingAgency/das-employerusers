@@ -9,24 +9,36 @@ using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.UnitTests.TestHelpers;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
+using SFA.DAS.EmployerUsers.Domain.Links;
 using SFA.DAS.TimeProvider;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPasswordResetCodeTests.RequestPasswordResetCodeCommandTests
 {
     public class WhenHandlingTheCommand
     {
+        private const string RegistrationLink = "register-here";
+
         private Mock<IUserRepository> _userRepository;
         private Mock<ICommunicationService> _communicationSerivce;
         private Mock<ICodeGenerator> _codeGenerator;
+        private Mock<ILinkBuilder> _linkBuilder;
         private RequestPasswordResetCodeCommandHandler _commandHandler;
 
         [SetUp]
         public void Setup()
         {
             _userRepository = new Mock<IUserRepository>();
+
             _communicationSerivce = new Mock<ICommunicationService>();
+
             _codeGenerator = new Mock<ICodeGenerator>();
-            _commandHandler = new RequestPasswordResetCodeCommandHandler(new RequestPasswordResetCodeCommandValidator(), _userRepository.Object, _communicationSerivce.Object, _codeGenerator.Object);
+
+            _linkBuilder = new Mock<ILinkBuilder>();
+            _linkBuilder.Setup(b => b.GetRegistrationUrl())
+                .Returns(RegistrationLink);
+
+            _commandHandler = new RequestPasswordResetCodeCommandHandler(new RequestPasswordResetCodeCommandValidator(), 
+                _userRepository.Object, _communicationSerivce.Object, _codeGenerator.Object, _linkBuilder.Object);
         }
 
         [TearDown]
@@ -47,7 +59,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
         }
 
         [Test]
-        public async Task UnknownEmailReturnsAndDoesNotSendAnEmail()
+        public async Task ThenItShouldSendNoAccountToPasswordResetEmailIfNoUserFound()
         {
             //Arrange
             var command = GetRequestPasswordResetCodeCommand();
@@ -57,6 +69,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
             await _commandHandler.Handle(command);
 
             //Assert
+            _communicationSerivce.Verify(x => x.SendNoAccountToPasswordResetMessage(It.IsAny<string>(), It.IsAny<string>(), RegistrationLink), Times.Once);
             _communicationSerivce.Verify(x => x.SendPasswordResetCodeMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
             _userRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
 
@@ -128,6 +141,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
                                                                                                                                 && sc.ExpiryTime == DateTimeProvider.Current.UtcNow.AddDays(1))
                                                                                         ), It.IsAny<string>()), Times.Once);
         }
+        
 
         private RequestPasswordResetCodeCommand GetRequestPasswordResetCodeCommand()
         {

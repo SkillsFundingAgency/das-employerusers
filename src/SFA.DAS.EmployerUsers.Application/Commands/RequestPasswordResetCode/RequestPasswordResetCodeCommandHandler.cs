@@ -8,6 +8,7 @@ using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
+using SFA.DAS.EmployerUsers.Domain.Links;
 using SFA.DAS.TimeProvider;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
@@ -20,8 +21,13 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
         private readonly IUserRepository _userRepository;
         private readonly ICommunicationService _communicationService;
         private readonly ICodeGenerator _codeGenerator;
+        private readonly ILinkBuilder _linkBuilder;
 
-        public RequestPasswordResetCodeCommandHandler(IValidator<RequestPasswordResetCodeCommand> validator, IUserRepository userRepository, ICommunicationService communicationService, ICodeGenerator codeGenerator)
+        public RequestPasswordResetCodeCommandHandler(IValidator<RequestPasswordResetCodeCommand> validator,
+                                                      IUserRepository userRepository,
+                                                      ICommunicationService communicationService,
+                                                      ICodeGenerator codeGenerator,
+                                                      ILinkBuilder linkBuilder)
         {
             if (validator == null)
                 throw new ArgumentNullException(nameof(validator));
@@ -31,10 +37,14 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
                 throw new ArgumentNullException(nameof(communicationService));
             if (codeGenerator == null)
                 throw new ArgumentNullException(nameof(codeGenerator));
+            if (linkBuilder == null)
+                throw new ArgumentNullException(nameof(linkBuilder));
+
             _validator = validator;
             _userRepository = userRepository;
             _communicationService = communicationService;
             _codeGenerator = codeGenerator;
+            _linkBuilder = linkBuilder;
         }
 
         protected override async Task HandleCore(RequestPasswordResetCodeCommand message)
@@ -51,7 +61,10 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
             var existingUser = await _userRepository.GetByEmailAddress(message.Email);
 
             if (existingUser == null)
+            {
+                await _communicationService.SendNoAccountToPasswordResetMessage(message.Email, Guid.NewGuid().ToString(), _linkBuilder.GetRegistrationUrl());
                 return;
+            }
 
             if (RequiresPasswordResetCode(existingUser))
             {

@@ -15,6 +15,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
     public abstract class CommunicationServiceTestBase
     {
         protected const string MessageId = "MESSAGE";
+        protected const string Email = "user.one@unit.tests";
 
         protected Mock<INotificationsApi> NotificationsApi;
         protected CommunicationService CommunicationService;
@@ -29,7 +30,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
             User = new User
             {
                 Id = Guid.NewGuid().ToString(),
-                Email = "user.one@unit.tests"
+                Email = Email
             };
 
             ExpectedRecipientsAddress = User.Email;

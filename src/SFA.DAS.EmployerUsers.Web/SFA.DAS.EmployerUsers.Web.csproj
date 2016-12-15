@@ -310,6 +310,7 @@
     <Compile Include="Models\ViewModelBase.cs" />
     <Compile Include="Orchestrators\AccountOrchestrator.cs" />
     <Compile Include="Orchestrators\IOrchestrator.cs" />
+    <Compile Include="Plumbing\Links\HttpContextLinkBuilder.cs" />
     <Compile Include="Plumbing\Mvc\LogAndHandleErrorAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />

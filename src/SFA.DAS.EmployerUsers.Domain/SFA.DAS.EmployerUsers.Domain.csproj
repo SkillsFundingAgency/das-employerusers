@@ -49,6 +49,7 @@
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="Data\IUserRepository.cs" />
     <Compile Include="HistoricalPassword.cs" />
+    <Compile Include="Links\ILinkBuilder.cs" />
     <Compile Include="PasswordProfile.cs" />
     <Compile Include="RelyingParty.cs" />
     <Compile Include="SecurityCode.cs" />

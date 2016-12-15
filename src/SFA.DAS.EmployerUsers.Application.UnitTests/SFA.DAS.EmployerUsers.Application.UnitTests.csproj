@@ -111,6 +111,7 @@
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenSendingAccountUnlockMessage.cs" />
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenResendingActivationCode.cs" />
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenSendingConfirmEmailChangeMessage.cs" />
+    <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenSendingNoAccountToPasswordResetMessage.cs" />
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenSendingPasswordResetCodeMessage.cs" />
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenSendingPasswordResetConfirmationMessage.cs" />
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenSendingUnlockedMessage.cs" />
