@@ -11,15 +11,12 @@ using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
-using SFA.DAS.TimeProvider;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUserTests.RegisterUserCommandTests
 {
     public class WhenHandlingTheCommand
     {
         private const string ReturnUrl = "http://unit.test";
-
-        private DateTime _now;
         private RegisterUserCommandHandler _registerUserCommandHandler;
         private Mock<IValidator<RegisterUserCommand>> _registerUserCommandValidator;
         private Mock<IUserRepository> _userRepository;
@@ -30,12 +27,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
         [SetUp]
         public void Arrange()
         {
-            _now = new DateTime(2017, 4, 1);
-            var dateTimeProvider = new Mock<DateTimeProvider>();
-            dateTimeProvider.Setup(p => p.UtcNow)
-                .Returns(_now);
-            DateTimeProvider.Current = dateTimeProvider.Object;
-
             _registerUserCommandValidator = new Mock<IValidator<RegisterUserCommand>>();
 
             _passwordService = new Mock<IPasswordService>();
@@ -155,7 +146,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
                                                                && u.PasswordProfileId == "Password_Profile_Id"
                                                                && u.SecurityCodes.Any(sc => sc.Code == "ABC123XYZ"
                                                                                          && sc.CodeType == SecurityCodeType.AccessCode
-                                                                                         && sc.ExpiryTime == _now.AddMinutes(30)))));
+                                                                                         && sc.ExpiryTime == DateTime.Today.AddDays(8).AddSeconds(-1)))));
         }
 
         [Test]
