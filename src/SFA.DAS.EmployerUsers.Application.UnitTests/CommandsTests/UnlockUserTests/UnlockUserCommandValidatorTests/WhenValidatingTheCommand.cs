@@ -81,7 +81,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
 
             //Assert
             Assert.IsNotEmpty(actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("UnlockCodeMatch", "Unlock Code is not correct"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("UnlockCodeMatch", "Unlock code is not correct"), actual.ValidationDictionary);
             Assert.IsFalse(actual.IsValid());
         }
         
@@ -110,7 +110,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
 
             //Assert
             Assert.IsNotEmpty(actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("UnlockCodeExpiry", "Unlock Code has expired"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("UnlockCodeExpiry", "Unlock code has expired"), actual.ValidationDictionary);
             Assert.IsFalse(actual.IsValid());
         }
         
@@ -122,9 +122,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
 
             //Assert
             Assert.IsNotEmpty(actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("User", "User Does Not Exist"), actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("Email", "Email has not been supplied"), actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("UnlockCode", "Unlock Code has not been supplied"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("User", "That account does not exist"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("Email", "Enter an email address"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("UnlockCode", "Enter an unlock code"), actual.ValidationDictionary);
             
         }
     }

@@ -12,16 +12,16 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
             var result = new ValidationResult();
             if (string.IsNullOrEmpty(item.Email))
             {
-                result.ValidationDictionary.Add("Email", "Email has not been supplied");
+                result.ValidationDictionary.Add("Email", "Enter an email address");
             }
             if (string.IsNullOrEmpty(item.UnlockCode))
             {
-                result.ValidationDictionary.Add("UnlockCode", "Unlock Code has not been supplied");
+                result.ValidationDictionary.Add("UnlockCode", "Enter an unlock code");
             }
 
             if (item.User == null)
             {
-                result.ValidationDictionary.Add("User", "User Does Not Exist");
+                result.ValidationDictionary.Add("User", "That account does not exist");
                 return Task.FromResult(result);
             }
 
@@ -31,11 +31,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
 
             if (matchingUnlockCode == null)
             {
-                result.ValidationDictionary.Add("UnlockCodeMatch", "Unlock Code is not correct");
+                result.ValidationDictionary.Add("UnlockCodeMatch", "Unlock code is not correct");
             }
             else if (matchingUnlockCode.ExpiryTime < DateTime.UtcNow)
             {
-                result.ValidationDictionary.Add("UnlockCodeExpiry", "Unlock Code has expired");
+                result.ValidationDictionary.Add("UnlockCodeExpiry", "Unlock code has expired");
                 return Task.FromResult(result);
             }
 
