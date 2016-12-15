@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using SFA.DAS.EmployerUsers.Web.Plumbing.Mvc;
 
 namespace SFA.DAS.EmployerUsers.Web
 {
@@ -6,7 +7,7 @@ namespace SFA.DAS.EmployerUsers.Web
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-            filters.Add(new HandleErrorAttribute());
+            filters.Add(new LogAndHandleErrorAttribute());
             filters.Add(new RequireHttpsAttribute());
         }
     }
