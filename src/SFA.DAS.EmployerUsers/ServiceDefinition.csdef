@@ -22,6 +22,7 @@
       <Setting name="LoggingRedisConnectionString" />
       <Setting name="LoggingRedisKey" />
       <Setting name="UseStaticCodeGenerator" />
+      <Setting name="StoreEmailsOnDisk" />
       <Setting name="InstrumentationKey" />
     </ConfigurationSettings>
     <Endpoints>

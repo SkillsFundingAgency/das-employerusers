@@ -15,6 +15,7 @@
       <Setting name="LoggingRedisConnectionString" value="" />
       <Setting name="LoggingRedisKey" value="" />
       <Setting name="UseStaticCodeGenerator" value="false" />
+      <Setting name="StoreEmailsOnDisk" value="true" />
       <Setting name="InstrumentationKey" value="" />
     </ConfigurationSettings>
     <Certificates>
