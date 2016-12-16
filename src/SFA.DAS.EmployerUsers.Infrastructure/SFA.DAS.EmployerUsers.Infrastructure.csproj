@@ -100,10 +100,12 @@
     <Compile Include="Data\FileSystem\FileSystemRepository.cs" />
     <Compile Include="Data\FileSystem\FileSystemUserRepository.cs" />
     <Compile Include="Data\InMemoryPasswordProfileRepository.cs" />
+    <Compile Include="Data\SqlServer\IUnitOfWork.cs" />
     <Compile Include="Data\SqlServer\SqlServerPasswordProfileRepository.cs" />
     <Compile Include="Data\SqlServer\SqlServerRelyingPartyRepository.cs" />
     <Compile Include="Data\SqlServer\SqlServerRepository.cs" />
     <Compile Include="Data\SqlServer\SqlServerUserRepository.cs" />
+    <Compile Include="Data\SqlServer\UnitOfWork.cs" />
     <Compile Include="DependencyResolution\LoggingPolicy.cs" />
     <Compile Include="Notification\StubNotificationsApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
