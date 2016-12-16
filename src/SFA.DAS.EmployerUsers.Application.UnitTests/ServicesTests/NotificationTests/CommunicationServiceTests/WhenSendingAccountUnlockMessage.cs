@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Domain;
@@ -18,13 +19,15 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
         private Mock<INotificationsApi> _notificationsApi;
         private CommunicationService _communicationService;
         private User _user;
+        private Mock<ILogger> _logger;
 
         [SetUp]
         public void Arrange()
         {
             _notificationsApi = new Mock<INotificationsApi>();
+            _logger = new Mock<ILogger>();
 
-            _communicationService = new CommunicationService(_notificationsApi.Object);
+            _communicationService = new CommunicationService(_notificationsApi.Object, _logger.Object);
 
             _user = new User
             {

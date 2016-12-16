@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Domain;
@@ -18,14 +19,15 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
         protected const string Email = "user.one@unit.tests";
 
         protected Mock<INotificationsApi> NotificationsApi;
+        protected Mock<ILogger> Logger;
         protected CommunicationService CommunicationService;
         protected User User;
 
         protected virtual void Arrange()
         {
             NotificationsApi = new Mock<INotificationsApi>();
-
-            CommunicationService = new CommunicationService(NotificationsApi.Object);
+            Logger = new Mock<ILogger>();
+            CommunicationService = new CommunicationService(NotificationsApi.Object, Logger.Object);
 
             User = new User
             {

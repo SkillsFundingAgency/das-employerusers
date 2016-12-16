@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NLog;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.Notifications.Api.Client;
 using SFA.DAS.Notifications.Api.Types;
@@ -13,10 +14,12 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
         private const string ReplyToAddress = "info@sfa.das.gov.uk";
 
         private readonly INotificationsApi _notificationsApi;
+        private readonly ILogger _logger;
 
-        public CommunicationService(INotificationsApi notificationsApi)
+        public CommunicationService(INotificationsApi notificationsApi, ILogger logger)
         {
             _notificationsApi = notificationsApi;
+            _logger = logger;
         }
 
         public async Task SendUserRegistrationMessage(User user, string messageId)
@@ -36,7 +39,15 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                     { "ReturnUrl" , userAccessCode.ReturnUrl }
                 }
             };
-            await _notificationsApi.SendEmail(email);
+            try
+            {
+                await _notificationsApi.SendEmail(email);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex,"SendUserRegistrationMessage: Error while sending email");
+            }
+            
         }
 
         public async Task SendUserAccountConfirmationMessage(User user, string messageId)
@@ -54,40 +65,54 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
         public async Task SendAccountLockedMessage(User user, string messageId)
         {
             var userUnlockCode = GetUserUnlockCode(user);
-            await _notificationsApi.SendEmail(new Email
+            try
             {
-                SystemId = Guid.NewGuid().ToString(),
-                TemplateId = "AccountLocked",
-                RecipientsAddress = user.Email,
-                ReplyToAddress = ReplyToAddress,
-                Subject = "Unlock Code: apprenticeship levy account",
-                Tokens = new Dictionary<string, string>
+                await _notificationsApi.SendEmail(new Email
+                {
+                    SystemId = Guid.NewGuid().ToString(),
+                    TemplateId = "AccountLocked",
+                    RecipientsAddress = user.Email,
+                    ReplyToAddress = ReplyToAddress,
+                    Subject = "Unlock Code: apprenticeship levy account",
+                    Tokens = new Dictionary<string, string>
                 {
                     { "UnlockCode", userUnlockCode.Code },
                     { "CodeExpiry", userUnlockCode.ExpiryTime.ToString("d MMMM yyyy") },
                     { "ReturnUrl", userUnlockCode.ReturnUrl }
                 }
-            });
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "SendUserRegistrationMessage: Error while sending email");
+            }
+            
         }
 
         public async Task ResendActivationCodeMessage(User user, string messageId)
         {
             var userAccessCode = GetUserAccessCode(user);
-
-            await _notificationsApi.SendEmail(new Email
+            try
             {
-                SystemId = Guid.NewGuid().ToString(),
-                TemplateId = "ResendActivationCode",
-                RecipientsAddress = user.Email,
-                ReplyToAddress = ReplyToAddress,
-                Subject = "Access your apprenticeship levy account",
-                Tokens = new Dictionary<string, string>
+                await _notificationsApi.SendEmail(new Email
                 {
-                    { "AccessCode", userAccessCode.Code },
-                    { "CodeExpiry", userAccessCode.ExpiryTime.ToString("d MMMM yyyy") },
-                    { "ReturnUrl" , userAccessCode.ReturnUrl }
-                }
-            });
+                    SystemId = Guid.NewGuid().ToString(),
+                    TemplateId = "ResendActivationCode",
+                    RecipientsAddress = user.Email,
+                    ReplyToAddress = ReplyToAddress,
+                    Subject = "Access your apprenticeship levy account",
+                    Tokens = new Dictionary<string, string>
+                    {
+                        {"AccessCode", userAccessCode.Code},
+                        {"CodeExpiry", userAccessCode.ExpiryTime.ToString("d MMMM yyyy")},
+                        {"ReturnUrl", userAccessCode.ReturnUrl}
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "SendUserRegistrationMessage: Error while sending email");
+            }
         }
 
         public async Task SendUserUnlockedMessage(User user, string messageId)
@@ -105,19 +130,25 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
         public async Task SendPasswordResetCodeMessage(User user, string messageId)
         {
             var resetCode = GetUserPasswordResetCode(user);
-
-            await _notificationsApi.SendEmail(new Email
+            try
             {
-                SystemId = messageId,
-                TemplateId = "PasswordReset",
-                RecipientsAddress = user.Email,
-                ReplyToAddress = ReplyToAddress,
-                Subject = "Reset Password: apprenticeship levy account",
-                Tokens = new Dictionary<string, string>
+                await _notificationsApi.SendEmail(new Email
+                {
+                    SystemId = messageId,
+                    TemplateId = "PasswordReset",
+                    RecipientsAddress = user.Email,
+                    ReplyToAddress = ReplyToAddress,
+                    Subject = "Reset Password: apprenticeship levy account",
+                    Tokens = new Dictionary<string, string>
                 {
                     { "Code", resetCode.Code }
                 }
-            });
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "SendUserRegistrationMessage: Error while sending email");
+            }
         }
 
         public async Task SendPasswordResetConfirmationMessage(User user, string messageId)
@@ -135,39 +166,53 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
         public async Task SendConfirmEmailChangeMessage(User user, string messageId)
         {
             var code = GetUserConfirmEmailCode(user);
-
-            await _notificationsApi.SendEmail(new Email
+            try
             {
-                SystemId = Guid.NewGuid().ToString(),
-                TemplateId = "ConfirmEmailChange",
-                RecipientsAddress = code.PendingValue,
-                ReplyToAddress = ReplyToAddress,
-                Subject = "Change your apprenticeship levy account email address",
-                Tokens = new Dictionary<string, string>
+                await _notificationsApi.SendEmail(new Email
+                {
+                    SystemId = Guid.NewGuid().ToString(),
+                    TemplateId = "ConfirmEmailChange",
+                    RecipientsAddress = code.PendingValue,
+                    ReplyToAddress = ReplyToAddress,
+                    Subject = "Change your apprenticeship levy account email address",
+                    Tokens = new Dictionary<string, string>
                 {
                     { "ConfirmEmailCode", code.Code }
                 }
-            });
-        }
+                });
+            }
+            catch (Exception ex)
+        
 
-        public async Task SendNoAccountToPasswordResetMessage(string emailAddress, string messageId, string registerUrl)
-        {
-            await _notificationsApi.SendEmail(new Email
             {
-                SystemId = messageId,
-                TemplateId = "ForgottenPasswordNoAccount",
-                RecipientsAddress = emailAddress,
-                ReplyToAddress = ReplyToAddress,
-                Subject = "Reset Password: apprenticeship levy account",
-                Tokens = new Dictionary<string, string>
-                {
-                    {"RegisterUrl",registerUrl}
-                }
-            });
+                _logger.Error(ex, "SendUserRegistrationMessage: Error while sending email");
+            }
+            
         }
-
-
-
+        
+		public async Task SendNoAccountToPasswordResetMessage(string emailAddress, string messageId, string registerUrl)
+        {
+			try
+			{
+	            await _notificationsApi.SendEmail(new Email
+	            {
+	                SystemId = messageId,
+	                TemplateId = "ForgottenPasswordNoAccount",
+	                RecipientsAddress = emailAddress,
+	                ReplyToAddress = ReplyToAddress,
+	                Subject = "Reset Password: apprenticeship levy account",
+	                Tokens = new Dictionary<string, string>
+	                {
+	                    {"RegisterUrl",registerUrl}
+	                }
+	            });
+			}
+			catch(Exception ex)
+			{
+                _logger.Error(ex, "SendUserRegistrationMessage: Error while sending email");
+            }
+        }
+		
         private SecurityCode GetUserAccessCode(User user)
         {
             return user.SecurityCodes.Where(sc => sc.CodeType == SecurityCodeType.AccessCode)

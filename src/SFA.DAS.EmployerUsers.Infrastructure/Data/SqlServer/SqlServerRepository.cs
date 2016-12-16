@@ -1,4 +1,5 @@
-﻿using System.Data.SqlClient;
+﻿using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -32,6 +33,11 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             return connection;
         }
 
+        protected async Task<UnitOfWork> GetUnitOfWork()
+        {
+            return new UnitOfWork(await GetOpenConnection());
+        }
+
         protected async Task<T[]> Query<T>(string command, object param = null)
         {
             using (var connection = await GetOpenConnection())
@@ -50,6 +56,11 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             {
                 await connection.ExecuteAsync(command, param);
             }
+        }
+
+        protected async Task Execute(string command, IDbTransaction transaction, object param = null)
+        {
+            await transaction.Connection.ExecuteAsync(command, param, transaction);
         }
     }
 }
