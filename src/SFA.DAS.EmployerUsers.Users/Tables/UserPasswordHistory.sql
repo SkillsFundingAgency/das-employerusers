@@ -8,3 +8,6 @@ CREATE TABLE UserPasswordHistory
 	CONSTRAINT [FK_UserPasswordHistory_User] FOREIGN KEY(UserId) REFERENCES [User](Id)
 )
 GO
+
+CREATE CLUSTERED INDEX [IX_UserPasswordHistory_User] ON UserPasswordHistory(UserId)
+GO

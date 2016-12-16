@@ -62,7 +62,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
                 throw;
             }
 
-            
+
         }
 
         public async Task Update(User user)
@@ -83,7 +83,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
                 _logger.Error(ex);
                 throw;
             }
-            
+
         }
 
 
@@ -94,20 +94,11 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
         }
         private async Task UpdateUserSecurityCodes(User user, IUnitOfWork unitOfWork)
         {
-            var existingCodes = (await GetUserSecurityCodes(user)).ToList();
-
+            await unitOfWork.Execute("DeleteAllUserSecurityCodes @UserId", new { UserId = user.Id });
             foreach (var code in user.SecurityCodes)
             {
-                if (!existingCodes.Remove(code))
-                {
-                    await unitOfWork.Execute("CreateUserSecurityCode @Code, @UserId, @CodeType, @ExpiryTime, @ReturnUrl, @PendingValue",
-                        new { code.Code, UserId = user.Id, code.CodeType, code.ExpiryTime, code.ReturnUrl, code.PendingValue });
-                }
-            }
-
-            foreach (var code in existingCodes)
-            {
-                await unitOfWork.Execute("DeleteUserSecurityCode @Code",code);
+                await unitOfWork.Execute("CreateUserSecurityCode @Code, @UserId, @CodeType, @ExpiryTime, @ReturnUrl, @PendingValue",
+                    new { code.Code, UserId = user.Id, code.CodeType, code.ExpiryTime, code.ReturnUrl, code.PendingValue });
             }
         }
 
@@ -117,21 +108,11 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
         }
         private async Task UpdateUserPasswordHistory(User user, IUnitOfWork unitOfWork)
         {
-            var existingHistory = (await GetUserPasswordHistory(user)).ToList();
-
+            await unitOfWork.Execute("DeleteUserPasswordHistory @UserId", new { UserId = user.Id });
             foreach (var historicPassword in user.PasswordHistory)
             {
-                if (!existingHistory.Remove(historicPassword))
-                {
-                    await unitOfWork.Execute("CreateHistoricalPassword @UserId, @Password, @Salt, @PasswordProfileId, @DateSet",
-                        new { UserId = user.Id, historicPassword.Password, historicPassword.Salt, historicPassword.PasswordProfileId, historicPassword.DateSet });
-                }
-            }
-
-            foreach (var historicalPassword in existingHistory)
-            {
-                await unitOfWork.Execute("DeleteHistoricalPassword @UserId, @Password",
-                    new { UserId = user.Id, historicalPassword.Password });
+                await unitOfWork.Execute("CreateHistoricalPassword @UserId, @Password, @Salt, @PasswordProfileId, @DateSet",
+                    new { UserId = user.Id, historicPassword.Password, historicPassword.Salt, historicPassword.PasswordProfileId, historicPassword.DateSet });
             }
         }
     }
