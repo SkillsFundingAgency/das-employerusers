@@ -27,6 +27,10 @@ namespace SFA.DAS.EmployerUsers.Web
                       "~/dist/javascripts/govuk-template.js",
                       "~/dist/javascripts/selection-buttons.js",
                       "~/dist/javascripts/app.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/password").Include(
+                      "~/dist/javascripts/zxcvbn.js",
+                      "~/dist/javascripts/password.js"));
         }
     }
 }

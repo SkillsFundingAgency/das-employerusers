@@ -423,8 +423,10 @@
     <Content Include="dist\javascripts\govuk-template.js" />
     <Content Include="dist\javascripts\ie.js" />
     <Content Include="dist\javascripts\jquery-1.11.0.min.js" />
+    <Content Include="dist\javascripts\password.js" />
     <Content Include="dist\javascripts\respond.min.js" />
     <Content Include="dist\javascripts\selection-buttons.js" />
+    <Content Include="dist\javascripts\zxcvbn.js" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\stylesheets\users-main.css" />
