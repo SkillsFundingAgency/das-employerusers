@@ -7,4 +7,5 @@ AS
 		PasswordProfileId,
 		DateSet
 	FROM UserPasswordHistory
+	WHERE UserId = @UserId
 GO

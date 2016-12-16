@@ -6,11 +6,8 @@ CREATE PROCEDURE CreateUserSecurityCode
 	@ReturnUrl varchar(max),
 	@PendingValue nvarchar(255)
 AS
-	IF NOT EXISTS (SELECT Code FROM UserSecurityCode WHERE Code = @Code AND UserId = @UserId)
-		BEGIN
-			INSERT INTO UserSecurityCode
-			(Code, UserId, CodeType, ExpiryTime, ReturnUrl, PendingValue)
-			VALUES
-			(@Code, @UserId, @CodeType, @ExpiryTime, @ReturnUrl, @PendingValue)
-		END
+	INSERT INTO UserSecurityCode
+	(Code, UserId, CodeType, ExpiryTime, ReturnUrl, PendingValue)
+	VALUES
+	(@Code, @UserId, @CodeType, @ExpiryTime, @ReturnUrl, @PendingValue)
 GO

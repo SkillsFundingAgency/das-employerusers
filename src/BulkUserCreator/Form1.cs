@@ -122,7 +122,7 @@ namespace BulkUserCreator
             {
                 await writer.WriteLineAsync("Username,Password");
 
-                for (var i = 67081; i <= numberOfUsers; i++)
+                for (var i = 1; i <= numberOfUsers; i++)
                 {
                     if (_cancellationTokenSource.IsCancellationRequested)
                     {
