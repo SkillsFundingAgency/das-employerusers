@@ -35,6 +35,7 @@ using SFA.DAS.EmployerUsers.Infrastructure.Notification;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.Notifications.Api.Client;
 using SFA.DAS.Notifications.Api.Client.Configuration;
+using StructureMap;
 using StructureMap.Web.Pipeline;
 
 namespace SFA.DAS.EmployerUsers.Web.DependencyResolution

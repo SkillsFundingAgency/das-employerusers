@@ -84,7 +84,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "SendUserRegistrationMessage: Error while sending email");
+                _logger.Error(ex, "SendAccountLockedMessage: Error while sending email");
             }
             
         }
@@ -111,7 +111,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "SendUserRegistrationMessage: Error while sending email");
+                _logger.Error(ex, "ResendActivationCodeMessage: Error while sending email");
             }
         }
 
@@ -147,7 +147,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "SendUserRegistrationMessage: Error while sending email");
+                _logger.Error(ex, "SendPasswordResetCodeMessage: Error while sending email");
             }
         }
 
@@ -185,7 +185,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
         
 
             {
-                _logger.Error(ex, "SendUserRegistrationMessage: Error while sending email");
+                _logger.Error(ex, "SendConfirmEmailChangeMessage: Error while sending email");
             }
             
         }
@@ -209,7 +209,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 			}
 			catch(Exception ex)
 			{
-                _logger.Error(ex, "SendUserRegistrationMessage: Error while sending email");
+                _logger.Error(ex, "SendNoAccountToPasswordResetMessage: Error while sending email");
             }
         }
 		
