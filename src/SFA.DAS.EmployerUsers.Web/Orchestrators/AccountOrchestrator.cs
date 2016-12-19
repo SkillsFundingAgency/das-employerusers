@@ -22,7 +22,7 @@ using SFA.DAS.EmployerUsers.Web.Models;
 
 namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 {
-    public class AccountOrchestrator : IOrchestrator
+    public class AccountOrchestrator
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
@@ -30,8 +30,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         private readonly IOwinWrapper _owinWrapper;
 
 
-        //TODO : Remove
-        public AccountOrchestrator()
+        //Needed for testing
+        protected AccountOrchestrator()
         {
 
         }

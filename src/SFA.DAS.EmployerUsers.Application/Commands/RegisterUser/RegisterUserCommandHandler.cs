@@ -67,20 +67,20 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
                 var registerUser = Create(message, securedPassword);
 
                 await _userRepository.Create(registerUser);
-                await SendUserRegistrationMessage(registerUser);
+                SendUserRegistrationMessage(registerUser);
             }
             else
             {
                 Update(existingUser, message, securedPassword);
 
                 await _userRepository.Update(existingUser);
-                await SendUserRegistrationMessage(existingUser);
+                SendUserRegistrationMessage(existingUser);
             }
         }
 
-        private async Task SendUserRegistrationMessage(User user)
+        private void SendUserRegistrationMessage(User user)
         {
-            await _communicationService.SendUserRegistrationMessage(user, Guid.NewGuid().ToString());
+            Task.Factory.StartNew(() =>_communicationService.SendUserRegistrationMessage(user, Guid.NewGuid().ToString()));
         }
 
         private void Update(User user, RegisterUserCommand message, SecuredPassword securedPassword)
