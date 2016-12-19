@@ -1,5 +1,6 @@
 ﻿using System;
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
@@ -10,6 +11,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.UnitTests.ConfigurationTests.Empl
     {
         private Mock<IConfigurationService> _configurationService;
         private EmployerUsersClientComponentConfigurationFactory _factory;
+        private Mock<ILogger> _logger;
 
         [SetUp]
         public void Arrange()
@@ -25,7 +27,9 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.UnitTests.ConfigurationTests.Empl
                         }
                     });
 
-            _factory = new EmployerUsersClientComponentConfigurationFactory(_configurationService.Object);
+            _logger = new Mock<ILogger>();
+
+            _factory = new EmployerUsersClientComponentConfigurationFactory(_configurationService.Object,_logger.Object);
         }
 
         [Test]

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail;
@@ -22,6 +23,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         private Mock<IMediator> _mediator;
         private Mock<IOwinWrapper> _owinWrapper;
         private AccountOrchestrator _orchestrator;
+        private Mock<ILogger> _logger;
 
         [SetUp]
         public void Arrange()
@@ -39,8 +41,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
                 .Returns(Task.FromResult(Unit.Value));
 
             _owinWrapper = new Mock<IOwinWrapper>();
+            _logger = new Mock<ILogger>();
 
-            _orchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object);
+            _orchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object, _logger.Object);
         }
 
         [Test]

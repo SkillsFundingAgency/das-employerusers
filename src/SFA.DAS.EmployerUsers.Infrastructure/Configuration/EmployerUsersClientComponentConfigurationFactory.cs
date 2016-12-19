@@ -6,13 +6,14 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Configuration
 {
     public class EmployerUsersClientComponentConfigurationFactory : ConfigurationFactory
     {
-        private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger _logger;
 
         private readonly IConfigurationService _configurationService;
 
-        public EmployerUsersClientComponentConfigurationFactory(IConfigurationService configurationService)
+        public EmployerUsersClientComponentConfigurationFactory(IConfigurationService configurationService, ILogger logger)
         {
             _configurationService = configurationService;
+            _logger = logger;
         }
 
         public override ConfigurationContext Get()

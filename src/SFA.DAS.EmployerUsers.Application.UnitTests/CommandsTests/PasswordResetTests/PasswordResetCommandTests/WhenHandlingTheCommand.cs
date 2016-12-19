@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.PasswordReset;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
@@ -22,6 +23,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         public string PasswordResetCode = "123456ABC";
         private Mock<ICommunicationService> _communicationService;
         private Mock<IPasswordService> _passwordService;
+        private Mock<ILogger> _logger;
 
         [SetUp]
         public void Arrange()
@@ -53,7 +55,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
             _validator = new Mock<IValidator<PasswordResetCommand>>();
             _validator.Setup(x => x.ValidateAsync(It.IsAny<PasswordResetCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
 
-            _passwordResetCommandHandler = new PasswordResetCommandHandler(_userRepository.Object, _validator.Object, _communicationService.Object, _passwordService.Object);
+            _logger = new Mock<ILogger>();
+
+            _passwordResetCommandHandler = new PasswordResetCommandHandler(_userRepository.Object, _validator.Object, _communicationService.Object, _passwordService.Object, _logger.Object);
         }
 
         [Test]

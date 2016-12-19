@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using Moq;
+using NLog;
 using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.PasswordReset;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserByEmailAddress;
@@ -19,6 +20,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         private AccountOrchestrator _accountOrchestrator;
         private Mock<IMediator> _mediator;
         private Mock<IOwinWrapper> _owinWrapper;
+        private Mock<ILogger> _logger;
         private const string ValidEmail = "somevalidemail@local";
 
         [SetUp]
@@ -27,8 +29,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             _mediator = new Mock<IMediator>();
             _owinWrapper = new Mock<IOwinWrapper>();
             _mediator.Setup(x => x.SendAsync(It.IsAny<GetUserByEmailAddressQuery>())).ReturnsAsync(new User());
+            _logger = new Mock<ILogger>();
 
-            _accountOrchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object);
+            _accountOrchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object,_logger.Object);
         }
 
         [Test]

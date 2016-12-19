@@ -15,41 +15,27 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
 {
     public class RequestPasswordResetCodeCommandHandler : AsyncRequestHandler<RequestPasswordResetCodeCommand>
     {
-        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
-
+        private readonly ILogger _logger;
         private readonly IValidator<RequestPasswordResetCodeCommand> _validator;
         private readonly IUserRepository _userRepository;
         private readonly ICommunicationService _communicationService;
         private readonly ICodeGenerator _codeGenerator;
         private readonly ILinkBuilder _linkBuilder;
+        
 
-        public RequestPasswordResetCodeCommandHandler(IValidator<RequestPasswordResetCodeCommand> validator,
-                                                      IUserRepository userRepository,
-                                                      ICommunicationService communicationService,
-                                                      ICodeGenerator codeGenerator,
-                                                      ILinkBuilder linkBuilder)
+        public RequestPasswordResetCodeCommandHandler(IValidator<RequestPasswordResetCodeCommand> validator, IUserRepository userRepository, ICommunicationService communicationService, ICodeGenerator codeGenerator, ILinkBuilder linkBuilder, ILogger logger)
         {
-            if (validator == null)
-                throw new ArgumentNullException(nameof(validator));
-            if (userRepository == null)
-                throw new ArgumentNullException(nameof(userRepository));
-            if (communicationService == null)
-                throw new ArgumentNullException(nameof(communicationService));
-            if (codeGenerator == null)
-                throw new ArgumentNullException(nameof(codeGenerator));
-            if (linkBuilder == null)
-                throw new ArgumentNullException(nameof(linkBuilder));
-
             _validator = validator;
             _userRepository = userRepository;
             _communicationService = communicationService;
             _codeGenerator = codeGenerator;
             _linkBuilder = linkBuilder;
+            _logger = logger;
         }
 
         protected override async Task HandleCore(RequestPasswordResetCodeCommand message)
         {
-            Logger.Debug($"Received RequestPasswordResetCodeCommand for user '{message.Email}'");
+            _logger.Debug($"Received RequestPasswordResetCodeCommand for user '{message.Email}'");
 
             var validationResult = await _validator.ValidateAsync(message);
 

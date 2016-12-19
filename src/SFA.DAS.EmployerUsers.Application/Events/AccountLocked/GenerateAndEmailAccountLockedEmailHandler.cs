@@ -13,28 +13,25 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
 {
     public class GenerateAndEmailAccountLockedEmailHandler : IAsyncNotificationHandler<AccountLockedEvent>
     {
-        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger _logger;
 
         private readonly IConfigurationService _configurationService;
         private readonly IUserRepository _userRepository;
         private readonly ICodeGenerator _codeGenerator;
         private readonly ICommunicationService _communicationService;
 
-        public GenerateAndEmailAccountLockedEmailHandler(
-            IConfigurationService configurationService,
-            IUserRepository userRepository,
-            ICodeGenerator codeGenerator,
-            ICommunicationService communicationService)
+        public GenerateAndEmailAccountLockedEmailHandler(IConfigurationService configurationService, IUserRepository userRepository, ICodeGenerator codeGenerator, ICommunicationService communicationService, ILogger logger)
         {
             _configurationService = configurationService;
             _userRepository = userRepository;
             _codeGenerator = codeGenerator;
             _communicationService = communicationService;
+            _logger = logger;
         }
 
         public async Task Handle(AccountLockedEvent notification)
         {
-            Logger.Debug($"Handling AccountLockedEvent for user '{notification.User?.Email}' (id: {notification.User?.Id})");
+            _logger.Debug($"Handling AccountLockedEvent for user '{notification.User?.Email}' (id: {notification.User?.Id})");
 
             var user = !string.IsNullOrEmpty(notification.User.Id)
                             ? await _userRepository.GetById(notification.User.Id)
@@ -61,7 +58,7 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
                 user.AddSecurityCode(unlockCode);
                 await _userRepository.Update(user);
 
-                Logger.Debug($"Generated new unlock code of '{unlockCode.Code}' for user '{user.Id}'");
+                _logger.Debug($"Generated new unlock code of '{unlockCode.Code}' for user '{user.Id}'");
                 sendNotification = true;
             }
 

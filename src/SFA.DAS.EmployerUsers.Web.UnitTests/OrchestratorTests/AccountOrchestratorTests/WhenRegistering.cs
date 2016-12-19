@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
@@ -22,14 +23,16 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         private Mock<IMediator> _mediator;
         private Mock<IOwinWrapper> _owinWrapper;
         private RegisterViewModel _registerUserViewModel;
+        private Mock<ILogger> _logger;
 
         [SetUp]
         public void Arrange()
         {
             _mediator = new Mock<IMediator>();
             _owinWrapper = new Mock<IOwinWrapper>();
+            _logger = new Mock<ILogger>();
 
-            _accountOrchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object);
+            _accountOrchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object, _logger.Object);
 
             _registerUserViewModel = new RegisterViewModel
             {
