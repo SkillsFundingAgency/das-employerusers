@@ -77,6 +77,8 @@
     <Build Include="StoredProcedures\GetUserPasswordHistory.sql" />
     <Build Include="StoredProcedures\GetUserSecurityCodes.sql" />
     <Build Include="StoredProcedures\UpdateUser.sql" />
+    <Build Include="StoredProcedures\DeleteAllUserSecurityCodes.sql" />
+    <Build Include="StoredProcedures\DeleteUserPasswordHistory.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="SeedData\SeedData.sql" />

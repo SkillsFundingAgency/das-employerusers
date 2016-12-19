@@ -58,7 +58,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
                                   }
                               }
                           });
-            _userRepositry.Setup(x => x.GetByEmailAddress(NotAUser)).ReturnsAsync(null);
+            _userRepositry.Setup(x => x.GetByEmailAddress(NotAUser)).ReturnsAsync((User)null);
             _unlockUserCommand = new UnlockUserCommandHandler(_unlockUserCommandValidator.Object, _userRepositry.Object, _mediator.Object);
         }
 

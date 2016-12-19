@@ -3,6 +3,7 @@ using SFA.DAS.EmployerUsers.EndToEndTests.Contexts;
 
 namespace SFA.DAS.EmployerUsers.EndToEndTests.Tests
 {
+    [TestFixture(Explicit = true)]
     public class RegistrationTests : TestBase
     {
         private RegistrationContext _context;

@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.QueriesTests.PasswordReset
         {
             _userRepository = new Mock<IUserRepository>();
             _userRepository.Setup(x => x.GetByEmailAddress(It.IsAny<string>()))
-                .ReturnsAsync(null);
+                .ReturnsAsync((User)null);
             _userRepository.Setup(x => x.GetByEmailAddress(ActualEmailAddress))
                 .ReturnsAsync(new User
                 {

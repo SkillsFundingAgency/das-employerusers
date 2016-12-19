@@ -3,6 +3,7 @@ using OpenQA.Selenium;
 
 namespace SFA.DAS.EmployerUsers.EndToEndTests.Tests
 {
+    [TestFixture(Explicit=true)]
     public class LoginTests : TestBase
     {
         private Contexts.TestContext _context;

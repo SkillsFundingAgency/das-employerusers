@@ -35,6 +35,7 @@ using SFA.DAS.EmployerUsers.Infrastructure.Notification;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.Notifications.Api.Client;
 using SFA.DAS.Notifications.Api.Client.Configuration;
+using StructureMap;
 using StructureMap.Web.Pipeline;
 
 namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
@@ -99,10 +100,6 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
             For<IPasswordProfileRepository>().Use<SqlServerPasswordProfileRepository>();
             For<IHttpClientWrapper>().Use<StubHttpClientWrapper>();
-            For<INotificationsApi>().Use<StubNotificationsApi>();
-
-            //For<INotificationsApiClientConfiguration>().Use<NotificationsApiConfiguration>();
-            //For<INotificationsApi>().Use<NotificationsApi>();
         }
         private void AddProductionRegistrations()
         {
@@ -110,8 +107,6 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
             For<IPasswordProfileRepository>().Use<InMemoryPasswordProfileRepository>();
             For<IHttpClientWrapper>().Use<HttpClientWrapper>();
-            For<INotificationsApiClientConfiguration>().Use<NotificationsApiConfiguration>();
-            For<INotificationsApi>().Use<NotificationsApi>();
         }
 
         private void AddMediatrRegistrations()
@@ -131,6 +126,17 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             else
             {
                 For<ICodeGenerator>().Use(new RandomCodeGenerator());
+            }
+
+            var storeEmailsOnDisk = CloudConfigurationManager.GetSetting("StoreEmailsOnDisk").Equals("true", StringComparison.CurrentCultureIgnoreCase);
+            if (storeEmailsOnDisk)
+            {
+                For<INotificationsApi>().Use<StubNotificationsApi>();
+            }
+            else
+            {
+                For<INotificationsApiClientConfiguration>().Use<NotificationsApiConfiguration>();
+                For<INotificationsApi>().Use<NotificationsApi>();
             }
         }
     }
