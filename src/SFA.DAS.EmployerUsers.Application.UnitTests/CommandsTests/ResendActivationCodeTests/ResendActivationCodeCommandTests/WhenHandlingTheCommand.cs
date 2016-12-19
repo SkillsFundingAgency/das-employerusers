@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
@@ -17,6 +18,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendActiva
         private Mock<IUserRepository> _userRepository;
         private Mock<ICommunicationService> _communicationSerivce;
         private ResendActivationCodeCommandHandler _commandHandler;
+        private Mock<ILogger> _logger;
 
         [SetUp]
         public void Setup()
@@ -24,7 +26,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendActiva
             _validator = new Mock<IValidator<ResendActivationCodeCommand>>();
             _userRepository = new Mock<IUserRepository>();
             _communicationSerivce = new Mock<ICommunicationService>();
-            _commandHandler = new ResendActivationCodeCommandHandler(_validator.Object, _userRepository.Object, _communicationSerivce.Object);
+            _logger = new Mock<ILogger>();
+
+            _commandHandler = new ResendActivationCodeCommandHandler(_validator.Object, _userRepository.Object, _communicationSerivce.Object, _logger.Object);
         }
 
         [Test]

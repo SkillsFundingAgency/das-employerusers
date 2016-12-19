@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
@@ -28,6 +29,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.Authenticate
         private Mock<IMediator> _mediator;
         private AuthenticateUserCommandHandler _commandHandler;
         private AuthenticateUserCommand _command;
+        private Mock<ILogger> _logger;
 
         [SetUp]
         public void Arrange()
@@ -63,11 +65,14 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.Authenticate
             _mediator = new Mock<IMediator>();
             _mediator.Setup(m => m.PublishAsync(It.IsAny<IAsyncNotification>())).Returns(Task.FromResult<object>(null));
 
+            _logger = new Mock<ILogger>();
+
             _commandHandler = new AuthenticateUserCommandHandler(
                 _userRepository.Object, 
                 _passwordService.Object, 
                 _configurationService.Object,
-                _mediator.Object);
+                _mediator.Object,
+                _logger.Object);
 
             _command = new AuthenticateUserCommand
             {

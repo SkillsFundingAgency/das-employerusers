@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
@@ -23,6 +24,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
         private Mock<IPasswordService> _passwordService;
         private Mock<ICommunicationService> _communicationService;
         private Mock<ICodeGenerator> _codeGenerator;
+        private Mock<ILogger> _logger;
 
         [SetUp]
         public void Arrange()
@@ -46,11 +48,14 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
             _codeGenerator.Setup(x => x.GenerateAlphaNumeric(6))
                 .Returns("ABC123XYZ");
 
+            _logger = new Mock<ILogger>();
+
             _registerUserCommandHandler = new RegisterUserCommandHandler(_registerUserCommandValidator.Object,
                                                                          _passwordService.Object,
                                                                          _userRepository.Object,
                                                                          _communicationService.Object,
-                                                                         _codeGenerator.Object);
+                                                                         _codeGenerator.Object,
+                                                                         _logger.Object);
         }
 
         [Test]

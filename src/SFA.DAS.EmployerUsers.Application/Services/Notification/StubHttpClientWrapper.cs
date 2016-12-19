@@ -6,13 +6,18 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 {
     public class StubHttpClientWrapper : IHttpClientWrapper
     {
-        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger _logger;
+
+        public StubHttpClientWrapper(ILogger logger)
+        {
+            _logger = logger;
+        }
 
         public Task SendMessage<T>(T content)
         {
             var json = JsonConvert.SerializeObject(content, Formatting.Indented);
             var msg = "Send http message\n" + json;
-            Logger.Debug(msg);
+            _logger.Debug(msg);
             return Task.FromResult<object>(null);
         }
     }

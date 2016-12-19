@@ -12,28 +12,24 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
 {
     public class AuthenticateUserCommandHandler : IAsyncRequestHandler<AuthenticateUserCommand, User>
     {
-        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
-
+        private readonly ILogger _logger;
         private readonly IUserRepository _userRepository;
         private readonly IPasswordService _passwordService;
         private readonly IConfigurationService _configurationService;
         private readonly IMediator _mediator;
 
-        public AuthenticateUserCommandHandler(
-            IUserRepository userRepository,
-            IPasswordService passwordService,
-            IConfigurationService configurationService,
-            IMediator mediator)
+        public AuthenticateUserCommandHandler(IUserRepository userRepository, IPasswordService passwordService, IConfigurationService configurationService, IMediator mediator, ILogger logger)
         {
             _userRepository = userRepository;
             _passwordService = passwordService;
             _configurationService = configurationService;
             _mediator = mediator;
+            _logger = logger;
         }
 
         public async Task<User> Handle(AuthenticateUserCommand message)
         {
-            Logger.Debug($"Received AuthenticateUserCommand for user '{message.EmailAddress}'");
+            _logger.Debug($"Received AuthenticateUserCommand for user '{message.EmailAddress}'");
 
             var user = await _userRepository.GetByEmailAddress(message.EmailAddress);
             if (user == null)
@@ -69,14 +65,14 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
             user.FailedLoginAttempts++;
             if (user.FailedLoginAttempts >= config.AllowedFailedLoginAttempts)
             {
-                Logger.Info($"Locking user '{user.Email}' (id: {user.Id})");
+                _logger.Info($"Locking user '{user.Email}' (id: {user.Id})");
                 user.IsLocked = true;
             }
             await _userRepository.Update(user);
 
             if (user.IsLocked)
             {
-                Logger.Debug($"Publishing event for user '{user.Email}' (id: {user.Id}) being locked");
+                _logger.Debug($"Publishing event for user '{user.Email}' (id: {user.Id}) being locked");
                 await _mediator.PublishAsync(new AccountLockedEvent { User = user });
                 throw new AccountLockedException(user);
             }

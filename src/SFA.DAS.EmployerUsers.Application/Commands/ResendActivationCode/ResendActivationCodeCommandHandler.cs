@@ -11,28 +11,23 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode
 {
     public class ResendActivationCodeCommandHandler : AsyncRequestHandler<ResendActivationCodeCommand>
     {
-        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger _logger;
 
         private readonly IValidator<ResendActivationCodeCommand> _commandValidator;
         private readonly IUserRepository _userRepository;
         private readonly ICommunicationService _communicationService;
 
-        public ResendActivationCodeCommandHandler(IValidator<ResendActivationCodeCommand> commandValidator, IUserRepository userRepository, ICommunicationService communicationService)
+        public ResendActivationCodeCommandHandler(IValidator<ResendActivationCodeCommand> commandValidator, IUserRepository userRepository, ICommunicationService communicationService, ILogger logger)
         {
-            if (commandValidator == null)
-                throw new ArgumentNullException(nameof(commandValidator));
-            if (userRepository == null)
-                throw new ArgumentNullException(nameof(userRepository));
-            if (communicationService == null)
-                throw new ArgumentNullException(nameof(communicationService));
             _commandValidator = commandValidator;
             _userRepository = userRepository;
             _communicationService = communicationService;
+            _logger = logger;
         }
 
         protected override async Task HandleCore(ResendActivationCodeCommand message)
         {
-            Logger.Debug($"Received ResendActivationCodeCommand for user '{message.UserId}'");
+            _logger.Debug($"Received ResendActivationCodeCommand for user '{message.UserId}'");
 
             var validationResult = await _commandValidator.ValidateAsync(message);
             if (!validationResult.IsValid())

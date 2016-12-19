@@ -11,24 +11,24 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 {
     public class PasswordResetCommandHandler : AsyncRequestHandler<PasswordResetCommand>
     {
-        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
-
+        private readonly ILogger _logger;
         private readonly IUserRepository _userRepository;
         private readonly IValidator<PasswordResetCommand> _validator;
         private readonly ICommunicationService _communicationService;
         private readonly IPasswordService _passwordService;
 
-        public PasswordResetCommandHandler(IUserRepository userRepository, IValidator<PasswordResetCommand> validator, ICommunicationService communicationService, IPasswordService passwordService)
+        public PasswordResetCommandHandler(IUserRepository userRepository, IValidator<PasswordResetCommand> validator, ICommunicationService communicationService, IPasswordService passwordService, ILogger logger)
         {
             _userRepository = userRepository;
             _validator = validator;
             _communicationService = communicationService;
             _passwordService = passwordService;
+            _logger = logger;
         }
 
         protected override async Task HandleCore(PasswordResetCommand message)
         {
-            Logger.Info($"Received PasswordResetCommand for user '{message.Email}'");
+            _logger.Info($"Received PasswordResetCommand for user '{message.Email}'");
 
             var user = await _userRepository.GetByEmailAddress(message.Email);
             message.User = user;
@@ -50,7 +50,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             message.User.ExpireSecurityCodesOfType(Domain.SecurityCodeType.PasswordResetCode);
 
             await _userRepository.Update(message.User);
-            Logger.Info($"Password changed for user '{message.Email}'");
+            _logger.Info($"Password changed for user '{message.Email}'");
 
             await _communicationService.SendPasswordResetConfirmationMessage(user, Guid.NewGuid().ToString());
             

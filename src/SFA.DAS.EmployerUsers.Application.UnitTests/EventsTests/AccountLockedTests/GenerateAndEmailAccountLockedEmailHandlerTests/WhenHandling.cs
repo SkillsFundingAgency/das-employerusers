@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.Configuration;
@@ -25,6 +26,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
         private Mock<ICommunicationService> _communicationService;
         private GenerateAndEmailAccountLockedEmailHandler _handler;
         private AccountLockedEvent _event;
+        private Mock<ILogger> _logger;
 
         [SetUp]
         public void Arrange()
@@ -55,11 +57,14 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
             _communicationService.Setup(s => s.SendAccountLockedMessage(It.IsAny<User>(), It.IsAny<string>()))
                 .Returns(Task.FromResult<object>(null));
 
+            _logger = new Mock<ILogger>();
+
             _handler = new GenerateAndEmailAccountLockedEmailHandler(
                 _configurationService.Object,
                 _userRepository.Object,
                 _codeGenerator.Object,
-                _communicationService.Object);
+                _communicationService.Object,
+                _logger.Object);
 
             _event = new AccountLockedEvent
             {

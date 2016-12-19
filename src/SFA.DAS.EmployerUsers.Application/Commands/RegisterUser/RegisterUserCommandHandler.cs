@@ -15,30 +15,26 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 {
     public class RegisterUserCommandHandler : AsyncRequestHandler<RegisterUserCommand>
     {
-        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
-
+        private readonly ILogger _logger;
         private readonly IUserRepository _userRepository;
         private readonly ICommunicationService _communicationService;
         private readonly ICodeGenerator _codeGenerator;
         private readonly IValidator<RegisterUserCommand> _registerUserCommandValidator;
         private readonly IPasswordService _passwordService;
 
-        public RegisterUserCommandHandler(IValidator<RegisterUserCommand> registerUserCommandValidator,
-            IPasswordService passwordService,
-            IUserRepository userRepository,
-            ICommunicationService communicationService,
-            ICodeGenerator codeGenerator)
+        public RegisterUserCommandHandler(IValidator<RegisterUserCommand> registerUserCommandValidator, IPasswordService passwordService, IUserRepository userRepository, ICommunicationService communicationService, ICodeGenerator codeGenerator, ILogger logger)
         {
             _userRepository = userRepository;
             _communicationService = communicationService;
             _codeGenerator = codeGenerator;
+            _logger = logger;
             _registerUserCommandValidator = registerUserCommandValidator;
             _passwordService = passwordService;
         }
 
         protected override async Task HandleCore(RegisterUserCommand message)
         {
-            Logger.Debug($"Received RegisterUserCommand for user '{message.Email}'");
+            _logger.Debug($"Received RegisterUserCommand for user '{message.Email}'");
 
             var validationResult = await _registerUserCommandValidator.ValidateAsync(message);
 
