@@ -24,10 +24,11 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 {
     public class AccountOrchestrator
     {
-        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+        
 
         private readonly IMediator _mediator;
         private readonly IOwinWrapper _owinWrapper;
+        private readonly ILogger _logger;
 
 
         //Needed for testing
@@ -36,10 +37,11 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
         }
 
-        public AccountOrchestrator(IMediator mediator, IOwinWrapper owinWrapper)
+        public AccountOrchestrator(IMediator mediator, IOwinWrapper owinWrapper, ILogger logger)
         {
             _mediator = mediator;
             _owinWrapper = owinWrapper;
+            _logger = logger;
         }
 
         public virtual async Task<LoginResultModel> Login(LoginViewModel loginViewModel)
@@ -53,7 +55,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 });
                 if (user == null)
                 {
-                    Logger.Warn($"Failed login attempt for email address '{loginViewModel.EmailAddress}' originating from {loginViewModel.OriginatingAddress}");
+                    _logger.Warn($"Failed login attempt for email address '{loginViewModel.EmailAddress}' originating from {loginViewModel.OriginatingAddress}");
                     return new LoginResultModel { Success = false };
                 }
 
@@ -63,12 +65,12 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             catch (AccountLockedException ex)
             {
-                Logger.Info(ex.Message);
+                _logger.Info(ex.Message);
                 return new LoginResultModel { AccountIsLocked = true };
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, ex.Message);
+                _logger.Error(ex, ex.Message);
                 return new LoginResultModel { Success = false };
             }
         }
@@ -98,12 +100,12 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             catch (InvalidRequestException ex)
             {
-                Logger.Info(ex, ex.Message);
+                _logger.Info(ex, ex.Message);
                 registerUserViewModel.ErrorDictionary = ex.ErrorMessages;
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, ex.Message);
+                _logger.Error(ex, ex.Message);
                 registerUserViewModel.ErrorDictionary = new System.Collections.Generic.Dictionary<string, string>
                 {
                     {"", "Unexpected error occured"}
@@ -129,14 +131,14 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             catch (InvalidRequestException ex)
             {
-                Logger.Info(ex, ex.Message);
+                _logger.Info(ex, ex.Message);
 
                 model.Valid = false;
                 return model;
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, ex.Message);
+                _logger.Error(ex, ex.Message);
 
                 model.Valid = false;
                 return model;
@@ -156,12 +158,12 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             catch (InvalidRequestException ex)
             {
-                Logger.Info(ex, ex.Message);
+                _logger.Info(ex, ex.Message);
                 return false;
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, ex.Message);
+                _logger.Error(ex, ex.Message);
                 return false;
             }
         }
@@ -191,7 +193,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             catch (InvalidRequestException ex)
             {
-                Logger.Info(ex, ex.Message);
+                _logger.Info(ex, ex.Message);
 
                 if (ex.ErrorMessages.ContainsKey(nameof(unlockUserViewModel.UnlockCodeExpired)))
                 {
@@ -202,7 +204,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, ex.Message);
+                _logger.Error(ex, ex.Message);
                 unlockUserViewModel.ErrorDictionary = new System.Collections.Generic.Dictionary<string, string>
                 {
                     {"", "Unexpected error occured"}
@@ -227,7 +229,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             catch (InvalidRequestException ex)
             {
-                Logger.Info(ex, ex.Message);
+                _logger.Info(ex, ex.Message);
                 model.ErrorDictionary = ex.ErrorMessages;
                 return model;
             }
@@ -249,7 +251,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             catch (InvalidRequestException ex)
             {
-                Logger.Info(ex, ex.Message);
+                _logger.Info(ex, ex.Message);
                 model.ErrorDictionary = ex.ErrorMessages;
                 return model;
             }
@@ -278,7 +280,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             catch (InvalidRequestException ex)
             {
-                Logger.Info(ex, ex.Message);
+                _logger.Info(ex, ex.Message);
                 model.ErrorDictionary = ex.ErrorMessages;
                 model.Password = string.Empty;
                 model.ConfirmPassword = string.Empty;

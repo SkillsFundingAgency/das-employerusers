@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MediatR;
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode;
@@ -18,14 +19,16 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         private Mock<IOwinWrapper> _owinWrapper;
         private AccountOrchestrator _accountOrchestrator;
         private RequestPasswordResetViewModel _requestPasswordResetViewModel;
+        private Mock<ILogger> _logger;
 
         [SetUp]
         public void Setup()
         {
             _mediator = new Mock<IMediator>();
             _owinWrapper = new Mock<IOwinWrapper>();
+            _logger = new Mock<ILogger>();
 
-            _accountOrchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object);
+            _accountOrchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object, _logger.Object);
 
             _requestPasswordResetViewModel = new RequestPasswordResetViewModel
             {

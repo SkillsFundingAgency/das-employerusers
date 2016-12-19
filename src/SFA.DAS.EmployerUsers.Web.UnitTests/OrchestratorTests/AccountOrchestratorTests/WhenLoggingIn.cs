@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MediatR;
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
@@ -17,6 +18,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         private Mock<IOwinWrapper> _owinWrapper;
         private AccountOrchestrator _orchestrator;
         private LoginViewModel _model;
+        private Mock<ILogger> _logger;
 
         [SetUp]
         public void Arrange()
@@ -27,7 +29,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             _owinWrapper = new Mock<IOwinWrapper>();
 
-            _orchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object);
+            _logger = new Mock<ILogger>();
+
+            _orchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object, _logger.Object);
 
             _model = new LoginViewModel
             {

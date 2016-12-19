@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MediatR;
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode;
@@ -16,6 +17,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         private Mock<IMediator> _mediator;
         private Mock<IOwinWrapper> _owinWrapper;
         private AccountOrchestrator _accountOrchestrator;
+        private Mock<ILogger> _logger;
 
         [SetUp]
         public void Arrange()
@@ -23,7 +25,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             _mediator = new Mock<IMediator>();
             _owinWrapper = new Mock<IOwinWrapper>();
-            _accountOrchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object);
+            _logger = new Mock<ILogger>();
+
+            _accountOrchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object, _logger.Object);
         }
 
         [Test]
