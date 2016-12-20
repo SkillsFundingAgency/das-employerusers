@@ -107,6 +107,8 @@
                                 <li class="has-sub-menu">
                                     <a href="/" role="menuitem">@HttpContext.Current.User.Identity.Name</a>
                                     <ul role="menu">
+                                        <li><a href="@Url.Action("ChangePassword", "Account")" role="menuitem">Change your password</a></li>
+                                        <li><a href="@Url.Action("ChangeEmail", "Account")" role="menuitem">Change your email address</a></li>
                                         <li><a href="@Url.Action("Logout", "Account")" role="menuitem">Log out</a></li>
                                     </ul>
                                 </li>
@@ -147,7 +149,6 @@
             </div>
         </div>
     </footer>
-
     @Scripts.Render("~/bundles/sfajs")
     @RenderSection("scripts", false)
 </body>
