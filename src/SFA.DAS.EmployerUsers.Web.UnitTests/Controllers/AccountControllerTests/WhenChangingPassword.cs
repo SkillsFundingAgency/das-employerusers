@@ -13,6 +13,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
     public class WhenChangingPassword : ControllerTestBase
     {
         private const string UserId = "USER1";
+        private const string ClientId = "MyClient";
         private const string ReturnUrl = "http:?/unit.test";
 
         private Mock<AccountOrchestrator> _accountOrchestrator;
@@ -59,7 +60,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public async Task ThenItShouldRedirectToReturnUrlIfNoErrors()
         {
             // Act
-            var actual = await _controller.ChangePassword(_model, ReturnUrl);
+            var actual = await _controller.ChangePassword(_model, ClientId, ReturnUrl);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -82,7 +83,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
                    }));
 
             // Act
-            var actual = await _controller.ChangePassword(_model, ReturnUrl);
+            var actual = await _controller.ChangePassword(_model, ClientId, ReturnUrl);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -104,7 +105,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
                    }));
 
             // Act
-            var actual = (ViewResult)await _controller.ChangePassword(_model, ReturnUrl);
+            var actual = (ViewResult)await _controller.ChangePassword(_model, ClientId, ReturnUrl);
 
             // Assert
             Assert.IsNotNull(actual.Model);

@@ -352,10 +352,22 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             return model;
         }
 
+        public virtual async Task<ChangePasswordViewModel> StartChangePassword(string clientId, string returnUrl)
+        {
+            var model = new ChangePasswordViewModel();
+            await ValidateClientIdReturnUrlCombo(clientId, returnUrl, model);
+            return model;
+        }
         public virtual async Task<ChangePasswordViewModel> ChangePassword(ChangePasswordViewModel model)
         {
             try
             {
+                var isClientValid = await ValidateClientIdReturnUrlCombo(model.ClientId, model.ReturnUrl, model);
+                if (!isClientValid)
+                {
+                    return model;
+                }
+
                 var user = await _mediator.SendAsync(new GetUserByIdQuery
                 {
                     UserId = model.UserId

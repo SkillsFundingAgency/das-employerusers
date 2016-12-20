@@ -322,16 +322,21 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [HttpGet]
         [Authorize]
         [Route("account/changepassword")]
-        public ActionResult ChangePassword(string returnUrl)
+        public async Task<ActionResult> ChangePassword(string clientId, string returnUrl)
         {
-            return View(new ChangePasswordViewModel());
+            var model = await _accountOrchestrator.StartChangePassword(clientId, returnUrl);
+            if (!model.Valid)
+            {
+                return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
+            }
+            return View(model);
         }
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
         [Route("account/changepassword")]
-        public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model, string returnUrl)
+        public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model, string clientId, string returnUrl)
         {
             model.UserId = GetLoggedInUserId();
 
