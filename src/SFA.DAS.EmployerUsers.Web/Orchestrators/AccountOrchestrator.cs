@@ -14,6 +14,7 @@ using SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode;
 using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
+using SFA.DAS.EmployerUsers.Application.Queries.GetRelyingParty;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserByEmailAddress;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.Application.Queries.IsUserActive;
@@ -24,7 +25,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 {
     public class AccountOrchestrator
     {
-        
+
 
         private readonly IMediator _mediator;
         private readonly IOwinWrapper _owinWrapper;
@@ -288,10 +289,22 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
         }
 
+        public virtual async Task<ChangeEmailViewModel> StartRequestChangeEmail(string clientId, string returnUrl)
+        {
+            var model = new ChangeEmailViewModel();
+            await ValidateClientIdReturnUrlCombo(clientId, returnUrl, model);
+            return model;
+        }
         public virtual async Task<ChangeEmailViewModel> RequestChangeEmail(ChangeEmailViewModel model)
         {
             try
             {
+                var isClientValid = await ValidateClientIdReturnUrlCombo(model.ClientId, model.ReturnUrl, model);
+                if (!isClientValid)
+                {
+                    return model;
+                }
+
                 await _mediator.SendAsync(new RequestChangeEmailCommand
                 {
                     UserId = model.UserId,
@@ -339,10 +352,22 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             return model;
         }
 
+        public virtual async Task<ChangePasswordViewModel> StartChangePassword(string clientId, string returnUrl)
+        {
+            var model = new ChangePasswordViewModel();
+            await ValidateClientIdReturnUrlCombo(clientId, returnUrl, model);
+            return model;
+        }
         public virtual async Task<ChangePasswordViewModel> ChangePassword(ChangePasswordViewModel model)
         {
             try
             {
+                var isClientValid = await ValidateClientIdReturnUrlCombo(model.ClientId, model.ReturnUrl, model);
+                if (!isClientValid)
+                {
+                    return model;
+                }
+
                 var user = await _mediator.SendAsync(new GetUserByIdQuery
                 {
                     UserId = model.UserId
@@ -375,6 +400,26 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             _owinWrapper.IssueLoginCookie(id, $"{firstName} {lastName}");
 
             _owinWrapper.RemovePartialLoginCookie();
+        }
+
+        private async Task<bool> ValidateClientIdReturnUrlCombo(string clientId, string returnUrl, ViewModelBase model)
+        {
+            var isValid = await IsValidClientIdReturnUrlCombo(clientId, returnUrl);
+            if (!isValid)
+            {
+                if (model.ErrorDictionary == null)
+                {
+                    model.ErrorDictionary = new System.Collections.Generic.Dictionary<string, string>();
+                }
+                model.ErrorDictionary.Add("", "Invalid client id / return url");
+                return false;
+            }
+            return true;
+        }
+        private async Task<bool> IsValidClientIdReturnUrlCombo(string clientId, string returnUrl)
+        {
+            var relyingParty = await _mediator.SendAsync(new GetRelyingPartyQuery { Id = clientId });
+            return relyingParty != null && returnUrl.StartsWith(relyingParty.ApplicationUrl);
         }
 
     }

@@ -7,6 +7,7 @@ using NLog;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.ChangePassword;
+using SFA.DAS.EmployerUsers.Application.Queries.GetRelyingParty;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
@@ -30,6 +31,12 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         public void Arrange()
         {
             _mediator = new Mock<IMediator>();
+            _mediator.Setup(m => m.SendAsync(It.Is<GetRelyingPartyQuery>(q => q.Id == "MyClient")))
+                .ReturnsAsync(new Domain.RelyingParty
+                {
+                    Id = "MyClient",
+                    ApplicationUrl = "http://unit.test"
+                });
             _mediator.Setup(m => m.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == UserId)))
                 .Returns(Task.FromResult(new Domain.User
                 {
@@ -47,7 +54,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
                 UserId = UserId,
                 CurrentPassword = CurrentPassword,
                 NewPassword = NewPassword,
-                ConfirmPassword = NewPassword
+                ConfirmPassword = NewPassword,
+                ClientId = "MyClient",
+                ReturnUrl = "http://unit.test"
             };
         }
 
@@ -98,6 +107,59 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             Assert.IsNotNull(actual.ErrorDictionary);
             Assert.IsTrue(actual.ErrorDictionary.ContainsKey(""));
             Assert.AreEqual("A problem has occured", actual.ErrorDictionary[""]);
+        }
+
+
+
+
+
+        [TestCase("MyClient", "http://unit.test")]
+        [TestCase("MyClient", "http://unit.test/")]
+        [TestCase("MyClient", "http://unit.test/some/path")]
+        public async Task ThenItShouldReturnAValidModelIfReturnUrlValidForClientId(string requestedClientId, string requestedReturnUrl)
+        {
+            // Arrange
+            _model.ClientId = requestedClientId;
+            _model.ReturnUrl = requestedReturnUrl;
+
+            // Act
+            var actual = await _orchestrator.ChangePassword(_model);
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual.Valid);
+        }
+
+        [Test]
+        public async Task ThenItShouldReturnInvalidModelIfClientIdNotFound()
+        {
+            // Arrange
+            _model.ClientId = "NotMyClient";
+            _model.ReturnUrl = "http://unit.test";
+
+            // Act
+            var actual = await _orchestrator.ChangePassword(_model);
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsFalse(actual.Valid);
+        }
+
+        [TestCase("http://sub.unit.test")]
+        [TestCase("https://unit.test")]
+        [TestCase("https://another.domain")]
+        public async Task ThenItShouldReturnInvalidModelIfReturnUrlNotValidForClientId(string returnUrl)
+        {
+            // Arrange
+            _model.ClientId = "MyClient";
+            _model.ReturnUrl = returnUrl;
+
+            // Act
+            var actual = await _orchestrator.ChangePassword(_model);
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsFalse(actual.Valid);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
@@ -86,6 +87,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [AttemptAuthorise]
         public ActionResult Register(string returnUrl)
         {
+            var loginReturnUrl = Url.Action("Index", "Home", null, Request.Url.Scheme)
+                                 + "identity/connect/authorize";
+            if (string.IsNullOrEmpty(returnUrl) || !returnUrl.ToLower().StartsWith(loginReturnUrl.ToLower()))
+            {
+                Logger.Info($"Register requested with returnUrl '{returnUrl}', which does not start with '{loginReturnUrl}'");
+                return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
+            }
             var id = GetLoggedInUserId();
 
             if (!string.IsNullOrEmpty(id))
@@ -102,6 +110,10 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [OutputCache(Duration = 0)]
         public async Task<ActionResult> Register(RegisterViewModel model, string returnUrl)
         {
+            if (string.IsNullOrEmpty(returnUrl))
+            {
+                return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
+            }
             var id = GetLoggedInUserId();
 
             if (!string.IsNullOrEmpty(id))
@@ -254,8 +266,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [HttpGet]
         [Authorize]
         [Route("account/changeemail")]
-        public ActionResult ChangeEmail(string returnUrl)
+        public async Task<ActionResult> ChangeEmail(string clientId, string returnUrl)
         {
+            var model = await _accountOrchestrator.StartRequestChangeEmail(clientId, returnUrl);
+            if (!model.Valid)
+            {
+                return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
+            }
             return View();
         }
 
@@ -263,11 +280,14 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         [Route("account/changeemail")]
-        public async Task<ActionResult> ChangeEmail(ChangeEmailViewModel model, string returnUrl)
+        public async Task<ActionResult> ChangeEmail(ChangeEmailViewModel model, string clientId, string returnUrl)
         {
             model.UserId = GetLoggedInUserId();
+            model.ClientId = clientId;
             model.ReturnUrl = returnUrl;
+
             await _accountOrchestrator.RequestChangeEmail(model);
+
             return RedirectToAction("ConfirmChangeEmail");
         }
 
@@ -302,16 +322,21 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [HttpGet]
         [Authorize]
         [Route("account/changepassword")]
-        public ActionResult ChangePassword(string returnUrl)
+        public async Task<ActionResult> ChangePassword(string clientId, string returnUrl)
         {
-            return View(new ChangePasswordViewModel());
+            var model = await _accountOrchestrator.StartChangePassword(clientId, returnUrl);
+            if (!model.Valid)
+            {
+                return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
+            }
+            return View(model);
         }
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
         [Route("account/changepassword")]
-        public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model, string returnUrl)
+        public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model, string clientId, string returnUrl)
         {
             model.UserId = GetLoggedInUserId();
 
