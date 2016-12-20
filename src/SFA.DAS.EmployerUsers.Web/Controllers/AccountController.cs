@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
@@ -86,6 +87,10 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [AttemptAuthorise]
         public ActionResult Register(string returnUrl)
         {
+            if (string.IsNullOrEmpty(returnUrl))
+            {
+                return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
+            }
             var id = GetLoggedInUserId();
 
             if (!string.IsNullOrEmpty(id))
@@ -102,6 +107,10 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [OutputCache(Duration = 0)]
         public async Task<ActionResult> Register(RegisterViewModel model, string returnUrl)
         {
+            if (string.IsNullOrEmpty(returnUrl))
+            {
+                return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
+            }
             var id = GetLoggedInUserId();
 
             if (!string.IsNullOrEmpty(id))
