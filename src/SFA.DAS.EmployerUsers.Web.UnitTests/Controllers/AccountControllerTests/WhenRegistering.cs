@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
@@ -14,10 +15,11 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 {
     public class WhenRegistering : ControllerTestBase
     {
-        private const string ReturnUrl = "http://unit.test";
+        private const string ReturnUrl = "https://localhost/identity/connect/authorize?p1=somestuff";
 
         private AccountController _accountController;
         private Mock<AccountOrchestrator> _accountOrchestator;
+        private Mock<UrlHelper> _urlHelper;
         private Mock<ControllerContext> _controllerContext;
 
         [SetUp]
@@ -29,19 +31,33 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 
             _accountOrchestator = new Mock<AccountOrchestrator>();
 
+            _urlHelper = new Mock<UrlHelper>();
+            _urlHelper.Setup(h => h.Action("Index", "Home", null, "https"))
+                .Returns("https://localhost/");
+
             _accountController = new AccountController(_accountOrchestator.Object, null, null);
             _accountController.ControllerContext = _controllerContext.Object;
+            _accountController.Url = _urlHelper.Object;
         }
 
         private void ArrangeControllerContext(string userId)
         {
+            var request = new Mock<HttpRequestBase>();
+            request.Setup(r => r.Url)
+                .Returns(new Uri("https://localhost"));
+
             var httpContext = new Mock<HttpContextBase>();
-            httpContext.Setup(c => c.User).Returns(new ClaimsPrincipal(new ClaimsIdentity(new[]
+            httpContext.Setup(c => c.User)
+                .Returns(new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
                 new Claim(DasClaimTypes.Id, userId),
             })));
+            httpContext.Setup(c => c.Request)
+                .Returns(request.Object);
+
             _controllerContext = new Mock<ControllerContext>();
-            _controllerContext.Setup(c => c.HttpContext).Returns(httpContext.Object);
+            _controllerContext.Setup(c => c.HttpContext)
+                .Returns(httpContext.Object);
         }
 
         [Test]
@@ -129,7 +145,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             var actual = await _accountController.Register(new RegisterViewModel(), ReturnUrl);
 
             //Assert
-            _accountOrchestator.Verify(x=>x.Register(It.IsAny<RegisterViewModel>(), It.IsAny<string>()),Times.Never);
+            _accountOrchestator.Verify(x => x.Register(It.IsAny<RegisterViewModel>(), It.IsAny<string>()), Times.Never);
             Assert.IsNotNull(actual);
             var redirectToRouteResult = actual as RedirectToRouteResult;
             Assert.IsNotNull(redirectToRouteResult);
