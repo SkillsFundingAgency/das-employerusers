@@ -87,8 +87,11 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [AttemptAuthorise]
         public ActionResult Register(string returnUrl)
         {
-            if (string.IsNullOrEmpty(returnUrl))
+            var loginReturnUrl = Url.Action("Index", "Home", null, Request.Url.Scheme)
+                                 + "identity/connect/authorize";
+            if (string.IsNullOrEmpty(returnUrl) || !returnUrl.ToLower().StartsWith(loginReturnUrl.ToLower()))
             {
+                Logger.Info($"Register requested with returnUrl '{returnUrl}', which does not start with '{loginReturnUrl}'");
                 return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
             }
             var id = GetLoggedInUserId();
