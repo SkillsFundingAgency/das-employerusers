@@ -1,4 +1,20 @@
-﻿<h1 class="heading-xlarge"> Change your email address </h1>
+﻿@{
+    ViewBag.PageID = "page-change-email-address";
+    ViewBag.Title = "Change your email address";
+}
+
+@if (!Model.Valid)
+{
+    <div class="error-summary" role="group" tabindex="-1">
+        <h1 class="heading-medium error-summary-heading" id="error-summary-heading"> Errors to fix </h1>
+        <p>Check the following details:</p>
+        <ul class="error-summary-list">
+            
+        </ul>
+    </div>
+}
+
+<h1 class="heading-xlarge"> Change your email address </h1>
 
 <form method="post">
     @Html.AntiForgeryToken()
