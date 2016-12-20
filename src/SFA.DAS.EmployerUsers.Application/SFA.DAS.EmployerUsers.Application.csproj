@@ -118,6 +118,8 @@
     <Compile Include="Events\AccountLocked\GenerateAndEmailAccountLockedEmailHandler.cs" />
     <Compile Include="InvalidRequestException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queries\GetRelyingParty\GetRelyingPartyQuery.cs" />
+    <Compile Include="Queries\GetRelyingParty\GetRelyingPartyQueryHandler.cs" />
     <Compile Include="Queries\GetUserByEmailAddress\GetUserByEmailAddressQuery.cs" />
     <Compile Include="Queries\GetUserByEmailAddress\GetUserByEmailAddressQueryHandler.cs" />
     <Compile Include="Queries\GetUserById\GetUserByIdQuery.cs" />

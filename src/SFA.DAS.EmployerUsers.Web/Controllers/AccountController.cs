@@ -266,8 +266,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [HttpGet]
         [Authorize]
         [Route("account/changeemail")]
-        public ActionResult ChangeEmail(string returnUrl)
+        public async Task<ActionResult> ChangeEmail(string clientId, string returnUrl)
         {
+            var model = await _accountOrchestrator.StartRequestChangeEmail(clientId, returnUrl);
+            if (!model.Valid)
+            {
+                return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
+            }
             return View();
         }
 
@@ -275,11 +280,14 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         [Route("account/changeemail")]
-        public async Task<ActionResult> ChangeEmail(ChangeEmailViewModel model, string returnUrl)
+        public async Task<ActionResult> ChangeEmail(ChangeEmailViewModel model, string clientId, string returnUrl)
         {
             model.UserId = GetLoggedInUserId();
+            model.ClientId = clientId;
             model.ReturnUrl = returnUrl;
+
             await _accountOrchestrator.RequestChangeEmail(model);
+
             return RedirectToAction("ConfirmChangeEmail");
         }
 
