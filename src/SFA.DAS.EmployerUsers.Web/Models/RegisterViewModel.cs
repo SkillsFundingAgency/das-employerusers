@@ -1,11 +1,16 @@
-﻿namespace SFA.DAS.EmployerUsers.Web.Models
+﻿using System.Web.Mvc;
+
+namespace SFA.DAS.EmployerUsers.Web.Models
 {
     public class RegisterViewModel :ViewModelBase
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+
         public string Email { get; set; }
+        [AllowHtml]
         public string Password { get; set; }
+        [AllowHtml]
         public string ConfirmPassword { get; set; }
         public bool HasAcceptedTermsAndConditions { get; set; }
 
