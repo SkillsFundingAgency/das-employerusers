@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <Name>SFA.DAS.EmployerUsers.Profiles</Name>
+    <Name>SFA.DAS.EmployerUsers.Profiles.Database</Name>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{3c948ec9-82ec-428c-be2b-1968afc4fbe0}</ProjectGuid>
@@ -23,6 +23,7 @@
     <SqlServerVerification>False</SqlServerVerification>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
+    <TargetDatabase>SFA.DAS.EmployerUsers.Profiles</TargetDatabase>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -67,5 +68,8 @@
   <ItemGroup>
     <Build Include="StoredProcedures\GetAllPasswordProfiles.sql" />
     <Build Include="Tables\PasswordProfile.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Database.Publish.xml" />
   </ItemGroup>
 </Project>
