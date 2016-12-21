@@ -101,36 +101,7 @@
                 </p>
             </div>
 
-            @if (HttpContext.Current.User.Identity.IsAuthenticated || Model?.GetType().GetProperty("HideHeaderSignInLink") == null)
-            {
-                <div class="account-information" role="navigation">
-                    <a href="#user-nav" id="link-settings" aria-hidden="true" aria-label="Access your settings">Settings</a>
-                    <nav id="user-nav">
-                        <ul role="menubar">
-                            @if (HttpContext.Current.User.Identity.IsAuthenticated)
-                            {
-                                <li class="has-sub-menu">
-                                    <a href="/" role="menuitem">@HttpContext.Current.User.Identity.Name</a>
-                                    <ul role="menu">
-                                        <li><a href="@Url.Action("ChangePassword", "Account")" role="menuitem">Change your password</a></li>
-                                        <li><a href="@Url.Action("ChangeEmail", "Account")" role="menuitem">Change your email address</a></li>
-                                        <li><a href="@Url.Action("Logout", "Account")" role="menuitem">Log out</a></li>
-                                    </ul>
-                                </li>
-                            }
-                            else
-                            {
-                                if (Model?.GetType().GetProperty("HideHeaderSignInLink") == null)
-                                {
-                                    <li><a href="@Url.Action("Login","Home")" role="menuitem">Sign in</a></li>
-                                    <li><a href="@Url.Action("Register","Account")" role="menuitem">Register</a></li>
-                                }
-                            }
-                        </ul>
-                    </nav>
-
-                </div>
-            }
+         
         </div>
     </div>
     <main id="content" role="main">
