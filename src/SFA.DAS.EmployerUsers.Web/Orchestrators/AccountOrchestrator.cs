@@ -76,6 +76,21 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
         }
 
+        public virtual async Task<RegisterViewModel> StartRegistration(string clientId, string returnUrl, bool isLocalReturnUrl)
+        {
+            var model = new RegisterViewModel
+            {
+                ReturnUrl = returnUrl
+            };
+
+            if (!isLocalReturnUrl)
+            {
+                await ValidateClientIdReturnUrlCombo(clientId, returnUrl, model);
+            }
+
+            return model;
+        }
+
         public virtual async Task<RegisterViewModel> Register(RegisterViewModel registerUserViewModel, string returnUrl)
         {
             try

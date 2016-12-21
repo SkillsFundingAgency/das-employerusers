@@ -85,15 +85,17 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/register")]
         [OutputCache(Duration = 0)]
         [AttemptAuthorise]
-        public ActionResult Register(string returnUrl)
+        public async Task<ActionResult> Register(string clientId, string returnUrl)
         {
             var loginReturnUrl = Url.Action("Index", "Home", null, Request.Url.Scheme)
                                  + "identity/connect/authorize";
-            if (string.IsNullOrEmpty(returnUrl) || !returnUrl.ToLower().StartsWith(loginReturnUrl.ToLower()))
+            var isLocalReturnUrl = returnUrl.ToLower().StartsWith(loginReturnUrl.ToLower());
+            var model = await _accountOrchestrator.StartRegistration(clientId, returnUrl, isLocalReturnUrl);
+            if (!model.Valid)
             {
-                Logger.Info($"Register requested with returnUrl '{returnUrl}', which does not start with '{loginReturnUrl}'");
                 return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
             }
+
             var id = GetLoggedInUserId();
 
             if (!string.IsNullOrEmpty(id))

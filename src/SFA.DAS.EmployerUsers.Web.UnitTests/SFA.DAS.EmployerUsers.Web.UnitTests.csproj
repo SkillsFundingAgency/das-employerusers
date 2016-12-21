@@ -133,6 +133,7 @@
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenResendingActivationCode.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenResendingUnlockCode.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenStartingChangePassword.cs" />
+    <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenStartingRegistration.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenStartingRequestChangeEmail.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenUnlockingUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

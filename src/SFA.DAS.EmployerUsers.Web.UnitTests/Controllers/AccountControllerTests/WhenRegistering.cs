@@ -15,6 +15,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 {
     public class WhenRegistering : ControllerTestBase
     {
+        private const string ClientId = "MyClient";
         private const string ReturnUrl = "https://localhost/identity/connect/authorize?p1=somestuff";
 
         private AccountController _accountController;
@@ -113,7 +114,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         }
 
         [Test]
-        public void ThenIAmRedirectedToTheConfirmCodeIfITryToGoBackToRegisterWhenLoggedIn()
+        public async Task ThenIAmRedirectedToTheConfirmCodeIfITryToGoBackToRegisterWhenLoggedIn()
         {
             //Arrange
             ArrangeControllerContext("123456");
@@ -122,7 +123,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
                 .ReturnsAsync(new RegisterViewModel());
 
             //Act
-            var actual = _accountController.Register(ReturnUrl);
+            var actual = await _accountController.Register(ClientId, ReturnUrl);
 
             //Assert
             Assert.IsNotNull(actual);
