@@ -12,12 +12,11 @@
 
 $(function () {
 
-    var pwdStr = $('<p />').html('Password strength: ').attr('class', 'password-strength');
-    $('#Password').after(pwdStr);
+    var pwdField = $('#Password, #NewPassword'),
+        pwdStr = $('<p />').html('Password strength: ').attr('class', 'password-strength'),
+        pwdSpn = $('<span />').attr({ 'id': 'pwd-score', 'aria-live': 'polite' }).appendTo(pwdStr);
 
-    var pwdSpn = $('<span />').attr({ 'id': 'pwd-score', 'aria-live': 'polite' }).appendTo(pwdStr);
-
-    $('#Password').delayKeyup(function (el) {
+    pwdField.after(pwdStr).delayKeyup(function (el) {
 
         var pwd = el.val();
 

@@ -1,17 +1,16 @@
 ﻿@model IdentityServer3.Core.ViewModels.AuthorizeResponseViewModel
 @{
     ViewBag.PageID = "authorize-response";
-    ViewBag.Title = "Login Successful";
+    ViewBag.Title = "You've logged in";
     ViewBag.HideSigninLink = "true";
 }
 
-<h1 class="heading-xlarge">Login successful</h1>
+<h1 class="heading-xlarge">You've logged in</h1>
 <form id="mainForm" method="post" action="@Model.ResponseFormUri">
     <div id="autoRedirect" style="display: none;">Please wait...</div>
     @Html.Raw(Model.ResponseFormFields)
 
     <div id="manualLoginContainer">
-        <p>Please click the continue button to complete your login.</p>
         <button type="submit" class="button" autofocus="autofocus">Continue</button>
     </div>
 </form>
