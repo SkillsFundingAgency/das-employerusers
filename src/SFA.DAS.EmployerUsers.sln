@@ -46,9 +46,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestRP", "TestRP\TestRP.csproj", "{15B8E7F1-F061-47CE-9938-1440CE18DBD7}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SFA.DAS.EmployerUsers.Profiles", "SFA.DAS.EmployerUsers.Profiles\SFA.DAS.EmployerUsers.Profiles.sqlproj", "{3C948EC9-82EC-428C-BE2B-1968AFC4FBE0}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SFA.DAS.EmployerUsers.Profiles.Database", "SFA.DAS.EmployerUsers.Profiles.Database\SFA.DAS.EmployerUsers.Profiles.Database.sqlproj", "{3C948EC9-82EC-428C-BE2B-1968AFC4FBE0}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SFA.DAS.EmployerUsers.Users", "SFA.DAS.EmployerUsers.Users\SFA.DAS.EmployerUsers.Users.sqlproj", "{4962E8D7-81E4-4D45-B075-D89B24A5C063}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SFA.DAS.EmployerUsers.Users.Database", "SFA.DAS.EmployerUsers.Users.Database\SFA.DAS.EmployerUsers.Users.Database.sqlproj", "{4962E8D7-81E4-4D45-B075-D89B24A5C063}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.EndToEndTests", "SFA.DAS.EmployerUsers.EndToEndTests\SFA.DAS.EmployerUsers.EndToEndTests.csproj", "{3A9932D1-7A24-4557-A1E2-3F2342924D16}"
 EndProject
