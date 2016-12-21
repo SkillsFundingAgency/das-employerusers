@@ -97,7 +97,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
         }
 
 
-
+        [Test]
         protected async Task ThenItShouldIncludeCorrectTokenValue(string key, string value)
         {
             // Act
