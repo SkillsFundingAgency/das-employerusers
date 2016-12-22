@@ -27,5 +27,11 @@ namespace TestRP.Controllers
 
             return new RedirectResult($"https://localhost:44334/identity/connect/endsession?id_token_hint={idToken}&post_logout_redirect_uri=http://localhost:17995/");
         }
+
+        [Authorize]
+        public ActionResult RegistrationComplete()
+        {
+            return RedirectToAction("Index");
+        }
     }
 }
