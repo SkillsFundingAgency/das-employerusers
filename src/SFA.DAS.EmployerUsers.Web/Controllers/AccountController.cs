@@ -279,7 +279,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             {
                 return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
             }
-            return View();
+            return View(model);
         }
 
         [HttpPost]
