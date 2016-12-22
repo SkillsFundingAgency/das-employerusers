@@ -88,8 +88,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [AttemptAuthorise]
         public async Task<ActionResult> Register(string clientId, string returnUrl)
         {
-            
-
             var loginReturnUrl = Url.Action("Index", "Home", null, Request.Url.Scheme)
                                  + "identity/connect/authorize";
             var isLocalReturnUrl = returnUrl.ToLower().StartsWith(loginReturnUrl.ToLower());

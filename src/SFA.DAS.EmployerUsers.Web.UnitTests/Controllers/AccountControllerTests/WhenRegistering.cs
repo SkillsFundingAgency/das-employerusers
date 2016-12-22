@@ -31,6 +31,8 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             ArrangeControllerContext("");
 
             _accountOrchestator = new Mock<AccountOrchestrator>();
+            _accountOrchestator.Setup(o => o.StartRegistration(ClientId, ReturnUrl, true))
+                .ReturnsAsync(new RegisterViewModel());
 
             _urlHelper = new Mock<UrlHelper>();
             _urlHelper.Setup(h => h.Action("Index", "Home", null, "https"))
