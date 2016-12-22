@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using IdentityServer3.Core;
+using Microsoft.Owin.Security;
 using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Models;
@@ -87,6 +88,8 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [AttemptAuthorise]
         public ActionResult Register(string returnUrl)
         {
+            
+
             var loginReturnUrl = Url.Action("Index", "Home", null, Request.Url.Scheme)
                                  + "identity/connect/authorize";
             if (string.IsNullOrEmpty(returnUrl) || !returnUrl.ToLower().StartsWith(loginReturnUrl.ToLower()))
@@ -100,6 +103,8 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             {
                 return RedirectToAction("Confirm");
             }
+
+            _owinWrapper.ClearSignInMessageCookie();
 
             return View(new RegisterViewModel { ReturnUrl = returnUrl });
         }
@@ -145,6 +150,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             var confirmationRequired = await _accountOrchestrator.RequestConfirmAccount(userId);
             if (!confirmationRequired)
             {
+                
                 return RedirectToAction("Index", "Home");
             }
             return View("Confirm", new ActivateUserViewModel { Valid = true });

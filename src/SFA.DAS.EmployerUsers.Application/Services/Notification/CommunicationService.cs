@@ -45,9 +45,9 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
             }
             catch (Exception ex)
             {
-                _logger.Error(ex,"SendUserRegistrationMessage: Error while sending email");
+                _logger.Error(ex, "SendUserRegistrationMessage: Error while sending email");
             }
-            
+
         }
 
         public async Task SendUserAccountConfirmationMessage(User user, string messageId)
@@ -86,7 +86,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
             {
                 _logger.Error(ex, "SendAccountLockedMessage: Error while sending email");
             }
-            
+
         }
 
         public async Task ResendActivationCodeMessage(User user, string messageId)
@@ -130,6 +130,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
         public async Task SendPasswordResetCodeMessage(User user, string messageId)
         {
             var resetCode = GetUserPasswordResetCode(user);
+
             try
             {
                 await _notificationsApi.SendEmail(new Email
@@ -140,15 +141,18 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                     ReplyToAddress = ReplyToAddress,
                     Subject = "Reset Password: apprenticeship levy account",
                     Tokens = new Dictionary<string, string>
-                {
-                    { "Code", resetCode.Code }
-                }
+                        {
+                            {"Code", resetCode.Code},
+                            {"CodeExpiry", resetCode.ExpiryTime.ToString("d MMMM yyyy")},
+                            {"ReturnUrl", resetCode.ReturnUrl}
+                        }
                 });
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, "SendPasswordResetCodeMessage: Error while sending email");
             }
+
         }
 
         public async Task SendPasswordResetConfirmationMessage(User user, string messageId)
@@ -182,37 +186,37 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 });
             }
             catch (Exception ex)
-        
+
 
             {
                 _logger.Error(ex, "SendConfirmEmailChangeMessage: Error while sending email");
             }
-            
+
         }
-        
-		public async Task SendNoAccountToPasswordResetMessage(string emailAddress, string messageId, string registerUrl)
+
+        public async Task SendNoAccountToPasswordResetMessage(string emailAddress, string messageId, string registerUrl)
         {
-			try
-			{
-	            await _notificationsApi.SendEmail(new Email
-	            {
-	                SystemId = messageId,
-	                TemplateId = "ForgottenPasswordNoAccount",
-	                RecipientsAddress = emailAddress,
-	                ReplyToAddress = ReplyToAddress,
-	                Subject = "Reset Password: apprenticeship levy account",
-	                Tokens = new Dictionary<string, string>
-	                {
-	                    {"RegisterUrl",registerUrl}
-	                }
-	            });
-			}
-			catch(Exception ex)
-			{
+            try
+            {
+                await _notificationsApi.SendEmail(new Email
+                {
+                    SystemId = messageId,
+                    TemplateId = "ForgottenPasswordNoAccount",
+                    RecipientsAddress = emailAddress,
+                    ReplyToAddress = ReplyToAddress,
+                    Subject = "Reset Password: apprenticeship levy account",
+                    Tokens = new Dictionary<string, string>
+                    {
+                        {"RegisterUrl",registerUrl}
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
                 _logger.Error(ex, "SendNoAccountToPasswordResetMessage: Error while sending email");
             }
         }
-		
+
         private SecurityCode GetUserAccessCode(User user)
         {
             return user.SecurityCodes.Where(sc => sc.CodeType == SecurityCodeType.AccessCode)

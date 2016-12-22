@@ -4,16 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <Name>SFA.DAS.EmployerUsers.Profiles</Name>
+    <Name>SFA.DAS.EmployerUsers.Users.Database</Name>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
-    <ProjectGuid>{3c948ec9-82ec-428c-be2b-1968afc4fbe0}</ProjectGuid>
-    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
+    <ProjectGuid>{4962e8d7-81e4-4d45-b075-d89b24a5c063}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
     <RootPath>
     </RootPath>
-    <RootNamespace>SFA.DAS.EmployerUsers.Profiles</RootNamespace>
-    <AssemblyName>SFA.DAS.EmployerUsers.Profiles</AssemblyName>
+    <RootNamespace>SFA.DAS.EmployerUsers.Users</RootNamespace>
+    <AssemblyName>SFA.DAS.EmployerUsers.Users</AssemblyName>
     <ModelCollation>1033, CI</ModelCollation>
     <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
     <DeployToDatabase>True</DeployToDatabase>
@@ -23,6 +23,7 @@
     <SqlServerVerification>False</SqlServerVerification>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
+    <TargetDatabase>SFA.DAS.EmployerUsers.Users</TargetDatabase>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -57,15 +58,33 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="Tables" />
     <Folder Include="StoredProcedures" />
+    <Folder Include="Tables" />
     <Folder Include="SeedData" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Tables\RelyingParty.sql" />
+    <Build Include="Tables\User.sql" />
+    <Build Include="Tables\UserPasswordHistory.sql" />
+    <Build Include="Tables\UserSecurityCode.sql" />
+    <Build Include="StoredProcedures\CreateHistoricalPassword.sql" />
+    <Build Include="StoredProcedures\CreateUser.sql" />
+    <Build Include="StoredProcedures\CreateUserSecurityCode.sql" />
+    <Build Include="StoredProcedures\DeleteHistoricalPassword.sql" />
+    <Build Include="StoredProcedures\DeleteUserSecurityCode.sql" />
+    <Build Include="StoredProcedures\GetAllRelyingParties.sql" />
+    <Build Include="StoredProcedures\GetUserByEmail.sql" />
+    <Build Include="StoredProcedures\GetUserById.sql" />
+    <Build Include="StoredProcedures\GetUserPasswordHistory.sql" />
+    <Build Include="StoredProcedures\GetUserSecurityCodes.sql" />
+    <Build Include="StoredProcedures\UpdateUser.sql" />
+    <Build Include="StoredProcedures\DeleteAllUserSecurityCodes.sql" />
+    <Build Include="StoredProcedures\DeleteUserPasswordHistory.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="SeedData\SeedData.sql" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="StoredProcedures\GetAllPasswordProfiles.sql" />
-    <Build Include="Tables\PasswordProfile.sql" />
+    <None Include="Database.Publish.xml" />
   </ItemGroup>
 </Project>
