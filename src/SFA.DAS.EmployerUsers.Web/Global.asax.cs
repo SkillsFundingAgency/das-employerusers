@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
@@ -17,6 +18,7 @@ namespace SFA.DAS.EmployerUsers.Web
             TelemetryConfiguration.Active.InstrumentationKey = CloudConfigurationManager.GetSetting("InstrumentationKey");
 
             MvcHandler.DisableMvcResponseHeader = true;
+            AntiForgeryConfig.SuppressXFrameOptionsHeader = true;
 
             LoggingConfig.ConfigureLogging();
             AreaRegistration.RegisterAllAreas();
