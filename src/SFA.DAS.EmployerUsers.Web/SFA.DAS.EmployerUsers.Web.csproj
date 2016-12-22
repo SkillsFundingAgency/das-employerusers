@@ -305,6 +305,7 @@
     <Compile Include="Models\ConfirmChangeEmailViewModel.cs" />
     <Compile Include="Models\LoginResultModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\OrchestratorResponse.cs" />
     <Compile Include="Models\PasswordResetViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Models\RequestPasswordResetViewModel.cs" />
