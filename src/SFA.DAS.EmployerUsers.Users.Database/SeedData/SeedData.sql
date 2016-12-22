@@ -12,7 +12,7 @@ Post-Deployment Script Template
 IF NOT EXISTS(Select 1 from dbo.RelyingParty where Id='testrp' and ApplicationUrl='http://localhost:17995/')
 BEGIN
 	INSERT INTO dbo.RelyingParty (Id,Name,RequireConsent,ApplicationUrl,LogoutUrl,Flow,ClientSecret)
-	VALUES ('testrp','Test relying party',0,'http://localhost:17995/','http://localhost:17995/',1,'rsgISEW0GmlS1Gy6ocm3mGWUh//RM3ltldBbpF2QlsI=')
+	VALUES ('testrp','Test relying party',0,'http://localhost:17995/','http://localhost:17995/',0,'rsgISEW0GmlS1Gy6ocm3mGWUh//RM3ltldBbpF2QlsI=')
 END
 
 IF NOT EXISTS(Select 1 from dbo.RelyingParty where Id='employerportal' and ApplicationUrl='http://localhost:58887/')
