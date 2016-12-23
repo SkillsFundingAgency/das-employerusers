@@ -3,7 +3,7 @@ using SFA.DAS.EmployerUsers.Application.Validation;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail
 {
-    public class RequestChangeEmailCommandValidator : IValidator<RequestChangeEmailCommand>
+    public class RequestChangeEmailCommandValidator : BaseValidator, IValidator<RequestChangeEmailCommand>
     {
         public Task<ValidationResult> ValidateAsync(RequestChangeEmailCommand item)
         {
@@ -14,12 +14,12 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail
                 result.AddError(nameof(item.UserId));
             }
 
-            if (string.IsNullOrEmpty(item.NewEmailAddress))
+            if (string.IsNullOrEmpty(item.NewEmailAddress) || !IsEmailValid(item.NewEmailAddress))
             {
                 result.AddError(nameof(item.NewEmailAddress), "Enter a valid email address");
             }
 
-            if (string.IsNullOrEmpty(item.ConfirmEmailAddress))
+            if (string.IsNullOrEmpty(item.ConfirmEmailAddress) || !IsEmailValid(item.ConfirmEmailAddress))
             {
                 result.AddError(nameof(item.ConfirmEmailAddress), "Re-type email address");
             }
