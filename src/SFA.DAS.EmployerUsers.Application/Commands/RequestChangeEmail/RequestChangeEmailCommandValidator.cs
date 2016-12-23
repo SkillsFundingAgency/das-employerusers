@@ -9,15 +9,29 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail
         {
             var result = new ValidationResult();
 
-            if (string.IsNullOrEmpty(item.UserId) || string.IsNullOrEmpty(item.NewEmailAddress))
+            if (string.IsNullOrEmpty(item.UserId))
             {
-                result.ValidationDictionary.Add("", "");
+                result.AddError(nameof(item.UserId));
+            }
+
+            if (string.IsNullOrEmpty(item.NewEmailAddress))
+            {
+                result.AddError(nameof(item.NewEmailAddress), "Enter a valid email address");
+            }
+
+            if (string.IsNullOrEmpty(item.ConfirmEmailAddress))
+            {
+                result.AddError(nameof(item.ConfirmEmailAddress), "Re-type email address");
+            }
+
+            if (!result.IsValid())
+            {
                 return Task.FromResult(result);
             }
 
             if (!item.NewEmailAddress.Equals(item.ConfirmEmailAddress, System.StringComparison.CurrentCultureIgnoreCase))
             {
-                result.ValidationDictionary.Add("ConfirmEmailAddress", "Confirm email address does not match new email address");
+                result.AddError(nameof(item.ConfirmEmailAddress), "Emails don't match");
             }
 
             return Task.FromResult(result);

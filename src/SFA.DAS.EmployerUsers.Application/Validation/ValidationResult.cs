@@ -16,6 +16,11 @@ namespace SFA.DAS.EmployerUsers.Application.Validation
         {
             ValidationDictionary.Add(propertyName, validationError);
         }
+        public void AddError(string propertyName)
+        {
+            ValidationDictionary.Add(propertyName, $"{propertyName} has not been supplied");
+        }
+
         public bool IsValid()
         {
             if (ValidationDictionary == null)

@@ -1,20 +1,9 @@
 ﻿
-@model SFA.DAS.EmployerUsers.Web.Models.ChangeEmailViewModel
+@model SFA.DAS.EmployerUsers.Web.Models.OrchestratorResponse<SFA.DAS.EmployerUsers.Web.Models.ChangeEmailViewModel>
 
 @{
     ViewBag.PageID = "page-change-email-address";
     ViewBag.Title = "Change your email address";
-}
-
-@if (!Model.Valid)
-{
-    <div class="error-summary" role="group" tabindex="-1">
-        <h1 class="heading-medium error-summary-heading" id="error-summary-heading"> Errors to fix </h1>
-        <p>Check the following details:</p>
-        <ul class="error-summary-list">
-            
-        </ul>
-    </div>
 }
 
 <h1 class="heading-xlarge"> Change your email address </h1>
@@ -25,13 +14,26 @@
     <fieldset>
         <legend class="visuallyhidden">New email address</legend>
 
-        <div class="form-group">
-            <label class="form-label-bold" for="NewEmailAddress">New email address</label>
+        <div class="form-group @(!string.IsNullOrEmpty(Model.Data.NewEmailAddressError)? "error" : "")">
+            <label class="form-label-bold" for="NewEmailAddress">
+                <span>New email address</span>
+                @if (!string.IsNullOrEmpty(Model.Data.NewEmailAddressError))
+                {
+                    <span class="error-message" id="error-message-email">@Model.Data.NewEmailAddressError</span>
+                }
+            </label>
             <input autofocus="autofocus" aria-required="true" class="form-control" id="NewEmailAddress" name="NewEmailAddress">
         </div>
 
-        <div class="form-group">
-            <label class="form-label-bold" for="ConfirmEmailAddress">Re-type email addresss</label>
+        <div class="form-group @(!string.IsNullOrEmpty(Model.Data.ConfirmEmailAddressError) ? "error" : "")">
+            <label class="form-label-bold" for="ConfirmEmailAddress">
+                <span>Re-type email addresss</span>
+
+                @if (!string.IsNullOrEmpty(Model.Data.ConfirmEmailAddressError))
+                {
+                    <span class="error-message" id="error-message-email">@Model.Data.ConfirmEmailAddressError</span>
+                }
+            </label>
             <input aria-required="true" class="form-control" id="ConfirmEmailAddress" name="ConfirmEmailAddress">
         </div>
     </fieldset>

@@ -277,7 +277,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         public async Task<ActionResult> ChangeEmail(string clientId, string returnUrl)
         {
             var model = await _accountOrchestrator.StartRequestChangeEmail(clientId, returnUrl);
-            if (!model.Valid)
+            if (!model.Data.Valid)
             {
                 return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
             }
@@ -294,7 +294,12 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             model.ClientId = clientId;
             model.ReturnUrl = returnUrl;
 
-            await _accountOrchestrator.RequestChangeEmail(model);
+            var response = await _accountOrchestrator.RequestChangeEmail(model);
+
+            if (response.Status == HttpStatusCode.BadRequest)
+            {
+                return View("ChangeEmail", response);
+            }
 
             return RedirectToAction("ConfirmChangeEmail");
         }
