@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
+using IdentityServer3.Core.Models;
 using IdentityServer3.Core.ViewModels;
+using SFA.DAS.EmployerUsers.Web.Models;
 
 namespace SFA.DAS.EmployerUsers.Web.Controllers
 {
@@ -18,6 +16,15 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 return HttpNotFound();
             }
             return View(model);
+        }
+
+        public ActionResult Logout(LoggedOutViewModel model, SignOutMessage message)
+        {
+            return View(new LogOutViewModel
+            {
+                IdsLogoutModel = model,
+                SignOutMessage = message
+            });
         }
     }
 }

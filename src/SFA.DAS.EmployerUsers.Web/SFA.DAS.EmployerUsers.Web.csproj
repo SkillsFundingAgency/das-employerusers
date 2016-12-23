@@ -306,7 +306,8 @@
     <Compile Include="Models\FlashMessageViewModel.cs" />
     <Compile Include="Models\LoginResultModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
-    <Compile Include="Models\OrchestratorResponse.cs" />
+<Compile Include="Models\LogOutViewModel.cs" />
+<Compile Include="Models\OrchestratorResponse.cs" />
     <Compile Include="Models\PasswordResetViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Models\RequestPasswordResetViewModel.cs" />
@@ -461,6 +462,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\Logout.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
@@ -745,7 +747,8 @@
     <Content Include="src\sass\_panels.scss" />
     <Content Include="src\sass\_tables.scss" />
     <Content Include="src\sass\_typography.scss" />
-    <Content Include="Views\Shared\_InfoMessages.cshtml" />
+<Content Include="Views\Login\Logout.cshtml" />
+<Content Include="Views\Shared\_InfoMessages.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -1,0 +1,21 @@
+﻿@model SFA.DAS.EmployerUsers.Web.Models.LogOutViewModel
+@{
+    ViewBag.PageID = "logout";
+    ViewBag.Title = "Logged out";
+    ViewBag.HideSigninLink = "true";
+}
+
+@foreach (var url in Model.IdsLogoutModel.IFrameUrls)
+{
+    <iframe style="display:none;" src="@url"></iframe>
+}
+
+<div id="NoJsContainer">
+    <h1 class="heading-xlarge">You've logged out</h1>
+    <a href="@Model.SignOutMessage.ReturnUrl" class="button" autofocus="autofocus">Continue</a>
+</div>
+
+@section scripts
+{
+    <script src="@Url.Content("~/Scripts/Logout.js")"></script>
+}
