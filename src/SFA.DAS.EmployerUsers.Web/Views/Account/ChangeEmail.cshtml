@@ -6,6 +6,8 @@
     ViewBag.Title = "Change your email address";
 }
 
+<a href="@Model.ReturnUrl" class="link-back">Back</a>
+
 @if (!Model.Valid)
 {
     <div class="error-summary" role="group" tabindex="-1">

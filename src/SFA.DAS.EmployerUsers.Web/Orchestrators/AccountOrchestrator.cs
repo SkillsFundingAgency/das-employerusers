@@ -306,8 +306,14 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
         public virtual async Task<ChangeEmailViewModel> StartRequestChangeEmail(string clientId, string returnUrl)
         {
-            var model = new ChangeEmailViewModel();
+            var model = new ChangeEmailViewModel
+            {
+                ReturnUrl = returnUrl,
+                ClientId = clientId
+            };
+
             await ValidateClientIdReturnUrlCombo(clientId, returnUrl, model);
+
             return model;
         }
         public virtual async Task<ChangeEmailViewModel> RequestChangeEmail(ChangeEmailViewModel model)
@@ -369,8 +375,14 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
         public virtual async Task<ChangePasswordViewModel> StartChangePassword(string clientId, string returnUrl)
         {
-            var model = new ChangePasswordViewModel();
+            var model = new ChangePasswordViewModel
+            {
+                ReturnUrl = returnUrl,
+                ClientId = clientId
+            };
+
             await ValidateClientIdReturnUrlCombo(clientId, returnUrl, model);
+
             return model;
         }
         public virtual async Task<ChangePasswordViewModel> ChangePassword(ChangePasswordViewModel model)
