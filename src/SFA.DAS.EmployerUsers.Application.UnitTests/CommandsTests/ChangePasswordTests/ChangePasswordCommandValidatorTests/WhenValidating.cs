@@ -178,6 +178,34 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
             Assert.IsTrue(actual.IsValid());
         }
 
+        [TestCase("password", "", false, true)]
+        [TestCase("password", null, false, true)]
+        [TestCase("", "password", true, false)]
+        [TestCase(null, "password", true, false)]
+        [TestCase("", "", true, true)]
+        [TestCase(null, null, true, true)]
+        public async Task ThenItShouldReturnAnInvalidModelWhenValuesMissing(string currentPassword, string newPassword, bool expectCurrentPasswordError, bool expectNewPasswordError)
+        {
+            // Arrange
+            _command.CurrentPassword = currentPassword;
+            _command.NewPassword = newPassword;
+
+            // Act
+            var actual = await _validator.ValidateAsync(_command);
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsFalse(actual.IsValid());
+            if (expectCurrentPasswordError)
+            {
+                Assert.IsTrue(actual.ValidationDictionary.ContainsKey("CurrentPassword"));
+            }
+            if (expectNewPasswordError)
+            {
+                Assert.IsTrue(actual.ValidationDictionary.ContainsKey("NewPassword"));
+            }
+        }
+
 
 
         private void AssertExpectedValidationErrorExists(ValidationResult result, string key, string message)
