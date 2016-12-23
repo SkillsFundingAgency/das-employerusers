@@ -102,6 +102,7 @@
         </div>
     </div>
 <main id="content" role="main">
+    @RenderSection("breadcrumb", required: false)
 
     @Html.Partial(@"_InfoMessages", Model as OrchestratorResponse)
 

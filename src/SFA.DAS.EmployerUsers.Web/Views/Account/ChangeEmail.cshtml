@@ -6,8 +6,6 @@
     ViewBag.Title = "Change your email address";
 }
 
-<a href="@Model.ReturnUrl" class="link-back">Back</a>
-
 <h1 class="heading-xlarge"> Change your email address </h1>
 
 <form method="post">
@@ -16,7 +14,7 @@
     <fieldset>
         <legend class="visuallyhidden">New email address</legend>
 
-        <div class="form-group @(!string.IsNullOrEmpty(Model.Data.NewEmailAddressError)? "error" : "")">
+        <div class="form-group @(!string.IsNullOrEmpty(Model.Data.NewEmailAddressError) ? "error" : "")">
             <label class="form-label-bold" for="NewEmailAddress">
                 <span>New email address</span>
                 @if (!string.IsNullOrEmpty(Model.Data.NewEmailAddressError))
@@ -41,3 +39,11 @@
     </fieldset>
     <button type="submit" class="button">Continue</button>
 </form>
+
+@section breadcrumb {
+    <div class="breadcrumbs">
+        <ol role="navigation">
+            <li><a href="@Model.Data.ReturnUrl" class="back-link">Back</a></li>
+        </ol>
+    </div>
+}
