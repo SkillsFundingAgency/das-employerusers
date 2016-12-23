@@ -78,7 +78,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
             await _commandHandler.Handle(command);
 
             //Assert
-            _communicationSerivce.Verify(x => x.SendNoAccountToPasswordResetMessage(It.IsAny<string>(), It.IsAny<string>(), RegistrationLink), Times.Once);
             _communicationSerivce.Verify(x => x.SendPasswordResetCodeMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
             _userRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
 

@@ -48,7 +48,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
 
             if (existingUser == null)
             {
-                //await _communicationService.SendNoAccountToPasswordResetMessage(message.Email, Guid.NewGuid().ToString(), _linkBuilder.GetRegistrationUrl());
                 _logger.Info($"Request to reset email for unknown email address : '{message.Email}'");
                 return;
             }
