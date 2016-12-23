@@ -1,4 +1,5 @@
 ﻿@using Microsoft.ApplicationInsights.Extensibility
+@using SFA.DAS.EmployerUsers.Web.Models
 <!DOCTYPE html>
 <!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
 <!--[if gt IE 8]><!-->
@@ -100,9 +101,12 @@
             </div>
         </div>
     </div>
-    <main id="content" role="main">
-        @RenderBody()
-    </main><!-- / #content -->
+<main id="content" role="main">
+
+    @Html.Partial(@"_InfoMessages", Model as OrchestratorResponse)
+
+    @RenderBody()
+</main><!-- / #content -->
     <footer class="group js-footer" id="footer" role="contentinfo">
         <div class="footer-wrapper">
             <div class="footer-meta">
