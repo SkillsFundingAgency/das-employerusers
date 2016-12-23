@@ -13,6 +13,7 @@ namespace SFA.DAS.EmployerUsers.Application.Validation
             return emailAddress != null && _regex.Match(emailAddress).Length > 0;
         }
 
+        // REF: https://referencesource.microsoft.com/#System.ComponentModel.DataAnnotations/DataAnnotations/EmailAddressAttribute.cs
         private static Regex CreateRegEx()
         {
 
@@ -37,7 +38,7 @@ namespace SFA.DAS.EmployerUsers.Application.Validation
                 // Fallback on error
             }
 
-            // Legacy fallback (without explicit match timeout)
+       
             return new Regex(pattern, options);
         }
     }
