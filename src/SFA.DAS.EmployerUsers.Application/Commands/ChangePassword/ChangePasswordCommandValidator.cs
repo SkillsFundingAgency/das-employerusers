@@ -22,6 +22,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ChangePassword
         {
             var result = new ValidationResult();
 
+            if (!ValidateComandHasRequiredValues(item, result))
+            {
+                return result;
+            }
+
             await ValidateCurrentPasswordMatchesUser(item, result);
             await ValidateNewPasswordNotInRecentHistory(item, result);
             ValidateNewPasswordMeetsSecurityRequirements(item, result);
@@ -30,6 +35,23 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ChangePassword
             return result;
         }
 
+        private bool ValidateComandHasRequiredValues(ChangePasswordCommand command, ValidationResult result)
+        {
+            var isValid = true;
+
+            if (string.IsNullOrEmpty(command.CurrentPassword))
+            {
+                isValid = false;
+                result.AddError("CurrentPassword", "Current password is required");
+            }
+            if (string.IsNullOrEmpty(command.NewPassword))
+            {
+                isValid = false;
+                result.AddError("NewPassword", "New password is required");
+            }
+
+            return isValid;
+        }
         private async Task ValidateCurrentPasswordMatchesUser(ChangePasswordCommand command, ValidationResult result)
         {
             var passwordsMatch = await _passwordService.VerifyAsync(command.CurrentPassword, command.User.Password,
