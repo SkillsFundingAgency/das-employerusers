@@ -108,7 +108,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
                     Data = new LoginResultModel(),
                     Status = HttpStatusCode.BadRequest,FlashMessage = new FlashMessageViewModel
                         {
-                            ErrorMessages = new Dictionary<string, string>()
+                            ErrorMessages = new Dictionary<string, string> { { "Error","My Error"} }
                         }
                 });
                 
@@ -118,6 +118,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             //Assert
             Assert.IsNotNull(actual);
             Assert.AreEqual("",actual.ViewName);
+            var actualModel = actual.Model as OrchestratorResponse<LoginViewModel>;
+            Assert.IsNotNull(actualModel);
+            Assert.AreEqual(1,actualModel.FlashMessage.ErrorMessages.Count);
+            Assert.AreEqual(HttpStatusCode.BadRequest,actualModel.Status);
         }
     }
 }
