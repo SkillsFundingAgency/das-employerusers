@@ -1,6 +1,9 @@
 ﻿using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail;
+using SFA.DAS.EmployerUsers.Domain;
+using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestChangeEmailTests.RequestChangeEmailCommandValidatorTests
 {
@@ -8,6 +11,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestChang
     {
         private RequestChangeEmailCommand _command;
         private RequestChangeEmailCommandValidator _validator;
+        private Mock<IUserRepository> _userRepository;
 
         [SetUp]
         public void Arrange()
@@ -19,7 +23,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestChang
                 ConfirmEmailAddress = "user.one@unit.tests"
             };
 
-            _validator = new RequestChangeEmailCommandValidator();
+            _userRepository = new Mock<IUserRepository>();
+            _userRepository.Setup(x => x.GetByEmailAddress(It.IsAny<string>())).ReturnsAsync((User)null);
+
+            _validator = new RequestChangeEmailCommandValidator(_userRepository.Object);
         }
 
         [Test]
@@ -83,5 +90,19 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestChang
             Assert.IsTrue(actual.ValidationDictionary.ContainsKey("NewEmailAddress"));
         }
 
+        [Test]
+        public async Task ThenIfTheEmailIsAlreadyRegisteredAnErrorIsReturned()
+        {
+            //Arrange
+            _userRepository.Setup(x => x.GetByEmailAddress(It.IsAny<string>())).ReturnsAsync(new User());
+
+            // Act
+            var actual = await _validator.ValidateAsync(_command);
+
+            //Assert
+            Assert.IsFalse(actual.IsValid());
+            Assert.IsTrue(actual.ValidationDictionary.ContainsKey("NewEmailAddress"));
+        }
+        
     }
 }

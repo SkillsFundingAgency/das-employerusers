@@ -1,11 +1,19 @@
 ﻿using System.Threading.Tasks;
 using SFA.DAS.EmployerUsers.Application.Validation;
+using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail
 {
     public class RequestChangeEmailCommandValidator : BaseValidator, IValidator<RequestChangeEmailCommand>
     {
-        public Task<ValidationResult> ValidateAsync(RequestChangeEmailCommand item)
+        private readonly IUserRepository _userRepository;
+
+        public RequestChangeEmailCommandValidator(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
+        public async Task<ValidationResult> ValidateAsync(RequestChangeEmailCommand item)
         {
             var result = new ValidationResult();
 
@@ -26,7 +34,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail
 
             if (!result.IsValid())
             {
-                return Task.FromResult(result);
+                return result;
             }
 
             if (!item.NewEmailAddress.Equals(item.ConfirmEmailAddress, System.StringComparison.CurrentCultureIgnoreCase))
@@ -34,7 +42,16 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail
                 result.AddError(nameof(item.ConfirmEmailAddress), "Emails don't match");
             }
 
-            return Task.FromResult(result);
+            if (result.IsValid())
+            {
+                var user = await _userRepository.GetByEmailAddress(item.NewEmailAddress);
+                if (user != null)
+                {
+                    result.AddError(nameof(item.NewEmailAddress), "Email address already registered");
+                }
+            }
+
+            return result;
         }
     }
 }
