@@ -10,6 +10,6 @@ namespace SFA.DAS.EmployerUsers.Web.Models
         public bool ResetCodeSent { get; set; }
 
         public string EmailError => GetErrorMessage(nameof(Email));
-
+        public string ReturnUrl { get; set; }
     }
 }

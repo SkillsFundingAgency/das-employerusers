@@ -9,5 +9,6 @@
         public string ReturnUrl { get; set; }
         public string PasswordError => GetErrorMessage(nameof(Password));
         public string EmailAddressError => GetErrorMessage(nameof(EmailAddress));
+        public string ClientId { get; set; }
     }
 }

@@ -16,6 +16,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
         private const string NewEmailAddress = "user@unit.tests";
         private const string ConfirmationCode = "ABC123";
         public const string MessageId = "MESSAGE1";
+        public const string ReturnUrl = "http://returnurl";
 
         private User _user;
         private Mock<INotificationsApi> _notificationsApi;
@@ -36,7 +37,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
                         Code = ConfirmationCode,
                         CodeType = SecurityCodeType.ConfirmEmailCode,
                         ExpiryTime = DateTime.MaxValue,
-                        PendingValue = NewEmailAddress
+                        PendingValue = NewEmailAddress,
+                        ReturnUrl = ReturnUrl
                     }
                 }
             };
@@ -84,7 +86,12 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
             await _communicationService.SendConfirmEmailChangeMessage(_user, MessageId);
 
             // Assert
-            _notificationsApi.Verify(c => c.SendEmail(It.Is<Email>(n => n.Tokens.ContainsKey("ConfirmEmailCode") && n.Tokens["ConfirmEmailCode"] == ConfirmationCode)), Times.Once);
+            _notificationsApi.Verify(c => c.SendEmail(It.Is<Email>(
+                n => 
+                n.Tokens.ContainsKey("Code") && n.Tokens["Code"] == ConfirmationCode &&
+                n.Tokens.ContainsKey("CodeExpiry") && n.Tokens["CodeExpiry"] == DateTime.MaxValue.ToString("d MMMM yyyy") &&
+                n.Tokens.ContainsKey("ReturnUrl") && n.Tokens["ReturnUrl"] == ReturnUrl
+                )), Times.Once);
         }
 
     }

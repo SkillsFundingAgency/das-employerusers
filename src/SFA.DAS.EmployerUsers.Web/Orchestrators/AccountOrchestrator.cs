@@ -292,7 +292,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             {
                 await _mediator.SendAsync(new RequestPasswordResetCodeCommand
                 {
-                    Email = model.Email
+                    Email = model.Email,
+                    ReturnUrl = model.ReturnUrl
                 });
 
                 model.ResetCodeSent = true;
@@ -471,6 +472,22 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         }
 
 
+        public async Task<RequestPasswordResetViewModel> StartForgottenPassword(string clientId)
+        {
+            var model = new RequestPasswordResetViewModel();
+            var relyingParty = await _mediator.SendAsync(new GetRelyingPartyQuery { Id = clientId });
+
+            if (relyingParty == null)
+            {
+                AddInvalidClientIdReturnUrlMessage(model);
+            }
+            else
+            {
+                model.ReturnUrl = relyingParty.ApplicationUrl;
+            }
+
+            return model;
+        }
 
         private void LoginUser(string id, string firstName, string lastName)
         {
@@ -484,19 +501,25 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             var isValid = await IsValidClientIdReturnUrlCombo(clientId, returnUrl);
             if (!isValid)
             {
-                if (model.ErrorDictionary == null)
-                {
-                    model.ErrorDictionary = new System.Collections.Generic.Dictionary<string, string>();
-                }
-                model.ErrorDictionary.Add("", "Invalid client id / return url");
+                AddInvalidClientIdReturnUrlMessage(model);
                 return false;
             }
             return true;
         }
+
         private async Task<bool> IsValidClientIdReturnUrlCombo(string clientId, string returnUrl)
         {
             var relyingParty = await _mediator.SendAsync(new GetRelyingPartyQuery { Id = clientId });
             return relyingParty != null && returnUrl.StartsWith(relyingParty.ApplicationUrl);
+        }
+
+        private static void AddInvalidClientIdReturnUrlMessage(ViewModelBase model)
+        {
+            if (model.ErrorDictionary == null)
+            {
+                model.ErrorDictionary = new Dictionary<string, string>();
+            }
+            model.ErrorDictionary.Add("", "Invalid client id / return url");
         }
 
     }

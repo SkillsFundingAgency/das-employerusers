@@ -58,7 +58,8 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
                 {
                     Code = _codeGenerator.GenerateAlphaNumeric(),
                     CodeType = SecurityCodeType.PasswordResetCode,
-                    ExpiryTime = DateTimeProvider.Current.UtcNow.AddDays(1)
+                    ExpiryTime = DateTimeProvider.Current.UtcNow.AddDays(1),
+                    ReturnUrl = message.ReturnUrl
                 });
 
                 await _userRepository.Update(existingUser);

@@ -181,7 +181,9 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                     Subject = "Change your apprenticeship levy account email address",
                     Tokens = new Dictionary<string, string>
                 {
-                    { "ConfirmEmailCode", code.Code }
+                    {"Code", code.Code},
+                    {"CodeExpiry", code.ExpiryTime.ToString("d MMMM yyyy")},
+                    {"ReturnUrl", code.ReturnUrl}
                 }
                 });
             }

@@ -32,14 +32,15 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
         [HttpGet]
         [Route("identity/employer/login")]
-        public ActionResult Login(string id)
+        public ActionResult Login(string id, string clientId)
         {
             var signinMessage = _owinWrapper.GetSignInMessage(id);
             var model = new OrchestratorResponse<LoginViewModel>
             {
                 Data = new LoginViewModel
                 { 
-                    ReturnUrl = signinMessage.ReturnUrl
+                    ReturnUrl = signinMessage.ReturnUrl,
+                    ClientId = clientId
                 }
             };
             return View(model);
@@ -245,9 +246,17 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
         [HttpGet]
         [Route("account/forgottencredentials")]
-        public ActionResult ForgottenCredentials()
+        public async Task<ActionResult> ForgottenCredentials(string clientId)
         {
-            return View("ForgottenCredentials", new RequestPasswordResetViewModel());
+
+            var model = await _accountOrchestrator.StartForgottenPassword(clientId);
+
+            if (!model.Valid)
+            {
+                return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
+            }
+
+            return View("ForgottenCredentials", model);
         }
 
         [HttpPost]
