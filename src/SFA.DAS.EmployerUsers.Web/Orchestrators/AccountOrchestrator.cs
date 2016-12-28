@@ -67,7 +67,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                         {
                             ErrorMessages = new Dictionary<string, string> {
                                 {
-                                    nameof(loginViewModel.EmailAddress), "Invalid credentials"
+                                    "", "Invalid credentials"
                                 } },
                             Severity = FlashMessageSeverityLevel.Error,
                             Headline = "Errors to fix",

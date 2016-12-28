@@ -78,6 +78,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 };
                 response.FlashMessage = result.FlashMessage;
                 response.Status = result.Status;
+                response.Data.ErrorDictionary = result.FlashMessage.ErrorMessages;
 
                 return View(response);
             }

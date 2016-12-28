@@ -1,12 +1,16 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using IdentityServer3.Core.Models;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Controllers;
 using SFA.DAS.EmployerUsers.Web.Models;
+using SFA.DAS.EmployerUsers.Web.Models.SFA.DAS.EAS.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
@@ -93,6 +97,27 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             // Assert
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual.RouteValues.Any(v => v.Key == "action" && (string)v.Value == "Unlock"));
+        }
+
+        [Test]
+        public async Task ThenTheLoginViewWillBeReturnedWhenThereAreValidationErrors()
+        {
+            //Arrange
+            _orchestrator.Setup(o => o.Login(It.IsAny<LoginViewModel>()))
+                .ReturnsAsync(new OrchestratorResponse<LoginResultModel> {
+                    Data = new LoginResultModel(),
+                    Status = HttpStatusCode.BadRequest,FlashMessage = new FlashMessageViewModel
+                        {
+                            ErrorMessages = new Dictionary<string, string>()
+                        }
+                });
+                
+            // Act
+            var actual = await _controller.Login(Id, new LoginViewModel()) as ViewResult;
+
+            //Assert
+            Assert.IsNotNull(actual);
+            Assert.AreEqual("",actual.ViewName);
         }
     }
 }
