@@ -22,8 +22,7 @@ namespace SFA.DAS.EmployerUsers.Web.Plumbing.Ids
             _clientStore = clientStore;
             _scopeStore = scopeStore;
 
-            var connectionMultiplexer = ConnectionMultiplexer.Connect(CloudConfigurationManager.GetSetting("AuthCodeCacheConnectionString"));
-            _cache = connectionMultiplexer.GetDatabase();
+            _cache = GetDatabase();
         }
 
         public async Task StoreAsync(string key, AuthorizationCode value)
@@ -41,14 +40,43 @@ namespace SFA.DAS.EmployerUsers.Web.Plumbing.Ids
             await _cache.KeyDeleteAsync(key);
         }
 
-        public Task<IEnumerable<ITokenMetadata>> GetAllAsync(string subject)
+        public async Task<IEnumerable<ITokenMetadata>> GetAllAsync(string subject)
         {
-            throw new NotImplementedException();
+            var matches = new List<ITokenMetadata>();
+
+            var server = GetServer();
+            var keys = server.Keys();
+            foreach (var key in keys)
+            {
+                var code = await GetAsync(key);
+                if (code.SubjectId == subject)
+                {
+                    matches.Add(code);
+                }
+            }
+
+            return matches;
         }
 
-        public Task RevokeAsync(string subject, string client)
+        public async Task RevokeAsync(string subject, string client)
         {
-            throw new NotImplementedException();
+            var toDelete = new List<string>();
+
+            var server = GetServer();
+            var keys = server.Keys();
+            foreach (var key in keys)
+            {
+                var code = await GetAsync(key);
+                if (code.SubjectId == subject && code.ClientId == client)
+                {
+                    toDelete.Add(key);
+                }
+            }
+
+            foreach (var key in toDelete)
+            {
+                await RemoveAsync(key);
+            }
         }
 
 
@@ -68,6 +96,27 @@ namespace SFA.DAS.EmployerUsers.Web.Plumbing.Ids
             settings.Converters.Add(new ClientConverter(_clientStore));
             settings.Converters.Add(new ScopeConverter(_scopeStore));
             return settings;
+        }
+
+        private IDatabase GetDatabase()
+        {
+            var connectionMultiplexer = GetConnectionMultiplexer();
+            return connectionMultiplexer.GetDatabase();
+        }
+        private IServer GetServer()
+        {
+            var connectionMultiplexer = GetConnectionMultiplexer();
+            var connectionString = GetConnectionString();
+            var serverAndPort = connectionString.Substring(0, connectionString.IndexOf(','));
+            return connectionMultiplexer.GetServer(serverAndPort);
+        }
+        private static ConnectionMultiplexer GetConnectionMultiplexer()
+        {
+            return ConnectionMultiplexer.Connect(GetConnectionString());
+        }
+        private static string GetConnectionString()
+        {
+            return CloudConfigurationManager.GetSetting("AuthCodeCacheConnectionString");
         }
     }
 }
