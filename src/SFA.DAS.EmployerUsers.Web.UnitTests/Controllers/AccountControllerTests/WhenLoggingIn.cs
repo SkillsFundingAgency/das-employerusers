@@ -1,12 +1,16 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using IdentityServer3.Core.Models;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Controllers;
 using SFA.DAS.EmployerUsers.Web.Models;
+using SFA.DAS.EmployerUsers.Web.Models.SFA.DAS.EAS.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
@@ -26,7 +30,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             base.Arrange();
 
             _orchestrator = new Mock<AccountOrchestrator>();
-            _orchestrator.Setup(o => o.Login(It.IsAny<LoginViewModel>())).Returns(Task.FromResult(new LoginResultModel { Success = false }));
+            _orchestrator.Setup(o => o.Login(It.IsAny<LoginViewModel>())).Returns(Task.FromResult(new OrchestratorResponse<LoginResultModel> { Data = new LoginResultModel { Success = false }}));
 
             _owinWrapper = new Mock<IOwinWrapper>();
             _owinWrapper.Setup(w => w.GetSignInMessage(Id))
@@ -50,22 +54,12 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             // Assert
             Assert.IsInstanceOf<ViewResult>(actual);
         }
-
-        [Test]
-        public async Task ThenItShouldReturnInvalidModelIfUnsuccessful()
-        {
-            // Act
-            var actual = (ViewResult)await _controller.Login(Id, new LoginViewModel());
-
-            // Assert
-            Assert.IsTrue(((LoginViewModel)actual.Model).InvalidLoginAttempt);
-        }
-
+        
         [Test]
         public async Task ThenItShouldReturnARedirectToReturnUrlIfSuccessful()
         {
             // Arrange
-            _orchestrator.Setup(o => o.Login(It.IsAny<LoginViewModel>())).Returns(Task.FromResult(new LoginResultModel { Success = true }));
+            _orchestrator.Setup(o => o.Login(It.IsAny<LoginViewModel>())).Returns(Task.FromResult(new OrchestratorResponse<LoginResultModel> { Data = new LoginResultModel { Success = true }}));
 
             // Act
             var actual = await _controller.Login(Id, new LoginViewModel());
@@ -80,7 +74,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         {
             // Arrange
             _orchestrator.Setup(o => o.Login(It.IsAny<LoginViewModel>())).Returns(
-                Task.FromResult(new LoginResultModel { Success = true, RequiresActivation = true }));
+                Task.FromResult(new OrchestratorResponse<LoginResultModel> { Data = new LoginResultModel { Success = true, RequiresActivation = true }}));
 
             // Act
             var actual = await _controller.Login(Id, new LoginViewModel()) as RedirectToRouteResult;
@@ -95,7 +89,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         {
             // Arrange
             _orchestrator.Setup(o => o.Login(It.IsAny<LoginViewModel>())).Returns(
-                Task.FromResult(new LoginResultModel { Success = false, AccountIsLocked = true }));
+                Task.FromResult(new OrchestratorResponse<LoginResultModel> { Data = new LoginResultModel { Success = false, AccountIsLocked = true }}));
 
             // Act
             var actual = await _controller.Login(Id, new LoginViewModel()) as RedirectToRouteResult;
@@ -103,6 +97,31 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             // Assert
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual.RouteValues.Any(v => v.Key == "action" && (string)v.Value == "Unlock"));
+        }
+
+        [Test]
+        public async Task ThenTheLoginViewWillBeReturnedWhenThereAreValidationErrors()
+        {
+            //Arrange
+            _orchestrator.Setup(o => o.Login(It.IsAny<LoginViewModel>()))
+                .ReturnsAsync(new OrchestratorResponse<LoginResultModel> {
+                    Data = new LoginResultModel(),
+                    Status = HttpStatusCode.BadRequest,FlashMessage = new FlashMessageViewModel
+                        {
+                            ErrorMessages = new Dictionary<string, string> { { "Error","My Error"} }
+                        }
+                });
+                
+            // Act
+            var actual = await _controller.Login(Id, new LoginViewModel()) as ViewResult;
+
+            //Assert
+            Assert.IsNotNull(actual);
+            Assert.AreEqual("",actual.ViewName);
+            var actualModel = actual.Model as OrchestratorResponse<LoginViewModel>;
+            Assert.IsNotNull(actualModel);
+            Assert.AreEqual(1,actualModel.FlashMessage.ErrorMessages.Count);
+            Assert.AreEqual(HttpStatusCode.BadRequest,actualModel.Status);
         }
     }
 }

@@ -85,6 +85,7 @@
     <Compile Include="Commands\ActivateUser\ActivateUserCommandValidator.cs" />
     <Compile Include="Commands\AuthenticateUser\AuthenticateUserCommand.cs" />
     <Compile Include="Commands\AuthenticateUser\AuthenticateUserCommandHandler.cs" />
+    <Compile Include="Commands\AuthenticateUser\AuthenticateUserCommandValidator.cs" />
     <Compile Include="Commands\ChangeEmail\ChangeEmailCommand.cs" />
     <Compile Include="Commands\ChangeEmail\ChangeEmailCommandHandler.cs" />
     <Compile Include="Commands\ChangeEmail\ChangeEmailCommandResult.cs" />

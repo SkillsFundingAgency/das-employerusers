@@ -1,46 +1,39 @@
-﻿@model SFA.DAS.EmployerUsers.Web.Models.LoginViewModel
+﻿@model SFA.DAS.EmployerUsers.Web.Models.OrchestratorResponse<SFA.DAS.EmployerUsers.Web.Models.LoginViewModel>
 @{
-    var invalidAttributes = Model.InvalidLoginAttempt ? "aria-invalid=\"true\" aria-labeledby=\"invalidMessage\"" : "";
     ViewBag.PageID = "page-sign-in";
     ViewBag.Title = "Sign in";
     ViewBag.HideSigninLink = "true";
 }
 
-@if (Model.InvalidLoginAttempt)
-{
-    <div class="grid-row">
-        <div class="column-full">
-            <div aria-labelledby="error-summary-heading-example-1" class="error-summary" role="group" tabindex="-1"> 
-                <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1"> Errors to fix </h1> 
-                <p> Check the following details: </p> 
-                <ul class="error-summary-list">
-                    <li> <a href="#email-address" tabindex="0 "><span>Invalid credentials</span></a> </li> 
-                </ul>
-            </div>
-        </div>
-    </div>
-}
 
 <div class="grid-row">
     <div class="column-two-thirds">
         <h1 class="heading-xlarge">Sign in</h1>
-        <p>Sign in or <a href="@Url.Action("Register", "Account", new { ReturnUrl = Model.ReturnUrl })">create an account</a> to manage your apprenticeship levy account.</p>
+        <p>Sign in or <a href="@Url.Action("Register", "Account", new { ReturnUrl = Model.Data.ReturnUrl })">create an account</a> to manage your apprenticeship levy account.</p>
         <form method="post">
             @Html.AntiForgeryToken()
-            <div class="form-group">
-                <label for="email-address">
+            <div class="form-group  @(!string.IsNullOrEmpty(Model.Data.EmailAddressError) ? "error" : "")">
+                <label for="EmailAddress">
                     <span class="form-label-bold">Email address</span>
+                    @if (!string.IsNullOrEmpty(Model.Data.EmailAddressError))
+                    {
+                        <span class="error-message" id="error-message-email">@Model.Data.EmailAddressError</span>
+                    }
                 </label>
-                <input class="form-control form-control-3-4" id="email-address" name="EmailAddress" type="text" autocomplete="off"
+                <input class="form-control form-control-3-4" id="EmailAddress" name="EmailAddress" type="text" autocomplete="off"
                        autofocus="autofocus" aria-required="true">
             </div>
-            <div class="form-group">
-                <label for="password">
+            <div class="form-group @(!string.IsNullOrEmpty(Model.Data.PasswordError) ? "error" : "")">
+                <label for="Password">
                     <span class="form-label-bold">
                         Password
                     </span>
+                    @if (!string.IsNullOrEmpty(Model.Data.PasswordError))
+                    {
+                        <span class="error-message" id="error-message-email">@Model.Data.PasswordError</span>
+                    }
                 </label>
-                <input class="form-control form-control-3-4" id="password" name="Password" type="password" autocomplete="off"
+                <input class="form-control form-control-3-4" id="Password" name="Password" type="password" autocomplete="off"
                        aria-required="true">
                 
             </div>

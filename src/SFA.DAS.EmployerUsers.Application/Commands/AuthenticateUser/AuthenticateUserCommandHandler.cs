@@ -4,6 +4,7 @@ using NLog;
 using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
+using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
@@ -13,23 +14,32 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
     public class AuthenticateUserCommandHandler : IAsyncRequestHandler<AuthenticateUserCommand, User>
     {
         private readonly ILogger _logger;
+        private readonly IValidator<AuthenticateUserCommand> _validator;
         private readonly IUserRepository _userRepository;
         private readonly IPasswordService _passwordService;
         private readonly IConfigurationService _configurationService;
         private readonly IMediator _mediator;
 
-        public AuthenticateUserCommandHandler(IUserRepository userRepository, IPasswordService passwordService, IConfigurationService configurationService, IMediator mediator, ILogger logger)
+        public AuthenticateUserCommandHandler(IUserRepository userRepository, IPasswordService passwordService, IConfigurationService configurationService, IMediator mediator, ILogger logger, IValidator<AuthenticateUserCommand> validator)
         {
             _userRepository = userRepository;
             _passwordService = passwordService;
             _configurationService = configurationService;
             _mediator = mediator;
             _logger = logger;
+            _validator = validator;
         }
 
         public async Task<User> Handle(AuthenticateUserCommand message)
         {
             _logger.Debug($"Received AuthenticateUserCommand for user '{message.EmailAddress}'");
+
+            var validationResult = await _validator.ValidateAsync(message);
+
+            if (!validationResult.IsValid())
+            {
+                throw new InvalidRequestException(validationResult.ValidationDictionary);
+            }
 
             var user = await _userRepository.GetByEmailAddress(message.EmailAddress);
             if (user == null)

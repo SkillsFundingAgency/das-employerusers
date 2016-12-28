@@ -35,10 +35,12 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         public ActionResult Login(string id)
         {
             var signinMessage = _owinWrapper.GetSignInMessage(id);
-            var model = new LoginViewModel
+            var model = new OrchestratorResponse<LoginViewModel>
             {
-                InvalidLoginAttempt = false,
-                ReturnUrl = signinMessage.ReturnUrl
+                Data = new LoginViewModel
+                { 
+                    ReturnUrl = signinMessage.ReturnUrl
+                }
             };
             return View(model);
         }
@@ -50,10 +52,11 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         {
             model.OriginatingAddress = Request.UserHostAddress;
             var result = await _accountOrchestrator.Login(model);
-
-            if (result.Success)
+            var response = new OrchestratorResponse<LoginViewModel>();
+            
+            if (result.Data.Success)
             {
-                if (result.RequiresActivation)
+                if (result.Data.RequiresActivation)
                 {
                     return RedirectToAction("Confirm");
                 }
@@ -62,13 +65,25 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 return Redirect(signinMessage.ReturnUrl);
             }
 
-            if (result.AccountIsLocked)
+            if (result.Data.AccountIsLocked)
             {
                 return RedirectToAction("Unlock");
             }
 
-            model.InvalidLoginAttempt = true;
-            return View(model);
+            if (result.Status != HttpStatusCode.OK)
+            {
+                response.Data = new LoginViewModel
+                {
+                    ReturnUrl = model.ReturnUrl
+                };
+                response.FlashMessage = result.FlashMessage;
+                response.Status = result.Status;
+                response.Data.ErrorDictionary = result.FlashMessage.ErrorMessages;
+
+                return View(response);
+            }
+            
+            return View(response);
         }
 
 

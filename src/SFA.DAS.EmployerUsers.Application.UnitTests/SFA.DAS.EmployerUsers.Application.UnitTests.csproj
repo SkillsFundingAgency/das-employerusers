@@ -91,6 +91,7 @@
     <Compile Include="CommandsTests\ActivateUserTests\ActivateUserCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="CommandsTests\ActivateUserTests\ActivateUserCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="CommandsTests\AuthenticateUserTests\AuthenticateUserCommandHandlerTests\WhenHandling.cs" />
+    <Compile Include="CommandsTests\AuthenticateUserTests\AuthenticateUserCommandHandlerTests\WhenValidating.cs" />
     <Compile Include="CommandsTests\ChangeEmailTests\ChangeEmailCommandHandlerTests\WhenHandling.cs" />
     <Compile Include="CommandsTests\ChangeEmailTests\ChangeEmailCommandValidatorTests\WhenValidating.cs" />
     <Compile Include="CommandsTests\ChangePasswordTests\ChangePasswordCommandHandlerTests\WhenHandling.cs" />
