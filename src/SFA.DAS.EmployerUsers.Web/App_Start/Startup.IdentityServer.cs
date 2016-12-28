@@ -2,57 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 using System.Web.Helpers;
 using IdentityServer3.Core.Configuration;
 using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services;
 using IdentityServer3.Core.Services.Default;
-using IdentityServer3.Core.Validation;
-using MediatR;
-using NLog;
 using Owin;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Authentication;
+using SFA.DAS.EmployerUsers.Web.Plumbing.Ids;
 using SFA.DAS.EmployerUsers.WebClientComponents;
 
 namespace SFA.DAS.EmployerUsers.Web
 {
-    public class StartsWithRedirectUriValidator : IRedirectUriValidator
-    {
-        private ILogger _logger = LogManager.GetCurrentClassLogger();
-
-        public Task<bool> IsRedirectUriValidAsync(string requestedUri, Client client)
-        {
-            _logger.Info($"Attempting to match {requestedUri} for client {client.ClientId}");
-
-            foreach (var uri in client.RedirectUris)
-            {
-                if (requestedUri.ToLower().StartsWith(uri.ToLower()))
-                {
-                    _logger.Info($"Matched {requestedUri} to {uri} for client {client.ClientId}");
-                    return Task.FromResult(true);
-                }
-            }
-
-            _logger.Info($"Failed to match {requestedUri} for client {client.ClientId}");
-            return Task.FromResult(false);
-        }
-
-        public Task<bool> IsPostLogoutRedirectUriValidAsync(string requestedUri, Client client)
-        {
-            foreach (var uri in client.PostLogoutRedirectUris)
-            {
-                if (requestedUri.ToLower().StartsWith(uri.ToLower()))
-                {
-                    return Task.FromResult(true);
-                }
-            }
-            return Task.FromResult(false);
-        }
-    }
-
     public partial class Startup
     {
         private void ConfigureIdentityServer(IAppBuilder app, IdentityServerConfiguration configuration, IRelyingPartyRepository relyingPartyRepository)
