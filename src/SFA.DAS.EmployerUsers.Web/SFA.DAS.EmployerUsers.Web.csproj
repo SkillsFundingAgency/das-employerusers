@@ -304,9 +304,11 @@
     <Compile Include="Models\ChangePasswordViewModel.cs" />
     <Compile Include="Models\ConfirmationViewModel.cs" />
     <Compile Include="Models\ConfirmChangeEmailViewModel.cs" />
+    <Compile Include="Models\FlashMessageViewModel.cs" />
     <Compile Include="Models\LoginResultModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
-    <Compile Include="Models\LogOutViewModel.cs" />
+<Compile Include="Models\LogOutViewModel.cs" />
+<Compile Include="Models\OrchestratorResponse.cs" />
     <Compile Include="Models\PasswordResetViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Models\RequestPasswordResetViewModel.cs" />
@@ -746,7 +748,8 @@
     <Content Include="src\sass\_panels.scss" />
     <Content Include="src\sass\_tables.scss" />
     <Content Include="src\sass\_typography.scss" />
-    <Content Include="Views\Login\Logout.cshtml" />
+<Content Include="Views\Login\Logout.cshtml" />
+<Content Include="Views\Shared\_InfoMessages.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

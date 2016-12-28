@@ -10,6 +10,7 @@ using SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail;
 using SFA.DAS.EmployerUsers.Application.Queries.GetRelyingParty;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
+using SFA.DAS.EmployerUsers.Web.Models.SFA.DAS.EAS.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestratorTests
@@ -71,7 +72,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _orchestrator.RequestChangeEmail(_model);
 
             // Assert
-            Assert.IsTrue(actual.Valid);
+            Assert.IsTrue(actual.Data.Valid);
         }
 
         [Test]
@@ -85,9 +86,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _orchestrator.RequestChangeEmail(_model);
 
             // Assert
-            Assert.IsFalse(actual.Valid);
-            Assert.IsNotNull(actual.ErrorDictionary);
-            Assert.IsTrue(actual.ErrorDictionary.ContainsKey("ConfirmEmailAddress"));
+            Assert.IsFalse(actual.Data.Valid);
+            Assert.IsNotNull(actual.Data.ErrorDictionary);
+            Assert.IsTrue(actual.Data.ErrorDictionary.ContainsKey("ConfirmEmailAddress"));
+            Assert.AreEqual(FlashMessageSeverityLevel.Error,actual.FlashMessage.Severity);
         }
 
         [Test]
@@ -101,10 +103,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _orchestrator.RequestChangeEmail(_model);
 
             // Assert
-            Assert.IsFalse(actual.Valid);
-            Assert.IsNotNull(actual.ErrorDictionary);
-            Assert.IsTrue(actual.ErrorDictionary.ContainsKey(""));
-            Assert.AreEqual("Error", actual.ErrorDictionary[""]);
+            Assert.IsFalse(actual.Data.Valid);
+            Assert.IsNotNull(actual.Data.ErrorDictionary);
+            Assert.IsTrue(actual.Data.ErrorDictionary.ContainsKey(""));
+            Assert.AreEqual("Error", actual.Data.ErrorDictionary[""]);
         }
 
 
@@ -123,7 +125,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.IsTrue(actual.Valid);
+            Assert.IsTrue(actual.Data.Valid);
         }
 
         [Test]
@@ -138,7 +140,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.Valid);
+            Assert.IsFalse(actual.Data.Valid);
         }
 
         [TestCase("http://sub.unit.test")]
@@ -155,7 +157,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.Valid);
+            Assert.IsFalse(actual.Data.Valid);
         }
 
 

@@ -1,0 +1,43 @@
+﻿@using SFA.DAS.EmployerUsers.Web.Models
+@using SFA.DAS.EmployerUsers.Web.Models.SFA.DAS.EAS.Web.Models
+
+@model dynamic
+
+@{
+    var viewModel = Model as OrchestratorResponse;
+}
+
+@if (!string.IsNullOrEmpty(viewModel?.FlashMessage?.Message) || !string.IsNullOrEmpty(viewModel?.FlashMessage?.SubMessage))
+{
+    <div class="grid-row">
+        <div class="column-full">
+
+            <div class="@viewModel.FlashMessage.SeverityCssClass">
+                @if (!string.IsNullOrWhiteSpace(viewModel.FlashMessage.Headline))
+                {
+                    <h1 class="@(viewModel.FlashMessage.Severity == FlashMessageSeverityLevel.Error ? "bold-medium" : "bold-large")">@viewModel.FlashMessage.Headline</h1>
+                }
+                @if (!string.IsNullOrEmpty(viewModel.FlashMessage.Message))
+                {
+                    <p>@Html.Raw(viewModel.FlashMessage.Message)</p>
+                }
+                @if (!string.IsNullOrEmpty(viewModel.FlashMessage.SubMessage))
+                {
+                    <p>@Html.Raw(viewModel.FlashMessage.SubMessage)</p>
+                }
+                @if (viewModel.FlashMessage.ErrorMessages.Any())
+                {
+                    <ul class="error-summary-list">
+                        @foreach (var errorMessage in viewModel.FlashMessage.ErrorMessages)
+                        {
+                            <li>
+                                <a class="danger" href="#@errorMessage.Key">@errorMessage.Value</a>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+
+        </div>
+    </div>
+}

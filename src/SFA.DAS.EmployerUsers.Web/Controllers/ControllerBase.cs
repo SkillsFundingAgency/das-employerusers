@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Net;
 using System.Web.Mvc;
 using NLog;
+using SFA.DAS.EmployerUsers.Application;
+using SFA.DAS.EmployerUsers.Web.Models;
 
 namespace SFA.DAS.EmployerUsers.Web.Controllers
 {
@@ -27,6 +30,33 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 }
             }
             base.OnException(filterContext);
+        }
+
+        protected override ViewResult View(string viewName, string masterName, object model)
+        {
+            var orchestratorResponse = model as OrchestratorResponse;
+
+            if (orchestratorResponse == null) return base.View(viewName, masterName, model);
+
+            var invalidRequestException = orchestratorResponse.Exception as InvalidRequestException;
+
+            if (invalidRequestException != null)
+            {
+                foreach (var errorMessageItem in invalidRequestException.ErrorMessages)
+                {
+                    ModelState.AddModelError(errorMessageItem.Key, errorMessageItem.Value);
+                }
+            }
+
+            if (orchestratorResponse.Status == HttpStatusCode.OK || orchestratorResponse.Status == HttpStatusCode.BadRequest)
+                return base.View(viewName, masterName, orchestratorResponse);
+
+            if (orchestratorResponse.Status == HttpStatusCode.Unauthorized)
+            {
+                return base.View(@"Error", masterName, orchestratorResponse);
+            }
+
+            return base.View(@"Error", masterName, orchestratorResponse);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using NLog;
@@ -20,10 +21,11 @@ using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.Application.Queries.IsUserActive;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
+using SFA.DAS.EmployerUsers.Web.Models.SFA.DAS.EAS.Web.Models;
 
 namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 {
-    public class AccountOrchestrator
+    public class AccountOrchestrator 
     {
 
 
@@ -304,7 +306,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
         }
 
-        public virtual async Task<ChangeEmailViewModel> StartRequestChangeEmail(string clientId, string returnUrl)
+        public virtual async Task<OrchestratorResponse<ChangeEmailViewModel>> StartRequestChangeEmail(string clientId, string returnUrl)
         {
             var model = new ChangeEmailViewModel
             {
@@ -314,16 +316,19 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
             await ValidateClientIdReturnUrlCombo(clientId, returnUrl, model);
 
-            return model;
+            return new OrchestratorResponse<ChangeEmailViewModel> {Data = model};
         }
-        public virtual async Task<ChangeEmailViewModel> RequestChangeEmail(ChangeEmailViewModel model)
+        public virtual async Task<OrchestratorResponse<ChangeEmailViewModel>> RequestChangeEmail(ChangeEmailViewModel model)
         {
+            var response = new OrchestratorResponse<ChangeEmailViewModel>();
+
             try
             {
                 var isClientValid = await ValidateClientIdReturnUrlCombo(model.ClientId, model.ReturnUrl, model);
                 if (!isClientValid)
                 {
-                    return model;
+                    response.Data = model;
+                    return response;
                 }
 
                 await _mediator.SendAsync(new RequestChangeEmailCommand
@@ -337,12 +342,25 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             catch (InvalidRequestException ex)
             {
                 model.ErrorDictionary = ex.ErrorMessages;
+                response.Status = HttpStatusCode.BadRequest;
+                response.FlashMessage = new FlashMessageViewModel
+                {
+                    Headline = "Errors to fix",
+                    Message = "Check the following details:",
+                    ErrorMessages = ex.ErrorMessages,
+                    Severity = FlashMessageSeverityLevel.Error
+                };
+                response.Exception = ex;
             }
             catch (Exception ex)
             {
                 model.ErrorDictionary.Add("", ex.Message);
+                response.Status =HttpStatusCode.InternalServerError;
+                
             }
-            return model;
+            response.Data = model;
+
+            return response;
         }
 
         public virtual async Task<ConfirmChangeEmailViewModel> ConfirmChangeEmail(ConfirmChangeEmailViewModel model)

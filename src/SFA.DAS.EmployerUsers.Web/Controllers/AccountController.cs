@@ -240,12 +240,14 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/forgottencredentials")]
         public async Task<ActionResult> ForgottenCredentials(RequestPasswordResetViewModel requestPasswordResetViewModel)
         {
+    
             requestPasswordResetViewModel = await _accountOrchestrator.RequestPasswordResetCode(requestPasswordResetViewModel);
 
             if (string.IsNullOrEmpty(requestPasswordResetViewModel.Email) || !requestPasswordResetViewModel.Valid)
             {
                 return View("ForgottenCredentials", requestPasswordResetViewModel);
             }
+
 
             return View("ResetPassword", new PasswordResetViewModel { Email = requestPasswordResetViewModel.Email });
         }
@@ -275,7 +277,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         public async Task<ActionResult> ChangeEmail(string clientId, string returnUrl)
         {
             var model = await _accountOrchestrator.StartRequestChangeEmail(clientId, returnUrl);
-            if (!model.Valid)
+            if (!model.Data.Valid)
             {
                 return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
             }
@@ -292,7 +294,12 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             model.ClientId = clientId;
             model.ReturnUrl = returnUrl;
 
-            await _accountOrchestrator.RequestChangeEmail(model);
+            var response = await _accountOrchestrator.RequestChangeEmail(model);
+
+            if (response.Status == HttpStatusCode.BadRequest)
+            {
+                return View("ChangeEmail", response);
+            }
 
             return RedirectToAction("ConfirmChangeEmail");
         }

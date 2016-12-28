@@ -64,6 +64,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -100,6 +101,7 @@
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommand.cs" />
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandHandler.cs" />
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandValidator.cs" />
+    <Compile Include="Validation\BaseValidator.cs" />
     <Compile Include="Commands\RequestPasswordResetCode\RequestPasswordResetCodeCommand.cs" />
     <Compile Include="Commands\RequestPasswordResetCode\RequestPasswordResetCodeCommandHandler.cs" />
     <Compile Include="Commands\RequestPasswordResetCode\RequestPasswordResetCodeCommandValidator.cs" />

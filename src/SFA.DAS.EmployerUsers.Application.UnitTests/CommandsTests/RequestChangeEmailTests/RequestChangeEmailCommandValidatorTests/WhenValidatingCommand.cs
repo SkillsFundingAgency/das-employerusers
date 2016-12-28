@@ -54,7 +54,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestChang
             // Assert
             Assert.IsFalse(actual.IsValid());
             Assert.IsTrue(actual.ValidationDictionary.ContainsKey("ConfirmEmailAddress"));
-            Assert.AreEqual("Confirm email address does not match new email address", actual.ValidationDictionary["ConfirmEmailAddress"]);
+            Assert.AreEqual("Emails don't match", actual.ValidationDictionary["ConfirmEmailAddress"]);
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestChang
 
             // Assert
             Assert.IsFalse(actual.IsValid());
-            Assert.IsTrue(actual.ValidationDictionary.ContainsKey(""));
+            Assert.IsTrue(actual.ValidationDictionary.ContainsKey("UserId"));
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestChang
 
             // Assert
             Assert.IsFalse(actual.IsValid());
-            Assert.IsTrue(actual.ValidationDictionary.ContainsKey(""));
+            Assert.IsTrue(actual.ValidationDictionary.ContainsKey("NewEmailAddress"));
         }
 
     }
