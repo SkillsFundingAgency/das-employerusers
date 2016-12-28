@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MediatR;
 using Moq;
 using NLog;
@@ -7,6 +8,7 @@ using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
 using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
+using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
@@ -30,6 +32,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.Authenticate
         private AuthenticateUserCommandHandler _commandHandler;
         private AuthenticateUserCommand _command;
         private Mock<ILogger> _logger;
+        private Mock<IValidator<AuthenticateUserCommand>> _validator;
 
         [SetUp]
         public void Arrange()
@@ -67,12 +70,16 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.Authenticate
 
             _logger = new Mock<ILogger>();
 
+            _validator = new Mock<IValidator<AuthenticateUserCommand>>();
+            _validator.Setup(x => x.ValidateAsync(It.IsAny<AuthenticateUserCommand>())).ReturnsAsync(new ValidationResult {ValidationDictionary = new Dictionary<string, string>()});
+
             _commandHandler = new AuthenticateUserCommandHandler(
                 _userRepository.Object, 
                 _passwordService.Object, 
                 _configurationService.Object,
                 _mediator.Object,
-                _logger.Object);
+                _logger.Object,
+                _validator.Object);
 
             _command = new AuthenticateUserCommand
             {
@@ -206,6 +213,19 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.Authenticate
 
             // Assert
             _userRepository.Verify(r => r.Update(It.Is<User>(u => u.FailedLoginAttempts == 0)), Times.Once());
+        }
+
+        [Test]
+        public void ThenTheRepositoryIsNotCalledWhenTheValidatorIsReturnsFalseAndAnInvalidRequestExceptionIsThrown()
+        {
+            //Arrange
+            _validator.Setup(x => x.ValidateAsync(It.IsAny<AuthenticateUserCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { {"",""} } });
+
+            //Act
+            Assert.ThrowsAsync<InvalidRequestException>(async ()=> await _commandHandler.Handle(_command));
+
+            //Assert
+            _userRepository.Verify(x=>x.GetByEmailAddress(It.IsAny<string>()),Times.Never);
         }
 
     }
