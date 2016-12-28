@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
@@ -47,7 +48,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             _logger = logger;
         }
 
-        public virtual async Task<LoginResultModel> Login(LoginViewModel loginViewModel)
+        public virtual async Task<OrchestratorResponse<LoginResultModel>> Login(LoginViewModel loginViewModel)
         {
             try
             {
@@ -58,23 +59,54 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 });
                 if (user == null)
                 {
-                    _logger.Warn($"Failed login attempt for email address '{loginViewModel.EmailAddress}' originating from {loginViewModel.OriginatingAddress}");
-                    return new LoginResultModel { Success = false };
+                    _logger.Warn(
+                        $"Failed login attempt for email address '{loginViewModel.EmailAddress}' originating from {loginViewModel.OriginatingAddress}");
+                    return new OrchestratorResponse<LoginResultModel> {
+                        Status = HttpStatusCode.BadRequest,
+                        FlashMessage = new FlashMessageViewModel
+                        {
+                            ErrorMessages = new Dictionary<string, string> {
+                                {
+                                    nameof(loginViewModel.EmailAddress), "Invalid credentials"
+                                } },
+                            Severity = FlashMessageSeverityLevel.Error,
+                            Headline = "Errors to fix",
+                            Message = "Check the following details:"
+                        },
+                        Data = new LoginResultModel {Success = false}};
                 }
 
                 LoginUser(user.Id, user.FirstName, user.LastName);
 
-                return new LoginResultModel { Success = true, RequiresActivation = !user.IsActive };
+                return new OrchestratorResponse<LoginResultModel>
+                {
+                    Data = new LoginResultModel {Success = true, RequiresActivation = !user.IsActive}
+                };
+            }
+            catch (InvalidRequestException ex)
+            {
+                return new OrchestratorResponse<LoginResultModel>
+                {
+                    Status = HttpStatusCode.BadRequest,
+                    FlashMessage = new FlashMessageViewModel
+                    {
+                        ErrorMessages = ex.ErrorMessages,
+                        Severity = FlashMessageSeverityLevel.Error,
+                        Headline = "Errors to fix",
+                        Message = "Check the following details:"
+                    },
+                    Data = new LoginResultModel { Success = false }
+                };
             }
             catch (AccountLockedException ex)
             {
                 _logger.Info(ex.Message);
-                return new LoginResultModel { AccountIsLocked = true };
+                return new OrchestratorResponse<LoginResultModel> { Data = new LoginResultModel { AccountIsLocked = true }};
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, ex.Message);
-                return new LoginResultModel { Success = false };
+                return new OrchestratorResponse<LoginResultModel> { Data = new LoginResultModel { Success = false }};
             }
         }
 

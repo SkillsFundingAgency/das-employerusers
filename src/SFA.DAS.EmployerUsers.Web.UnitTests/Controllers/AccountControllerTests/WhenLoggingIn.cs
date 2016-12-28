@@ -26,7 +26,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             base.Arrange();
 
             _orchestrator = new Mock<AccountOrchestrator>();
-            _orchestrator.Setup(o => o.Login(It.IsAny<LoginViewModel>())).Returns(Task.FromResult(new LoginResultModel { Success = false }));
+            _orchestrator.Setup(o => o.Login(It.IsAny<LoginViewModel>())).Returns(Task.FromResult(new OrchestratorResponse<LoginResultModel> { Data = new LoginResultModel { Success = false }}));
 
             _owinWrapper = new Mock<IOwinWrapper>();
             _owinWrapper.Setup(w => w.GetSignInMessage(Id))
@@ -50,22 +50,12 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             // Assert
             Assert.IsInstanceOf<ViewResult>(actual);
         }
-
-        [Test]
-        public async Task ThenItShouldReturnInvalidModelIfUnsuccessful()
-        {
-            // Act
-            var actual = (ViewResult)await _controller.Login(Id, new LoginViewModel());
-
-            // Assert
-            Assert.IsTrue(((LoginViewModel)actual.Model).InvalidLoginAttempt);
-        }
-
+        
         [Test]
         public async Task ThenItShouldReturnARedirectToReturnUrlIfSuccessful()
         {
             // Arrange
-            _orchestrator.Setup(o => o.Login(It.IsAny<LoginViewModel>())).Returns(Task.FromResult(new LoginResultModel { Success = true }));
+            _orchestrator.Setup(o => o.Login(It.IsAny<LoginViewModel>())).Returns(Task.FromResult(new OrchestratorResponse<LoginResultModel> { Data = new LoginResultModel { Success = true }}));
 
             // Act
             var actual = await _controller.Login(Id, new LoginViewModel());
@@ -80,7 +70,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         {
             // Arrange
             _orchestrator.Setup(o => o.Login(It.IsAny<LoginViewModel>())).Returns(
-                Task.FromResult(new LoginResultModel { Success = true, RequiresActivation = true }));
+                Task.FromResult(new OrchestratorResponse<LoginResultModel> { Data = new LoginResultModel { Success = true, RequiresActivation = true }}));
 
             // Act
             var actual = await _controller.Login(Id, new LoginViewModel()) as RedirectToRouteResult;
@@ -95,7 +85,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         {
             // Arrange
             _orchestrator.Setup(o => o.Login(It.IsAny<LoginViewModel>())).Returns(
-                Task.FromResult(new LoginResultModel { Success = false, AccountIsLocked = true }));
+                Task.FromResult(new OrchestratorResponse<LoginResultModel> { Data = new LoginResultModel { Success = false, AccountIsLocked = true }}));
 
             // Act
             var actual = await _controller.Login(Id, new LoginViewModel()) as RedirectToRouteResult;

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Moq;
@@ -47,7 +49,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _orchestrator.Login(_model);
 
             // Assert
-            Assert.IsTrue(actual.Success);
+            Assert.IsTrue(actual.Data.Success);
         }
 
         [Test]
@@ -61,7 +63,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _orchestrator.Login(_model);
 
             // Assert
-            Assert.IsFalse(actual.Success);
+            Assert.IsFalse(actual.Data.Success);
         }
 
         [Test]
@@ -75,7 +77,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _orchestrator.Login(_model);
 
             // Assert
-            Assert.IsFalse(actual.Success);
+            Assert.IsFalse(actual.Data.Success);
         }
 
         [Test]
@@ -89,7 +91,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _orchestrator.Login(_model);
 
             // Assert
-            Assert.IsTrue(actual.RequiresActivation);
+            Assert.IsTrue(actual.Data.RequiresActivation);
         }
 
         [Test]
@@ -99,7 +101,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _orchestrator.Login(_model);
 
             // Assert
-            Assert.IsFalse(actual.RequiresActivation);
+            Assert.IsFalse(actual.Data.RequiresActivation);
         }
 
         [Test]
@@ -113,7 +115,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _orchestrator.Login(_model);
 
             // Assert
-            Assert.IsFalse(actual.Success);
+            Assert.IsFalse(actual.Data.Success);
         }
 
         [Test]
@@ -127,8 +129,22 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _orchestrator.Login(_model);
 
             // Assert
-            Assert.IsTrue(actual.AccountIsLocked);
+            Assert.IsTrue(actual.Data.AccountIsLocked);
         }
 
+        [Test]
+        public async Task ThenAnInvalidRequestExceptionIsCaughtAndTheModelValidationMessagsAreSet()
+        {
+            //Arrange
+            _mediator.Setup(m => m.SendAsync(It.IsAny<AuthenticateUserCommand>()))
+                .Throws(new InvalidRequestException(new Dictionary<string, string> { {"",""} }));
+
+            //Act
+            var actual = await _orchestrator.Login(_model);
+
+            //Assert
+            Assert.AreEqual(HttpStatusCode.BadRequest,actual.Status);
+            Assert.AreEqual(1,actual.FlashMessage.ErrorMessages.Count);
+        }
     }
 }
