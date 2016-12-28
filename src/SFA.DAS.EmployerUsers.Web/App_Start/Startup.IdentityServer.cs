@@ -7,6 +7,7 @@ using IdentityServer3.Core.Configuration;
 using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services;
 using IdentityServer3.Core.Services.Default;
+using Microsoft.Azure;
 using Owin;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
@@ -34,7 +35,10 @@ namespace SFA.DAS.EmployerUsers.Web
                 factory.RedirectUriValidator = new Registration<IRedirectUriValidator>((dr) => new StartsWithRedirectUriValidator());
 
                 factory.ConfigureDefaultViewService<CustomIdsViewService>(new DefaultViewServiceOptions());
-                factory.AuthorizationCodeStore = new Registration<IAuthorizationCodeStore>(typeof(RedisAuthorizationCodeStore));
+                if (!CloudConfigurationManager.GetSetting("EnvironmentName").Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    factory.AuthorizationCodeStore = new Registration<IAuthorizationCodeStore>(typeof(RedisAuthorizationCodeStore));
+                }
 
                 idsrvApp.UseIdentityServer(new IdentityServerOptions
                 {
@@ -100,7 +104,7 @@ namespace SFA.DAS.EmployerUsers.Web
                 }
             };
             var clients = new List<Client> { self };
-            
+
             var relyingParties = relyingPartyRepository.GetAllAsync().Result;
             clients.AddRange(relyingParties.Select(rp => new Client
             {
