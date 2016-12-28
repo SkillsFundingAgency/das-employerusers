@@ -34,6 +34,7 @@ namespace SFA.DAS.EmployerUsers.Web
                 factory.RedirectUriValidator = new Registration<IRedirectUriValidator>((dr) => new StartsWithRedirectUriValidator());
 
                 factory.ConfigureDefaultViewService<CustomIdsViewService>(new DefaultViewServiceOptions());
+                factory.AuthorizationCodeStore = new Registration<IAuthorizationCodeStore>(typeof(RedisAuthorizationCodeStore));
 
                 idsrvApp.UseIdentityServer(new IdentityServerOptions
                 {

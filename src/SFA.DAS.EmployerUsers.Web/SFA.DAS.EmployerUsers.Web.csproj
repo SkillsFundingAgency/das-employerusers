@@ -275,6 +275,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\LoggingConfig.cs" />
+    <Compile Include="Plumbing\Ids\RedisAuthorizationCodeStore.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Plumbing\Ids\StartsWithRedirectUriValidator.cs" />
     <Compile Include="App_Start\Startup.RelyingParty.cs" />
@@ -316,6 +317,14 @@
     <Compile Include="Orchestrators\AccountOrchestrator.cs" />
     <Compile Include="Plumbing\Links\HttpContextLinkBuilder.cs" />
     <Compile Include="Plumbing\Mvc\LogAndHandleErrorAttribute.cs" />
+    <Compile Include="Plumbing\Serialization\AsyncHelper.cs" />
+    <Compile Include="Plumbing\Serialization\ClaimConverter.cs" />
+    <Compile Include="Plumbing\Serialization\ClaimLite.cs" />
+    <Compile Include="Plumbing\Serialization\ClaimsPrincipalConverter.cs" />
+    <Compile Include="Plumbing\Serialization\ClaimsPrincipalLite.cs" />
+    <Compile Include="Plumbing\Serialization\ClientConverter.cs" />
+    <Compile Include="Plumbing\Serialization\ScopeConverter.cs" />
+    <Compile Include="Plumbing\Serialization\ScopeLite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="WebRole.cs" />
