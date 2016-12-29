@@ -42,6 +42,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode
             {
                 await _communicationService.ResendActivationCodeMessage(user, Guid.NewGuid().ToString());
             }
+
         }
     }
 }

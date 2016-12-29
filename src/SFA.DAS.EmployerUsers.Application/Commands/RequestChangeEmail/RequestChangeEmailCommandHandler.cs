@@ -9,7 +9,7 @@ using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail
 {
-    public class RequestChangeEmailCommandHandler : IAsyncRequestHandler<RequestChangeEmailCommand, Unit>
+    public class RequestChangeEmailCommandHandler : IAsyncRequestHandler<RequestChangeEmailCommand, RequestChangeEmailCommandResponse>
     {
         private readonly IValidator<RequestChangeEmailCommand> _validator;
         private readonly IUserRepository _userRepository;
@@ -24,7 +24,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail
             _communicationService = communicationService;
         }
 
-        public async Task<Unit> Handle(RequestChangeEmailCommand message)
+        public async Task<RequestChangeEmailCommandResponse> Handle(RequestChangeEmailCommand message)
         {
             var validationResult = await _validator.ValidateAsync(message);
             if (!validationResult.IsValid())
@@ -38,19 +38,27 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail
                 throw new InvalidRequestException(new Dictionary<string, string> { { "", "Cannot find user" } });
             }
 
-            user.AddSecurityCode(new Domain.SecurityCode
+            var securityCode = new Domain.SecurityCode
             {
                 Code = _codeGenerator.GenerateAlphaNumeric(),
                 CodeType = Domain.SecurityCodeType.ConfirmEmailCode,
                 ExpiryTime = DateTime.UtcNow.AddDays(1),
                 ReturnUrl = message.ReturnUrl,
                 PendingValue = message.NewEmailAddress
-            });
+            };
+            user.AddSecurityCode(securityCode);
             await _userRepository.Update(user);
 
             await _communicationService.SendConfirmEmailChangeMessage(user, Guid.NewGuid().ToString());
 
-            return Unit.Value;
+
+
+            return new RequestChangeEmailCommandResponse() {SecurityCode = securityCode.Code};
         }
+    }
+
+    public class RequestChangeEmailCommandResponse
+    {
+        public string SecurityCode   { get; set; }
     }
 }
