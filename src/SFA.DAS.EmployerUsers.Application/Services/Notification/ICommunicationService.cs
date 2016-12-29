@@ -12,7 +12,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
         Task SendAccountLockedMessage(User user, string messageId);
 
         Task ResendActivationCodeMessage(User user, string messageId);
-
+        Task ResendLastActivationCodeMessage(User user, string messageId);
         Task SendUserUnlockedMessage(User user, string messageId);
 
         Task SendPasswordResetCodeMessage(User user, string messageId);
@@ -21,5 +21,6 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 
         Task SendConfirmEmailChangeMessage(User user, string messageId);
         Task SendNoAccountToPasswordResetMessage(string emailAddress, string messageId, string registerUrl);
+       
     }
 }

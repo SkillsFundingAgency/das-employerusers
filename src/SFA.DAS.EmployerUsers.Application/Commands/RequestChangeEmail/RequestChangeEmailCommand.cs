@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail
 {
-    public class RequestChangeEmailCommand : IAsyncRequest, IRequest<Unit>
+    public class RequestChangeEmailCommand : IAsyncRequest<RequestChangeEmailCommandResponse>
     {
         public string UserId { get; set; }
         public string NewEmailAddress { get; set; }

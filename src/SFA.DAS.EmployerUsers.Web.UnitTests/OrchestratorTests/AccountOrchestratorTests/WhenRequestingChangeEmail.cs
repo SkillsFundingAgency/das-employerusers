@@ -47,7 +47,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
                     ApplicationUrl = "http://unit.test"
                 });
             _mediator.Setup(m => m.SendAsync(ItIsRequestChangeEmailCommandForModel()))
-                .Returns(Task.FromResult(Unit.Value));
+                .Returns(Task.FromResult(new RequestChangeEmailCommandResponse()));
 
             _owinWrapper = new Mock<IOwinWrapper>();
             _logger = new Mock<ILogger>();

@@ -88,7 +88,31 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
             }
 
         }
-
+        public async Task ResendLastActivationCodeMessage(User user, string messageId)
+        {
+            var userAccessCode = GetLastConfirmEmailCode(user);
+            try
+            {
+                await _notificationsApi.SendEmail(new Email
+                {
+                    SystemId = Guid.NewGuid().ToString(),
+                    TemplateId = "ResendActivationCode",
+                    RecipientsAddress = user.Email,
+                    ReplyToAddress = ReplyToAddress,
+                    Subject = "Access your apprenticeship levy account",
+                    Tokens = new Dictionary<string, string>
+                    {
+                        {"AccessCode", userAccessCode.Code},
+                        {"CodeExpiry", userAccessCode.ExpiryTime.ToString("d MMMM yyyy")},
+                        {"ReturnUrl", userAccessCode.ReturnUrl}
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "ResendActivationCodeMessage: Error while sending email");
+            }
+        }
         public async Task ResendActivationCodeMessage(User user, string messageId)
         {
             var userAccessCode = GetUserAccessCode(user);
@@ -219,6 +243,8 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
             }
         }
 
+
+
         private SecurityCode GetUserAccessCode(User user)
         {
             return user.SecurityCodes.Where(sc => sc.CodeType == SecurityCodeType.AccessCode)
@@ -232,6 +258,14 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                                      .OrderByDescending(sc => sc.ExpiryTime)
                                      .FirstOrDefault();
         }
+
+        private SecurityCode GetLastConfirmEmailCode(User user)
+        {
+            return user.SecurityCodes.Where(sc => sc.CodeType == SecurityCodeType.ConfirmEmailCode)
+                                     .OrderByDescending(sc => sc.ExpiryTime)
+                                     .LastOrDefault();
+        }
+
         private SecurityCode GetUserPasswordResetCode(User user)
         {
             return user.SecurityCodes.Where(sc => sc.CodeType == SecurityCodeType.PasswordResetCode)

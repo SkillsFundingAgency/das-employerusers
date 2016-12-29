@@ -10,6 +10,7 @@ using Microsoft.Owin.Security;
 using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Models;
+using SFA.DAS.EmployerUsers.Web.Models.SFA.DAS.EAS.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 using SFA.DAS.EmployerUsers.WebClientComponents;
 
@@ -38,7 +39,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             var model = new OrchestratorResponse<LoginViewModel>
             {
                 Data = new LoginViewModel
-                { 
+                {
                     ReturnUrl = signinMessage.ReturnUrl,
                     ClientId = clientId
                 }
@@ -54,7 +55,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             model.OriginatingAddress = Request.UserHostAddress;
             var result = await _accountOrchestrator.Login(model);
             var response = new OrchestratorResponse<LoginViewModel>();
-            
+
             if (result.Data.Success)
             {
                 if (result.Data.RequiresActivation)
@@ -83,7 +84,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
                 return View(response);
             }
-            
+
             return View(response);
         }
 
@@ -166,7 +167,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             var confirmationRequired = await _accountOrchestrator.RequestConfirmAccount(userId);
             if (!confirmationRequired)
             {
-                
+
                 return RedirectToAction("Index", "Home");
             }
             return View("Confirm", new ActivateUserViewModel { Valid = true });
@@ -264,7 +265,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/forgottencredentials")]
         public async Task<ActionResult> ForgottenCredentials(RequestPasswordResetViewModel requestPasswordResetViewModel)
         {
-    
+
             requestPasswordResetViewModel = await _accountOrchestrator.RequestPasswordResetCode(requestPasswordResetViewModel);
 
             if (string.IsNullOrEmpty(requestPasswordResetViewModel.Email) || !requestPasswordResetViewModel.Valid)
@@ -308,6 +309,24 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View(model);
         }
 
+        public async Task<ActionResult> ResendActivation()
+        {
+            var newEmailAddress = TempData["EmailChangeNewEmail"] as string;
+            var clientId = TempData["EmailChangeClientId"] as string;
+            var returnUrl = TempData["EmailChangeReturnUrl"] as string;
+   
+
+           await ChangeEmail(new ChangeEmailViewModel() {ConfirmEmailAddress = newEmailAddress, NewEmailAddress = newEmailAddress},clientId, returnUrl);
+
+            TempData["EmailChangeRequested"] = true;
+            TempData["EmailChangeNewEmail"] = newEmailAddress;
+  
+            TempData["EmailChangeReturnUrl"] = returnUrl;
+            TempData["EmailChangeClientId"] = clientId;
+
+            return RedirectToAction("ConfirmChangeEmail");
+        }
+
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -324,6 +343,11 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             {
                 return View("ChangeEmail", response);
             }
+            TempData["EmailChangeRequested"] = true;
+            TempData["EmailChangeNewEmail"] = model.NewEmailAddress;
+          
+            TempData["EmailChangeReturnUrl"] = returnUrl;
+            TempData["EmailChangeClientId"] = clientId;
 
             return RedirectToAction("ConfirmChangeEmail");
         }
@@ -333,7 +357,30 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/confirmchangeemail")]
         public ActionResult ConfirmChangeEmail()
         {
-            return View();
+            var email = TempData["EmailChangeNewEmail"];
+
+            var model = new OrchestratorResponse<ConfirmChangeEmailViewModel>
+            {
+                Data = new ConfirmChangeEmailViewModel(),
+                FlashMessage = new FlashMessageViewModel()
+                {
+                    Severity = FlashMessageSeverityLevel.Success,
+                    Headline = "Check your email",
+                    SubMessage = email != null ? $"We've sent a security code to {TempData["EmailChangeNewEmail"]}" : "We've sent you a security code"
+                }
+            };
+
+            model.Data.UserId = GetLoggedInUserId();
+
+
+            TempData["EmailChangeRequested"] = true;
+            TempData["EmailChangeNewEmail"] = TempData["EmailChangeNewEmail"] as string;
+        
+            TempData["EmailChangeReturnUrl"] = TempData["EmailChangeReturnUrl"];
+            TempData["EmailChangeClientId"] = TempData["EmailChangeClientId"];
+
+
+            return View(model);
         }
 
         [HttpPost]
@@ -352,7 +399,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
             model.SecurityCode = string.Empty;
             model.Password = string.Empty;
-            return View(model);
+            return View(new OrchestratorResponse<ConfirmChangeEmailViewModel>() { Data = model });
         }
 
 
@@ -361,6 +408,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/changepassword")]
         public async Task<ActionResult> ChangePassword(string clientId, string returnUrl)
         {
+
             var model = await _accountOrchestrator.StartChangePassword(clientId, returnUrl);
             if (!model.Valid)
             {
@@ -419,5 +467,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             var configuration = await _configurationService.GetAsync<EmployerUsersConfiguration>();
             return Redirect(configuration.IdentityServer.EmployerPortalUrl);
         }
+
+ 
     }
 }

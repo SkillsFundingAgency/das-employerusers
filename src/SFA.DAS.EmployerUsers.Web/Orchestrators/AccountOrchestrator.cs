@@ -194,6 +194,28 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 return model;
             }
         }
+        public virtual async Task<bool> ResendLastConfirmationCode(ConfirmChangeEmailViewModel model)
+        {
+            try
+            {
+                await _mediator.SendAsync(new ResendActivationCodeCommand
+                {
+                    UserId = model.UserId
+                });
+
+                return true;
+            }
+            catch (InvalidRequestException ex)
+            {
+                _logger.Info(ex, ex.Message);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, ex.Message);
+                return false;
+            }
+        }
 
         public virtual async Task<bool> ResendActivationCode(ResendActivationCodeViewModel resendActivationCodeViewModel)
         {
@@ -353,8 +375,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         }
         public virtual async Task<OrchestratorResponse<ChangeEmailViewModel>> RequestChangeEmail(ChangeEmailViewModel model)
         {
-            var response = new OrchestratorResponse<ChangeEmailViewModel>();
-
+            var response = new OrchestratorResponse<ChangeEmailViewModel>() {Data = new ChangeEmailViewModel()};
+         
             try
             {
                 var isClientValid = await ValidateClientIdReturnUrlCombo(model.ClientId, model.ReturnUrl, model);
@@ -364,13 +386,14 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     return response;
                 }
 
-                await _mediator.SendAsync(new RequestChangeEmailCommand
+                 await _mediator.SendAsync(new RequestChangeEmailCommand
                 {
                     UserId = model.UserId,
                     NewEmailAddress = model.NewEmailAddress,
                     ConfirmEmailAddress = model.ConfirmEmailAddress,
                     ReturnUrl = model.ReturnUrl
                 });
+             
             }
             catch (InvalidRequestException ex)
             {
@@ -522,5 +545,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             model.ErrorDictionary.Add("", "Invalid client id / return url");
         }
 
+
+ 
     }
 }

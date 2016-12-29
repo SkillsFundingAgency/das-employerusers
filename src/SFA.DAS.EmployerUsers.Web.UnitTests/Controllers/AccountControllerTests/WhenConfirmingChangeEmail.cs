@@ -108,9 +108,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             var actual = await _controller.ConfirmChangeEmail(_model);
 
             // Asssert
-            var actualModel = ((ViewResult)actual).Model as ConfirmChangeEmailViewModel;
+            var actualModel = ((ViewResult)actual).Model as OrchestratorResponse<ConfirmChangeEmailViewModel>;
             Assert.IsNotNull(actualModel);
-            Assert.IsEmpty(actualModel.SecurityCode);
+            Assert.IsEmpty(actualModel.Data.SecurityCode);
         }
 
         [Test]
@@ -132,9 +132,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             var actual = await _controller.ConfirmChangeEmail(_model);
 
             // Asssert
-            var actualModel = ((ViewResult)actual).Model as ConfirmChangeEmailViewModel;
+            var actualModel = ((ViewResult)actual).Model as OrchestratorResponse<ConfirmChangeEmailViewModel>;
             Assert.IsNotNull(actualModel);
-            Assert.IsEmpty(actualModel.Password);
+            Assert.IsEmpty(actualModel.Data.Password);
         }
 
         [Test]

@@ -1,4 +1,7 @@
-﻿<h1 class="heading-xlarge">Enter your security code</h1>
+﻿@model SFA.DAS.EmployerUsers.Web.Models.OrchestratorResponse<SFA.DAS.EmployerUsers.Web.Models.ConfirmChangeEmailViewModel>
+
+<h1 class="heading-xlarge">Enter your security code</h1>
+
 
 <form method="post">
     @Html.AntiForgeryToken()
@@ -18,3 +21,10 @@
     </fieldset>
     <button type="submit" class="button">Continue</button>
 </form>
+
+
+    <div class="form-group">
+        <h2 class="heading-medium">Not received your security code?</h2>
+        
+        <p>You can <a href="@Url.Action("ResendActivation")">request another security code.</a> </p>
+ </div>
