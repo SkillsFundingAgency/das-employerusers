@@ -10,5 +10,7 @@
         public string ReturnUrl { get; set; }
         public string NewEmailAddressError => GetErrorMessage(nameof(NewEmailAddress));
         public string ConfirmEmailAddressError => GetErrorMessage(nameof(ConfirmEmailAddress));
+
+        public string SecurityCode { get; set; }
     }
 }
