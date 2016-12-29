@@ -22,11 +22,9 @@
     <button type="submit" class="button">Continue</button>
 </form>
 
-@if (Model.Data.SecurityCode != null)
-{
+
     <div class="form-group">
         <h2 class="heading-medium">Not received your security code?</h2>
         
         <p>You can <a href="@Url.Action("ResendActivation")">request another security code.</a> </p>
  </div>
-}
