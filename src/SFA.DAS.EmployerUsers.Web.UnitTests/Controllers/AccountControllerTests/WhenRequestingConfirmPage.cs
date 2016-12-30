@@ -48,9 +48,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             Assert.IsNotNull(actual);
             var viewResult = actual as ViewResult;
             Assert.IsNotNull(viewResult);
-            var actualModel = viewResult.Model as ActivateUserViewModel;
+            var actualModel = viewResult.Model as OrchestratorResponse<ActivateUserViewModel>;
             Assert.IsNotNull(actualModel);
-            Assert.IsTrue(actualModel.Valid);
+            Assert.IsTrue(actualModel.Data.Valid);
         }
 
         [Test]
