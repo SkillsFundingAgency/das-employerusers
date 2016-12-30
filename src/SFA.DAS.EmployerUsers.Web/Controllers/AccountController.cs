@@ -308,10 +308,10 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         public async Task<ActionResult> ChangeEmail(string clientId, string returnUrl)
         {
             var model = await _accountOrchestrator.StartRequestChangeEmail(clientId, returnUrl);
-            if (!model.Data.Valid)
-            {
-                return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
-            }
+            //if (!model.Data.Valid)
+            //{
+            //    return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
+            //}
             return View(model);
         }
 
@@ -416,10 +416,10 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         {
 
             var model = await _accountOrchestrator.StartChangePassword(clientId, returnUrl);
-            if (!model.Valid)
-            {
-                return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
-            }
+            //if (!model.Valid)
+            //{
+            //    return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
+            //}
             return View(model);
         }
 
@@ -440,7 +440,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             model.CurrentPassword = string.Empty;
             model.NewPassword = string.Empty;
             model.ConfirmPassword = string.Empty;
-            return View(model);
+            return View(new OrchestratorResponse<ChangePasswordViewModel>() {Data = model});
         }
 
 
