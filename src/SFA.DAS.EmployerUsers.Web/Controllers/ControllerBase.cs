@@ -48,12 +48,17 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 }
             }
 
-            if (orchestratorResponse.Status == HttpStatusCode.OK || orchestratorResponse.Status == HttpStatusCode.BadRequest)
+            if (orchestratorResponse.Status == HttpStatusCode.OK)
                 return base.View(viewName, masterName, orchestratorResponse);
 
             if (orchestratorResponse.Status == HttpStatusCode.Unauthorized)
             {
                 return base.View(@"Error", masterName, orchestratorResponse);
+            }
+
+            if (orchestratorResponse.Status == HttpStatusCode.BadRequest)
+            {
+                return base.View(@"BadRequest", masterName, orchestratorResponse);
             }
 
             return base.View(@"Error", masterName, orchestratorResponse);
