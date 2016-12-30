@@ -371,7 +371,12 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
             await ValidateClientIdReturnUrlCombo(clientId, returnUrl, model);
 
-            return new OrchestratorResponse<ChangeEmailViewModel> {Data = model};
+            var response = new OrchestratorResponse<ChangeEmailViewModel> {Data = model};
+            if (!response.Data.Valid)
+            {
+                response.Status = HttpStatusCode.BadRequest;
+            }
+            return response;
         }
         public virtual async Task<OrchestratorResponse<ChangeEmailViewModel>> RequestChangeEmail(ChangeEmailViewModel model)
         {
@@ -447,7 +452,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             return model;
         }
 
-        public virtual async Task<ChangePasswordViewModel> StartChangePassword(string clientId, string returnUrl)
+        public virtual async Task<OrchestratorResponse<ChangePasswordViewModel>> StartChangePassword(string clientId, string returnUrl)
         {
             var model = new ChangePasswordViewModel
             {
@@ -457,7 +462,13 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
             await ValidateClientIdReturnUrlCombo(clientId, returnUrl, model);
 
-            return model;
+            var response = new OrchestratorResponse<ChangePasswordViewModel>() {Data = model};
+            if (!response.Data.Valid)
+            {
+                response.Status = HttpStatusCode.BadRequest;
+            }
+
+            return response;
         }
         public virtual async Task<ChangePasswordViewModel> ChangePassword(ChangePasswordViewModel model)
         {
