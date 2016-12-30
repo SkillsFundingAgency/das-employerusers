@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerUsers.Web
         private void ConfigureIdentityServer(IAppBuilder app, IdentityServerConfiguration configuration, IRelyingPartyRepository relyingPartyRepository)
         {
             _logger.Debug("Setting up IdentityServer");
-
+            
             AntiForgeryConfig.UniqueClaimTypeIdentifier = DasClaimTypes.Id;
 
             app.Map("/identity", idsrvApp =>
@@ -38,7 +38,12 @@ namespace SFA.DAS.EmployerUsers.Web
                 idsrvApp.UseIdentityServer(new IdentityServerOptions
                 {
                     SiteName = "Digital Apprenticeship Service",
-
+                    CspOptions = new CspOptions()
+                    {
+                        FontSrc = "* data:",
+                        ImgSrc = "* data:",
+                        FrameSrc = "* data:"
+                    },
                     SigningCertificate = LoadCertificate(configuration),
 
                     Factory = factory,

@@ -3,7 +3,9 @@
     ViewBag.PageID = "logout";
     ViewBag.Title = "Logged out";
     ViewBag.HideSigninLink = "true";
+    Layout = "~/Views/Shared/_Layout-NoBanner.cshtml";
 }
+
 
 @foreach (var url in Model.IdsLogoutModel.IFrameUrls)
 {
