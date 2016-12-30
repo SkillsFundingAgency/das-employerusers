@@ -751,6 +751,7 @@
     <Content Include="Views\Login\Logout.cshtml" />
     <Content Include="Views\Shared\_InfoMessages.cshtml" />
     <Content Include="Views\Shared\_Layout-NoBanner.cshtml" />
+    <Content Include="Views\Shared\BadRequest.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
