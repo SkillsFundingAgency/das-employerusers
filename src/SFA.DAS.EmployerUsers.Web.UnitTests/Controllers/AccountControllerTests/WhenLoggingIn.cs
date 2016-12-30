@@ -117,7 +117,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 
             //Assert
             Assert.IsNotNull(actual);
-            Assert.AreEqual("",actual.ViewName);
+            Assert.AreEqual("BadRequest",actual.ViewName);
             var actualModel = actual.Model as OrchestratorResponse<LoginViewModel>;
             Assert.IsNotNull(actualModel);
             Assert.AreEqual(1,actualModel.FlashMessage.ErrorMessages.Count);

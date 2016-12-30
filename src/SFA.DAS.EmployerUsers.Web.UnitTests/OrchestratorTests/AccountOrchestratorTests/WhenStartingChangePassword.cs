@@ -44,7 +44,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.IsTrue(actual.Valid);
+            Assert.IsTrue(actual.Data.Valid);
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.Valid);
+            Assert.IsFalse(actual.Data.Valid);
         }
 
         [TestCase("http://sub.unit.test")]
@@ -68,7 +68,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.Valid);
+            Assert.IsFalse(actual.Data.Valid);
         }
     }
 }

@@ -109,12 +109,12 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 
             // Assert
             Assert.IsNotNull(actual.Model);
-            Assert.IsInstanceOf<ChangePasswordViewModel>(actual.Model);
+            Assert.IsInstanceOf<OrchestratorResponse<ChangePasswordViewModel>>(actual.Model);
 
-            var actualModel = (ChangePasswordViewModel)actual.Model;
-            Assert.IsEmpty(actualModel.CurrentPassword);
-            Assert.IsEmpty(actualModel.NewPassword);
-            Assert.IsEmpty(actualModel.ConfirmPassword);
+            var actualModel = (OrchestratorResponse<ChangePasswordViewModel>)actual.Model;
+            Assert.IsEmpty(actualModel.Data.CurrentPassword);
+            Assert.IsEmpty(actualModel.Data.NewPassword);
+            Assert.IsEmpty(actualModel.Data.ConfirmPassword);
         }
     }
 }
