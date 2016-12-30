@@ -1,10 +1,10 @@
-﻿@model SFA.DAS.EmployerUsers.Web.Models.ActivateUserViewModel
+﻿@model SFA.DAS.EmployerUsers.Web.Models.OrchestratorResponse<SFA.DAS.EmployerUsers.Web.Models.ActivateUserViewModel>
 @{
     ViewBag.PageID = "page-confirm-identity";
     ViewBag.Title = "Confirm your identity";
     ViewBag.HideSigninLink = "true";
 
-    var invalidAttributes = Model.Valid ? "aria-invalid=\"true\" aria-labeledby=\"invalidMessage\"" : "";
+    var invalidAttributes = Model.Data.Valid ? "aria-invalid=\"true\" aria-labeledby=\"invalidMessage\"" : "";
 }
 
 <h1 class="heading-xlarge">Confirm your identity</h1>
@@ -12,10 +12,10 @@
     @Html.AntiForgeryToken()
     <fieldset>
         <legend class="visuallyhidden">Access code for user registration</legend>
-        <div class="form-group  @(!Model.Valid ? "error" : "")">
+        <div class="form-group  @(!Model.Data.Valid ? "error" : "")">
             <label for="AccessCode">
                 <span class="form-label-bold">Enter code</span>
-                @if (!Model.Valid)
+                @if (!Model.Data.Valid)
                 {
                     <span class="error-message" id="invalidMessage">Invalid code</span>
                 }

@@ -170,7 +170,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
                 return RedirectToAction("Index", "Home");
             }
-            return View("Confirm", new ActivateUserViewModel { Valid = true });
+            return View("Confirm", new OrchestratorResponse<ActivateUserViewModel>() { Data = new ActivateUserViewModel { Valid = true }});
         }
 
         [HttpPost]
@@ -196,13 +196,19 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                     return Redirect(activateUserViewModel.ReturnUrl);
                 }
 
-                return View("Confirm", new ActivateUserViewModel { Valid = false });
+                return View("Confirm", new OrchestratorResponse<ActivateUserViewModel>() { Data = new ActivateUserViewModel { Valid = false }});
             }
             else
             {
                 var result = await _accountOrchestrator.ResendActivationCode(new ResendActivationCodeViewModel { UserId = id });
 
-                return View("Confirm", new ActivateUserViewModel { Valid = result });
+                var flashMessage = new FlashMessageViewModel()
+                {
+                    Severity = FlashMessageSeverityLevel.Success,
+                    Headline = "We've sent you an email",
+                    SubMessage = $"To confirm your identity, we've sent a code to {GetLoggedInUserEmail()}"
+                };
+                return View("Confirm", new OrchestratorResponse<ActivateUserViewModel>() {FlashMessage = flashMessage, Data = new ActivateUserViewModel { Valid = result }});
             }
         }
 
