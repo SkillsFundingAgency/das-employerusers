@@ -319,15 +319,20 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 });
 
                 model.ResetCodeSent = true;
-
-                return model;
+            }
+            catch (UnknownAccountException)
+            {
+                model.ErrorDictionary = new Dictionary<string, string>
+                {
+                    {"Email", "Email address not registered"}
+                };
             }
             catch (InvalidRequestException ex)
             {
                 _logger.Info(ex, ex.Message);
                 model.ErrorDictionary = ex.ErrorMessages;
-                return model;
             }
+            return model;
         }
 
         public virtual async Task<PasswordResetViewModel> ResetPassword(PasswordResetViewModel model)
