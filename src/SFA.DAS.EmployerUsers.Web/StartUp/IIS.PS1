@@ -41,7 +41,7 @@ if(Get-Module -ListAvailable | Where-Object{ $_.Name -eq $Azure })
 [Reflection.Assembly]::LoadWithPartialName("Microsoft.WindowsAzure.ServiceRuntime")
 
 $ConfigurationStorageConnectionString = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("CertConfigurationStorageConnectionString")
-
+$EnvironmentName = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("EnvironmentName")
 #Query
 $Ctx = New-AzureStorageContext -ConnectionString $ConfigurationStorageConnectionString
 
