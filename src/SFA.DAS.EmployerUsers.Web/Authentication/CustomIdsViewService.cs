@@ -7,26 +7,31 @@ using System.Web.Routing;
 using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services.Default;
 using IdentityServer3.Core.ViewModels;
+using NLog;
 using SFA.DAS.EmployerUsers.Web.Controllers;
 
 namespace SFA.DAS.EmployerUsers.Web.Authentication
 {
     public class CustomIdsViewService : DefaultViewService
     {
+        private readonly ILogger _logger;
         private readonly IControllerFactory _controllerFactory;
 
         public CustomIdsViewService(DefaultViewServiceOptions config, IViewLoader viewLoader)
-            : this(config, viewLoader, ControllerBuilder.Current.GetControllerFactory())
+            : this(config, viewLoader, LogManager.GetCurrentClassLogger(), ControllerBuilder.Current.GetControllerFactory())
         {
         }
-        public CustomIdsViewService(DefaultViewServiceOptions config, IViewLoader viewLoader, IControllerFactory controllerFactory)
+        public CustomIdsViewService(DefaultViewServiceOptions config, IViewLoader viewLoader, ILogger logger, IControllerFactory controllerFactory)
             : base(config, viewLoader)
         {
+            _logger = logger;
             _controllerFactory = controllerFactory;
         }
 
         public override Task<Stream> Error(ErrorViewModel model)
         {
+            _logger.Error($"IDS Error view rendering for error '{model.ErrorMessage}'");
+
             var controller = GetController<ErrorController>();
             var result = RenderGeneralErrorAction(controller);
 
