@@ -18,6 +18,7 @@
       <Setting name="UseStaticCodeGenerator" value="__UseStaticCodeGenerator__" />
       <Setting name="StoreEmailsOnDisk" value="__StoreEmailsOnDisk__" />
       <Setting name="InstrumentationKey" value="__InstrumentationKey__" />
+      <Setting name="CertConfigurationStorageConnectionString" value="__CertConfigurationStorageConnectionString_"/>
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="WebSslCert" thumbprint="87A28DF77BBA73983918DF4288A132588AE820F4" thumbprintAlgorithm="sha1" />
