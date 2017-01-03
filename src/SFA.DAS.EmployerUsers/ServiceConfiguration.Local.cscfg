@@ -8,6 +8,7 @@
       <Setting name="ConfigurationStorageConnectionString" value="UseDevelopmentStorage=true" />
       <Setting name="UsersConnectionString" value="server=(local);database=EmployerUsers;trusted_connection=true;" />
       <Setting name="ProfileConnectionString" value="server=(local);database=EmployerUsers;trusted_connection=true;" />
+      <Setting name="AuthCodeCacheConnectionString" value="" />
       <Setting name="EnvironmentName" value="LOCAL" />
       <Setting name="LogLevel" value="Debug" />
       <Setting name="NotificationsApiBaseUrl" value="" />
