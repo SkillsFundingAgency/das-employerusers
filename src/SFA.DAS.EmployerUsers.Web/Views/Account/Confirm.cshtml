@@ -7,6 +7,17 @@
     var invalidAttributes = Model.Data.Valid ? "aria-invalid=\"true\" aria-labeledby=\"invalidMessage\"" : "";
 }
 
+@if (!Model.Data.Valid)
+{
+        <div class="error-summary" role="group" tabindex="-1">
+            <h1 class="heading-medium error-summary-heading" id="error-summary-heading"> Errors to fix </h1>
+            <p>Check the following details:</p>
+            <ul class="error-summary-list">
+                <li><a href="#AccessCode">Invalid code</a></li>
+            </ul>
+        </div>
+}
+
 <h1 class="heading-xlarge">Confirm your identity</h1>
 <form method="post">
     @Html.AntiForgeryToken()
