@@ -8,6 +8,7 @@
       <Setting name="ConfigurationStorageConnectionString" value="__ConfigurationStorageConnectionString__" />
       <Setting name="UsersConnectionString" value="__UsersConnectionString__" />
       <Setting name="ProfileConnectionString" value="__ProfileConnectionString__" />
+      <Setting name="AuthCodeCacheConnectionString" value="__AuthCodeCacheConnectionString__" />
       <Setting name="EnvironmentName" value="__EnvironmentName__" />
       <Setting name="LogLevel" value="Warn" />
       <Setting name="NotificationsApiBaseUrl" value="__NotificationsApiBaseUrl__" />

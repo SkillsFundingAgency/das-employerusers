@@ -15,6 +15,7 @@
       <Setting name="ConfigurationStorageConnectionString" />
       <Setting name="UsersConnectionString" />
       <Setting name="ProfileConnectionString" />
+      <Setting name="AuthCodeCacheConnectionString" />
       <Setting name="EnvironmentName" />
       <Setting name="LogLevel" />
       <Setting name="NotificationsApiBaseUrl" />
