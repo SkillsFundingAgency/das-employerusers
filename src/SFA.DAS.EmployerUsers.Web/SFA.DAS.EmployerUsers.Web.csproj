@@ -761,6 +761,9 @@
     <Content Include="Views\Shared\_InfoMessages.cshtml" />
     <Content Include="Views\Shared\_Layout-NoBanner.cshtml" />
     <Content Include="Views\Shared\BadRequest.cshtml" />
+    <Content Include="StartUp\IIS.bat" />
+    <Content Include="StartUp\IIS.PS1" />
+    <Content Include="StartUp\Powershell.msi" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
