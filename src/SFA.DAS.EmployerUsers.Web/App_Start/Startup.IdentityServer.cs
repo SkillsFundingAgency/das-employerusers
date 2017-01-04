@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerUsers.Web
         private void ConfigureIdentityServer(IAppBuilder app, IdentityServerConfiguration configuration, IRelyingPartyRepository relyingPartyRepository)
         {
             _logger.Debug("Setting up IdentityServer");
-            
+
             AntiForgeryConfig.UniqueClaimTypeIdentifier = DasClaimTypes.Id;
 
             app.Map("/identity", idsrvApp =>
@@ -66,25 +66,23 @@ namespace SFA.DAS.EmployerUsers.Web
 
         private X509Certificate2 LoadCertificate(IdentityServerConfiguration configuration)
         {
-            var certificatePath = string.Format(@"{0}\bin\DasIDPCert.pfx", AppDomain.CurrentDomain.BaseDirectory);
-            _logger.Debug("Loading IDP certificate from {0}", certificatePath);
-            return new X509Certificate2(certificatePath, "idsrv3test");
+            var storeLocation = (StoreLocation)Enum.Parse(typeof(StoreLocation), configuration.CertificateStore);
+            var store = new X509Store(storeLocation);
+            store.Open(OpenFlags.ReadOnly);
+            try
+            {
+                var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, configuration.CertificateThumbprint, false);
+                if (certificates.Count < 1)
+                {
+                    throw new Exception($"Cannot find certificate with thumbprint {configuration.CertificateThumbprint} in store {configuration.CertificateStore}");
+                }
 
-            //TODO: This need fixing to work with new Windows store
-            //var storeLocation = (StoreLocation)Enum.Parse(typeof (StoreLocation), configuration.CertificateStore);
-            //var store = new X509Store(storeLocation);
-            //store.Open(OpenFlags.ReadOnly);
-            //try
-            //{
-            //    var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, configuration.CertificateThumbprint, false);
-            //    var certificate = certificates.Count > 0 ? certificates[0] : null;
-
-            //    return certificate;
-            //}
-            //finally
-            //{
-            //    store.Close();
-            //}
+                return certificates[0];
+            }
+            finally
+            {
+                store.Close();
+            }
         }
         private List<Client> GetClients(IdentityServerConfiguration configuration, IRelyingPartyRepository relyingPartyRepository)
         {
