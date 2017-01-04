@@ -16,22 +16,11 @@ namespace SFA.DAS.EmployerUsers.Web
         {
             _logger.Debug("Started running Owin Configuration");
 
-            var configurationService = StructuremapMvc.Container.GetInstance<IConfigurationService>();
+            var identityServerConfiguration = StructuremapMvc.Container.GetInstance<IdentityServerConfiguration>();
             var relyingPartyRepository = StructuremapMvc.Container.GetInstance<IRelyingPartyRepository>();
-            configurationService.GetAsync<EmployerUsersConfiguration>().ContinueWith((task) =>
-            {
-                if (task.Exception != null)
-                {
-                    task.Exception.UnpackAndLog(_logger);
-                    throw task.Exception.InnerExceptions[0];
-                }
 
-                _logger.Debug("EmployerUsersConfiguration read successfully");
-
-                var configuration = task.Result;
-                ConfigureIdentityServer(app, configuration.IdentityServer, relyingPartyRepository);
-                ConfigureRelyingParty(app, configuration.IdentityServer);
-            }).Wait();
+            ConfigureIdentityServer(app, identityServerConfiguration, relyingPartyRepository);
+            ConfigureRelyingParty(app, identityServerConfiguration);
         }
     }
 }
