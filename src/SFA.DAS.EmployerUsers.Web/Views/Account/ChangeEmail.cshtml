@@ -4,6 +4,8 @@
 @{
     ViewBag.PageID = "page-change-email-address";
     ViewBag.Title = "Change your email address";
+    ViewBag.HideSigninLink = true;
+    ViewBag.HideCookieMessage = true;
 }
 
 @if (!Model.Data.Valid)

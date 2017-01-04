@@ -113,7 +113,8 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         public ActionResult Logout()
         {
             Request.GetOwinContext().Authentication.SignOut();
-            return RedirectToAction("Index", "Home");
+            var redirect = _owinWrapper.GetIdsRedrect();
+            return Redirect(redirect);
         }
 
 
