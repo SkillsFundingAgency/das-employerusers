@@ -48,8 +48,6 @@ namespace SFA.DAS.EmployerUsers.Web
             StructureMapDependencyScope = new StructureMapDependencyScope(Container);
             DependencyResolver.SetResolver(StructureMapDependencyScope);
             DynamicModuleUtility.RegisterModule(typeof(StructureMapScopeModule));
-
-            ConfigurationFactory.Current = Container.GetInstance<EmployerUsersClientComponentConfigurationFactory>();
         }
         
     }

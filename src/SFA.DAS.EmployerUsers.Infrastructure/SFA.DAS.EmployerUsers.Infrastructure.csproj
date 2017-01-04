@@ -86,7 +86,6 @@
     </Compile>
     <Compile Include="Configuration\DataStorageConfiguration.cs" />
     <Compile Include="Configuration\EmployerPortalConfiguration.cs" />
-    <Compile Include="Configuration\EmployerUsersClientComponentConfigurationFactory.cs" />
     <Compile Include="Configuration\EmployerUsersConfiguration.cs" />
     <Compile Include="Configuration\IdentityServerConfiguration.cs" />
     <Compile Include="Configuration\AccountConfiguration.cs" />
