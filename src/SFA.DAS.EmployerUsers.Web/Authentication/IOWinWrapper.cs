@@ -9,7 +9,7 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
         void IssueLoginCookie(string id, string displayName);
         void RemovePartialLoginCookie();
         void ClearSignInMessageCookie();
-        void SetIdsContext(string returnUrl, string clientId, string redirectUrl);
+        void SetIdsContext(string returnUrl, string clientId);
         string GetIdsReturnUrl();
         string GetIdsClientId();
     }

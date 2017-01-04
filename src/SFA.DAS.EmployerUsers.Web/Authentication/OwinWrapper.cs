@@ -40,9 +40,9 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
             }
         }
 
-        public void SetIdsContext(string returnUrl, string clientId, string redirectUrl)
+        public void SetIdsContext(string returnUrl, string clientId)
         {
-            var value = new IdsContext() {ReturnUrl = returnUrl, ClientId = clientId, RedirectUrl = redirectUrl };
+            var value = new IdsContext() {ReturnUrl = returnUrl, ClientId = clientId };
             var cookieOptions = new CookieOptions() {Secure = true};
             _owinContext.Response.Cookies.Append(IdsContext.CookieName, JsonConvert.SerializeObject(value), cookieOptions);;
         }
@@ -72,7 +72,7 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
         public string ReturnUrl { get; set; }
         public string ClientId { get; set; }
         public static string CookieName => "IDS";
-        public string RedirectUrl { get; set; }
+
 
         public static IdsContext ReadFrom(string data)
         {
