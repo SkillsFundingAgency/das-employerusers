@@ -40,17 +40,25 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
             }
         }
 
-        public void SetIdsContext(string returnUrl, string clientId)
+        public void SetIdsContext(string returnUrl, string clientId, string redirectUrl)
         {
-            var value = new IdsContext() {ReturnUrl = returnUrl, ClientId = clientId};
+            var value = new IdsContext() {ReturnUrl = returnUrl, ClientId = clientId, RedirectUrl = redirectUrl };
             var cookieOptions = new CookieOptions() {Secure = true};
             _owinContext.Response.Cookies.Append(IdsContext.CookieName, JsonConvert.SerializeObject(value), cookieOptions);;
         }
 
-        public string GetIdsRedrect()
+        public string GetIdsReturnUrl()
         {
             var cookie = IdsContext.ReadFrom(_owinContext.Request.Cookies[IdsContext.CookieName]);
             return cookie.ReturnUrl;
+        }
+
+
+
+        public string GetIdsClientId()
+        {
+            var cookie = IdsContext.ReadFrom(_owinContext.Request.Cookies[IdsContext.CookieName]);
+            return cookie.ClientId;
         }
 
         public void RemovePartialLoginCookie()
@@ -64,6 +72,7 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
         public string ReturnUrl { get; set; }
         public string ClientId { get; set; }
         public static string CookieName => "IDS";
+        public string RedirectUrl { get; set; }
 
         public static IdsContext ReadFrom(string data)
         {

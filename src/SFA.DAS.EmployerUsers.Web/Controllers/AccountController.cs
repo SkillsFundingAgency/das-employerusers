@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Security.Claims;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -39,7 +41,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         {
 
             var signinMessage = _owinWrapper.GetSignInMessage(id);
-            _owinWrapper.SetIdsContext(signinMessage.ReturnUrl, clientId);
+            _owinWrapper.SetIdsContext(signinMessage.ReturnUrl, clientId, Request.QueryString["returnUrl"]);
 
             var model = new OrchestratorResponse<LoginViewModel>
             {
@@ -110,11 +112,17 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
 
         [Route("account/logout")]
-        public ActionResult Logout()
+        public async Task<ActionResult> Logout()
         {
             Request.GetOwinContext().Authentication.SignOut();
-            var redirect = _owinWrapper.GetIdsRedrect();
-            return Redirect(redirect);
+            var redirect = _owinWrapper.GetIdsReturnUrl();
+            var Uri = new Uri(redirect);
+            var redirectUri = HttpUtility.ParseQueryString(Uri.Query)["redirect_uri"];
+            if (!string.IsNullOrEmpty(redirectUri))
+            {
+                return Redirect(redirectUri);
+            }
+            return Redirect(_identityServerConfiguration.EmployerPortalUrl);
         }
 
 
@@ -293,7 +301,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/resetflow")]
         public ActionResult ResetFlow()
         {
-            var returnUrl = _owinWrapper.GetIdsRedrect();
+            var returnUrl = _owinWrapper.GetIdsReturnUrl();
 
             return Redirect(returnUrl);
         }
@@ -329,7 +337,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             {
                 if (!string.IsNullOrEmpty(model.ReturnUrl))
                 {
-                    var returnUrl = _owinWrapper.GetIdsRedrect();
+                    var returnUrl =_owinWrapper.GetIdsReturnUrl();
                     return new RedirectResult(returnUrl);
                 }
                 return await RedirectToEmployerPortal();
