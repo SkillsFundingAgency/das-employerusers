@@ -571,6 +571,9 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         }
 
 
- 
+        public void RedirectToRelyingParty(string getIdsClientId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
