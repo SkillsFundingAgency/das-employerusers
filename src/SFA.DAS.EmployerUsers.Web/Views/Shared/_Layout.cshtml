@@ -68,16 +68,19 @@
 
     <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
 
-    <div id="skiplink-container">
-        <div>
-            <a href="#content" class="skiplink">Skip to main content</a>
+<div id="skiplink-container">
+    <div>
+        <a href="#content" class="skiplink">Skip to main content</a>
+    </div>
+</div>
+    @if (ViewBag.HideCookieMessage?.ToString()?.ToLower() != "true")
+    {
+        <div id="global-cookie-message">
+            <p>
+                GOV.UK uses cookies to make the site simpler. <a href="@Url.Action("Privacy", "Home")">Find out more about cookies</a>
+            </p>
         </div>
-    </div>
-    <div id="global-cookie-message">
-        <p>
-            GOV.UK uses cookies to make the site simpler. <a href="@Url.Action("Privacy","Home")">Find out more about cookies</a>
-        </p>
-    </div>
+    }
     <header role="banner" id="global-header" class="with-proposition">
         <div class="header-wrapper">
             <div class="header-global">
@@ -102,7 +105,7 @@
                     <span>This is a new service – your <a href="https://www.surveymonkey.co.uk/r/accessmylevysurvey" target="_blank">feedback</a> will help us to improve it. </span>
                 </p>
             </div>
-            @if (HttpContext.Current.User.Identity.IsAuthenticated)
+            @if (HttpContext.Current.User.Identity.IsAuthenticated && ViewBag.HideSigninLink?.ToString()?.ToLower() != "true")
             {
             <div class="account-information" role="navigation">
                 <a href="#user-nav" id="link-settings" aria-hidden="true" aria-label="Access your settings">Settings</a>
