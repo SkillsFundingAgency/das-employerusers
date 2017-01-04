@@ -36,16 +36,8 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             _accountOrchestrator = new Mock<AccountOrchestrator>();
 
             _configurationService = new Mock<IConfigurationService>();
-            _configurationService.Setup(s => s.GetAsync<EmployerUsersConfiguration>())
-                .Returns(Task.FromResult(new EmployerUsersConfiguration
-                {
-                    IdentityServer = new IdentityServerConfiguration
-                    {
-                        EmployerPortalUrl = EmployerPortalUrl
-                    }
-                }));
 
-            _accountController = new AccountController(_accountOrchestrator.Object, null, _configurationService.Object)
+            _accountController = new AccountController(_accountOrchestrator.Object, null, new IdentityServerConfiguration())
             {
                 ControllerContext = _controllerContext.Object
             };

@@ -25,6 +25,8 @@
       <Setting name="UseStaticCodeGenerator" />
       <Setting name="StoreEmailsOnDisk" />
       <Setting name="TokenCertificateThumbprint" />
+      <Setting name="BaseExternalUrl" />
+      <Setting name="EmployerPortalUrl" />
       <Setting name="InstrumentationKey" />
     </ConfigurationSettings>
     <Endpoints>

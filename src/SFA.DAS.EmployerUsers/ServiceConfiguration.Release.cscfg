@@ -18,6 +18,8 @@
       <Setting name="UseStaticCodeGenerator" value="__UseStaticCodeGenerator__" />
       <Setting name="StoreEmailsOnDisk" value="__StoreEmailsOnDisk__" />
       <Setting name="TokenCertificateThumbprint" value="__TokenCertificateThumbprint__" />
+      <Setting name="BaseExternalUrl" value="__BaseExternalUrl__" />
+      <Setting name="EmployerPortalUrl" value="__EmployerPortalUrl__" />
       <Setting name="InstrumentationKey" value="__InstrumentationKey__" />
     </ConfigurationSettings>
     <Certificates>

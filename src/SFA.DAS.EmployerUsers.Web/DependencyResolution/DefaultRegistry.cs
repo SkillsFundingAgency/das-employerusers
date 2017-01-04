@@ -56,6 +56,12 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
 
             For<IOwinWrapper>().Transient().Use(() => new OwinWrapper(HttpContext.Current.GetOwinContext())).SetLifecycleTo(new HttpContextLifecycle());
 
+            For<IdentityServerConfiguration>().Transient().Use(() => new IdentityServerConfiguration
+            {
+                ApplicationBaseUrl = CloudConfigurationManager.GetSetting("BaseExternalUrl"),
+                EmployerPortalUrl = CloudConfigurationManager.GetSetting("EmployerPortalUrl")
+            });
+
             AddConfigSpecifiedRegistrations();
             AddEnvironmentSpecificRegistrations();
             AddMediatrRegistrations();

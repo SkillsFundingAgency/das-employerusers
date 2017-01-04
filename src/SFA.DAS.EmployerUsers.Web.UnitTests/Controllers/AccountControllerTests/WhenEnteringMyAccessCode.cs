@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Configuration;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Controllers;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
@@ -31,7 +32,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 
             _configurationService = new Mock<IConfigurationService>();
 
-            _accountController = new AccountController(_accountOrchestrator.Object, null, _configurationService.Object);
+            _accountController = new AccountController(_accountOrchestrator.Object, null, new IdentityServerConfiguration());
             _accountController.ControllerContext = _controllerContext.Object;
         }
 
