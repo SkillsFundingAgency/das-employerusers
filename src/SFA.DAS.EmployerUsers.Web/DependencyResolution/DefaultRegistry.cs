@@ -98,14 +98,12 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             For<IUserRepository>().Use<SqlServerUserRepository>();
             For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
             For<IPasswordProfileRepository>().Use<SqlServerPasswordProfileRepository>();
-            For<IHttpClientWrapper>().Use<StubHttpClientWrapper>();
         }
         private void AddProductionRegistrations()
         {
             For<IUserRepository>().Use<SqlServerUserRepository>();
             For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
             For<IPasswordProfileRepository>().Use<InMemoryPasswordProfileRepository>();
-            For<IHttpClientWrapper>().Use<HttpClientWrapper>();
         }
 
         private void AddMediatrRegistrations()

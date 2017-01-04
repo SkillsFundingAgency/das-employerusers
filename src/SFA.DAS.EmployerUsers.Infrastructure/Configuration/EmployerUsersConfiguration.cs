@@ -4,6 +4,5 @@
     {
         public virtual IdentityServerConfiguration IdentityServer { get; set; }
         public virtual AccountConfiguration Account { get; set; }
-        public virtual EmployerPortalConfiguration EmployerPortalConfiguration { get; set; }
     }
 }
