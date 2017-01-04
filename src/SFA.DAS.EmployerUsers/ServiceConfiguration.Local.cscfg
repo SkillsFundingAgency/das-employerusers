@@ -17,6 +17,7 @@
       <Setting name="LoggingRedisKey" value="" />
       <Setting name="UseStaticCodeGenerator" value="false" />
       <Setting name="StoreEmailsOnDisk" value="true" />
+      <Setting name="TokenCertificateThumbprint" value="6B7ACC520305BFDB4F7252DAEB2177CC091FAAE1" />
       <Setting name="InstrumentationKey" value="" />
     </ConfigurationSettings>
     <Certificates>
