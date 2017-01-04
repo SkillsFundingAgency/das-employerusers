@@ -7,5 +7,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
     {
         public string EmailAddress { get; set; }
         public string Password { get; set; }
+        public string ReturnUrl { get; set; }
     }
 }

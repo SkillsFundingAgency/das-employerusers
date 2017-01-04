@@ -9,5 +9,6 @@
         public string ConfirmPasswordError => GetErrorMessage(nameof(ConfirmPassword));
         public string PasswordResetCodeError => GetErrorMessage(nameof(PasswordResetCode));
         public string PasswordError => GetErrorMessage(nameof(Password));
+        public string ReturnUrl { get; set; }
     }
 }

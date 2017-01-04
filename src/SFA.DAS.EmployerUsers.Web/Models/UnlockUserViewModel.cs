@@ -11,5 +11,6 @@
         public string EmailError => GetErrorMessage(nameof(Email));
         public string UnlockCodeMatchError => GetErrorMessage("UnlockCodeMatch");
         public bool UnlockCodeSent { get; set; }
+        public string ReturnUrl { get; set; }
     }
 }

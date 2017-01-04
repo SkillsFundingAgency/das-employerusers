@@ -6,7 +6,9 @@ using System.Web;
 using System.Web.Mvc;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using IdentityServer3.Core;
+using IdentityServer3.Core.Extensions;
 using Microsoft.Owin.Security;
+using Newtonsoft.Json;
 using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Models;
@@ -35,7 +37,10 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("identity/employer/login")]
         public ActionResult Login(string id, string clientId)
         {
+            
             var signinMessage = _owinWrapper.GetSignInMessage(id);
+            _owinWrapper.SetIdsContext(signinMessage.ReturnUrl, clientId);
+
             var model = new OrchestratorResponse<LoginViewModel>
             {
                 Data = new LoginViewModel
@@ -44,6 +49,17 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                     ClientId = clientId
                 }
             };
+            if (TempData["AccountUnlocked"] != null)
+            {
+                model.FlashMessage = new FlashMessageViewModel()
+                {
+
+                    Severity = FlashMessageSeverityLevel.Success,
+                    Message = "Account Unlocked",
+                    SubMessage =
+                        "Your account has been unlocked, if you can't remember your password use the Forgotten Password link below"
+                };
+            }
             return View(model);
         }
 
@@ -69,6 +85,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
             if (result.Data.AccountIsLocked)
             {
+                
                 return RedirectToAction("Unlock");
             }
 
@@ -244,6 +261,11 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
                 if (result.Valid)
                 {
+                    if (!string.IsNullOrEmpty(result.ReturnUrl))
+                    {
+                        TempData["AccountUnlocked"] = true;
+                        return new RedirectResult(result.ReturnUrl);
+                    }
                     return await RedirectToEmployerPortal();
                 }
                 unlockUserViewModel.UnlockCode = string.Empty;
@@ -257,7 +279,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/forgottencredentials")]
         public async Task<ActionResult> ForgottenCredentials(string clientId)
         {
-
             var model = await _accountOrchestrator.StartForgottenPassword(clientId);
 
             if (!model.Valid)
@@ -268,12 +289,21 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View("ForgottenCredentials", model);
         }
 
+        [Route("account/resetflow")]
+        public ActionResult ResetFlow()
+        {
+            var returnUrl = _owinWrapper.GetIdsRedrect();
+            
+            return Redirect(returnUrl);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("account/forgottencredentials")]
-        public async Task<ActionResult> ForgottenCredentials(RequestPasswordResetViewModel requestPasswordResetViewModel)
+        public async Task<ActionResult> ForgottenCredentials(RequestPasswordResetViewModel requestPasswordResetViewModel, string clientId)
         {
-
+         
+            requestPasswordResetViewModel.ClientId = clientId;
             requestPasswordResetViewModel = await _accountOrchestrator.RequestPasswordResetCode(requestPasswordResetViewModel);
 
             if (string.IsNullOrEmpty(requestPasswordResetViewModel.Email) || !requestPasswordResetViewModel.Valid)
@@ -296,6 +326,11 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
             if (model.Valid)
             {
+                if (!string.IsNullOrEmpty(model.ReturnUrl))
+                {
+                    var returnUrl =_owinWrapper.GetIdsRedrect();
+                    return new RedirectResult(returnUrl);
+                }
                 return await RedirectToEmployerPortal();
             }
 

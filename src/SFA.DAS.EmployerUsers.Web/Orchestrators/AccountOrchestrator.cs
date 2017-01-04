@@ -55,7 +55,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 var user = await _mediator.SendAsync(new AuthenticateUserCommand
                 {
                     EmailAddress = loginViewModel.EmailAddress,
-                    Password = loginViewModel.Password
+                    Password = loginViewModel.Password,
+                    ReturnUrl = loginViewModel.ReturnUrl
                 });
                 if (user == null)
                 {
@@ -101,6 +102,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             catch (AccountLockedException ex)
             {
                 _logger.Info(ex.Message);
+                
                 return new OrchestratorResponse<LoginResultModel> { Data = new LoginResultModel { AccountIsLocked = true }};
             }
             catch (Exception ex)
@@ -250,7 +252,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         {
             try
             {
-                await _mediator.SendAsync(new UnlockUserCommand
+                
+                var unlockResponse = await _mediator.SendAsync(new UnlockUserCommand
                 {
                     Email = unlockUserViewModel.Email,
                     UnlockCode = unlockUserViewModel.UnlockCode
@@ -260,7 +263,10 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 {
                     Email = unlockUserViewModel.Email
                 });
-
+                if (unlockResponse != null)
+                {
+                    unlockUserViewModel.ReturnUrl = unlockResponse.UnlockCode.ReturnUrl;
+                }
                 return unlockUserViewModel;
             }
             catch (InvalidRequestException ex)
@@ -334,10 +340,10 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         {
             try
             {
-                await _mediator.SendAsync(new PasswordResetCommand
+                var resetResponse =await _mediator.SendAsync(new PasswordResetCommand
                 {
                     Email = model.Email,
-                    PasswordResetCode = model.PasswordResetCode,
+                    PasswordResetCode = model.PasswordResetCode??null,
                     Password = model.Password,
                     ConfirmPassword = model.ConfirmPassword
                 });
@@ -348,7 +354,10 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 });
 
                 LoginUser(user.Id, user.FirstName, user.LastName);
-
+                if (resetResponse?.ResetCode != null)
+                {
+                    model.ReturnUrl = resetResponse.ResetCode.ReturnUrl;
+                }
                 return model;
             }
             catch (InvalidRequestException ex)
