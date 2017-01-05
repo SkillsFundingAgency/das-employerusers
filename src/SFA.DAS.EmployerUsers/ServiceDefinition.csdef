@@ -25,7 +25,6 @@
       <Setting name="UseStaticCodeGenerator" />
       <Setting name="StoreEmailsOnDisk" />
       <Setting name="InstrumentationKey" />
-      <Setting name="ConfigurationStorageConnectionString" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="HttpIn" protocol="http" port="80" />
