@@ -42,11 +42,12 @@ if(Get-Module -ListAvailable | Where-Object{ $_.Name -eq $Azure })
 
 $ConfigurationStorageConnectionString = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("CertConfigurationStorageConnectionString")
 $EnvironmentName = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("EnvironmentName")
+$EnvironmentNameLower= $EnvironmentName.ToLower()
 #Query
 $Ctx = New-AzureStorageContext -ConnectionString $ConfigurationStorageConnectionString
 
 $BlobName = "DasIDPCert.pfx"
-$ContainerName = "$EnvironmentName"
+$ContainerName = "$EnvironmentNameLower"
 $localTargetDirectory = "C:\Cert"
 
 New-Item $localTargetDirectory -type directory -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
