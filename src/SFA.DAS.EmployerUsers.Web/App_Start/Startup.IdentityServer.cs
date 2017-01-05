@@ -47,7 +47,8 @@ namespace SFA.DAS.EmployerUsers.Web
                     {
                         FontSrc = "* data:",
                         ImgSrc = "* data:",
-                        FrameSrc = "* data:"
+                        FrameSrc = "* data:",
+                        Enabled = false
                     },
                     SigningCertificate = LoadCertificate(),
 
