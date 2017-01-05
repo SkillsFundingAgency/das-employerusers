@@ -1,3 +1,7 @@
+using System;
+using System.Text;
+using System.Web;
+using System.Web.Security;
 using IdentityServer3.Core.Extensions;
 using IdentityServer3.Core.Models;
 using Microsoft.Owin;
@@ -44,7 +48,9 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
         {
             var value = new IdsContext() {ReturnUrl = returnUrl, ClientId = clientId };
             var cookieOptions = new CookieOptions() {Secure = true};
-            _owinContext.Response.Cookies.Append(IdsContext.CookieName, JsonConvert.SerializeObject(value), cookieOptions);;
+
+            var encCookie = Convert.ToBase64String(MachineKey.Protect(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(value))));
+            _owinContext.Response.Cookies.Append(IdsContext.CookieName, encCookie, cookieOptions);;
         }
 
         public string GetIdsReturnUrl()
@@ -76,7 +82,16 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
 
         public static IdsContext ReadFrom(string data)
         {
-            return JsonConvert.DeserializeObject<IdsContext>(data);
+            try
+            {
+                var unEncData = Encoding.UTF8.GetString(MachineKey.Unprotect(Convert.FromBase64String(data)));
+                return JsonConvert.DeserializeObject<IdsContext>(unEncData);
+            }
+            catch (Exception)
+            {
+                return new IdsContext();
+            }
+      
         }
     }
 }
