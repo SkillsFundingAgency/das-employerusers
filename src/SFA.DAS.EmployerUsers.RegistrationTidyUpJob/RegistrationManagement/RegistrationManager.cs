@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MediatR;
 using NLog;
+using SFA.DAS.EmployerUsers.Application.Commands.DeleteUser;
+using SFA.DAS.EmployerUsers.Application.Queries.GetUsersWithExpiredRegistrations;
 
 namespace SFA.DAS.EmployerUsers.RegistrationTidyUpJob.RegistrationManagement
 {
@@ -15,11 +18,31 @@ namespace SFA.DAS.EmployerUsers.RegistrationTidyUpJob.RegistrationManagement
             _logger = logger;
         }
 
-        public Task RemoveExpiredRegistrations()
+        public async Task RemoveExpiredRegistrations()
         {
-            // Get Users that have expired registrations
-            // Delete each user in above set
-            return Task.FromResult<object>(null);
+            _logger.Info("Starting deletion of expired registrations");
+
+            try
+            {
+                var users = await _mediator.SendAsync(new GetUsersWithExpiredRegistrationsQuery());
+                _logger.Info($"Found {users.Length} users with expired registrations");
+
+                foreach (var user in users)
+                {
+                    _logger.Info($"Deleting user with email '{user.Email}' (id: '{user.Id}')");
+                    await _mediator.SendAsync(new DeleteUserCommand
+                    {
+                        User = user
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                throw;
+            }
+
+            _logger.Info("Finished deletion of expired registrations");
         }
     }
 }

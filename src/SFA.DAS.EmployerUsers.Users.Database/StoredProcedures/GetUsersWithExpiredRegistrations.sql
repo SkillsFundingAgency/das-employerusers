@@ -1,6 +1,16 @@
 ﻿CREATE PROCEDURE [dbo].[GetUsersWithExpiredRegistrations]
 AS
-	SELECT u.Id
+	SELECT
+		Id,
+		FirstName,
+		LastName,
+		Email,
+		Password,
+		Salt,
+		PasswordProfileId,
+		IsActive,
+		FailedLoginAttempts,
+		IsLocked
 	FROM [User] u
 	LEFT JOIN UserSecurityCode sc
 		ON u.Id = sc.UserId
