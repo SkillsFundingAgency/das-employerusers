@@ -46,11 +46,11 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
 
         public void SetIdsContext(string returnUrl, string clientId)
         {
-            var value = new IdsContext() {ReturnUrl = returnUrl, ClientId = clientId };
-            var cookieOptions = new CookieOptions() {Secure = true};
+            var value = new IdsContext() { ReturnUrl = returnUrl, ClientId = clientId };
+            var cookieOptions = new CookieOptions() { Secure = true, HttpOnly = true};
 
-            var encCookie = Convert.ToBase64String(MachineKey.Protect(System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(value))));
-            _owinContext.Response.Cookies.Append(IdsContext.CookieName, encCookie, cookieOptions);;
+            var encCookie = Convert.ToBase64String(MachineKey.Protect(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(value))));
+            _owinContext.Response.Cookies.Append(IdsContext.CookieName, encCookie, cookieOptions); ;
         }
 
         public string GetIdsReturnUrl()
@@ -91,7 +91,7 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
             {
                 return new IdsContext();
             }
-      
+
         }
     }
 }
