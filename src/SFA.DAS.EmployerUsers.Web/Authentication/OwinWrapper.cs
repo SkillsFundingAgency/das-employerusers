@@ -6,6 +6,7 @@ using IdentityServer3.Core.Extensions;
 using IdentityServer3.Core.Models;
 using Microsoft.Owin;
 using Newtonsoft.Json;
+using NLog;
 
 namespace SFA.DAS.EmployerUsers.Web.Authentication
 {
@@ -87,8 +88,9 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
                 var unEncData = Encoding.UTF8.GetString(MachineKey.Unprotect(Convert.FromBase64String(data)));
                 return JsonConvert.DeserializeObject<IdsContext>(unEncData);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                LogManager.GetCurrentClassLogger().Error(ex, ex.Message); ;
                 return new IdsContext();
             }
 

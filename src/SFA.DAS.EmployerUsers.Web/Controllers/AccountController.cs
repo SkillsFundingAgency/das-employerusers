@@ -393,6 +393,8 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
             if (response.Status == HttpStatusCode.BadRequest)
             {
+                response.Status = HttpStatusCode.OK;
+                
                 return View("ChangeEmail", response);
             }
             TempData["EmailChangeRequested"] = true;
