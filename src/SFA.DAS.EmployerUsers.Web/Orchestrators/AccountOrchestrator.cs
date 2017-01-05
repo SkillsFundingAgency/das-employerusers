@@ -537,6 +537,21 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             return model;
         }
 
+        public async Task<string> LogoutUrlForClientId(string clientId)
+        {
+     
+            var relyingParty = await _mediator.SendAsync(new GetRelyingPartyQuery { Id = clientId });
+
+            if (relyingParty == null)
+            {
+                return "";
+            }
+            else
+            {
+                return relyingParty.ApplicationUrl;
+            }
+        }
+
         private void LoginUser(string id, string firstName, string lastName)
         {
             _owinWrapper.IssueLoginCookie(id, $"{firstName} {lastName}");

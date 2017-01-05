@@ -41,7 +41,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         {
 
             var signinMessage = _owinWrapper.GetSignInMessage(id);
-            _owinWrapper.SetIdsContext(signinMessage.ReturnUrl, clientId, Request.QueryString["returnUrl"]);
+            _owinWrapper.SetIdsContext(signinMessage.ReturnUrl, clientId);
 
             var model = new OrchestratorResponse<LoginViewModel>
             {
