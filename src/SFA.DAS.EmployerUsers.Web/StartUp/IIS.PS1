@@ -39,25 +39,42 @@ $Azure="Azure"
 if(Get-Module -ListAvailable | Where-Object{ $_.Name -eq $Azure }) 
 {  
 [Reflection.Assembly]::LoadWithPartialName("Microsoft.WindowsAzure.ServiceRuntime")
-
-$ConfigurationStorageConnectionString = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("CertConfigurationStorageConnectionString")
+$ConfigurationStorageConnectionString = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("ConfigurationStorageConnectionString")
 $EnvironmentName = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("EnvironmentName")
-$EnvironmentNameLower= $EnvironmentName.ToLower()
+
 #Query
 $Ctx = New-AzureStorageContext -ConnectionString $ConfigurationStorageConnectionString
-
-$BlobName = "DasIDPCert.pfx"
-$ContainerName = "$EnvironmentNameLower"
+$BlobName = "$environmentname/DasIDPCert.pfx"
+$ContainerName = "certs"
 $localTargetDirectory = "C:\Cert"
 
 New-Item $localTargetDirectory -type directory -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
  
 Get-AzureStorageBlobContent -Blob $BlobName -Container $ContainerName -Destination $localTargetDirectory -Context $ctx -Force 
 
-$mypwd = ConvertTo-SecureString -String "idsrv3test" -Force –AsPlainText
+$TableName = "Configuration"
 
-Import-PfxCertificate –FilePath C:\Cert\DasIDPCert.pfx cert:\localMachine\my -Password $mypwd
+$table = Get-AzureStorageTable –Name $TableName -Context $Ctx
+$query = New-Object Microsoft.WindowsAzure.Storage.Table.TableQuery
 
+#Define columns to select.
+$list = New-Object System.Collections.Generic.List[string]
+$list.Add("PartitionKey")
+$list.Add("RowKey")
+$list.Add("Data")
+
+$query.FilterString =  "RowKey eq 'SFA.DAS.EmployerUser.CertPassword' and PartitionKey eq '$EnvironmentName' "
+$query.SelectColumns = $list
+
+$entities = $table.CloudTable.ExecuteQuery($query)
+
+$password=$entities.Properties
+$password1=$password.Values
+$CertPassword=$password1.PropertyAsObject
+
+$mypwd = ConvertTo-SecureString -String "$CertPassword" -Force –AsPlainText
+
+Import-PfxCertificate –FilePath C:\Cert\$environmentname\DasIDPCert.pfx cert:\localMachine\my -Password $mypwd
 
 }  
 else  
