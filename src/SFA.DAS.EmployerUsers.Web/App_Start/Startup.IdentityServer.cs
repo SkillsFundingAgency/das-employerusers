@@ -39,10 +39,11 @@ namespace SFA.DAS.EmployerUsers.Web
                 {
                     factory.AuthorizationCodeStore = new Registration<IAuthorizationCodeStore>(typeof(RedisAuthorizationCodeStore));
                 }
-
+                
                 idsrvApp.UseIdentityServer(new IdentityServerOptions
                 {
                     SiteName = "Digital Apprenticeship Service",
+                   
                     CspOptions = new CspOptions()
                     {
                         FontSrc = "* data:",
@@ -57,7 +58,8 @@ namespace SFA.DAS.EmployerUsers.Web
                     {
                         EnablePostSignOutAutoRedirect = true,
                         EnableSignOutPrompt = false,
-                        PostSignOutAutoRedirectDelay = 0
+                        PostSignOutAutoRedirectDelay = 0,
+                        SignInMessageThreshold = 1                       
                     }
                 });
             });
