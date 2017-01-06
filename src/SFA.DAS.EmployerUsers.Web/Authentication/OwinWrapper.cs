@@ -1,7 +1,12 @@
+using System;
+using System.Text;
+using System.Web;
+using System.Web.Security;
 using IdentityServer3.Core.Extensions;
 using IdentityServer3.Core.Models;
 using Microsoft.Owin;
 using Newtonsoft.Json;
+using NLog;
 
 namespace SFA.DAS.EmployerUsers.Web.Authentication
 {
@@ -42,9 +47,11 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
 
         public void SetIdsContext(string returnUrl, string clientId)
         {
-            var value = new IdsContext() {ReturnUrl = returnUrl, ClientId = clientId };
-            var cookieOptions = new CookieOptions() {Secure = true};
-            _owinContext.Response.Cookies.Append(IdsContext.CookieName, JsonConvert.SerializeObject(value), cookieOptions);;
+            var value = new IdsContext() { ReturnUrl = returnUrl, ClientId = clientId };
+            var cookieOptions = new CookieOptions() { Secure = true, HttpOnly = true};
+
+            var encCookie = Convert.ToBase64String(MachineKey.Protect(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(value))));
+            _owinContext.Response.Cookies.Append(IdsContext.CookieName, encCookie, cookieOptions); ;
         }
 
         public string GetIdsReturnUrl()
@@ -76,7 +83,17 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
 
         public static IdsContext ReadFrom(string data)
         {
-            return JsonConvert.DeserializeObject<IdsContext>(data);
+            try
+            {
+                var unEncData = Encoding.UTF8.GetString(MachineKey.Unprotect(Convert.FromBase64String(data)));
+                return JsonConvert.DeserializeObject<IdsContext>(unEncData);
+            }
+            catch (Exception ex)
+            {
+                LogManager.GetCurrentClassLogger().Error(ex, ex.Message); ;
+                return new IdsContext();
+            }
+
         }
     }
 }
