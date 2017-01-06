@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NLog;
 using NUnit.Framework;
+using SFA.DAS.CodeGenerator;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Validation;
@@ -19,6 +22,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendActiva
         private Mock<ICommunicationService> _communicationSerivce;
         private ResendActivationCodeCommandHandler _commandHandler;
         private Mock<ILogger> _logger;
+        private Mock<ICodeGenerator> _codeGenerator;
 
         [SetUp]
         public void Setup()
@@ -26,9 +30,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendActiva
             _validator = new Mock<IValidator<ResendActivationCodeCommand>>();
             _userRepository = new Mock<IUserRepository>();
             _communicationSerivce = new Mock<ICommunicationService>();
+            _codeGenerator = new Mock<ICodeGenerator>();
             _logger = new Mock<ILogger>();
 
-            _commandHandler = new ResendActivationCodeCommandHandler(_validator.Object, _userRepository.Object, _communicationSerivce.Object, _logger.Object);
+            _commandHandler = new ResendActivationCodeCommandHandler(_validator.Object, _userRepository.Object, _communicationSerivce.Object, _codeGenerator.Object, _logger.Object);
         }
 
         [Test]
@@ -54,7 +59,16 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendActiva
             SetValidatorToReturn(true);
             SetUserRepositoryToReturn(new User
             {
-                IsActive = false
+                IsActive = false,
+                SecurityCodes = new[]
+                {
+                    new SecurityCode
+                    {
+                        Code = "CODE1",
+                        CodeType = SecurityCodeType.AccessCode,
+                        ExpiryTime = DateTime.MaxValue
+                    }
+                }
             });
 
             await _commandHandler.Handle(new ResendActivationCodeCommand());
@@ -76,15 +90,41 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendActiva
             _communicationSerivce.Verify(x => x.ResendActivationCodeMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
         }
 
+        [Test]
+        public async Task ThenShouldGenerateNewAccessCodeIfPreviousHasExpired()
+        {
+            // Arrange
+            SetValidatorToReturn(true);
+            SetUserRepositoryToReturn(new User
+            {
+                IsActive = false,
+                SecurityCodes = new[]
+                {
+                    new SecurityCode
+                    {
+                        Code = "CODE1",
+                        CodeType = SecurityCodeType.AccessCode,
+                        ExpiryTime = DateTime.Today.AddSeconds(-1)
+                    }
+                }
+            });
+
+            // Act
+            await _commandHandler.Handle(new ResendActivationCodeCommand());
+
+            // Assert
+            _userRepository.Verify(r => r.Update(It.Is<User>(u => u.SecurityCodes.Any(sc => sc.CodeType == SecurityCodeType.AccessCode && sc.ExpiryTime >= DateTime.Now))), Times.Once);
+        }
+
         private void SetValidatorToReturn(bool isValid)
         {
             if (isValid)
             {
-                _validator.Setup(x => x.ValidateAsync(It.IsAny<ResendActivationCodeCommand>())).ReturnsAsync(new ValidationResult {ValidationDictionary = new Dictionary<string,string>()});
+                _validator.Setup(x => x.ValidateAsync(It.IsAny<ResendActivationCodeCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string>() });
             }
             else
             {
-                _validator.Setup(x => x.ValidateAsync(It.IsAny<ResendActivationCodeCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { {"",""} }});
+                _validator.Setup(x => x.ValidateAsync(It.IsAny<ResendActivationCodeCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
             }
         }
 
