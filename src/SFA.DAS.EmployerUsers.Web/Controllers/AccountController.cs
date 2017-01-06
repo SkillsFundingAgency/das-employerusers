@@ -39,7 +39,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("identity/employer/login")]
         public ActionResult Login(string id, string clientId)
         {
-
+            RemoveExpiredCookies();
             var signinMessage = _owinWrapper.GetSignInMessage(id);
             _owinWrapper.SetIdsContext(signinMessage.ReturnUrl, clientId);
 
@@ -63,6 +63,21 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 };
             }
             return View(model);
+        }
+
+        private void RemoveExpiredCookies()
+        {
+            foreach (var cookieName in Request.Cookies.AllKeys)
+            {
+                if (cookieName.StartsWith("SignInMessage."))
+                {
+                    var cookie = Request.Cookies[cookieName];
+                    if (cookie?.Expires < DateTime.Now && cookie?.Expires != DateTime.MinValue)
+                    {
+                        Response.Cookies.Remove(cookieName);
+                    }
+                }
+            }
         }
 
         [HttpPost]
@@ -133,6 +148,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [AttemptAuthorise]
         public async Task<ActionResult> Register(string clientId, string returnUrl)
         {
+            RemoveExpiredCookies();
             var loginReturnUrl = Url.Action("Index", "Home", null, Request.Url.Scheme)
                                  + "identity/connect/authorize";
             var isLocalReturnUrl = returnUrl.ToLower().StartsWith(loginReturnUrl.ToLower());
