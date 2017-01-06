@@ -395,7 +395,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             var response = new OrchestratorResponse<ChangeEmailViewModel>();
             var model = new ChangeEmailViewModel
             {
-                ReturnUrl = returnUrl,
+                ReturnUrl = returnUrl + "?userCancelled=true",
                 ClientId = clientId
             };
             try
@@ -512,7 +512,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         {
             var model = new ChangePasswordViewModel
             {
-                ReturnUrl = returnUrl,
+                ReturnUrl = returnUrl + "?userCancelled=true",
                 ClientId = clientId
             };
 
