@@ -48,6 +48,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             var request = new Mock<HttpRequestBase>();
             request.Setup(r => r.Url)
                 .Returns(new Uri("https://localhost"));
+            request.Setup(r => r.Cookies ).Returns(new HttpCookieCollection());
 
             var httpContext = new Mock<HttpContextBase>();
             httpContext.Setup(c => c.User)
