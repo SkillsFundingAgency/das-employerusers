@@ -82,7 +82,7 @@ Import-PfxCertificate –FilePath C:\Cert\$environmentname\DasIDPCert.pfx cert:\lo
 $Thumbprint=Get-ChildItem -path cert:\LocalMachine\My | where subject -eq "CN=idsrv3test"
 $Thumb=$thumbprint.Thumbprint
 
-$cmdOutput = $($Command = ".\FindPrivateKey.exe"
+$cmdOutput = $($Command = "StartUp\FindPrivateKey.exe"
 $Parms = "My LocalMachine -t ""$thumb"" -a "
 $Prms = $Parms.Split(" ")
 & "$Command" $Prms
