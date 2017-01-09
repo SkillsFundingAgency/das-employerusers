@@ -88,17 +88,11 @@ $Prms = $Parms.Split(" ")
 & "$Command" $Prms
 )
 	
-$cmdOutput
-
-
 $acl = Get-Acl $cmdOutput
 $permission = "USERS","Read","Allow"
-
 $accessRule = new-object System.Security.AccessControl.FileSystemAccessRule $permission
 $acl.SetAccessRule($accessRule)
 $acl | Set-Acl $cmdOutput
-
-> ".\log.txt" 
 
 }  
 else  
