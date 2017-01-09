@@ -66,11 +66,6 @@ namespace SFA.DAS.EmployerUsers.Web
 
         private X509Certificate2 LoadCertificate()
         {
-            //var certificatePath = string.Format(@"{0}\bin\DasIDPCert.pfx", AppDomain.CurrentDomain.BaseDirectory);
-            //_logger.Debug("Loading IDP certificate from {0}", certificatePath);
-            //return new X509Certificate2(certificatePath, "idsrv3test");
-
-            //TODO: This need fixing to work with new Windows store
             var store = new X509Store(StoreLocation.LocalMachine);
             store.Open(OpenFlags.ReadOnly);
             try

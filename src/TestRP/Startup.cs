@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
@@ -121,9 +120,24 @@ namespace TestRP
                 TokenValidationMethod = TokenValidationMethod.SigningKey,
                 TokenSigningCertificateLoader = () =>
                 {
-                    var slnDirectory = Path.GetDirectoryName(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory));
-                    var idpDirectory = Path.Combine(slnDirectory, "SFA.DAS.EmployerUsers.Web");
-                    return new System.Security.Cryptography.X509Certificates.X509Certificate2($@"{idpDirectory}\DasIDPCert.pfx", "idsrv3test");
+                    var store = new X509Store(StoreLocation.LocalMachine);
+                    store.Open(OpenFlags.ReadOnly);
+                    try
+                    {
+                        var thumbprint = "6B7ACC520305BFDB4F7252DAEB2177CC091FAAE1";
+                        var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, false);
+
+                        if (certificates.Count < 1)
+                        {
+                            throw new Exception($"Could not find certificate with thumbprint {thumbprint} in LocalMachine store");
+                        }
+
+                        return certificates[0];
+                    }
+                    finally
+                    {
+                        store.Close();
+                    }
                 }
             });
         }
