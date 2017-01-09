@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Configuration;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Controllers;
 using SFA.DAS.EmployerUsers.Web.Models;
@@ -44,7 +45,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 
             _owinWrapper = new Mock<IOwinWrapper>();
             _configurationService = new Mock<IConfigurationService>();
-            _accountController = new AccountController(_accountOrchestrator.Object, _owinWrapper.Object, _configurationService.Object);
+            _accountController = new AccountController(_accountOrchestrator.Object, _owinWrapper.Object, new IdentityServerConfiguration());
 
         }
 
@@ -60,7 +61,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             _accountOrchestrator.Setup(x => x.RequestPasswordResetCode(It.Is<RequestPasswordResetViewModel>(m => m.Email == _requestPasswordResetViewModel.Email)))
                 .ReturnsAsync(response);
 
-            var actual = await _accountController.ForgottenCredentials(_requestPasswordResetViewModel);
+            var actual = await _accountController.ForgottenCredentials(_requestPasswordResetViewModel, "");
 
             var viewResult = (ViewResult) actual;
             var viewModel = (PasswordResetViewModel) viewResult.Model;
@@ -74,7 +75,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public async Task ThenTheResetCodeIsNotSentWhenAnErrorOccurs()
         {
            
-            var xyz = await _accountController.ForgottenCredentials(_requestPasswordResetViewModel);
+            var xyz = await _accountController.ForgottenCredentials(_requestPasswordResetViewModel, "");
 
             var viewResult = (ViewResult)xyz;
             var viewModel = (RequestPasswordResetViewModel)viewResult.Model;
@@ -93,7 +94,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             _accountOrchestrator.Setup(x => x.RequestPasswordResetCode(It.IsAny<RequestPasswordResetViewModel>())).ReturnsAsync(_errorResponse);
 
             //Act
-            var actual = await _accountController.ForgottenCredentials(_requestPasswordResetViewModel);
+            var actual = await _accountController.ForgottenCredentials(_requestPasswordResetViewModel, "");
 
             Assert.IsNotNull(actual);
             var actualViewResult = actual as ViewResult;

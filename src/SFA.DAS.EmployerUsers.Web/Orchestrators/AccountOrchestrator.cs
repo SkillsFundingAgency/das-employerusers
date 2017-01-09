@@ -26,7 +26,7 @@ using SFA.DAS.EmployerUsers.Web.Models.SFA.DAS.EAS.Web.Models;
 
 namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 {
-    public class AccountOrchestrator 
+    public class AccountOrchestrator
     {
 
 
@@ -55,13 +55,15 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 var user = await _mediator.SendAsync(new AuthenticateUserCommand
                 {
                     EmailAddress = loginViewModel.EmailAddress,
-                    Password = loginViewModel.Password
+                    Password = loginViewModel.Password,
+                    ReturnUrl = loginViewModel.ReturnUrl
                 });
                 if (user == null)
                 {
                     _logger.Warn(
                         $"Failed login attempt for email address '{loginViewModel.EmailAddress}' originating from {loginViewModel.OriginatingAddress}");
-                    return new OrchestratorResponse<LoginResultModel> {
+                    return new OrchestratorResponse<LoginResultModel>
+                    {
                         Status = HttpStatusCode.BadRequest,
                         FlashMessage = new FlashMessageViewModel
                         {
@@ -73,14 +75,15 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                             Headline = "Errors to fix",
                             Message = "Check the following details:"
                         },
-                        Data = new LoginResultModel {Success = false}};
+                        Data = new LoginResultModel { Success = false }
+                    };
                 }
 
                 LoginUser(user.Id, user.FirstName, user.LastName);
 
                 return new OrchestratorResponse<LoginResultModel>
                 {
-                    Data = new LoginResultModel {Success = true, RequiresActivation = !user.IsActive}
+                    Data = new LoginResultModel { Success = true, RequiresActivation = !user.IsActive }
                 };
             }
             catch (InvalidRequestException ex)
@@ -101,12 +104,13 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             catch (AccountLockedException ex)
             {
                 _logger.Info(ex.Message);
-                return new OrchestratorResponse<LoginResultModel> { Data = new LoginResultModel { AccountIsLocked = true }};
+
+                return new OrchestratorResponse<LoginResultModel> { Data = new LoginResultModel { AccountIsLocked = true } };
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, ex.Message);
-                return new OrchestratorResponse<LoginResultModel> { Data = new LoginResultModel { Success = false }};
+                return new OrchestratorResponse<LoginResultModel> { Data = new LoginResultModel { Success = false } };
             }
         }
 
@@ -242,15 +246,29 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
         public virtual async Task<bool> RequestConfirmAccount(string userId)
         {
-            var isUserActive = await _mediator.SendAsync(new IsUserActiveQuery { UserId = userId });
-            return !isUserActive;
+            try
+            {
+                var isUserActive = await _mediator.SendAsync(new IsUserActiveQuery { UserId = userId });
+                return !isUserActive;
+            }
+            catch (InvalidRequestException ex)
+            {
+                _logger.Info(ex, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, ex.Message);
+
+            }
+            return false;
         }
 
         public virtual async Task<UnlockUserViewModel> UnlockUser(UnlockUserViewModel unlockUserViewModel)
         {
             try
             {
-                await _mediator.SendAsync(new UnlockUserCommand
+
+                var unlockResponse = await _mediator.SendAsync(new UnlockUserCommand
                 {
                     Email = unlockUserViewModel.Email,
                     UnlockCode = unlockUserViewModel.UnlockCode
@@ -260,7 +278,10 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 {
                     Email = unlockUserViewModel.Email
                 });
-
+                if (unlockResponse != null)
+                {
+                    unlockUserViewModel.ReturnUrl = unlockResponse.UnlockCode.ReturnUrl;
+                }
                 return unlockUserViewModel;
             }
             catch (InvalidRequestException ex)
@@ -339,10 +360,10 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         {
             try
             {
-                await _mediator.SendAsync(new PasswordResetCommand
+                var resetResponse = await _mediator.SendAsync(new PasswordResetCommand
                 {
                     Email = model.Email,
-                    PasswordResetCode = model.PasswordResetCode,
+                    PasswordResetCode = model.PasswordResetCode ?? null,
                     Password = model.Password,
                     ConfirmPassword = model.ConfirmPassword
                 });
@@ -353,7 +374,10 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 });
 
                 LoginUser(user.Id, user.FirstName, user.LastName);
-
+                if (resetResponse?.ResetCode != null)
+                {
+                    model.ReturnUrl = resetResponse.ResetCode.ReturnUrl;
+                }
                 return model;
             }
             catch (InvalidRequestException ex)
@@ -368,25 +392,52 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
         public virtual async Task<OrchestratorResponse<ChangeEmailViewModel>> StartRequestChangeEmail(string clientId, string returnUrl)
         {
+            var response = new OrchestratorResponse<ChangeEmailViewModel>();
             var model = new ChangeEmailViewModel
             {
-                ReturnUrl = returnUrl,
+                ReturnUrl = returnUrl + "?userCancelled=true",
                 ClientId = clientId
             };
-
-            await ValidateClientIdReturnUrlCombo(clientId, returnUrl, model);
-
-            var response = new OrchestratorResponse<ChangeEmailViewModel> {Data = model};
-            if (!response.Data.Valid)
+            try
             {
-                response.Status = HttpStatusCode.BadRequest;
+     
+
+                await ValidateClientIdReturnUrlCombo(clientId, returnUrl, model);
+
+                response.Data = model;
+                if (!response.Data.Valid)
+                {
+                    response.Status = HttpStatusCode.BadRequest;
+                }
+                return response;
             }
+            catch (InvalidRequestException ex)
+            {
+                model.ErrorDictionary = ex.ErrorMessages;
+                response.Status = HttpStatusCode.BadRequest;
+                response.FlashMessage = new FlashMessageViewModel
+                {
+                    Headline = "Errors to fix",
+                    Message = "Check the following details:",
+                    ErrorMessages = ex.ErrorMessages,
+                    Severity = FlashMessageSeverityLevel.Error
+                };
+                response.Exception = ex;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, ex.Message);
+                response.Status = HttpStatusCode.InternalServerError;
+
+            }
+            response.Data = model;
+
             return response;
         }
         public virtual async Task<OrchestratorResponse<ChangeEmailViewModel>> RequestChangeEmail(ChangeEmailViewModel model)
         {
-            var response = new OrchestratorResponse<ChangeEmailViewModel>() {Data = new ChangeEmailViewModel()};
-         
+            var response = new OrchestratorResponse<ChangeEmailViewModel>() { Data = new ChangeEmailViewModel() };
+
             try
             {
                 var isClientValid = await ValidateClientIdReturnUrlCombo(model.ClientId, model.ReturnUrl, model);
@@ -396,14 +447,14 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     return response;
                 }
 
-                 await _mediator.SendAsync(new RequestChangeEmailCommand
+                await _mediator.SendAsync(new RequestChangeEmailCommand
                 {
                     UserId = model.UserId,
                     NewEmailAddress = model.NewEmailAddress,
                     ConfirmEmailAddress = model.ConfirmEmailAddress,
                     ReturnUrl = model.ReturnUrl
                 });
-             
+
             }
             catch (InvalidRequestException ex)
             {
@@ -421,8 +472,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             catch (Exception ex)
             {
                 model.ErrorDictionary.Add("", ex.Message);
-                response.Status =HttpStatusCode.InternalServerError;
-                
+                response.Status = HttpStatusCode.InternalServerError;
+
             }
             response.Data = model;
 
@@ -461,13 +512,13 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         {
             var model = new ChangePasswordViewModel
             {
-                ReturnUrl = returnUrl,
+                ReturnUrl = returnUrl + "?userCancelled=true",
                 ClientId = clientId
             };
 
             await ValidateClientIdReturnUrlCombo(clientId, returnUrl, model);
 
-            var response = new OrchestratorResponse<ChangePasswordViewModel>() {Data = model};
+            var response = new OrchestratorResponse<ChangePasswordViewModel>() { Data = model };
             if (!response.Data.Valid)
             {
                 response.Status = HttpStatusCode.BadRequest;
@@ -528,6 +579,21 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             return model;
         }
 
+        public async Task<string> LogoutUrlForClientId(string clientId)
+        {
+
+            var relyingParty = await _mediator.SendAsync(new GetRelyingPartyQuery { Id = clientId });
+
+            if (relyingParty == null)
+            {
+                return "";
+            }
+            else
+            {
+                return relyingParty.ApplicationUrl;
+            }
+        }
+
         private void LoginUser(string id, string firstName, string lastName)
         {
             _owinWrapper.IssueLoginCookie(id, $"{firstName} {lastName}");
@@ -562,6 +628,9 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         }
 
 
- 
+        public void RedirectToRelyingParty(string getIdsClientId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -55,7 +55,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
             var isPasswordCorrect = await _passwordService.VerifyAsync(message.Password, user.Password, user.Salt, user.PasswordProfileId);
             if (!isPasswordCorrect)
             {
-                await ProcessFailedLogin(user);
+                await ProcessFailedLogin(user, message.ReturnUrl);
                 return null;
             }
 
@@ -68,7 +68,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
             return user;
         }
 
-        private async Task ProcessFailedLogin(User user)
+        private async Task ProcessFailedLogin(User user, string returnUrl)
         {
             var config = await GetAccountConfiguration();
 
@@ -83,7 +83,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
             if (user.IsLocked)
             {
                 _logger.Debug($"Publishing event for user '{user.Email}' (id: {user.Id}) being locked");
-                await _mediator.PublishAsync(new AccountLockedEvent { User = user });
+                await _mediator.PublishAsync(new AccountLockedEvent { ReturnUrl = returnUrl, User = user });
                 throw new AccountLockedException(user);
             }
         }

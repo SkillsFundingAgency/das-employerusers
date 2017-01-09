@@ -17,7 +17,6 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         private AccountController _accountController;
         private Mock<AccountOrchestrator> _accountOrchestrator;
         private Mock<IOwinWrapper> _owinWrapper;
-        private Mock<IConfigurationService> _configurationService;
         private const string LoggedInEmail = "local@test.com";
         private const string EmployerPortalUrl = "employerportal";
 
@@ -31,13 +30,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 
             _accountOrchestrator = new Mock<AccountOrchestrator>();
             _owinWrapper = new Mock<IOwinWrapper>();
-            _configurationService = new Mock<IConfigurationService>();
-            _configurationService.Setup(x => x.GetAsync<EmployerUsersConfiguration>())
-                .ReturnsAsync(new EmployerUsersConfiguration
-                {
-                    IdentityServer = new IdentityServerConfiguration {EmployerPortalUrl = EmployerPortalUrl}
-                });
-            _accountController = new AccountController(_accountOrchestrator.Object,_owinWrapper.Object,_configurationService.Object);
+
+            var identityServerConfiguration = new IdentityServerConfiguration {EmployerPortalUrl = EmployerPortalUrl};
+            _accountController = new AccountController(_accountOrchestrator.Object,_owinWrapper.Object, identityServerConfiguration);
             _accountOrchestrator.Setup(x => x.UnlockUser(It.IsAny<UnlockUserViewModel>())).ReturnsAsync(new UnlockUserViewModel { ErrorDictionary = new Dictionary<string, string>() });
             _accountController.ControllerContext = _controllerContext.Object;
         }

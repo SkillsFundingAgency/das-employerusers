@@ -1,8 +1,10 @@
 ﻿@model SFA.DAS.EmployerUsers.Web.Models.OrchestratorResponse<SFA.DAS.EmployerUsers.Web.Models.ConfirmChangeEmailViewModel>
+@{
+    ViewBag.PageID = "page-confirm-email-change";
+    ViewBag.Title = "Enter your security code";
+}
 
-<h1 class="heading-xlarge">Enter your security code</h1>
-
-
+<h1 class="heading-xlarge">@ViewBag.Title</h1>
 <form method="post">
     @Html.AntiForgeryToken()
 
@@ -22,9 +24,7 @@
     <button type="submit" class="button">Continue</button>
 </form>
 
-
-    <div class="form-group">
-        <h2 class="heading-medium">Not received your security code?</h2>
-        
-        <p>You can <a href="@Url.Action("ResendActivation")">request another security code.</a> </p>
+<div class="form-group">
+    <h2 class="heading-medium">Not received your security code?</h2>
+    <p>You can <a href="@Url.Action("ResendActivation")">request another security code.</a> </p>
  </div>

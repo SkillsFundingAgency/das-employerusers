@@ -4,25 +4,11 @@
 @{
     ViewBag.PageID = "page-change-email-address";
     ViewBag.Title = "Change your email address";
+    ViewBag.HideSigninLink = true;
+    ViewBag.HideCookieMessage = true;
 }
 
-@if (!Model.Data.Valid)
-{
-    <div class="error-summary" role="group" tabindex="-1">
-        <h1 class="heading-medium error-summary-heading" id="error-summary-heading"> Errors to fix </h1>
-        <p>Check the following details:</p>
-        <ul class="error-summary-list">
-            @if (!string.IsNullOrEmpty(Model.Data.NewEmailAddressError))
-            {
-                <li><a href="#NewEmailAddress">@Model.Data.NewEmailAddressError</a></li>
-            }
-            @if (!string.IsNullOrEmpty(Model.Data.ConfirmEmailAddressError))
-            {
-                <li><a href="#ConfirmEmailAddress">@Model.Data.ConfirmEmailAddressError</a></li>
-            }
-        </ul>
-    </div>
-}
+
 
 <h1 class="heading-xlarge"> Change your email address </h1>
 <form method="post">

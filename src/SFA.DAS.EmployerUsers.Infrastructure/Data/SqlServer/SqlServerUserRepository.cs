@@ -17,6 +17,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             _logger = logger;
         }
 
+
         public async Task<User> GetById(string id)
         {
             var user = await QuerySingle<User>("GetUserById @id", new { id });
@@ -29,7 +30,6 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             user.PasswordHistory = await GetUserPasswordHistory(user);
             return user;
         }
-
         public async Task<User> GetByEmailAddress(string emailAddress)
         {
             var user = await QuerySingle<User>("GetUserByEmail @emailAddress", new { emailAddress });
@@ -41,6 +41,18 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             user.SecurityCodes = await GetUserSecurityCodes(user);
             user.PasswordHistory = await GetUserPasswordHistory(user);
             return user;
+        }
+        public async Task<User[]> GetUsersWithExpiredRegistrations()
+        {
+            var users = await Query<User>("GetUsersWithExpiredRegistrations");
+
+            foreach (var user in users)
+            {
+                user.SecurityCodes = await GetUserSecurityCodes(user);
+                user.PasswordHistory = await GetUserPasswordHistory(user);
+            }
+
+            return users;
         }
 
         public async Task Create(User registerUser)
@@ -64,7 +76,6 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
 
 
         }
-
         public async Task Update(User user)
         {
             try
@@ -84,6 +95,22 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
                 throw;
             }
 
+        }
+        public async Task Delete(User user)
+        {
+            try
+            {
+                using (var unitOfWork = await GetUnitOfWork())
+                {
+                    await unitOfWork.Execute("DeleteUser @Id", user);
+                    unitOfWork.CommitChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                throw;
+            }
         }
 
 

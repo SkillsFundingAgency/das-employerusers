@@ -93,6 +93,8 @@
     <Compile Include="Commands\ChangePassword\ChangePasswordCommand.cs" />
     <Compile Include="Commands\ChangePassword\ChangePasswordCommandHandler.cs" />
     <Compile Include="Commands\ChangePassword\ChangePasswordCommandValidator.cs" />
+    <Compile Include="Commands\DeleteUser\DeleteUserCommand.cs" />
+    <Compile Include="Commands\DeleteUser\DeleteUserCommandHandler.cs" />
     <Compile Include="Commands\PasswordReset\PasswordResetCommand.cs" />
     <Compile Include="Commands\PasswordReset\PasswordResetCommandHandler.cs" />
     <Compile Include="Commands\PasswordReset\PasswordResetCommandValidator.cs" />
@@ -102,6 +104,8 @@
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommand.cs" />
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandHandler.cs" />
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandValidator.cs" />
+    <Compile Include="Queries\GetUsersWithExpiredRegistrations\GetUsersWithExpiredRegistrationsQuery.cs" />
+    <Compile Include="Queries\GetUsersWithExpiredRegistrations\GetUsersWithExpiredRegistrationsQueryHandler.cs" />
     <Compile Include="UnknownAccountException.cs" />
     <Compile Include="Validation\BaseValidator.cs" />
     <Compile Include="Commands\RequestPasswordResetCode\RequestPasswordResetCodeCommand.cs" />
@@ -135,10 +139,7 @@
     <Compile Include="Queries\IsUserActive\IsUserActiveQueryHandler.cs" />
     <Compile Include="Services\Notification\CommunicationService.cs" />
     <Compile Include="Services\Notification\EmailNotification.cs" />
-    <Compile Include="Services\Notification\HttpClientWrapper.cs" />
     <Compile Include="Services\Notification\ICommunicationService.cs" />
-    <Compile Include="Services\Notification\IHttpClientWrapper.cs" />
-    <Compile Include="Services\Notification\StubHttpClientWrapper.cs" />
     <Compile Include="Services\Password\IPasswordService.cs" />
     <Compile Include="Services\Password\PasswordService.cs" />
     <Compile Include="Services\Password\SecuredPassword.cs" />

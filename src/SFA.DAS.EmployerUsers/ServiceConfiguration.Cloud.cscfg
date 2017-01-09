@@ -4,7 +4,6 @@
     <Instances count="1" />
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
-      <Setting name="StorageConnectionString" value="__StorageConnectionString__" />
       <Setting name="ConfigurationStorageConnectionString" value="__ConfigurationStorageConnectionString__" />
       <Setting name="UsersConnectionString" value="__UsersConnectionString__" />
       <Setting name="ProfileConnectionString" value="__ProfileConnectionString__" />
@@ -17,6 +16,9 @@
       <Setting name="LoggingRedisKey" value="__LoggingRedisKey__" />
       <Setting name="UseStaticCodeGenerator" value="__UseStaticCodeGenerator__" />
       <Setting name="StoreEmailsOnDisk" value="__StoreEmailsOnDisk__" />
+      <Setting name="TokenCertificateThumbprint" value="__TokenCertificateThumbprint__" />
+      <Setting name="BaseExternalUrl" value="__BaseExternalUrl__" />
+      <Setting name="EmployerPortalUrl" value="__EmployerPortalUrl__" />
       <Setting name="InstrumentationKey" value="__InstrumentationKey__" />
     </ConfigurationSettings>
     <Certificates>

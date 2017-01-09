@@ -3,7 +3,7 @@ using SFA.DAS.EmployerUsers.Domain;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 {
-    public class PasswordResetCommand : IAsyncRequest
+    public class PasswordResetCommand : IAsyncRequest<PasswordResetResponse>
     {
         public string Email { get; set; }
         public string PasswordResetCode { get; set; }

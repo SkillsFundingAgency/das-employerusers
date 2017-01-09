@@ -25,11 +25,9 @@ using SFA.DAS.CodeGenerator;
 using SFA.DAS.Configuration;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.Configuration.FileStorage;
-using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Data;
-using SFA.DAS.EmployerUsers.Infrastructure.Data.DocumentDb;
 using SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer;
 using SFA.DAS.EmployerUsers.Infrastructure.Notification;
 using SFA.DAS.EmployerUsers.Web.Authentication;
@@ -40,7 +38,6 @@ using StructureMap.Web.Pipeline;
 
 namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
 {
-    using StructureMap.Configuration.DSL;
     using StructureMap.Graph;
 
     public class DefaultRegistry : Registry
@@ -56,6 +53,12 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
                 });
 
             For<IOwinWrapper>().Transient().Use(() => new OwinWrapper(HttpContext.Current.GetOwinContext())).SetLifecycleTo(new HttpContextLifecycle());
+
+            For<IdentityServerConfiguration>().Transient().Use(() => new IdentityServerConfiguration
+            {
+                ApplicationBaseUrl = CloudConfigurationManager.GetSetting("BaseExternalUrl"),
+                EmployerPortalUrl = CloudConfigurationManager.GetSetting("EmployerPortalUrl")
+            });
 
             AddConfigSpecifiedRegistrations();
             AddEnvironmentSpecificRegistrations();
@@ -99,14 +102,12 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             For<IUserRepository>().Use<SqlServerUserRepository>();
             For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
             For<IPasswordProfileRepository>().Use<SqlServerPasswordProfileRepository>();
-            For<IHttpClientWrapper>().Use<StubHttpClientWrapper>();
         }
         private void AddProductionRegistrations()
         {
             For<IUserRepository>().Use<SqlServerUserRepository>();
             For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
             For<IPasswordProfileRepository>().Use<InMemoryPasswordProfileRepository>();
-            For<IHttpClientWrapper>().Use<HttpClientWrapper>();
         }
 
         private void AddMediatrRegistrations()

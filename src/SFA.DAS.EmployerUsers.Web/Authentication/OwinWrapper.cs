@@ -1,6 +1,12 @@
+using System;
+using System.Text;
+using System.Web;
+using System.Web.Security;
 using IdentityServer3.Core.Extensions;
 using IdentityServer3.Core.Models;
 using Microsoft.Owin;
+using Newtonsoft.Json;
+using NLog;
 
 namespace SFA.DAS.EmployerUsers.Web.Authentication
 {
@@ -39,9 +45,55 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
             }
         }
 
+        public void SetIdsContext(string returnUrl, string clientId)
+        {
+            var value = new IdsContext() { ReturnUrl = returnUrl, ClientId = clientId };
+            var cookieOptions = new CookieOptions() { Secure = true, HttpOnly = true};
+
+            var encCookie = Convert.ToBase64String(MachineKey.Protect(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(value))));
+            _owinContext.Response.Cookies.Append(IdsContext.CookieName, encCookie, cookieOptions); ;
+        }
+
+        public string GetIdsReturnUrl()
+        {
+            var cookie = IdsContext.ReadFrom(_owinContext.Request.Cookies[IdsContext.CookieName]);
+            return cookie.ReturnUrl;
+        }
+
+
+
+        public string GetIdsClientId()
+        {
+            var cookie = IdsContext.ReadFrom(_owinContext.Request.Cookies[IdsContext.CookieName]);
+            return cookie.ClientId;
+        }
+
         public void RemovePartialLoginCookie()
         {
             _owinContext.Environment.RemovePartialLoginCookie();
+        }
+    }
+
+    public class IdsContext
+    {
+        public string ReturnUrl { get; set; }
+        public string ClientId { get; set; }
+        public static string CookieName => "IDS";
+
+
+        public static IdsContext ReadFrom(string data)
+        {
+            try
+            {
+                var unEncData = Encoding.UTF8.GetString(MachineKey.Unprotect(Convert.FromBase64String(data)));
+                return JsonConvert.DeserializeObject<IdsContext>(unEncData);
+            }
+            catch (Exception ex)
+            {
+                LogManager.GetCurrentClassLogger().Error(ex, ex.Message); ;
+                return new IdsContext();
+            }
+
         }
     }
 }
