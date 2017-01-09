@@ -90,7 +90,13 @@ $Prms = $Parms.Split(" ")
 	
 $cmdOutput
 
-icacls $cmdoutput /grant "Users":R
+
+$acl = Get-Acl $cmdOutput
+$permission = "USERS","Read","Allow"
+
+$accessRule = new-object System.Security.AccessControl.FileSystemAccessRule $permission
+$acl.SetAccessRule($accessRule)
+$acl | Set-Acl $cmdOutput
 
 > ".\log.txt" 
 
