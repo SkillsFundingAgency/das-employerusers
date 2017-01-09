@@ -89,7 +89,7 @@ $Prms = $Parms.Split(" ")
 
 icacls $cmdoutput /grant Users:R /T
 
-Out-File -filepath ".\log.txt" 
+>> ".\log.txt" 
 
 }  
 else  
