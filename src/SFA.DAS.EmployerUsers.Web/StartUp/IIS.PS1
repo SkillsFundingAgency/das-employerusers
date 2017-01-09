@@ -77,18 +77,19 @@ $mypwd = ConvertTo-SecureString -String "$CertPassword" -Force –AsPlainText
 Import-PfxCertificate –FilePath C:\Cert\$environmentname\DasIDPCert.pfx cert:\localMachine\my -Password $mypwd
 
 #Setting Permission on the Cert for ReadAccess#
-
+Sleep-wait 30
 $Thumbprint=Get-ChildItem -path cert:\LocalMachine\My | where subject -eq "CN=idsrv3test"
 $Thumb=$thumbprint.Thumbprint
 
 $cmdOutput = $($Command = ".\FindPrivateKey.exe"
 $Parms = "My LocalMachine -t ""$thumb"" -a "
-
 $Prms = $Parms.Split(" ")
 & "$Command" $Prms
 )
 
-icacls $cmdoutput /grant Users:`(R`) /T
+icacls $cmdoutput /grant Users:R /T
+
+Out-File -filepath ".\log.txt" 
 
 }  
 else  
