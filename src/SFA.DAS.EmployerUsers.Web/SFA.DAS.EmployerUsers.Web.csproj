@@ -474,9 +474,6 @@
     <Content Include="Global.asax" />
     <Content Include="Content\stylesheets\users-main.css" />
     <Compile Include="App_Start\Startup.IdentityServer.cs" />
-    <Content Include="DasIDPCert.pfx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="App_Data\RelyingParties\employerportal.json" />
     <Content Include="App_Data\LOCAL_SFA.DAS.EmployerUsers.Web_1.0.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -696,6 +693,9 @@
     <Content Include="src\govuk_template\assets\stylesheets\images\open-government-licence.png" />
     <Content Include="src\govuk_template\assets\stylesheets\images\open-government-licence_2x.png" />
     <Content Include="src\govuk_template\views\layouts\govuk_template.html" />
+    <Content Include="StartUp\FindPrivateKey.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -797,6 +797,15 @@
     <Content Include="Views\Login\Logout.cshtml" />
     <Content Include="Views\Shared\_InfoMessages.cshtml" />
     <Content Include="Views\Shared\BadRequest.cshtml" />
+    <Content Include="StartUp\IIS.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="StartUp\IIS.PS1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="StartUp\Powershell.msi">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

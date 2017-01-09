@@ -23,7 +23,6 @@
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="WebSslCert" thumbprint="CEFE2D4A7049787A0A8E92FC36D6A38F9D6FC0FE" thumbprintAlgorithm="sha1" />
-      <Certificate name="DasIDPCert" thumbprint="CEFE2D4A7049787A0A8E92FC36D6A38F9D6FC0FE" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
   <NetworkConfiguration>

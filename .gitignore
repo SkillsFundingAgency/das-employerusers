@@ -234,7 +234,7 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
-**/tools/**/*.*
+# **/tools/**/*.*
 !**/tools/nuget/**/*.*
 **/*.orig
 

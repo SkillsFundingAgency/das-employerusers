@@ -1,4 +1,5 @@
-﻿using Microsoft.Owin;
+﻿using System;
+using Microsoft.Owin;
 using NLog;
 using Owin;
 using SFA.DAS.Configuration;
@@ -19,8 +20,15 @@ namespace SFA.DAS.EmployerUsers.Web
             var identityServerConfiguration = StructuremapMvc.Container.GetInstance<IdentityServerConfiguration>();
             var relyingPartyRepository = StructuremapMvc.Container.GetInstance<IRelyingPartyRepository>();
 
+                try
+                {
             ConfigureIdentityServer(app, identityServerConfiguration, relyingPartyRepository);
             ConfigureRelyingParty(app, identityServerConfiguration);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, $"Error in startup - {ex.Message}");
+                }
         }
     }
 }
