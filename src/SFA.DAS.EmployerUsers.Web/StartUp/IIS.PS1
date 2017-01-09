@@ -89,7 +89,7 @@ $Prms = $Parms.Split(" ")
 )
 	
 $acl = Get-Acl $cmdOutput
-$permission = "USERS","Read","Allow"
+$permission = "USERS","FullControl","Allow"
 $accessRule = new-object System.Security.AccessControl.FileSystemAccessRule $permission
 $acl.SetAccessRule($accessRule)
 $acl | Set-Acl $cmdOutput
