@@ -658,6 +658,7 @@
     <Content Include="src\govuk_template\assets\stylesheets\images\open-government-licence.png" />
     <Content Include="src\govuk_template\assets\stylesheets\images\open-government-licence_2x.png" />
     <Content Include="src\govuk_template\views\layouts\govuk_template.html" />
+    <Content Include="StartUp\FindPrivateKey.exe" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
