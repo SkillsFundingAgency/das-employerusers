@@ -54,7 +54,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             }
 
             _owinWrapper.SetIdsContext(returnUrl, clientId);
-
+            RemoveExpiredCookies();
 
             var model = new OrchestratorResponse<LoginViewModel>
             {
@@ -176,6 +176,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                                  + "identity/connect/authorize";
             var isLocalReturnUrl = returnUrl.ToLower().StartsWith(loginReturnUrl.ToLower());
             var model = await _accountOrchestrator.StartRegistration(clientId, returnUrl, isLocalReturnUrl);
+            RemoveExpiredCookies();
             if (!model.Valid)
             {
                 return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
