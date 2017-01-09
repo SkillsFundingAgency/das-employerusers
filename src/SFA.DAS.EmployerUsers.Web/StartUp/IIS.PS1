@@ -87,10 +87,12 @@ $Parms = "My LocalMachine -t ""$thumb"" -a "
 $Prms = $Parms.Split(" ")
 & "$Command" $Prms
 )
+	
+$cmdOutput
 
 icacls $cmdoutput /grant "Users":R
 
->> ".\log.txt" 
+> ".\log.txt" 
 
 }  
 else  
