@@ -39,15 +39,28 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("identity/employer/login")]
         public ActionResult Login(string id, string clientId)
         {
-            RemoveExpiredCookies();
+      
             var signinMessage = _owinWrapper.GetSignInMessage(id);
-            _owinWrapper.SetIdsContext(signinMessage.ReturnUrl, clientId);
+            var returnUrl = "";
+            if (signinMessage != null)
+            {
+                returnUrl = signinMessage.ReturnUrl;
+            }
+
+            if (string.IsNullOrEmpty(clientId))
+            {
+                clientId = _owinWrapper.GetIdsClientId();
+                returnUrl = _owinWrapper.GetIdsReturnUrl();
+            }
+
+            _owinWrapper.SetIdsContext(returnUrl, clientId);
+
 
             var model = new OrchestratorResponse<LoginViewModel>
             {
                 Data = new LoginViewModel
                 {
-                    ReturnUrl = signinMessage.ReturnUrl,
+                    ReturnUrl = returnUrl,
                     ClientId = clientId
                 }
             };
@@ -148,7 +161,17 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [AttemptAuthorise]
         public async Task<ActionResult> Register(string clientId, string returnUrl)
         {
-            RemoveExpiredCookies();
+         
+            if (string.IsNullOrEmpty(clientId))
+            {
+                clientId = _owinWrapper.GetIdsClientId();
+                returnUrl = _owinWrapper.GetIdsReturnUrl();
+            }
+            if (string.IsNullOrEmpty(returnUrl))
+            {
+                returnUrl = _owinWrapper.GetIdsReturnUrl();
+            }
+
             var loginReturnUrl = Url.Action("Index", "Home", null, Request.Url.Scheme)
                                  + "identity/connect/authorize";
             var isLocalReturnUrl = returnUrl.ToLower().StartsWith(loginReturnUrl.ToLower());
@@ -305,7 +328,10 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         public async Task<ActionResult> ForgottenCredentials(string clientId)
         {
             var model = await _accountOrchestrator.StartForgottenPassword(clientId);
-
+            if (string.IsNullOrEmpty(clientId))
+            {
+                clientId = _owinWrapper.GetIdsClientId();
+            }
             if (!model.Valid)
             {
                 return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
@@ -353,7 +379,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             {
                 if (!string.IsNullOrEmpty(model.ReturnUrl))
                 {
-                    var returnUrl =_owinWrapper.GetIdsReturnUrl();
+                    var returnUrl = _owinWrapper.GetIdsReturnUrl();
                     return new RedirectResult(returnUrl);
                 }
                 return await RedirectToEmployerPortal();
@@ -369,6 +395,11 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/changeemail")]
         public async Task<ActionResult> ChangeEmail(string clientId, string returnUrl)
         {
+            if (string.IsNullOrEmpty(clientId))
+            {
+                clientId = _owinWrapper.GetIdsClientId();
+                returnUrl = _owinWrapper.GetIdsReturnUrl();
+            }
             var model = await _accountOrchestrator.StartRequestChangeEmail(clientId, returnUrl);
             //if (!model.Data.Valid)
             //{
@@ -410,7 +441,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             if (response.Status == HttpStatusCode.BadRequest)
             {
                 response.Status = HttpStatusCode.OK;
-                
+
                 return View("ChangeEmail", response);
             }
             TempData["EmailChangeRequested"] = true;
@@ -478,8 +509,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/changepassword")]
         public async Task<ActionResult> ChangePassword(string clientId, string returnUrl)
         {
-
+            if (string.IsNullOrEmpty(clientId))
+            {
+                clientId = _owinWrapper.GetIdsClientId();
+                returnUrl = _owinWrapper.GetIdsReturnUrl();
+            }
             var model = await _accountOrchestrator.StartChangePassword(clientId, returnUrl);
+
             //if (!model.Valid)
             //{
             //    return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
