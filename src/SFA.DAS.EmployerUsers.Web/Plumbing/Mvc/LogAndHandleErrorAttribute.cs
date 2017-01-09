@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
 using NLog;
+using Microsoft.ApplicationInsights;
 
 namespace SFA.DAS.EmployerUsers.Web.Plumbing.Mvc
 {
@@ -10,6 +11,8 @@ namespace SFA.DAS.EmployerUsers.Web.Plumbing.Mvc
         {
             var error = filterContext.Exception;
             Logger.Error(error, "Unhandled exception - " + error.Message);
+            var ai = new TelemetryClient();
+            ai.TrackException(filterContext.Exception);
 
             base.OnException(filterContext);
         }
