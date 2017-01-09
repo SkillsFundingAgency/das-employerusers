@@ -327,11 +327,12 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/forgottencredentials")]
         public async Task<ActionResult> ForgottenCredentials(string clientId)
         {
-            var model = await _accountOrchestrator.StartForgottenPassword(clientId);
             if (string.IsNullOrEmpty(clientId))
             {
                 clientId = _owinWrapper.GetIdsClientId();
             }
+            var model = await _accountOrchestrator.StartForgottenPassword(clientId);
+ 
             if (!model.Valid)
             {
                 return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
