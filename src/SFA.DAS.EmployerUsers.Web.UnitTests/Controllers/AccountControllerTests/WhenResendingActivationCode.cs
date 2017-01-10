@@ -27,11 +27,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public override void Arrange()
         {
             base.Arrange();
-
-            _httpContext.Setup(c => c.User).Returns(new ClaimsPrincipal(new ClaimsIdentity(new[]
-            {
-                new Claim(DasClaimTypes.Id, UserId),
-            })));
+            AddUserToContext(UserId);
 
             _accountOrchestrator = new Mock<AccountOrchestrator>();
 

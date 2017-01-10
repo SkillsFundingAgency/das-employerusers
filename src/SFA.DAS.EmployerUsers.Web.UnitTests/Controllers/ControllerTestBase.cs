@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
 using Moq;
@@ -16,6 +17,8 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers
         {
             _httpRequest = new Mock<HttpRequestBase>();
             _httpRequest.Setup(r => r.UserHostAddress).Returns("123.123.123.123");
+            _httpRequest.Setup(r => r.Url).Returns(new Uri("https://localhost"));
+            _httpRequest.Setup(r => r.Cookies).Returns(new HttpCookieCollection());
 
             _httpContext = new Mock<HttpContextBase>();
             _httpContext.Setup(c => c.Request).Returns(_httpRequest.Object);
@@ -29,9 +32,12 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers
             var identity = new ClaimsIdentity(new[]
             {
                 new Claim(DasClaimTypes.Id, id),
-                new Claim(DasClaimTypes.Email, email),
-            });
+                new Claim(DasClaimTypes.Email, email)
+            },"TestAuth");
+            
+            
             var principal = new ClaimsPrincipal(identity);
+            
             _httpContext.Setup(c => c.User).Returns(principal);
         }
     }

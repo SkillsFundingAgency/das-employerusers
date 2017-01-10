@@ -182,14 +182,8 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
             }
 
-            var id = GetLoggedInUserId();
-
-            if (!string.IsNullOrEmpty(id))
-            {
-                return RedirectToAction("Confirm");
-            }
-
             _owinWrapper.ClearSignInMessageCookie();
+            _owinWrapper.RemovePartialLoginCookie();
 
             return View(new RegisterViewModel { ReturnUrl = returnUrl });
         }
@@ -550,6 +544,11 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
         private string GetLoggedInUserId()
         {
+            if (User?.Identity == null || !User.Identity.IsAuthenticated)
+            {
+                return string.Empty;
+            }
+
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var idClaim = claimsIdentity?.Claims.FirstOrDefault(c => c.Type == DasClaimTypes.Id);
             if (idClaim == null)
