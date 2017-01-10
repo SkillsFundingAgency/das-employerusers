@@ -35,5 +35,9 @@
     <Certificates>
       <Certificate name="WebSslCert" storeLocation="LocalMachine" storeName="My" />
     </Certificates>
+    <Startup>
+      <Task commandLine="StartUp\IIS.bat" executionContext="elevated" taskType="background">
+      </Task>
+    </Startup>
   </WebRole>
 </ServiceDefinition>
