@@ -307,6 +307,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\LoggingConfig.cs" />
+    <Compile Include="Authentication\IdsContext.cs" />
     <Compile Include="Plumbing\Ids\RedisAuthorizationCodeStore.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Plumbing\Ids\StartsWithRedirectUriValidator.cs" />

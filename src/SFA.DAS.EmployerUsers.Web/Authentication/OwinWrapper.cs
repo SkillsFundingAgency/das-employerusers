@@ -6,7 +6,6 @@ using IdentityServer3.Core.Extensions;
 using IdentityServer3.Core.Models;
 using Microsoft.Owin;
 using Newtonsoft.Json;
-using NLog;
 
 namespace SFA.DAS.EmployerUsers.Web.Authentication
 {
@@ -71,29 +70,6 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
         public void RemovePartialLoginCookie()
         {
             _owinContext.Environment.RemovePartialLoginCookie();
-        }
-    }
-
-    public class IdsContext
-    {
-        public string ReturnUrl { get; set; }
-        public string ClientId { get; set; }
-        public static string CookieName => "IDS";
-
-
-        public static IdsContext ReadFrom(string data)
-        {
-            try
-            {
-                var unEncData = Encoding.UTF8.GetString(MachineKey.Unprotect(Convert.FromBase64String(data)));
-                return JsonConvert.DeserializeObject<IdsContext>(unEncData);
-            }
-            catch (Exception ex)
-            {
-                LogManager.GetCurrentClassLogger().Error(ex, ex.Message); ;
-                return new IdsContext();
-            }
-
         }
     }
 }
