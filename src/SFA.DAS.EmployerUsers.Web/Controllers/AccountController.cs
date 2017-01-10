@@ -54,7 +54,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             }
 
             _owinWrapper.SetIdsContext(returnUrl, clientId);
-            RemoveExpiredCookies();
+            RemoveAllCookies();
 
             var model = new OrchestratorResponse<LoginViewModel>
             {
@@ -78,19 +78,9 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View(model);
         }
 
-        private void RemoveExpiredCookies()
+        private void RemoveAllCookies()
         {
-            foreach (var cookieName in Request.Cookies.AllKeys)
-            {
-                if (cookieName.StartsWith("SignInMessage."))
-                {
-                    var cookie = Request.Cookies[cookieName];
-                    if (cookie?.Expires < DateTime.Now && cookie?.Expires != DateTime.MinValue)
-                    {
-                        Response.Cookies.Remove(cookieName);
-                    }
-                }
-            }
+            Response.Cookies.Clear();
         }
 
         [HttpPost]
@@ -176,7 +166,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                                  + "identity/connect/authorize";
             var isLocalReturnUrl = returnUrl.ToLower().StartsWith(loginReturnUrl.ToLower());
             var model = await _accountOrchestrator.StartRegistration(clientId, returnUrl, isLocalReturnUrl);
-            RemoveExpiredCookies();
+            RemoveAllCookies();
             if (!model.Valid)
             {
                 return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
