@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Web.Helpers;
 using IdentityServer3.Core.Configuration;
+using IdentityServer3.Core.Extensions;
 using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services;
 using IdentityServer3.Core.Services.Default;
@@ -58,11 +59,22 @@ namespace SFA.DAS.EmployerUsers.Web
                     AuthenticationOptions = new AuthenticationOptions
                     {
                         EnablePostSignOutAutoRedirect = true,
+                        EnableAutoCallbackForFederatedSignout = true,
                         EnableSignOutPrompt = false,
+                        CookieOptions = new CookieOptions
+                        {
+                            AllowRememberMe = false,
+                            ExpireTimeSpan = new TimeSpan(0, 0, 10),
+                            IsPersistent = false,
+                            SecureMode = CookieSecureMode.Always,
+                            SlidingExpiration = true
+                        },
                         PostSignOutAutoRedirectDelay = 0,
-                        SignInMessageThreshold = 1                       
+                        SignInMessageThreshold = 1
+
                     }
                 });
+
             });
         }
 

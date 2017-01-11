@@ -25,25 +25,13 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
         public void IssueLoginCookie(string id, string displayName)
         {
             var env = _owinContext.Environment;
-            ClearSignInMessageCookie();
             env.IssueLoginCookie(new AuthenticatedLogin
             {
                 Subject = id,
                 Name = displayName
             });
         }
-
-        public void ClearSignInMessageCookie()
-        {
-            foreach (var cookie in _owinContext.Request.Cookies)
-            {
-                if (cookie.Key.ToLower().StartsWith("signinmessage"))
-                {
-                    _owinContext.Response.Cookies.Delete(cookie.Key);
-                }
-            }
-        }
-
+        
         public void SetIdsContext(string returnUrl, string clientId)
         {
             var value = new IdsContext() { ReturnUrl = returnUrl, ClientId = clientId };

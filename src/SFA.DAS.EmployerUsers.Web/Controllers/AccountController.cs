@@ -54,8 +54,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             }
 
             _owinWrapper.SetIdsContext(returnUrl, clientId);
-            RemoveAllCookies();
-
+            
             var model = new OrchestratorResponse<LoginViewModel>
             {
                 Data = new LoginViewModel
@@ -78,11 +77,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View(model);
         }
 
-        private void RemoveAllCookies()
-        {
-            Response.Cookies.Clear();
-        }
-
+               
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("identity/employer/login")]
@@ -166,13 +161,12 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                                  + "identity/connect/authorize";
             var isLocalReturnUrl = returnUrl.ToLower().StartsWith(loginReturnUrl.ToLower());
             var model = await _accountOrchestrator.StartRegistration(clientId, returnUrl, isLocalReturnUrl);
-            RemoveAllCookies();
+            
             if (!model.Valid)
             {
                 return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
             }
-
-            _owinWrapper.ClearSignInMessageCookie();
+            
             _owinWrapper.RemovePartialLoginCookie();
 
             return View(new RegisterViewModel { ReturnUrl = returnUrl });
