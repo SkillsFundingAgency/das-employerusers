@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IdentityModel.Claims;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
@@ -143,7 +144,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [HttpGet]
         [Route("account/register")]
         [OutputCache(Duration = 0)]
-        [AttemptAuthorise]
         public async Task<ActionResult> Register(string clientId, string returnUrl)
         {
          
@@ -168,6 +168,10 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             }
             
             _owinWrapper.RemovePartialLoginCookie();
+            _owinWrapper.SignoutUser();
+
+            HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
+
 
             return View(new RegisterViewModel { ReturnUrl = returnUrl });
         }
@@ -210,6 +214,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         public async Task<ActionResult> Confirm()
         {
             var userId = GetLoggedInUserId();
+            
             var confirmationRequired = await _accountOrchestrator.RequestConfirmAccount(userId);
             if (!confirmationRequired)
             {

@@ -11,5 +11,6 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
         void SetIdsContext(string returnUrl, string clientId);
         string GetIdsReturnUrl();
         string GetIdsClientId();
+        void SignoutUser();
     }
 }

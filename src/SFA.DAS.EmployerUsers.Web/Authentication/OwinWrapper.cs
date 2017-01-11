@@ -1,4 +1,5 @@
 using System;
+using System.Security.Claims;
 using System.Text;
 using System.Web;
 using System.Web.Security;
@@ -58,6 +59,20 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
         public void RemovePartialLoginCookie()
         {
             _owinContext.Environment.RemovePartialLoginCookie();
+            
+
+        }
+
+        public void SignoutUser()
+        {
+            _owinContext.Authentication.SignOut();
+
+            _owinContext.Authentication.User = new ClaimsPrincipal(new ClaimsIdentity(string.Empty));
+
+            _owinContext.Request.User = new ClaimsPrincipal(new ClaimsIdentity(string.Empty));
+
+            HttpContext.Current.User = new ClaimsPrincipal(new ClaimsIdentity(string.Empty));
+            
         }
     }
 }
