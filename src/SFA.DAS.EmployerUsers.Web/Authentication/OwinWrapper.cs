@@ -1,6 +1,7 @@
 using System;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Security;
 using IdentityServer3.Core.Extensions;
@@ -65,7 +66,7 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
 
         public void SignoutUser()
         {
-            _owinContext.Authentication.SignOut();
+            _owinContext.Authentication.SignOut("Cookies");
 
             _owinContext.Authentication.User = new ClaimsPrincipal(new ClaimsIdentity(string.Empty));
 

@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using IdentityServer3.Core;
+using IdentityServer3.Core.Extensions;
 using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services;
 using IdentityServer3.Core.Services.Default;
@@ -50,13 +51,17 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
             //context.IsActive = await _mediator.SendAsync(new IsUserActiveQuery { UserId = userId });
         }
 
-        public override Task SignOutAsync(SignOutContext context)
+        public override async Task SignOutAsync(SignOutContext context)
         {
             context.Subject = new ClaimsPrincipal(new ClaimsIdentity());
 
             Thread.CurrentPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
 
-            return base.SignOutAsync(context);
+            var env = _owinContext.Authentication;
+            env.SignOut();
+            
+
+            await base.SignOutAsync(context);
         }
 
         public override async Task GetProfileDataAsync(ProfileDataRequestContext context)
