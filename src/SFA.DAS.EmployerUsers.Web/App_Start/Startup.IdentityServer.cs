@@ -64,7 +64,7 @@ namespace SFA.DAS.EmployerUsers.Web
                         CookieOptions = new CookieOptions
                         {
                             AllowRememberMe = false,
-                            ExpireTimeSpan = new TimeSpan(0, 0, 10),
+                            ExpireTimeSpan = new TimeSpan(0, 10, 0),
                             IsPersistent = false,
                             SecureMode = CookieSecureMode.Always,
                             SlidingExpiration = true
