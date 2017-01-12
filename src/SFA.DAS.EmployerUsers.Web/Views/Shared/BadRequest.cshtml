@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Bad Request";
+    ViewBag.Title = "Bad request";
     ViewBag.HideSigninLink = true;
     ViewBag.HideCookieMessage = true;
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -10,7 +10,7 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <h1 class="heading-xlarge access-denied">Bad Request</h1>
+        <h1 class="heading-xlarge access-denied">@ViewBag.Title</h1>
         <p class="access-denied">Access to this page is restricted to authorised users.</p>
     </div>
 </div>

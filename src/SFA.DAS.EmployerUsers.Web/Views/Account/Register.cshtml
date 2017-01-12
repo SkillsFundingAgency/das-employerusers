@@ -1,7 +1,7 @@
 ﻿@model SFA.DAS.EmployerUsers.Web.Models.RegisterViewModel
 @{
     ViewBag.PageID = "page-register";
-    ViewBag.Title = "Add your details";
+    ViewBag.Title = "Get set up as a user";
     ViewBag.HideSigninLink = "true";
 }
 
@@ -56,8 +56,7 @@
         </ul>
     </div>
 }
-
-<h1 class="heading-xlarge">Get set up as a user</h1>
+<h1 class="heading-xlarge">@ViewBag.Title</h1>
 <form method="post" action="@Url.Content("~/identity/employer/register")?returnUrl=@Url.Encode(Model.ReturnUrl)" novalidate>
     @Html.AntiForgeryToken()
 
