@@ -22,7 +22,8 @@ namespace SFA.DAS.EmployerUsers.Web
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
-                AuthenticationType = "Cookies"
+                AuthenticationType = "Cookies",
+                CookieManager = new SystemWebCookieManager()
             });
 
             var idpUrl = configuration.ApplicationBaseUrl.EndsWith("/")
