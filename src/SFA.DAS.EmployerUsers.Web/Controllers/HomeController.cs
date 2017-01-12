@@ -36,6 +36,18 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         {
             return RedirectToAction("NotFound", "Error", new {path});
         }
-        
+
+        [HttpGet]
+        public ActionResult Privacy()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult Help()
+        {
+            return View();
+        }
+
     }
 }
