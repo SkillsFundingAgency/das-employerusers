@@ -109,7 +109,8 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             {
                 response.Data = new LoginViewModel
                 {
-                    ReturnUrl = model.ReturnUrl
+                    ReturnUrl = model.ReturnUrl,
+                    ClientId = model.ClientId
                 };
                 response.FlashMessage = result.FlashMessage;
                 response.Status = result.Status;
