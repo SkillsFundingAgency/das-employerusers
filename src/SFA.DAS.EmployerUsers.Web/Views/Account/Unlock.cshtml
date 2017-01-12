@@ -47,7 +47,7 @@
 
 <h1 class="heading-xlarge">@ViewBag.Title</h1>
 <p>You should receive a 6 character code in your email. Enter the code to unlock your account.</p>
-<form method="POST">
+<form method="POST"  autocomplete="off">
     @Html.AntiForgeryToken()
     <fieldset>
         <legend class="visuallyhidden">Enter your email address and unlock code</legend>
