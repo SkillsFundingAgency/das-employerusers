@@ -2282,6 +2282,16 @@ a#link-settings:focus {
   display: none;
 }
 
+.govuk-box-highlight {
+  padding-top: 1.5em;
+  padding-bottom: 1.5em;
+}
+
+.govuk-box-highlight h1 {
+  margin-top: 0.2em;
+  margin-bottom: 0;
+}
+
 legend {
   margin-bottom: 10px;
 }
