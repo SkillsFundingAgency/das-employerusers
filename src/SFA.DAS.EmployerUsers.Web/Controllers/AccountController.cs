@@ -323,6 +323,9 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
             }
 
+            _owinWrapper.RemovePartialLoginCookie();
+            _owinWrapper.SignoutUser();
+
             return View("ForgottenCredentials", model);
         }
 
