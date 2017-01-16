@@ -8,7 +8,7 @@
 @if (Model.UnlockCodeSent)
 {
     <div class="govuk-box-highlight">
-        <h1 class="heading-xlarge">Unlock code has been resent</h1>
+        <h1 class="heading-large">Unlock code has been resent</h1>
     </div>
 } 
 @if (!Model.Valid)
@@ -28,6 +28,14 @@
             <li>
                 <a href="#UnlockCode">@Model.UnlockCodeError</a>
             </li>
+        } else
+        {
+            if (!string.IsNullOrEmpty(Model.UnlockCodeMatchError))
+            {
+                <li>
+                    <a href="#UnlockCode">@Model.UnlockCodeMatchError</a>
+                </li>
+            }
         }
         @if (!string.IsNullOrEmpty(Model.UnlockCodeExpiryError))
         {
@@ -35,12 +43,7 @@
                 <a href="#RequestNewCode">@Model.UnlockCodeExpiryError</a>
             </li>
         }
-        @if (!string.IsNullOrEmpty(Model.UnlockCodeMatchError))
-        {
-            <li>
-                <a href="#UnlockCode">@Model.UnlockCodeMatchError</a>
-            </li>
-        }
+        
         </ul>
     </div>
 }
@@ -62,17 +65,21 @@
             <input class="form-control" id="Email" name="Email" value="@Model.Email" 
                    aria-required="true" @(!string.IsNullOrEmpty(Model.EmailError) ? "aria-invalid=true aria-describedby=error-email" : "" )>    
         </div>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.UnlockCodeError) || !string.IsNullOrEmpty(Model.UnlockCodeExpiryError) ? "error" : "") ">
+        <div class="form-group @(!string.IsNullOrEmpty(Model.UnlockCodeError) || !string.IsNullOrEmpty(Model.UnlockCodeExpiryError) || !string.IsNullOrEmpty(Model.UnlockCodeMatchError) ? "error" : "") ">
             <label for="UnlockCode">
                 <span class="form-label-bold">Unlock code</span>
                 @if (!string.IsNullOrEmpty(Model.UnlockCodeError))
                 {
                     <span class="error-message" id="error-unlockcode">@Model.UnlockCodeError</span>
                 }
-                @if (!string.IsNullOrEmpty(Model.UnlockCodeMatchError))
+                else
                 {
-                    <span class="error-message" id="error-unlockcode">@Model.UnlockCodeMatchError</span>
+                    if (!string.IsNullOrEmpty(Model.UnlockCodeMatchError))
+                    {
+                        <span class="error-message" id="error-unlockcodematch">@Model.UnlockCodeMatchError</span>
+                    }
                 }
+                
             </label>
             <input class="form-control" id="UnlockCode" name="UnlockCode" value="@Model.UnlockCode" 
                    aria-required="true" @(!string.IsNullOrEmpty(Model.UnlockCodeError) || !string.IsNullOrEmpty(Model.UnlockCodeExpiryError) ? "aria-invalid=true aria-describedby=error-unlockcode" : "" )>    
