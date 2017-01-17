@@ -63,7 +63,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         {
             //Arrange
             _mediator.Setup(x => x.SendAsync(It.IsAny<ActivateUserCommand>()))
-                .ThrowsAsync(new InvalidRequestException(new Dictionary<string, string>()));
+                .ThrowsAsync(new InvalidRequestException(new Dictionary<string, string>
+                {
+                    {"Error", "Message" }
+                }));
 
             //Act
             var actual = await _accountOrchestrator.ActivateUser(_model);
