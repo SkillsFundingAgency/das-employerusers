@@ -10,8 +10,10 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
     {
         public Task<ValidationResult> ValidateAsync(ActivateUserCommand item)
         {
-            var validationResult = new ValidationResult();
-            validationResult.ValidationDictionary = new Dictionary<string, string>();
+            var validationResult = new ValidationResult
+            {
+                ValidationDictionary = new Dictionary<string, string>()
+            };
 
             if (TheUserIsBeingClassedAsValidFromJustHavingAMatchingEmail(item))
             {
@@ -20,15 +22,24 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
 
             if (string.IsNullOrEmpty(item?.AccessCode) || string.IsNullOrEmpty(item.UserId))
             {
-                validationResult.ValidationDictionary = new Dictionary<string, string> { { "", "" } };
+                validationResult.ValidationDictionary = new Dictionary<string, string> { { nameof(item.AccessCode), "Invalid code" } };
                 return Task.FromResult(validationResult);
             }
-            
-            if (!item.User.SecurityCodes.Any(sc => sc.CodeType == Domain.SecurityCodeType.AccessCode 
-                                                && sc.Code.Equals(item.AccessCode, StringComparison.CurrentCultureIgnoreCase)
-                                                && sc.ExpiryTime >= DateTime.UtcNow))
+
+            var matchingAccessCodes =
+                item.User.SecurityCodes.Where(sc => sc.CodeType == Domain.SecurityCodeType.AccessCode
+                                                  && sc.Code.Equals(item.AccessCode,
+                                                      StringComparison.CurrentCultureIgnoreCase)).ToList();
+
+            if (!matchingAccessCodes.Any())
             {
-                validationResult.ValidationDictionary = new Dictionary<string, string> { { "", "" } };
+                validationResult.ValidationDictionary = new Dictionary<string, string> { { nameof(item.AccessCode), "Invalid code" } };
+                return Task.FromResult(validationResult);
+            }
+
+            if(!matchingAccessCodes.All(x => x.ExpiryTime >= DateTime.UtcNow))
+            {
+                validationResult.ValidationDictionary = new Dictionary<string, string> { { nameof(item.AccessCode) + "Expired", "Your code has expired" } };
                 return Task.FromResult(validationResult);
             }
 

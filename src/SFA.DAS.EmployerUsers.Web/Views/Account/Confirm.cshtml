@@ -14,7 +14,22 @@
             <h1 class="heading-medium error-summary-heading" id="error-summary-heading"> Errors to fix </h1>
             <p>Check the following details:</p>
             <ul class="error-summary-list">
-                <li><a href="#AccessCode">Invalid code</a></li>
+               @if (string.IsNullOrEmpty(Model.Data.GeneralError))
+               {
+                   if (@Model.Data.ErrorDictionary.ContainsKey(nameof(Model.Data.AccessCode)))
+                   {
+                       <li><a href="#AccessCode">@Model.Data.ErrorDictionary[nameof(Model.Data.AccessCode)]</a></li>
+                   }
+
+                   if (@Model.Data.ErrorDictionary.ContainsKey(nameof(Model.Data.AccessCode) + "Expired"))
+                   {
+                    <li><a href="#AccessCode">@Model.Data.ErrorDictionary[nameof(Model.Data.AccessCode) + "Expired"]</a></li>
+                   }
+               }
+               else
+               {
+                   <p>@Model.Data.GeneralError</p>
+               }
             </ul>
         </div>
 }
@@ -27,9 +42,21 @@
         <div class="form-group  @(!Model.Data.Valid ? "error" : "")">
             <label for="AccessCode">
                 <span class="form-label-bold">Enter code</span>
-                @if (!Model.Data.Valid)
+                @if (!Model.Data.Valid && string.IsNullOrEmpty(Model.Data.GeneralError))
                 {
-                    <span class="error-message" id="invalidMessage">Invalid code</span>
+                    if (@Model.Data.ErrorDictionary.ContainsKey(nameof(Model.Data.AccessCode)))
+                    {
+                        <span class="error-message" id="invalidMessage">
+                            @Model.Data.ErrorDictionary[nameof(Model.Data.AccessCode)]
+                        </span>
+                    }
+
+                    if (@Model.Data.ErrorDictionary.ContainsKey(nameof(Model.Data.AccessCode) + "Expired"))
+                    {
+                        <span class="error-message" id="invalidMessage">
+                            @Model.Data.ErrorDictionary[nameof(Model.Data.AccessCode) + "Expired"]. You can <a href="@Url.Action("ResendActivation")">request a new code.</a>
+                        </span>
+                    }
                 }
             </label>
             <input @invalidAttributes autofocus="autofocus" aria-required="true" class="form-control" id="AccessCode" name="AccessCode">

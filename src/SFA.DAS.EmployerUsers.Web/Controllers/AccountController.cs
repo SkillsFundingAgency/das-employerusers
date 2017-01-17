@@ -219,10 +219,9 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             var confirmationRequired = await _accountOrchestrator.RequestConfirmAccount(userId);
             if (!confirmationRequired)
             {
-
                 return RedirectToAction("Index", "Home");
             }
-            return View("Confirm", new OrchestratorResponse<ActivateUserViewModel>() { Data = new ActivateUserViewModel { Valid = true } });
+            return View("Confirm", new OrchestratorResponse<ActivateUserViewModel>() { Data = new ActivateUserViewModel()});
         }
 
         [HttpPost]
@@ -242,25 +241,25 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                             AccessCode = activateUserViewModel.AccessCode,
                             UserId = id
                         });
-
+                
                 if (activateUserViewModel.Valid)
                 {
                     return Redirect(activateUserViewModel.ReturnUrl);
                 }
 
-                return View("Confirm", new OrchestratorResponse<ActivateUserViewModel>() { Data = new ActivateUserViewModel { Valid = false } });
+                return View("Confirm", new OrchestratorResponse<ActivateUserViewModel> { Data = activateUserViewModel });
             }
             else
             {
                 var result = await _accountOrchestrator.ResendActivationCode(new ResendActivationCodeViewModel { UserId = id });
 
-                var flashMessage = new FlashMessageViewModel()
+                var flashMessage = new FlashMessageViewModel
                 {
                     Severity = FlashMessageSeverityLevel.Success,
                     Headline = "We've sent you an email",
                     SubMessage = $"To confirm your identity, we've sent a code to {GetLoggedInUserEmail()}"
                 };
-                return View("Confirm", new OrchestratorResponse<ActivateUserViewModel>() { FlashMessage = flashMessage, Data = new ActivateUserViewModel { Valid = result } });
+                return View("Confirm", new OrchestratorResponse<ActivateUserViewModel> { FlashMessage = flashMessage, Data = new ActivateUserViewModel() });
             }
         }
 

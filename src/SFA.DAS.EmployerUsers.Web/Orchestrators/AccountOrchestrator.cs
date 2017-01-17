@@ -178,8 +178,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     AccessCode = model.AccessCode,
                     UserId = model.UserId
                 });
-
-                model.Valid = true;
+                
+              
                 model.ReturnUrl = result.ReturnUrl;
                 return model;
             }
@@ -187,14 +187,16 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             {
                 _logger.Info(ex, ex.Message);
 
-                model.Valid = false;
+              
+                model.ErrorDictionary = ex.ErrorMessages;
                 return model;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, ex.Message);
 
-                model.Valid = false;
+                model.ErrorDictionary.Add("", "An error has occurred. Please contact support.");
+                
                 return model;
             }
         }
