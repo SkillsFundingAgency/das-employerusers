@@ -1,72 +1,61 @@
-#Function to get the location of the cert#
-Function GetLocation {
-$cmdOutput = $($Command = "StartUp\FindPrivateKey.exe"
-$Parms = "My LocalMachine -t ""$thumbprint"" -a "
-$Prms = $Parms.Split(" ")
-& "$Command" $Prms
-return $cmdOutput
+function Install-MSIFile {
+
+[CmdletBinding()]
+ Param(
+  [parameter(mandatory=$true,ValueFromPipeline=$true,ValueFromPipelinebyPropertyName=$true)]
+        [ValidateNotNullorEmpty()]
+        [string]$msiFile,
+
+        [parameter()]
+        [ValidateNotNullorEmpty()]
+        [string]$targetDir
+ )
+if (!(Test-Path $msiFile)){
+    throw "Path to the MSI File $($msiFile) is invalid. Please supply a valid MSI file"
+}
+$arguments = @(
+    "/i"
+    "`"$msiFile`""
+    "/qn"
 )
+if ($targetDir){
+    if (!(Test-Path $targetDir)){
+        throw "Path to the Installation Directory $($targetDir) is invalid. Please supply a valid installation directory"
+    }
+    $arguments += "INSTALLDIR=`"$targetDir`""
 }
-
-#Set Permissions on the cert#
-Function Permissions {
-$location=GetLocation
-$acl = Get-Acl "$location"
-$permission = "USERS","FullControl","Allow"
-$accessRule = new-object System.Security.AccessControl.FileSystemAccessRule $permission
-$acl.SetAccessRule($accessRule)
-$acl | Set-Acl "$location"
+Write-Verbose "Installing $msiFile....."
+$process = Start-Process -FilePath msiexec.exe -ArgumentList $arguments -Wait -PassThru
+if ($process.ExitCode -eq 0){
+    Write-Verbose "$msiFile has been successfully installed"
 }
+else {
+    Write-Verbose "installer exit code  $($process.ExitCode) for file  $($msifile)"
+}
+}
+$Azure="Azure"
 
 
+if(Get-Module -ListAvailable | Where-Object{ $_.Name -eq $Azure }) 
+{  
+[Reflection.Assembly]::LoadWithPartialName("Microsoft.WindowsAzure.ServiceRuntime")
+$ConfigurationStorageConnectionString = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("ConfigurationStorageConnectionString")
+$EnvironmentName = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("EnvironmentName")
 
-#Static Variables#
-
-$checkcert=(Get-ChildItem cert:\LocalMachine\My | Where thumbprint -eq $thumbprint).Thumbprint
-$Ctx = New-AzureStorageContext -ConnectionString "$ConfigurationStorageConnectionString"
+#Query
+$Ctx = New-AzureStorageContext -ConnectionString $ConfigurationStorageConnectionString
 $BlobName = "$environmentname/DasIDPCert.pfx"
 $ContainerName = "certs"
 $localTargetDirectory = "C:\Cert"
 
-[Reflection.Assembly]::LoadWithPartialName("Microsoft.WindowsAzure.ServiceRuntime")
-$ConfigurationStorageConnectionString = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("ConfigurationStorageConnectionString")
-$EnvironmentName = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("EnvironmentName")
-$Thumbprint = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("TokenCertificateThumbprint")
-
-if ($checkcert)
-{
-Write-Warning -Message "Certificate already installed"
-#Apply Permissions Just Incase#
-permissions 
-
-}
-else{
-#If Certificate doesnt exist do the below#
-
-
-#Create Folder#
 New-Item $localTargetDirectory -type directory -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
+ 
+Get-AzureStorageBlobContent -Blob $BlobName -Container $ContainerName -Destination $localTargetDirectory -Context $ctx -Force 
 
-#Download Certifacte#
-
-$error.clear()
-Try {Get-AzureStorageBlobContent -Blob $BlobName -Container $ContainerName -Destination $localTargetDirectory -Context $ctx -Force }
-catch {
-"There has been an error downloading the file"
-
-break
-}
-
-#Gets PFX Password from table storage#
 $TableName = "Configuration"
-$table = Get-AzureStorageTable –Name $TableName -Context $Ctx -ErrorAction SilentlyContinue
-$query = New-Object Microsoft.WindowsAzure.Storage.Table.TableQuery 
 
-if (!$table)
-{
-write-host "Configuration table does not exist"
-break
-}
+$table = Get-AzureStorageTable –Name $TableName -Context $Ctx
+$query = New-Object Microsoft.WindowsAzure.Storage.Table.TableQuery
 
 #Define columns to select.
 $list = New-Object System.Collections.Generic.List[string]
@@ -79,24 +68,35 @@ $query.SelectColumns = $list
 
 $entities = $table.CloudTable.ExecuteQuery($query)
 
-$CertPassword=((($entities.Properties).Values).PropertyAsObject)
-
-if (!$CertPassword)
-{
-write-host "Password not available"
-break
-}
+$password=$entities.Properties
+$password1=$password.Values
+$CertPassword=$password1.PropertyAsObject
 
 $mypwd = ConvertTo-SecureString -String "$CertPassword" -Force –AsPlainText
 
 Import-PfxCertificate –FilePath C:\Cert\$environmentname\DasIDPCert.pfx cert:\localMachine\my -Password $mypwd
 
 #Setting Permission on the Cert for ReadAccess#
+	Start-sleep -s 15
 
-Permissions
+$Thumbprint=Get-ChildItem -path cert:\LocalMachine\My | where subject -eq "CN=idsrv3test"
+$Thumb=$thumbprint.Thumbprint
 
-#Removing the Certificate download location#
+$cmdOutput = $($Command = "StartUp\FindPrivateKey.exe"
+$Parms = "My LocalMachine -t ""$thumb"" -a "
+$Prms = $Parms.Split(" ")
+& "$Command" $Prms
+)
+	
+$acl = Get-Acl $cmdOutput
+$permission = "USERS","Read","Allow"
+$accessRule = new-object System.Security.AccessControl.FileSystemAccessRule $permission
+$acl.SetAccessRule($accessRule)
+$acl | Set-Acl $cmdOutput
 
-Remove-Item $localTargetDirectory -Force
-
+}  
+else  
+{  
+ "StartUp\Powershell.msi" | Install-MSIFile
 }
+
