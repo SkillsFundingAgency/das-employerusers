@@ -5,6 +5,7 @@ using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services;
 using Microsoft.Azure;
 using Newtonsoft.Json;
+using NLog;
 using SFA.DAS.EmployerUsers.Web.Plumbing.Serialization;
 using StackExchange.Redis;
 
@@ -14,6 +15,7 @@ namespace SFA.DAS.EmployerUsers.Web.Plumbing.Ids
     {
         private readonly IClientStore _clientStore;
         private readonly IScopeStore _scopeStore;
+        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
         private readonly ConnectionMultiplexer _connectionMultiplexer;
         private readonly IDatabase _cache;
@@ -34,7 +36,13 @@ namespace SFA.DAS.EmployerUsers.Web.Plumbing.Ids
 
         public async Task<AuthorizationCode> GetAsync(string key)
         {
-            return DeserializeCode(await _cache.StringGetAsync(key));
+            var json = await _cache.StringGetAsync(key);
+            if (string.IsNullOrEmpty(json))
+            {
+                _logger.Info($"Could not find AuthorizationCode with key {key}. This is normally because it has expired.");
+                return null;
+            }
+            return DeserializeCode(json);
         }
 
         public async Task RemoveAsync(string key)
