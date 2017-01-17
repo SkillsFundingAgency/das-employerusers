@@ -5,8 +5,8 @@
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
       <Setting name="ConfigurationStorageConnectionString" value="UseDevelopmentStorage=true" />
-      <Setting name="UsersConnectionString" value="server=ROBINOCONNO6363;database=SFA.DAS.EmployerUsers.Users;trusted_connection=true;" />
-      <Setting name="ProfileConnectionString" value="server=ROBINOCONNO6363;database=SFA.DAS.EmployerUsers.Profiles;trusted_connection=true;" />
+      <Setting name="UsersConnectionString" value="server=(local);database=EmployerUsers;trusted_connection=true;" />
+      <Setting name="ProfileConnectionString" value="server=(local);database=EmployerUsers;trusted_connection=true;" />
       <Setting name="AuthCodeCacheConnectionString" value="" />
       <Setting name="EnvironmentName" value="LOCAL" />
       <Setting name="LogLevel" value="Debug" />
@@ -14,7 +14,7 @@
       <Setting name="NotificationsApiClientToken" value="" />
       <Setting name="LoggingRedisConnectionString" value="" />
       <Setting name="LoggingRedisKey" value="" />
-      <Setting name="UseStaticCodeGenerator" value="true" />
+      <Setting name="UseStaticCodeGenerator" value="false" />
       <Setting name="StoreEmailsOnDisk" value="true" />
       <Setting name="TokenCertificateThumbprint" value="6B7ACC520305BFDB4F7252DAEB2177CC091FAAE1" />
       <Setting name="BaseExternalUrl" value="https://localhost:44334/" />
