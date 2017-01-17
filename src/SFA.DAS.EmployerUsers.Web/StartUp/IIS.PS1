@@ -77,7 +77,13 @@ if(Get-Module -ListAvailable | Where-Object{ $_.Name -eq $Azure })
 {  
 
 ImportDll
-#Static Variables
+
+[Reflection.Assembly]::LoadWithPartialName("Microsoft.WindowsAzure.ServiceRuntime")
+$ConfigurationStorageConnectionString = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("ConfigurationStorageConnectionString")
+$EnvironmentName = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("EnvironmentName")
+$Thumbprint = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("TokenCertificateThumbprint")
+#$thumbprint="6B7ACC520305BFDB4F7252DAEB2177CC091FAAE1"
+
 
 $checkcert=(Get-ChildItem cert:\LocalMachine\My | Where thumbprint -eq $thumbprint).Thumbprint
 $Ctx = New-AzureStorageContext -ConnectionString "$ConfigurationStorageConnectionString"
@@ -85,11 +91,7 @@ $BlobName = "$environmentname/DasIDPCert.pfx"
 $ContainerName = "certs"
 $localTargetDirectory = "C:\Cert"
 
-[Reflection.Assembly]::LoadWithPartialName("Microsoft.WindowsAzure.ServiceRuntime")
-$ConfigurationStorageConnectionString = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("ConfigurationStorageConnectionString")
-$EnvironmentName = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("EnvironmentName")
-$Thumbprint = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("TokenCertificateThumbprint")
-#$thumbprint="6B7ACC520305BFDB4F7252DAEB2177CC091FAAE1"
+
              
 
 if ($checkcert)
