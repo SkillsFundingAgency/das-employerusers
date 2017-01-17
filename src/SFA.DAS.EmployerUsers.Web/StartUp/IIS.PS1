@@ -77,7 +77,7 @@ if(Get-Module -ListAvailable | Where-Object{ $_.Name -eq $Azure })
 {  
 
 ImportDll
-#Static Variables#
+#Static Variables
 
 $checkcert=(Get-ChildItem cert:\LocalMachine\My | Where thumbprint -eq $thumbprint).Thumbprint
 $Ctx = New-AzureStorageContext -ConnectionString "$ConfigurationStorageConnectionString"
