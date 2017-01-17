@@ -56,18 +56,23 @@ $acl | Set-Acl "$location"
 #Redis Logging Function
 Function RedisLogging {
 
-$ne = New-Object NLog.Config.XmlLoggingConfiguration("web.config")
-([NLog.LogManager]::Configuration) = $ne
+$drive=(Get-Location).Drive.Root
+$config1="approot\web.config"
+$config= "$drive$config1"
+
+$fe = New-Object NLog.Config.XmlLoggingConfiguration("$config")
+([NLog.LogManager]::Configuration) = $fe
 $logger = [NLog.LogManager]::GetCurrentClassLogger()
 }
 #Import DLL to enable logging
 Function ImportDll
 {
-Import-Module -Name ".\bin\SFA.DAS.NLog.Targets.Redis.dll"
-Import-Module -Name ".\bin\StackExchange.Redis.dll"
-Import-Module -Name ".\bin\NLog.dll"
-Import-Module -Name ".\bin\Newtonsoft.Json.dll"
-Import-Module -Name ".\bin\Microsoft.WindowsAzure.Configuration.dll"
+Import-Module -Name "..\..\approot\bin\SFA.DAS.NLog.Targets.Redis.dll"
+Import-Module -Name "..\..\approot\bin\StackExchange.Redis.dll"
+Import-Module -Name "..\..\approot\bin\NLog.dll"
+Import-Module -Name "..\..\approot\bin\Newtonsoft.Json.dll"
+Import-Module -Name "..\..\approot\bin\Microsoft.WindowsAzure.Configuration.dll"
+Import-Module -Name "..\..\approot\bin\Microsoft.WindowsAzure.Storage.dll"
 }
 
 
