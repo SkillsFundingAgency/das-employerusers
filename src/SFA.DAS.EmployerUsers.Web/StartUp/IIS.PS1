@@ -75,7 +75,8 @@ $Azure="Azure"
 
 if(Get-Module -ListAvailable | Where-Object{ $_.Name -eq $Azure }) 
 {  
-	ImportDLL
+
+ImportDll
 #Static Variables#
 
 $checkcert=(Get-ChildItem cert:\LocalMachine\My | Where thumbprint -eq $thumbprint).Thumbprint
