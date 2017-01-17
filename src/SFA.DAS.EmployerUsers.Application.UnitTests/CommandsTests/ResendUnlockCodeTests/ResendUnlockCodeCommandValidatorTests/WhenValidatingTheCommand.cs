@@ -30,10 +30,20 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendUnlock
         public async Task ThenTrueIsReturnedIfTheValuesAreNotEmpty()
         {
             //act
-            var actual = await _validator.ValidateAsync(new ResendUnlockCodeCommand {Email = "someEmail"});
+            var actual = await _validator.ValidateAsync(new ResendUnlockCodeCommand {Email = "someEmail@local.com"});
 
             //Assert
             Assert.IsTrue(actual.IsValid());
+        }
+
+        [Test]
+        public async Task ThenFalseIsReturnedIfTheEmailAddressIsNotValid()
+        {
+            //act
+            var actual = await _validator.ValidateAsync(new ResendUnlockCodeCommand { Email = "someEmail" });
+
+            //Assert
+            Assert.IsFalse(actual.IsValid());
         }
 
         [Test]
