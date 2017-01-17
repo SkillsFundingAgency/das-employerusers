@@ -263,7 +263,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             return false;
         }
 
-        public virtual async Task<UnlockUserViewModel> UnlockUser(UnlockUserViewModel unlockUserViewModel)
+        public virtual async Task<OrchestratorResponse<UnlockUserViewModel>> UnlockUser(UnlockUserViewModel unlockUserViewModel)
         {
             try
             {
@@ -282,7 +282,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 {
                     unlockUserViewModel.ReturnUrl = unlockResponse.UnlockCode.ReturnUrl;
                 }
-                return unlockUserViewModel;
+                return new OrchestratorResponse<UnlockUserViewModel> { Data = unlockUserViewModel};
             }
             catch (InvalidRequestException ex)
             {
@@ -293,20 +293,38 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     unlockUserViewModel.UnlockCodeExpired = true;
                 }
                 unlockUserViewModel.ErrorDictionary = ex.ErrorMessages;
-                return unlockUserViewModel;
+
+
+                var flashMessage = new FlashMessageViewModel
+                {
+                    ErrorMessages = ex.ErrorMessages,
+                    Headline = "Errors to fix",
+                    Message = "Check the following details:",
+                    Severity = FlashMessageSeverityLevel.Error
+                };
+
+
+                return new OrchestratorResponse<UnlockUserViewModel> {Data = unlockUserViewModel, FlashMessage = flashMessage};
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, ex.Message);
-                unlockUserViewModel.ErrorDictionary = new System.Collections.Generic.Dictionary<string, string>
+                unlockUserViewModel.ErrorDictionary = new Dictionary<string, string>
                 {
                     {"", "Unexpected error occured"}
                 };
-                return unlockUserViewModel;
+                var flashMessage = new FlashMessageViewModel
+                {
+                    ErrorMessages = unlockUserViewModel.ErrorDictionary,
+                    Headline = "Errors to fix",
+                    Message = "Check the following details:",
+                    Severity = FlashMessageSeverityLevel.Error
+                };
+                return new OrchestratorResponse<UnlockUserViewModel> { Data = unlockUserViewModel,FlashMessage = flashMessage};
             }
         }
 
-        public virtual async Task<UnlockUserViewModel> ResendUnlockCode(UnlockUserViewModel model)
+        public virtual async Task<OrchestratorResponse<UnlockUserViewModel>> ResendUnlockCode(UnlockUserViewModel model)
         {
 
             try
@@ -318,13 +336,29 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
                 model.UnlockCodeSent = true;
 
-                return model;
+                var flashMessage = new FlashMessageViewModel
+                {
+                    Severity = FlashMessageSeverityLevel.Success,
+                    Headline = "Unlock your account",
+                    SubMessage = "We've resent an email with a code to unlock your account"
+                };
+
+                return new OrchestratorResponse<UnlockUserViewModel> {Data = model,FlashMessage = flashMessage};
             }
             catch (InvalidRequestException ex)
             {
                 _logger.Info(ex, ex.Message);
                 model.ErrorDictionary = ex.ErrorMessages;
-                return model;
+
+                var flashMessage = new FlashMessageViewModel
+                {
+                    ErrorMessages = ex.ErrorMessages,
+                    Headline = "Errors to fix",
+                    Message = "Check the following details:",
+                    Severity = FlashMessageSeverityLevel.Error
+                };
+
+                return new OrchestratorResponse<UnlockUserViewModel> { Data = model, FlashMessage = flashMessage }; ;
             }
 
         }
@@ -548,6 +582,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     NewPassword = model.NewPassword,
                     ConfirmPassword = model.ConfirmPassword
                 });
+
+                await _owinWrapper.AddPasswordChangedClaim();
             }
             catch (InvalidRequestException ex)
             {
