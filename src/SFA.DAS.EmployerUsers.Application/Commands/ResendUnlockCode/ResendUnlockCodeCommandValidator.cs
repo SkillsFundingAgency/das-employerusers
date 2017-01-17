@@ -3,7 +3,7 @@ using SFA.DAS.EmployerUsers.Application.Validation;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode
 {
-    public class ResendUnlockCodeCommandValidator :BaseValidator, IValidator<ResendUnlockCodeCommand>
+    public class ResendUnlockCodeCommandValidator : BaseValidator, IValidator<ResendUnlockCodeCommand>
     {
         public Task<ValidationResult> ValidateAsync(ResendUnlockCodeCommand item)
         {
