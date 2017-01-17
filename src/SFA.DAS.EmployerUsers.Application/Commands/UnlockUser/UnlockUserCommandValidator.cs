@@ -5,25 +5,34 @@ using SFA.DAS.EmployerUsers.Application.Validation;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
 {
-    public class UnlockUserCommandValidator : IValidator<UnlockUserCommand>
+    public class UnlockUserCommandValidator : BaseValidator, IValidator<UnlockUserCommand>
     {
         public Task<ValidationResult> ValidateAsync(UnlockUserCommand item)
         {
             var result = new ValidationResult();
             if (string.IsNullOrEmpty(item.Email))
             {
-                result.ValidationDictionary.Add("Email", "Enter an email address");
+                result.AddError(nameof(item.Email), "Enter an email address");
+            }
+            if (!string.IsNullOrEmpty(item.Email) && !IsEmailValid(item.Email))
+            {
+                result.AddError(nameof(item.Email), "Enter a valid email address");
             }
             if (string.IsNullOrEmpty(item.UnlockCode))
             {
-                result.ValidationDictionary.Add("UnlockCode", "Enter an unlock code");
+                result.AddError(nameof(item.UnlockCode), "Enter an unlock code");
             }
 
-            if (item.User == null)
+            if (!string.IsNullOrEmpty(item.Email) && !string.IsNullOrEmpty(item.UnlockCode) && item.User == null)
             {
-                result.ValidationDictionary.Add("User", "That account does not exist");
+                result.AddError(nameof(item.UnlockCode), "Unlock code is not correct");
+            }
+
+            if (!result.IsValid())
+            {
                 return Task.FromResult(result);
             }
+
 
             var matchingUnlockCode = item.User.SecurityCodes?.OrderByDescending(sc => sc.ExpiryTime)
                                                              .FirstOrDefault(sc => sc.Code.Equals(item.UnlockCode, StringComparison.CurrentCultureIgnoreCase)
@@ -31,11 +40,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
 
             if (matchingUnlockCode == null)
             {
-                result.ValidationDictionary.Add("UnlockCodeMatch", "Unlock code is not correct");
+                result.AddError(nameof(item.UnlockCode), "Unlock code is not correct");
             }
             else if (matchingUnlockCode.ExpiryTime < DateTime.UtcNow)
             {
-                result.ValidationDictionary.Add("UnlockCodeExpiry", "Unlock code has expired");
+                result.AddError(nameof(item.UnlockCode), "Unlock code has expired");
                 return Task.FromResult(result);
             }
 
