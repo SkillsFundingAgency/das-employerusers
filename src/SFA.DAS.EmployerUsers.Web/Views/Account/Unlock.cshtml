@@ -1,94 +1,46 @@
-﻿@model SFA.DAS.EmployerUsers.Web.Models.UnlockUserViewModel
+﻿@model SFA.DAS.EmployerUsers.Web.Models.OrchestratorResponse<SFA.DAS.EmployerUsers.Web.Models.UnlockUserViewModel>
 @{
     ViewBag.PageID = "page-unlock-account";
     ViewBag.Title = "Enter your unlock code";
 }
 
-
-@if (Model.UnlockCodeSent)
-{
-    <div class="govuk-box-highlight">
-        <h1 class="heading-large">Unlock code has been resent</h1>
-    </div>
-} 
-@if (!Model.Valid)
-{
-    <div class="error-summary" role="group" tabindex="-1" aria-labelledby="error-summary-heading">
-        <h1 class="heading-medium error-summary-heading" id="error-summary-heading"> Errors to fix </h1>
-        <p>Check the following details:</p>
-        <ul class="error-summary-list">
-        @if (!string.IsNullOrEmpty(Model.EmailError))
-        {
-            <li>
-                <a href="#Email">@Model.EmailError</a>
-            </li>
-        }
-        @if (!string.IsNullOrEmpty(Model.UnlockCodeError))
-        {
-            <li>
-                <a href="#UnlockCode">@Model.UnlockCodeError</a>
-            </li>
-        } else
-        {
-            if (!string.IsNullOrEmpty(Model.UnlockCodeMatchError))
-            {
-                <li>
-                    <a href="#UnlockCode">@Model.UnlockCodeMatchError</a>
-                </li>
-            }
-        }
-        @if (!string.IsNullOrEmpty(Model.UnlockCodeExpiryError))
-        {
-            <li>
-                <a href="#RequestNewCode">@Model.UnlockCodeExpiryError</a>
-            </li>
-        }
-        
-        </ul>
-    </div>
-}
-
-<h1 class="heading-xlarge">@ViewBag.Title</h1>
-<p>You should receive a 6 character code in your email. Enter the code to unlock your account.</p>
-<form method="POST"  autocomplete="off">
-    @Html.AntiForgeryToken()
-    <fieldset>
-        <legend class="visuallyhidden">Enter your email address and unlock code</legend>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.EmailError) ? "error" : "") ">
-            <label for="Email">
-                <span class="form-label-bold">Email</span>
-                @if (!string.IsNullOrEmpty(Model.EmailError))
-                {
-                    <span class="error-message" id="error-email">@Model.EmailError</span>
-                }
-            </label>
-            <input class="form-control" id="Email" name="Email" value="@Model.Email" 
-                   aria-required="true" @(!string.IsNullOrEmpty(Model.EmailError) ? "aria-invalid=true aria-describedby=error-email" : "" )>    
-        </div>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.UnlockCodeError) || !string.IsNullOrEmpty(Model.UnlockCodeExpiryError) || !string.IsNullOrEmpty(Model.UnlockCodeMatchError) ? "error" : "") ">
-            <label for="UnlockCode">
-                <span class="form-label-bold">Unlock code</span>
-                @if (!string.IsNullOrEmpty(Model.UnlockCodeError))
-                {
-                    <span class="error-message" id="error-unlockcode">@Model.UnlockCodeError</span>
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(Model.UnlockCodeMatchError))
+<div class="grid-row">
+<div class="column-two-thirds">
+    <h1 class="heading-xlarge">@ViewBag.Title</h1>
+    <p>You should receive a 6 character code in your email. Enter the code to unlock your account.</p>
+    <form method="POST" autocomplete="off">
+        @Html.AntiForgeryToken()
+        <fieldset>
+            <legend class="visuallyhidden">Enter your email address and unlock code</legend>
+            <div class="form-group @(!string.IsNullOrEmpty(Model.Data.EmailError) ? "error" : "") ">
+                <label for="Email">
+                    <span class="form-label-bold">Email</span>
+                    @if (!string.IsNullOrEmpty(Model.Data.EmailError))
                     {
-                        <span class="error-message" id="error-unlockcodematch">@Model.UnlockCodeMatchError</span>
+                        <span class="error-message" id="error-email">@Model.Data.EmailError</span>
                     }
-                }
-                
-            </label>
-            <input class="form-control" id="UnlockCode" name="UnlockCode" value="@Model.UnlockCode" 
-                   aria-required="true" @(!string.IsNullOrEmpty(Model.UnlockCodeError) || !string.IsNullOrEmpty(Model.UnlockCodeExpiryError) ? "aria-invalid=true aria-describedby=error-unlockcode" : "" )>    
-        </div>
-    </fieldset>
-    <button type="submit" name="command" class="button" value="unlock">Unlock account</button>
-    <aside>
-        <h2 class="heading-medium">Not received your unlock code?</h2>
-        You can <button type="submit" class="link-button" name="command" value="resend" id="RequestNewCode">request another a new unlock code</button>.
-    </aside>
-    
-</form>
+                </label>
+                <input class="form-control" id="Email" name="Email" value="@Model.Data.Email"
+                       aria-required="true" @(!string.IsNullOrEmpty(Model.Data.EmailError) ? "aria-invalid=true aria-describedby=error-email" : "" )>
+            </div>
+            <div class="form-group @(!string.IsNullOrEmpty(Model.Data.UnlockCodeError) ? "error" : "") ">
+                <label for="UnlockCode">
+                    <span class="form-label-bold">Unlock code</span>
+                    @if (!string.IsNullOrEmpty(Model.Data.UnlockCodeError))
+                    {
+                        <span class="error-message" id="error-unlockcode">@Model.Data.UnlockCodeError</span>
+                    }
+                </label>
+                <input class="form-control" id="UnlockCode" name="UnlockCode" value="@Model.Data.UnlockCode"
+                       aria-required="true" @(!string.IsNullOrEmpty(Model.Data.UnlockCodeError) ? "aria-invalid=true aria-describedby=error-unlockcode" : "" )>
+            </div>
+        </fieldset>
+        <button type="submit" name="command" class="button" value="unlock">Unlock account</button>
+        <aside>
+            <h2 class="heading-medium">Not received your unlock code?</h2>
+            You can <button type="submit" class="link-button" name="command" value="resend" id="RequestNewCode">request another a new unlock code</button>.
+        </aside>
+
+    </form>
+</div>
+</div>

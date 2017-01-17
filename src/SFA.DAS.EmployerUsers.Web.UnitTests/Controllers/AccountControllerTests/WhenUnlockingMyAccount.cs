@@ -33,7 +33,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 
             var identityServerConfiguration = new IdentityServerConfiguration {EmployerPortalUrl = EmployerPortalUrl};
             _accountController = new AccountController(_accountOrchestrator.Object,_owinWrapper.Object, identityServerConfiguration);
-            _accountOrchestrator.Setup(x => x.UnlockUser(It.IsAny<UnlockUserViewModel>())).ReturnsAsync(new UnlockUserViewModel { ErrorDictionary = new Dictionary<string, string>() });
+            _accountOrchestrator.Setup(x => x.UnlockUser(It.IsAny<UnlockUserViewModel>())).ReturnsAsync(new OrchestratorResponse<UnlockUserViewModel>() { Data = new UnlockUserViewModel {ErrorDictionary = new Dictionary<string, string>() }});
             _accountController.ControllerContext = _controllerContext.Object;
         }
 
@@ -48,6 +48,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             var viewResult = actual as ViewResult;
             Assert.IsNotNull(viewResult);
             Assert.AreEqual("Unlock",viewResult.ViewName);
+            Assert.IsAssignableFrom<OrchestratorResponse<UnlockUserViewModel>>(viewResult.Model);
         }
 
         [Test]
@@ -61,9 +62,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             Assert.IsNotNull(actual);
             var viewResult = actual as ViewResult;
             Assert.IsNotNull(viewResult);
-            var actualModel = viewResult.Model as UnlockUserViewModel;
+            var actualModel = viewResult.Model as OrchestratorResponse<UnlockUserViewModel>; 
             Assert.IsNotNull(actualModel);
-            Assert.AreEqual(LoggedInEmail, actualModel.Email);
+            Assert.AreEqual(LoggedInEmail, actualModel.Data.Email);
         }
 
         [Test]
@@ -79,9 +80,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             Assert.IsNotNull(actual);
             var viewResult = actual as ViewResult;
             Assert.IsNotNull(viewResult);
-            var actualModel = viewResult.Model as UnlockUserViewModel;
+            var actualModel = viewResult.Model as OrchestratorResponse<UnlockUserViewModel>;
             Assert.IsNotNull(actualModel);
-            Assert.IsNull(actualModel.Email);
+            Assert.IsNull(actualModel.Data.Email);
         }
 
         [Test]
@@ -119,7 +120,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public async Task ThenTheUserIsReturnedToTheUnlockViewIfTheOrchestratorIsNotSuccessful()
         {
             //Arrange
-            _accountOrchestrator.Setup(x => x.UnlockUser(It.IsAny<UnlockUserViewModel>())).ReturnsAsync(new UnlockUserViewModel {ErrorDictionary = new Dictionary<string, string> { {"",""} } });
+            _accountOrchestrator.Setup(x => x.UnlockUser(It.IsAny<UnlockUserViewModel>())).ReturnsAsync(new OrchestratorResponse<UnlockUserViewModel> { Data = new UnlockUserViewModel { ErrorDictionary = new Dictionary<string, string> { {"",""} } }});
             var unlockCode = "123RET678";
             var unlockUserViewModel = new UnlockUserViewModel { Email = LoggedInEmail, UnlockCode = unlockCode };
 
@@ -138,7 +139,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         {
             //Arrange
             var unlockUserViewModel = new UnlockUserViewModel();
-            _accountOrchestrator.Setup(x => x.ResendUnlockCode(It.IsAny<UnlockUserViewModel>())).ReturnsAsync(new UnlockUserViewModel {UnlockCodeSent = true});
+            _accountOrchestrator.Setup(x => x.ResendUnlockCode(It.IsAny<UnlockUserViewModel>())).ReturnsAsync(new OrchestratorResponse<UnlockUserViewModel> { Data = new UnlockUserViewModel { UnlockCodeSent = true}});
 
             //Act
             var actual = await _accountController.Unlock(unlockUserViewModel, "Resend");
@@ -148,9 +149,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             Assert.IsNotNull(actual);
             var viewResult = actual as ViewResult;
             Assert.IsNotNull(viewResult);
-            var model = viewResult.Model as UnlockUserViewModel;
+            var model = viewResult.Model as OrchestratorResponse<UnlockUserViewModel>;
             Assert.IsNotNull(model);
-            Assert.IsTrue(model.UnlockCodeSent);
+            Assert.IsTrue(model.Data.UnlockCodeSent);
         }
         
     }

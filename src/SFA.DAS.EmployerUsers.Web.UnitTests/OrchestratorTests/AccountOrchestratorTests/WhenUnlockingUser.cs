@@ -31,7 +31,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         }
 
         [Test]
-        public async Task ThenABooleanIsReturned()
+        public async Task ThenAUnlockUserViewModelOrchestratorResponseIsReturned()
         {
             //Arrange
             var unlockUserViewModel = new UnlockUserViewModel();
@@ -40,8 +40,8 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _accountOrchestrator.UnlockUser(unlockUserViewModel);
 
             //Assert
-            Assert.IsAssignableFrom<UnlockUserViewModel>(actual);
-            Assert.IsTrue(actual.Valid);
+            Assert.IsAssignableFrom<OrchestratorResponse<UnlockUserViewModel>>(actual);
+            Assert.IsTrue(actual.Data.Valid);
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             //Assert
             _mediator.Verify(x => x.SendAsync(It.Is<UnlockUserCommand>(p => p.Email.Equals(email) && p.UnlockCode.Equals(unlockCode))), Times.Once);
-            Assert.IsTrue(actual.Valid);
+            Assert.IsTrue(actual.Data.Valid);
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _accountOrchestrator.UnlockUser(new UnlockUserViewModel());
 
             //Assert
-            Assert.IsFalse(actual.Valid);
+            Assert.IsFalse(actual.Data.Valid);
 
         }
 
@@ -102,7 +102,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             //Assert
             _mediator.Verify(x=>x.SendAsync(It.Is<ActivateUserCommand>(p=>p.Email == email)),Times.Once);
-            Assert.IsTrue(actual.Valid);
+            Assert.IsTrue(actual.Data.Valid);
         }
 
         [Test]
@@ -116,33 +116,27 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             //Assert
             _mediator.Verify(x => x.SendAsync(It.IsAny<ActivateUserCommand>()), Times.Never);
-            Assert.IsTrue(actual.UnlockCodeExpired);
+            Assert.IsTrue(actual.Data.UnlockCodeExpired);
         }
 
         [Test]
         public async Task ThenTheErrorsAreCorrectlyMappedWhenAllFieldsHaveFailedValidation()
         {
             //Arrange
-            var unlockCodeExpiryError = "unlock code expiry Error";
             var unlockCodeError = "unlock code Error";
             var emailError = "Email Error";
-            var unlockCodeMatchError = "Unlock code match error";
             _mediator.Setup(x => x.SendAsync(It.IsAny<UnlockUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string>
             {
                 { "Email", emailError },
-                { "UnlockCode", unlockCodeError },
-                { "UnlockCodeExpiry", unlockCodeExpiryError },
-                { "UnlockCodeMatch", unlockCodeMatchError }
+                { "UnlockCode", unlockCodeError }
             }));
 
             //Act
             var actual = await _accountOrchestrator.UnlockUser(new UnlockUserViewModel());
 
             //Assert
-            Assert.AreEqual(unlockCodeExpiryError, actual.UnlockCodeExpiryError);
-            Assert.AreEqual(unlockCodeError, actual.UnlockCodeError);
-            Assert.AreEqual(emailError, actual.EmailError);
-            Assert.AreEqual(unlockCodeMatchError, actual.UnlockCodeMatchError);
+            Assert.AreEqual(unlockCodeError, actual.Data.UnlockCodeError);
+            Assert.AreEqual(emailError, actual.Data.EmailError);
             
         }
     }

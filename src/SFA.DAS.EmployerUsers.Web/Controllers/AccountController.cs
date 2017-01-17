@@ -272,7 +272,18 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         public ActionResult Unlock()
         {
             var email = GetLoggedInUserEmail();
-            var model = new UnlockUserViewModel { Email = email };
+            var model = new OrchestratorResponse<UnlockUserViewModel>
+            {
+                Data = new UnlockUserViewModel {Email = email},
+                FlashMessage = new FlashMessageViewModel
+                {
+                    Severity = FlashMessageSeverityLevel.Success,
+                    Headline = "Unlock your account",
+                    SubMessage = string.IsNullOrEmpty(email) ? 
+                                    "We've sent an email with a code to unlock your account" 
+                                    : $"We've sent an email to {email} with a code to unlock your account"
+                }
+            };
             return View("Unlock", model);
         }
 
@@ -292,17 +303,17 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             {
                 var result = await _accountOrchestrator.UnlockUser(unlockUserViewModel);
 
-                if (result.Valid)
+                if (result.Data.Valid)
                 {
-                    if (!string.IsNullOrEmpty(result.ReturnUrl))
+                    if (!string.IsNullOrEmpty(result.Data.ReturnUrl))
                     {
                         TempData["AccountUnlocked"] = true;
-                        return new RedirectResult(result.ReturnUrl);
+                        return new RedirectResult(result.Data.ReturnUrl);
                     }
                     return await RedirectToEmployerPortal();
                 }
-                unlockUserViewModel.UnlockCode = string.Empty;
-                return View("Unlock", unlockUserViewModel);
+                result.Data.UnlockCode = string.Empty;
+                return View("Unlock", result);
             }
         }
 

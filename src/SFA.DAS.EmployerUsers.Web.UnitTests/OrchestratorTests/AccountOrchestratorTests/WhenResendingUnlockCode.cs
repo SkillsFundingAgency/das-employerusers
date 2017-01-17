@@ -31,7 +31,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         }
 
         [Test]
-        public async Task ThenTheUnlockLockUserViewModelIsReturned()
+        public async Task ThenTheUnlockLockUserViewModelOrchestratorResponseIsReturned()
         {
 
             //Arrange
@@ -43,8 +43,8 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             //Assert
             Assert.IsNotNull(actual);
-            Assert.IsAssignableFrom<UnlockUserViewModel>(actual);
-            Assert.IsFalse(actual.UnlockCodeSent);
+            Assert.IsAssignableFrom<OrchestratorResponse<UnlockUserViewModel>>(actual);
+            Assert.IsFalse(actual.Data.UnlockCodeSent);
         }
 
         [Test]
@@ -71,8 +71,8 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _accountOrchestrator.ResendUnlockCode(new UnlockUserViewModel());
 
             //Assert
-            Assert.IsNotEmpty(actual.ErrorDictionary);
-            Assert.Contains(new KeyValuePair<string,string>("Email","Some Error"),actual.ErrorDictionary);
+            Assert.IsNotEmpty(actual.Data.ErrorDictionary);
+            Assert.Contains(new KeyValuePair<string,string>("Email","Some Error"),actual.Data.ErrorDictionary);
         }
 
         [Test]
@@ -87,7 +87,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             //Assert
             _mediator.Verify(x => x.SendAsync(It.Is<ResendUnlockCodeCommand>(s => s.Email == expectedEmail)), Times.Once());
-            Assert.IsTrue(actual.UnlockCodeSent);
+            Assert.IsTrue(actual.Data.UnlockCodeSent);
         }
     }
 }
