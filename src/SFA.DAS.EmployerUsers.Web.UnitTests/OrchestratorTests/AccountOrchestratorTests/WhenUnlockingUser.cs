@@ -123,26 +123,20 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         public async Task ThenTheErrorsAreCorrectlyMappedWhenAllFieldsHaveFailedValidation()
         {
             //Arrange
-            var unlockCodeExpiryError = "unlock code expiry Error";
             var unlockCodeError = "unlock code Error";
             var emailError = "Email Error";
-            var unlockCodeMatchError = "Unlock code match error";
             _mediator.Setup(x => x.SendAsync(It.IsAny<UnlockUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string>
             {
                 { "Email", emailError },
-                { "UnlockCode", unlockCodeError },
-                { "UnlockCodeExpiry", unlockCodeExpiryError },
-                { "UnlockCodeMatch", unlockCodeMatchError }
+                { "UnlockCode", unlockCodeError }
             }));
 
             //Act
             var actual = await _accountOrchestrator.UnlockUser(new UnlockUserViewModel());
 
             //Assert
-            Assert.AreEqual(unlockCodeExpiryError, actual.Data.UnlockCodeExpiryError);
             Assert.AreEqual(unlockCodeError, actual.Data.UnlockCodeError);
             Assert.AreEqual(emailError, actual.Data.EmailError);
-            Assert.AreEqual(unlockCodeMatchError, actual.Data.UnlockCodeMatchError);
             
         }
     }

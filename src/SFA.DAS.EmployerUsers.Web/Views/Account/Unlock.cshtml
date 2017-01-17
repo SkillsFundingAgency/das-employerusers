@@ -23,20 +23,16 @@
                 <input class="form-control" id="Email" name="Email" value="@Model.Data.Email"
                        aria-required="true" @(!string.IsNullOrEmpty(Model.Data.EmailError) ? "aria-invalid=true aria-describedby=error-email" : "" )>
             </div>
-            <div class="form-group @(!string.IsNullOrEmpty(Model.Data.UnlockCodeError) || !string.IsNullOrEmpty(Model.Data.UnlockCodeExpiryError) ? "error" : "") ">
+            <div class="form-group @(!string.IsNullOrEmpty(Model.Data.UnlockCodeError) ? "error" : "") ">
                 <label for="UnlockCode">
                     <span class="form-label-bold">Unlock code</span>
                     @if (!string.IsNullOrEmpty(Model.Data.UnlockCodeError))
                     {
                         <span class="error-message" id="error-unlockcode">@Model.Data.UnlockCodeError</span>
                     }
-                    @if (!string.IsNullOrEmpty(Model.Data.UnlockCodeMatchError))
-                    {
-                        <span class="error-message" id="error-unlockcode">@Model.Data.UnlockCodeMatchError</span>
-                    }
                 </label>
                 <input class="form-control" id="UnlockCode" name="UnlockCode" value="@Model.Data.UnlockCode"
-                       aria-required="true" @(!string.IsNullOrEmpty(Model.Data.UnlockCodeError) || !string.IsNullOrEmpty(Model.Data.UnlockCodeExpiryError) ? "aria-invalid=true aria-describedby=error-unlockcode" : "" )>
+                       aria-required="true" @(!string.IsNullOrEmpty(Model.Data.UnlockCodeError) ? "aria-invalid=true aria-describedby=error-unlockcode" : "" )>
             </div>
         </fieldset>
         <button type="submit" name="command" class="button" value="unlock">Unlock account</button>

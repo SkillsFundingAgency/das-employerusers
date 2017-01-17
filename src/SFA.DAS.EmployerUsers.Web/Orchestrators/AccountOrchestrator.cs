@@ -582,8 +582,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     NewPassword = model.NewPassword,
                     ConfirmPassword = model.ConfirmPassword
                 });
-
-                await _owinWrapper.AddPasswordChangedClaim();
+                
             }
             catch (InvalidRequestException ex)
             {
