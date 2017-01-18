@@ -57,17 +57,12 @@ $acl | Set-Acl "$location"
 }
 
 
-
-#Import DLL to enable logging
-Function ImportDll
-{
 Import-Module -Name "..\..\approot\bin\SFA.DAS.NLog.Targets.Redis.dll"
 Import-Module -Name "..\..\approot\bin\StackExchange.Redis.dll"
 Import-Module -Name "..\..\approot\bin\NLog.dll"
 Import-Module -Name "..\..\approot\bin\Newtonsoft.Json.dll"
 Import-Module -Name "..\..\approot\bin\Microsoft.WindowsAzure.Configuration.dll"
 Import-Module -Name "..\..\approot\bin\Microsoft.WindowsAzure.Storage.dll"
-}
 
 #Redis Logging 
 $drive=(Get-Location).Drive.Root
@@ -83,7 +78,7 @@ $Azure="Azure"
 if(Get-Module -ListAvailable | Where-Object{ $_.Name -eq $Azure }) 
 {  
 
-ImportDll
+
 
 [Reflection.Assembly]::LoadWithPartialName("Microsoft.WindowsAzure.ServiceRuntime")
 $ConfigurationStorageConnectionString = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("ConfigurationStorageConnectionString")
