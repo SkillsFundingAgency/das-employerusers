@@ -35,7 +35,7 @@ else {
 }
 #Function to get the location of the cert#
 Function GetLocation {
-$cmdOutput = $($Command = ".\StartUp\FindPrivateKey.exe"
+$cmdOutput = $($Command = "StartUp\FindPrivateKey.exe"
 $Parms = "My LocalMachine -t ""$thumbprint"" -a "
 $Prms = $Parms.Split(" ")
 & "$Command" $Prms
