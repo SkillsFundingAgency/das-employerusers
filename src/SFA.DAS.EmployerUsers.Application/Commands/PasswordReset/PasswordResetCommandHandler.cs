@@ -52,14 +52,13 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             message.User.PasswordProfileId = securedPassword.ProfileId;
             message.User.Salt = securedPassword.Salt;
             message.User.IsActive = true;
-            message.User.ExpireSecurityCodesOfType(Domain.SecurityCodeType.AccessCode);
-            message.User.ExpireSecurityCodesOfType(Domain.SecurityCodeType.PasswordResetCode);
+            message.User.ExpireSecurityCodesOfType(SecurityCodeType.AccessCode);
+            message.User.ExpireSecurityCodesOfType(SecurityCodeType.PasswordResetCode);
 
             await _userRepository.Update(message.User);
             _logger.Info($"Password changed for user '{message.Email}'");
-
-            await _communicationService.SendPasswordResetConfirmationMessage(user, Guid.NewGuid().ToString());
-            return new PasswordResetResponse() {ResetCode = resetCode};
+            
+            return new PasswordResetResponse {ResetCode = resetCode};
         }
     }
 
