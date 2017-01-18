@@ -2148,6 +2148,10 @@ input[type=number] {
   }
 }
 
+b, strong {
+  font-weight: bold;
+}
+
 @media (min-width: 641px) {
   .heading-xlarge {
     margin-bottom: 0.625em;

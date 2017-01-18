@@ -1823,6 +1823,10 @@ input[type=number] {
   display: table-cell;
 }
 
+b, strong {
+  font-weight: bold;
+}
+
 .heading-xlarge {
   margin-bottom: 0.625em;
   margin-top: 1.25em;
