@@ -35,7 +35,10 @@ else {
 }
 #Function to get the location of the cert#
 Function GetLocation {
-$cmdOutput = $($Command = "StartUp\FindPrivateKey.exe"
+$drive=(Get-Location).Drive.Root
+$config2="approot\Startup\FindPrivateKey.exe"
+$config3= "$drive$config2"
+$cmdOutput = $($Command = "$config3"
 $Parms = "My LocalMachine -t ""$thumbprint"" -a "
 $Prms = $Parms.Split(" ")
 & "$Command" $Prms
@@ -53,17 +56,8 @@ $acl.SetAccessRule($accessRule)
 $acl | Set-Acl "$location"
 }
 
-#Redis Logging Function
-Function RedisLogging {
 
-$drive=(Get-Location).Drive.Root
-$config1="approot\web.config"
-$config= "$drive$config1"
 
-$fe = New-Object NLog.Config.XmlLoggingConfiguration("$config")
-([NLog.LogManager]::Configuration) = $fe
-$logger = [NLog.LogManager]::GetCurrentClassLogger()
-}
 #Import DLL to enable logging
 Function ImportDll
 {
@@ -75,6 +69,14 @@ Import-Module -Name "..\..\approot\bin\Microsoft.WindowsAzure.Configuration.dll"
 Import-Module -Name "..\..\approot\bin\Microsoft.WindowsAzure.Storage.dll"
 }
 
+#Redis Logging 
+$drive=(Get-Location).Drive.Root
+$config1="approot\web.config"
+$config= "$drive$config1"
+
+$fe = New-Object NLog.Config.XmlLoggingConfiguration("$config")
+([NLog.LogManager]::Configuration) = $fe
+$logger = [NLog.LogManager]::GetCurrentClassLogger()
 
 $Azure="Azure"
 
