@@ -70,7 +70,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 {
 
                     Severity = FlashMessageSeverityLevel.Success,
-                    Message = "Account Unlocked",
+                    Headline = "Account Unlocked",
                     SubMessage =
                         "Your account has been unlocked, if you can't remember your password use the Forgotten Password link below"
                 };
