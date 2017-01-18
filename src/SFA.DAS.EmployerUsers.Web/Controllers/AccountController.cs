@@ -261,11 +261,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                     return Redirect(activateUserViewModel.ReturnUrl);
                 }
 
-                if (!String.IsNullOrEmpty(activateUserViewModel.GeneralError))
-                {
-                    return RedirectToAction("General", "Error");
-                }
-
                 var response = new OrchestratorResponse<ActivateUserViewModel>
                 {
                     Data = activateUserViewModel,
