@@ -8,32 +8,6 @@
 }
 <a href="@Url.Action("Logout", "Account")" class="link-back">Back</a>
 
-@if (!Model.Data.Valid)
-{
-        <div class="error-summary" role="group" tabindex="-1">
-            <h1 class="heading-medium error-summary-heading" id="error-summary-heading"> Errors to fix </h1>
-            <p>Check the following details:</p>
-            <ul class="error-summary-list">
-               @if (string.IsNullOrEmpty(Model.Data.GeneralError))
-               {
-                   if (@Model.Data.ErrorDictionary.ContainsKey(nameof(Model.Data.AccessCode)))
-                   {
-                       <li><a href="#AccessCode">@Model.Data.ErrorDictionary[nameof(Model.Data.AccessCode)]</a></li>
-                   }
-
-                   if (@Model.Data.ErrorDictionary.ContainsKey(nameof(Model.Data.AccessCode) + "Expired"))
-                   {
-                    <li><a href="#AccessCode">@Model.Data.ErrorDictionary[nameof(Model.Data.AccessCode) + "Expired"]</a></li>
-                   }
-               }
-               else
-               {
-                   <p>@Model.Data.GeneralError</p>
-               }
-            </ul>
-        </div>
-}
-
 <h1 class="heading-xlarge">@ViewBag.Title</h1>
 <form method="post"  autocomplete="off">
     @Html.AntiForgeryToken()

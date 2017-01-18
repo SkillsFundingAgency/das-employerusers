@@ -247,7 +247,23 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                     return Redirect(activateUserViewModel.ReturnUrl);
                 }
 
-                return View("Confirm", new OrchestratorResponse<ActivateUserViewModel> { Data = activateUserViewModel });
+                if (!String.IsNullOrEmpty(activateUserViewModel.GeneralError))
+                {
+                    return RedirectToAction("General", "Error");
+                }
+
+                var response = new OrchestratorResponse<ActivateUserViewModel>
+                {
+                    Data = activateUserViewModel,
+                    FlashMessage = new FlashMessageViewModel
+                    {
+                        ErrorMessages = activateUserViewModel.ErrorDictionary,
+                        Severity = FlashMessageSeverityLevel.Error,
+                        Headline = "Errors to fix",
+                        Message = "Check the following details:"
+                    }  
+                };
+                return View("Confirm", response);
             }
             else
             {
