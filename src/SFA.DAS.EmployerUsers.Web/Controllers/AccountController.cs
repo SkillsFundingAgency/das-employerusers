@@ -221,7 +221,21 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            return View("Confirm", new OrchestratorResponse<ActivateUserViewModel>() { Data = new ActivateUserViewModel()});
+
+            var flashMessage = new FlashMessageViewModel
+            {
+                Severity = FlashMessageSeverityLevel.Success,
+                Headline = "We've sent you an email",
+                SubMessage = $"To confirm your identity, we've sent a code to {GetLoggedInUserEmail()}"
+            };
+
+            var response = new OrchestratorResponse<ActivateUserViewModel>()
+            {
+                FlashMessage = flashMessage,
+                Data = new ActivateUserViewModel()
+            };
+
+            return View("Confirm", response);
         }
 
         [HttpPost]
