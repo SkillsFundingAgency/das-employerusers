@@ -49,7 +49,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
             if (existingUser == null)
             {
                 _logger.Info($"Request to reset email for unknown email address : '{message.Email}'");
-                throw new UnknownAccountException();
+                return;
             }
 
             if (RequiresPasswordResetCode(existingUser))
