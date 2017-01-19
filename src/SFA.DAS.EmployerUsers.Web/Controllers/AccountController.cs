@@ -221,7 +221,21 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            return View("Confirm", new OrchestratorResponse<ActivateUserViewModel>() { Data = new ActivateUserViewModel()});
+
+            var flashMessage = new FlashMessageViewModel
+            {
+                Severity = FlashMessageSeverityLevel.Success,
+                Headline = "We've sent you an email",
+                SubMessage = $"To confirm your identity, we've sent a code to {GetLoggedInUserEmail()}"
+            };
+
+            var response = new OrchestratorResponse<ActivateUserViewModel>()
+            {
+                FlashMessage = flashMessage,
+                Data = new ActivateUserViewModel()
+            };
+
+            return View("Confirm", response);
         }
 
         [HttpPost]
@@ -247,7 +261,18 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                     return Redirect(activateUserViewModel.ReturnUrl);
                 }
 
-                return View("Confirm", new OrchestratorResponse<ActivateUserViewModel> { Data = activateUserViewModel });
+                var response = new OrchestratorResponse<ActivateUserViewModel>
+                {
+                    Data = activateUserViewModel,
+                    FlashMessage = new FlashMessageViewModel
+                    {
+                        ErrorMessages = activateUserViewModel.ErrorDictionary,
+                        Severity = FlashMessageSeverityLevel.Error,
+                        Headline = "Errors to fix",
+                        Message = "Check the following details:"
+                    }  
+                };
+                return View("Confirm", response);
             }
             else
             {

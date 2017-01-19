@@ -191,14 +191,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 model.ErrorDictionary = ex.ErrorMessages;
                 return model;
             }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, ex.Message);
 
-                model.ErrorDictionary.Add("", "An error has occurred. Please contact support.");
-                
-                return model;
-            }
         }
         public virtual async Task<bool> ResendLastConfirmationCode(ConfirmChangeEmailViewModel model)
         {
