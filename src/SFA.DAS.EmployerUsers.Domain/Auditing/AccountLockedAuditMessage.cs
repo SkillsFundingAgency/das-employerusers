@@ -16,7 +16,8 @@ namespace SFA.DAS.EmployerUsers.Domain.Auditing
             };
             ChangedProperties = new List<PropertyUpdate>
             {
-                PropertyUpdate.FromInt(nameof(user.FailedLoginAttempts), user.FailedLoginAttempts)
+                PropertyUpdate.FromInt(nameof(user.FailedLoginAttempts), user.FailedLoginAttempts),
+                PropertyUpdate.FromBool(nameof(user.IsLocked), user.IsLocked)
             };
         }
     }
