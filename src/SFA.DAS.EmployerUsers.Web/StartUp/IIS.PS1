@@ -10,6 +10,27 @@ function Install-MSIFile {
         [ValidateNotNullorEmpty()]
         [string]$targetDir
  )
+
+#Logging in the first instance#
+Import-Module -Name "..\..\approot\bin\SFA.DAS.NLog.Targets.Redis.dll"
+Import-Module -Name "..\..\approot\bin\StackExchange.Redis.dll"
+Import-Module -Name "..\..\approot\bin\NLog.dll"
+Import-Module -Name "..\..\approot\bin\Newtonsoft.Json.dll"
+Import-Module -Name "..\..\approot\bin\Microsoft.WindowsAzure.Configuration.dll"
+Import-Module -Name "..\..\approot\bin\Microsoft.WindowsAzure.Storage.dll"
+
+#Redis Logging 
+$drive=(Get-Location).Drive.Root
+$config1="approot\web.config"
+$config= "$drive$config1"
+
+$fe = New-Object NLog.Config.XmlLoggingConfiguration("$config")
+
+([NLog.LogManager]::Configuration) = $fe
+$logger = [NLog.LogManager]::GetCurrentClassLogger()
+
+	$logger.Error("Installing MSI")
+
 if (!(Test-Path $msiFile)){
     throw "Path to the MSI File $($msiFile) is invalid. Please supply a valid MSI file"
 }
@@ -28,9 +49,12 @@ Write-Verbose "Installing $msiFile....."
 $process = Start-Process -FilePath msiexec.exe -ArgumentList $arguments -Wait -PassThru
 if ($process.ExitCode -eq 0){
     Write-Verbose "$msiFile has been successfully installed"
+	$logger.Error("$msiFile has been successfully installed")
+	Restart-Computer
 }
 else {
     Write-Verbose "installer exit code  $($process.ExitCode) for file  $($msifile)"
+	$logger.Error("installer exit code  $($process.ExitCode) for file  $($msifile)")
 }
 }
 #Function to get the location of the cert#
@@ -84,18 +108,13 @@ if(Get-Module -ListAvailable | Where-Object{ $_.Name -eq $Azure })
 $ConfigurationStorageConnectionString = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("ConfigurationStorageConnectionString")
 $EnvironmentName = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("EnvironmentName")
 $Thumbprint = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("TokenCertificateThumbprint")
-#$thumbprint="6B7ACC520305BFDB4F7252DAEB2177CC091FAAE1"
-
 
 $checkcert=(Get-ChildItem cert:\LocalMachine\My | Where thumbprint -eq $thumbprint).Thumbprint
 $Ctx = New-AzureStorageContext -ConnectionString "$ConfigurationStorageConnectionString"
 $BlobName = "$environmentname/DasIDPCert.pfx"
 $ContainerName = "certs"
 $localTargetDirectory = "C:\Cert"
-
-
              
-
 if ($checkcert)
 {
 Write-Warning -Message "Certificate already installed"
