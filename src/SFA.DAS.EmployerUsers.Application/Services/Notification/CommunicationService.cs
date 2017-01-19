@@ -178,19 +178,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
             }
 
         }
-
-        public async Task SendPasswordResetConfirmationMessage(User user, string messageId)
-        {
-            await _notificationsApi.SendEmail(new Email
-            {
-                SystemId = messageId,
-                TemplateId = "PasswordResetConfirmation",
-                RecipientsAddress = user.Email,
-                ReplyToAddress = ReplyToAddress,
-                Subject = "Your password has been reset"
-            });
-        }
-
+        
         public async Task SendConfirmEmailChangeMessage(User user, string messageId)
         {
             var code = GetUserConfirmEmailCode(user);

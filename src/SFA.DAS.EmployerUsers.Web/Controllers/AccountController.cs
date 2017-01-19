@@ -277,7 +277,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 FlashMessage = new FlashMessageViewModel
                 {
                     Severity = FlashMessageSeverityLevel.Success,
-                    Headline = "Unlock your account",
+                    Headline = "Account locked",
                     SubMessage = string.IsNullOrEmpty(email) ? 
                                     "We've sent an email with a code to unlock your account" 
                                     : $"We've sent an email to {email} with a code to unlock your account"

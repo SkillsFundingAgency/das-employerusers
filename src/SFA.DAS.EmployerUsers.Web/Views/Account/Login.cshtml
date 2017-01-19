@@ -10,7 +10,7 @@
     <div class="column-two-thirds">
         <h1 class="heading-xlarge">@ViewBag.Title</h1>
         <p>Sign in or <a href="@Url.Action("Register", "Account", new {ClientId = Model.Data.ClientId, ReturnUrl = Model.Data.ReturnUrl })">create an account</a> to manage your apprenticeship levy account.</p>
-        <form method="post" autocomplete="off">
+        <form method="post" autocomplete="off" id="form-signin">
             @Html.AntiForgeryToken()
             <div class="form-group  @(!string.IsNullOrEmpty(Model.Data.EmailAddressError) ? "error" : "")">
                 <label for="EmailAddress">
