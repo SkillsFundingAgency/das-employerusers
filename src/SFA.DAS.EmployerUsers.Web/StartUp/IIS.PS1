@@ -149,19 +149,18 @@ break
 
 $CertPassword = Get-Content "C:\Cert\$environmentname\password.txt"
 
-$logger.Error("Cert password is $CertPassword")
-
 $mypwd = ConvertTo-SecureString -String "$CertPassword" -Force –AsPlainText
 
 Import-PfxCertificate –FilePath C:\Cert\$environmentname\DasIDPCert.pfx cert:\localMachine\my -Password $mypwd
-
+$logger.Info("Importing the certificate")
 #Setting Permission on the Cert for ReadAccess#
-
 Permissions
-
+$logger.Info("Setting Permissions on the certificate")
 #Removing the Certificate download location#
 
 Remove-Item $localTargetDirectory -Force -Recurse
+$logger.Info("Removing local folder")
+	
 
 }
 
