@@ -8,6 +8,8 @@ using System.Web.Routing;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Azure;
 using NLog;
+using SFA.DAS.Audit.Client;
+using SFA.DAS.Audit.Client.Web;
 
 namespace SFA.DAS.EmployerUsers.Web
 {
@@ -27,6 +29,19 @@ namespace SFA.DAS.EmployerUsers.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            WebMessageBuilders.Register();
+            AuditMessageFactory.RegisterBuilder(message =>
+            {
+                var name = typeof(MvcApplication).Assembly.GetName();
+
+                message.Source = new Audit.Types.Source
+                {
+                    System = "EMPU",
+                    Component = name.Name,
+                    Version = name.Version.ToString()
+                };
+            });
         }
         protected void Application_BeginRequest(object sender, EventArgs e)
         {

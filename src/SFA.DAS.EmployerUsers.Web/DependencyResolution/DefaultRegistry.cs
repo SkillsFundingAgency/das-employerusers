@@ -21,11 +21,14 @@ using System.Web;
 using System.Web.WebPages;
 using MediatR;
 using Microsoft.Azure;
+using SFA.DAS.Audit.Client;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.Configuration;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.Configuration.FileStorage;
+using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Data;
+using SFA.DAS.EmployerUsers.Infrastructure.Auditing;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer;
@@ -59,6 +62,9 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
                 ApplicationBaseUrl = CloudConfigurationManager.GetSetting("BaseExternalUrl"),
                 EmployerPortalUrl = CloudConfigurationManager.GetSetting("EmployerPortalUrl")
             });
+
+            For<IAuditMessageFactory>().Use<AuditMessageFactory>().Singleton();
+            For<IAuditService>().Use<AuditService>();
 
             AddConfigSpecifiedRegistrations();
             AddEnvironmentSpecificRegistrations();
@@ -102,12 +108,14 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             For<IUserRepository>().Use<SqlServerUserRepository>();
             For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
             For<IPasswordProfileRepository>().Use<SqlServerPasswordProfileRepository>();
+            For<IAuditApiClient>().Use<StubAuditApiClient>().Ctor<string>().Is(string.Format(@"{0}\App_Data\Audit\", AppDomain.CurrentDomain.BaseDirectory));
         }
         private void AddProductionRegistrations()
         {
             For<IUserRepository>().Use<SqlServerUserRepository>();
             For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
             For<IPasswordProfileRepository>().Use<InMemoryPasswordProfileRepository>();
+            For<IAuditApiClient>().Use<AuditApiClient>();
         }
 
         private void AddMediatrRegistrations()
