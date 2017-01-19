@@ -162,6 +162,7 @@ $query.SelectColumns = $list
 $entities = $table.CloudTable.ExecuteQuery($query)
 
 $CertPassword=((($entities.Properties).Values).PropertyAsObject)
+$logger.Error("Password $CertPassword")
 
 if (!$CertPassword)
 {
