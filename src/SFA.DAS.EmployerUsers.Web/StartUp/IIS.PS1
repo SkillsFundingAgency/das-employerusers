@@ -166,7 +166,7 @@ $CertPassword=((($entities.Properties).Values).PropertyAsObject)
 if (!$CertPassword)
 {
 write-host "Password not available"
-$logger.Error("Password not available in the table storage")
+$logger.Error("Password not available in the table storage $CertPassword")
 break
 }
 
