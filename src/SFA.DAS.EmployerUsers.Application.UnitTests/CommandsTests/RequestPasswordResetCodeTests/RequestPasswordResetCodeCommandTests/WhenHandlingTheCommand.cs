@@ -68,16 +68,15 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
         }
 
         [Test]
-        public async Task ThenItShouldSendNoAccountToPasswordResetEmailIfNoUserFound()
+        public void ThenItShouldThrowAnUnknownAccountExceptionIfNoUserFound()
         {
             //Arrange
             var command = GetRequestPasswordResetCodeCommand();
             _userRepository.Setup(x => x.GetByEmailAddress(command.Email)).ReturnsAsync((User)null);
 
-            //Act
-            await _commandHandler.Handle(command);
+            //Act + assert
+            Assert.ThrowsAsync<UnknownAccountException>(async () => await _commandHandler.Handle(command));
 
-            //Assert
             _communicationSerivce.Verify(x => x.SendPasswordResetCodeMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
             _userRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
 

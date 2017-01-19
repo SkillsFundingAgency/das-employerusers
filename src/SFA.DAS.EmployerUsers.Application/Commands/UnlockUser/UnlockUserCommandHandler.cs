@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Validation;
+using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
 {
-    public class UnlockUserCommandHandler : AsyncRequestHandler<UnlockUserCommand>
+    public class UnlockUserCommandHandler : IAsyncRequestHandler<UnlockUserCommand, UnlockUserResponse>
     {
         private readonly IValidator<UnlockUserCommand> _unlockUserCommandValidator;
         private readonly IUserRepository _userRepository;
@@ -21,7 +23,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
             _mediator = mediator;
         }
 
-        protected override async Task HandleCore(UnlockUserCommand message)
+        public async Task<UnlockUserResponse> Handle(UnlockUserCommand message)
         {
             if (message == null)
             {
@@ -32,7 +34,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
 
             if (message.User != null && !message.User.IsLocked)
             {
-                return;
+                return null;
             }
 
             var result = await _unlockUserCommandValidator.ValidateAsync(message);
@@ -48,12 +50,22 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
 
             message.User.FailedLoginAttempts = 0;
             message.User.IsLocked = false;
+            var matchingUnlockCode = message.User.SecurityCodes?.OrderByDescending(sc => sc.ExpiryTime)
+                                                           .FirstOrDefault(sc => sc.Code.Equals(message.UnlockCode, StringComparison.CurrentCultureIgnoreCase)
+                                                                              && sc.CodeType == Domain.SecurityCodeType.UnlockCode);
             message.User.ExpireSecurityCodesOfType(Domain.SecurityCodeType.UnlockCode);
 
 
             await _userRepository.Update(message.User);
 
-            
+            return new UnlockUserResponse() {UnlockCode = matchingUnlockCode };
         }
+
+
+    }
+
+    public class UnlockUserResponse
+    {
+        public SecurityCode UnlockCode { get; set; }
     }
 }

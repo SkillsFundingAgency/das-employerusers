@@ -1,7 +1,7 @@
 ﻿@model SFA.DAS.EmployerUsers.Web.Models.RegisterViewModel
 @{
     ViewBag.PageID = "page-register";
-    ViewBag.Title = "Add your details";
+    ViewBag.Title = "Get set up as a user";
     ViewBag.HideSigninLink = "true";
 }
 
@@ -56,9 +56,8 @@
         </ul>
     </div>
 }
-
-<h1 class="heading-xlarge">Get set up as a user</h1>
-<form method="post" action="@Url.Content("~/identity/employer/register")?returnUrl=@Url.Encode(Model.ReturnUrl)" novalidate>
+<h1 class="heading-xlarge">@ViewBag.Title</h1>
+<form method="post" action="@Url.Content("~/identity/employer/register")?returnUrl=@Url.Encode(Model.ReturnUrl)" novalidate  autocomplete="off" id="form-register">
     @Html.AntiForgeryToken()
 
     <fieldset>
@@ -111,7 +110,7 @@
             By continuing you accept the <a href="@Url.Action("Index", "TermsAndConditions")" target="_blank">terms of use</a>.
         </div>
     </fieldset>
-    <button type="submit" class="button">Set me up</button>
+    <button type="submit" class="button" id="button-register">Set me up</button>
 </form>
 @section scripts {
     @Scripts.Render("~/bundles/password")

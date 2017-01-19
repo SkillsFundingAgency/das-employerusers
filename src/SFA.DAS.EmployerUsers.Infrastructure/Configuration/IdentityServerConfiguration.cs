@@ -4,7 +4,5 @@
     {
         public string ApplicationBaseUrl { get; set; }
         public string EmployerPortalUrl { get; set; }
-        public string CertificateStore { get; set; }
-        public string CertificateThumbprint { get; set; }
     }
 }

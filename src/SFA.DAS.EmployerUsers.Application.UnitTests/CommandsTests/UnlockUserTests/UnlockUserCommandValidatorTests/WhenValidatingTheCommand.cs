@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
@@ -15,6 +16,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         public void Arrange()
         {
             _unlockUserCommandValidator = new UnlockUserCommandValidator();
+
+            ConfigurationManager.AppSettings["UseStaticCodeGenerator"]="false";
         }
 
         [Test]
@@ -35,7 +38,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             var actual = await
                 _unlockUserCommandValidator.ValidateAsync(new UnlockUserCommand
                 {
-                    Email = "test@local",
+                    Email = "test@local.com",
                     UnlockCode = "SomeCode",
                     User = new User
                     {
@@ -63,7 +66,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             var actual = await
                 _unlockUserCommandValidator.ValidateAsync(new UnlockUserCommand
                 {
-                    Email = "test@local",
+                    Email = "test@local.com",
                     UnlockCode = "SomeCode",
                     User = new User
                     {
@@ -81,7 +84,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
 
             //Assert
             Assert.IsNotEmpty(actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("UnlockCodeMatch", "Unlock code is not correct"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("UnlockCode", "Unlock code is not correct"), actual.ValidationDictionary);
             Assert.IsFalse(actual.IsValid());
         }
         
@@ -92,7 +95,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             var actual = await
                 _unlockUserCommandValidator.ValidateAsync(new UnlockUserCommand
                 {
-                    Email = "test@local",
+                    Email = "test@local.com",
                     UnlockCode = "SomeCode",
                     User = new User
                     {
@@ -110,7 +113,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
 
             //Assert
             Assert.IsNotEmpty(actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("UnlockCodeExpiry", "Unlock code has expired"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("UnlockCode", "Unlock code has expired"), actual.ValidationDictionary);
             Assert.IsFalse(actual.IsValid());
         }
         
@@ -122,10 +125,59 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
 
             //Assert
             Assert.IsNotEmpty(actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("User", "That account does not exist"), actual.ValidationDictionary);
             Assert.Contains(new KeyValuePair<string, string>("Email", "Enter an email address"), actual.ValidationDictionary);
             Assert.Contains(new KeyValuePair<string, string>("UnlockCode", "Enter an unlock code"), actual.ValidationDictionary);
             
+        }
+
+        [Test]
+        public async Task ThenAnErrorMessageIsReturnedIfTheEmailAddressIsNotValid()
+        {
+            //Act
+            var actual = await _unlockUserCommandValidator.ValidateAsync(new UnlockUserCommand {Email = "test"});
+
+            //Assert
+            Assert.Contains(new KeyValuePair<string, string>("Email", "Enter a valid email address"), actual.ValidationDictionary);
+        }
+
+        [Test]
+        public async Task ThenAnErrorMessageIsReturnedIfTheUserIsNullAndTheEmailAndUnlockCodeArePopulated()
+        {
+            //Act
+            var actual = await _unlockUserCommandValidator.ValidateAsync(new UnlockUserCommand { Email = "test@test.com", UnlockCode="tester"});
+
+            //Assert
+            Assert.Contains(new KeyValuePair<string, string>("UnlockCode", "Unlock code is not correct"), actual.ValidationDictionary);
+        }
+
+        [Test]
+        public async Task ThenIfStaticCodeGenerationIsEnabledTheExpiryDateIsNotChecked()
+        {
+            //Arrange
+            ConfigurationManager.AppSettings["UseStaticCodeGenerator"] = "true";
+            
+            //Act
+            var actual = await
+                _unlockUserCommandValidator.ValidateAsync(new UnlockUserCommand
+                {
+                    Email = "test@local.com",
+                    UnlockCode = "SomeCode",
+                    User = new User
+                    {
+                        SecurityCodes = new[]
+                        {
+                          new SecurityCode
+                          {
+                              Code = "SomeCode",
+                              CodeType = SecurityCodeType.UnlockCode,
+                              ExpiryTime = DateTime.UtcNow.AddMinutes(-1)
+                          }
+                        }
+                    }
+                });
+
+            //Assert
+            Assert.IsTrue(actual.IsValid());
         }
     }
 }

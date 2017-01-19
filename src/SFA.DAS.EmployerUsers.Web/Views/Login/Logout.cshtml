@@ -1,9 +1,10 @@
 ﻿@model SFA.DAS.EmployerUsers.Web.Models.LogOutViewModel
 @{
     ViewBag.PageID = "logout";
-    ViewBag.Title = "Logged out";
-    ViewBag.HideSigninLink = "true";
-    Layout = "~/Views/Shared/_Layout-NoBanner.cshtml";
+    ViewBag.Title = "You've logged out";
+    ViewBag.HideSigninLink = true;
+    ViewBag.HideCookieMessage = true;
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 
@@ -13,7 +14,7 @@
 }
 
 <div id="NoJsContainer">
-    <h1 class="heading-xlarge">You've logged out</h1>
+    <h1 class="heading-xlarge">@ViewBag.Title</h1>
     <a href="@Model.SignOutMessage.ReturnUrl" class="button" autofocus="autofocus">Continue</a>
 </div>
 

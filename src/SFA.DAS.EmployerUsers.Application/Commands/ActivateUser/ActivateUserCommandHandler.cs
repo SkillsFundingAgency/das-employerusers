@@ -40,6 +40,9 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
 
             var securityCode = message.User.SecurityCodes?.SingleOrDefault(sc => sc.Code.Equals(message.AccessCode, StringComparison.CurrentCultureIgnoreCase)
                                                                     && sc.CodeType == Domain.SecurityCodeType.AccessCode);
+
+            
+
             var result = new ActivateUserCommandResult
             {
                 ReturnUrl = securityCode?.ReturnUrl

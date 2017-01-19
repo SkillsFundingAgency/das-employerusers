@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Configuration;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Controllers;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
@@ -27,11 +29,11 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 
             _accountOrchestrator = new Mock<AccountOrchestrator>();
             _accountOrchestrator.Setup(x => x.ActivateUser(It.IsAny<ActivateUserViewModel>()))
-                .ReturnsAsync(new ActivateUserViewModel { Valid = true, ReturnUrl = ReturnUrl });
+                .ReturnsAsync(new ActivateUserViewModel { ReturnUrl = ReturnUrl });
 
             _configurationService = new Mock<IConfigurationService>();
 
-            _accountController = new AccountController(_accountOrchestrator.Object, null, _configurationService.Object);
+            _accountController = new AccountController(_accountOrchestrator.Object, null, new IdentityServerConfiguration());
             _accountController.ControllerContext = _controllerContext.Object;
         }
 
@@ -64,7 +66,11 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         {
             //Arrange
             _accountOrchestrator.Setup(x => x.ActivateUser(It.IsAny<ActivateUserViewModel>()))
-                .ReturnsAsync(new ActivateUserViewModel { Valid = false });
+                .ReturnsAsync(new ActivateUserViewModel
+                {
+                    ErrorDictionary = new Dictionary<string, string>
+                    { { "Error", "Error Message"}}
+                });
 
             //Act
             var actual = await _accountController.Confirm(new ActivateUserViewModel(), Action);

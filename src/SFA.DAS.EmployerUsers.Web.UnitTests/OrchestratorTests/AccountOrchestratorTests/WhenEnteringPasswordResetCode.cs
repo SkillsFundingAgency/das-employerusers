@@ -40,7 +40,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             //Arrange
             
             var actualResetCode = "123456";
-            var model = new PasswordResetViewModel { Email = ValidEmail, PasswordResetCode = actualResetCode, Password = "password", ConfirmPassword = "passwordconfirm" };
+            var model = new PasswordResetViewModel {  Email = ValidEmail, PasswordResetCode = actualResetCode, Password = "password", ConfirmPassword = "passwordconfirm" };
 
             //Act
             await _accountOrchestrator.ResetPassword(model);

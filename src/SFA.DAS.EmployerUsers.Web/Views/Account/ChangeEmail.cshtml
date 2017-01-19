@@ -4,46 +4,47 @@
 @{
     ViewBag.PageID = "page-change-email-address";
     ViewBag.Title = "Change your email address";
+    ViewBag.HideSigninLink = true;
+    ViewBag.HideCookieMessage = true;
 }
 
-<h1 class="heading-xlarge"> Change your email address </h1>
 
-<form method="post">
+
+<h1 class="heading-xlarge">@ViewBag.Title</h1>
+<form method="post"  autocomplete="off">
     @Html.AntiForgeryToken()
-
     <fieldset>
         <legend class="visuallyhidden">New email address</legend>
-
         <div class="form-group @(!string.IsNullOrEmpty(Model.Data.NewEmailAddressError) ? "error" : "")">
-            <label class="form-label-bold" for="NewEmailAddress">
-                <span>New email address</span>
+            <label for="NewEmailAddress">
+                <span class="form-label-bold">New email address</span>
                 @if (!string.IsNullOrEmpty(Model.Data.NewEmailAddressError))
                 {
                     <span class="error-message" id="error-message-email">@Model.Data.NewEmailAddressError</span>
                 }
             </label>
-            <input autofocus="autofocus" aria-required="true" class="form-control" id="NewEmailAddress" name="NewEmailAddress">
+            <input autofocus="autofocus" aria-required="true" class="form-control" id="NewEmailAddress" name="NewEmailAddress"
+                    @(!string.IsNullOrEmpty(Model.Data.NewEmailAddressError) ? "aria-invalid=true aria-describedby=error-message-email" : "" )>
         </div>
-
         <div class="form-group @(!string.IsNullOrEmpty(Model.Data.ConfirmEmailAddressError) ? "error" : "")">
-            <label class="form-label-bold" for="ConfirmEmailAddress">
-                <span>Re-type email addresss</span>
-
+            <label for="ConfirmEmailAddress">
+                <span class="form-label-bold">Re-type email address</span>
                 @if (!string.IsNullOrEmpty(Model.Data.ConfirmEmailAddressError))
                 {
-                    <span class="error-message" id="error-message-email">@Model.Data.ConfirmEmailAddressError</span>
+                    <span class="error-message" id="error-message-confirm-email">@Model.Data.ConfirmEmailAddressError</span>
                 }
             </label>
-            <input aria-required="true" class="form-control" id="ConfirmEmailAddress" name="ConfirmEmailAddress">
+            <input aria-required="true" class="form-control" id="ConfirmEmailAddress" name="ConfirmEmailAddress"
+                    @(!string.IsNullOrEmpty(Model.Data.ConfirmEmailAddressError) ? "aria-invalid=true aria-describedby=error-message-confirm-email" : "" )>
         </div>
     </fieldset>
     <button type="submit" class="button">Continue</button>
 </form>
 
-@section breadcrumb {
-    <div class="breadcrumbs">
-        <ol role="navigation">
-            <li><a href="@Model.Data.ReturnUrl" class="back-link">Back</a></li>
-        </ol>
-    </div>
-}
+        @section breadcrumb {
+            <div class="breadcrumbs">
+                <ol role="navigation">
+                    <li><a href="@Model.Data.ReturnUrl" class="back-link">Back</a></li>
+                </ol>
+            </div>
+        }

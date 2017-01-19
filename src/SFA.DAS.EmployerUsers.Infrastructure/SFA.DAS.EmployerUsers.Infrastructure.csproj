@@ -86,16 +86,10 @@
     </Compile>
     <Compile Include="Configuration\DataStorageConfiguration.cs" />
     <Compile Include="Configuration\EmployerPortalConfiguration.cs" />
-    <Compile Include="Configuration\EmployerUsersClientComponentConfigurationFactory.cs" />
     <Compile Include="Configuration\EmployerUsersConfiguration.cs" />
     <Compile Include="Configuration\IdentityServerConfiguration.cs" />
     <Compile Include="Configuration\AccountConfiguration.cs" />
     <Compile Include="Configuration\NotificationsApiConfiguration.cs" />
-    <Compile Include="Data\DocumentDb\Entities\DocumentDbRelyingParty.cs" />
-    <Compile Include="Data\DocumentDb\DocumentDbRelyingPartyRepository.cs" />
-    <Compile Include="Data\DocumentDb\DocumentDbRepository.cs" />
-    <Compile Include="Data\DocumentDb\Entities\DocumentDbUser.cs" />
-    <Compile Include="Data\DocumentDb\DocumentDbUserRepository.cs" />
     <Compile Include="Data\FileSystem\FileSystemRelyingPartyRepository.cs" />
     <Compile Include="Data\FileSystem\FileSystemRepository.cs" />
     <Compile Include="Data\FileSystem\FileSystemUserRepository.cs" />

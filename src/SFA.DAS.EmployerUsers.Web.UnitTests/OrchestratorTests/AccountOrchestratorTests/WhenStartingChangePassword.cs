@@ -70,5 +70,15 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             Assert.IsNotNull(actual);
             Assert.IsFalse(actual.Data.Valid);
         }
+
+        [Test]
+        public async Task ThenTheUserCancelledParamIsAddedToTheReturnUrl()
+        {
+            // Act
+            var actual = await _orchestrator.StartChangePassword("MyClient", "http://unit.test");
+
+            //Assert
+            Assert.AreEqual("http://unit.test?userCancelled=true", actual.Data.ReturnUrl);
+        }
     }
 }

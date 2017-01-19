@@ -1,3 +1,7 @@
+b, strong {
+    font-weight: 600;
+}
+
 
 @include media(tablet) {
     .heading-xlarge {

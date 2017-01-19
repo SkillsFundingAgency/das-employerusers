@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Web.Helpers;
 using IdentityServer3.Core.Configuration;
+using IdentityServer3.Core.Extensions;
 using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services;
 using IdentityServer3.Core.Services.Default;
@@ -22,7 +23,7 @@ namespace SFA.DAS.EmployerUsers.Web
         private void ConfigureIdentityServer(IAppBuilder app, IdentityServerConfiguration configuration, IRelyingPartyRepository relyingPartyRepository)
         {
             _logger.Debug("Setting up IdentityServer");
-            
+
             AntiForgeryConfig.UniqueClaimTypeIdentifier = DasClaimTypes.Id;
 
             app.Map("/identity", idsrvApp =>
@@ -39,52 +40,65 @@ namespace SFA.DAS.EmployerUsers.Web
                 {
                     factory.AuthorizationCodeStore = new Registration<IAuthorizationCodeStore>(typeof(RedisAuthorizationCodeStore));
                 }
-
+                
                 idsrvApp.UseIdentityServer(new IdentityServerOptions
                 {
                     SiteName = "Digital Apprenticeship Service",
+                   
                     CspOptions = new CspOptions()
                     {
                         FontSrc = "* data:",
                         ImgSrc = "* data:",
-                        FrameSrc = "* data:"
+                        FrameSrc = "* data:",
+                        Enabled = false
                     },
-                    SigningCertificate = LoadCertificate(configuration),
+                    SigningCertificate = LoadCertificate(),
 
                     Factory = factory,
 
                     AuthenticationOptions = new AuthenticationOptions
                     {
                         EnablePostSignOutAutoRedirect = true,
+                        EnableAutoCallbackForFederatedSignout = true,
                         EnableSignOutPrompt = false,
-                        PostSignOutAutoRedirectDelay = 0
+                        CookieOptions = new CookieOptions
+                        {
+                            AllowRememberMe = false,
+                            ExpireTimeSpan = new TimeSpan(0, 10, 0),
+                            IsPersistent = false,
+                            SecureMode = CookieSecureMode.Always,
+                            SlidingExpiration = true
+                        },
+                        PostSignOutAutoRedirectDelay = 0,
+                        SignInMessageThreshold = 1
+
                     }
                 });
+
             });
         }
 
 
-        private X509Certificate2 LoadCertificate(IdentityServerConfiguration configuration)
+        private X509Certificate2 LoadCertificate()
         {
-            var certificatePath = string.Format(@"{0}\bin\DasIDPCert.pfx", AppDomain.CurrentDomain.BaseDirectory);
-            _logger.Debug("Loading IDP certificate from {0}", certificatePath);
-            return new X509Certificate2(certificatePath, "idsrv3test");
+            var store = new X509Store(StoreLocation.LocalMachine);
+            store.Open(OpenFlags.ReadOnly);
+            try
+            {
+                var thumbprint = CloudConfigurationManager.GetSetting("TokenCertificateThumbprint");
+                var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, false);
 
-            //TODO: This need fixing to work with new Windows store
-            //var storeLocation = (StoreLocation)Enum.Parse(typeof (StoreLocation), configuration.CertificateStore);
-            //var store = new X509Store(storeLocation);
-            //store.Open(OpenFlags.ReadOnly);
-            //try
-            //{
-            //    var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, configuration.CertificateThumbprint, false);
-            //    var certificate = certificates.Count > 0 ? certificates[0] : null;
+                if (certificates.Count < 1)
+                {
+                    throw new Exception($"Could not find certificate with thumbprint {thumbprint} in LocalMachine store");
+                }
 
-            //    return certificate;
-            //}
-            //finally
-            //{
-            //    store.Close();
-            //}
+                return certificates[0];
+            }
+            finally
+            {
+                store.Close();
+            }
         }
         private List<Client> GetClients(IdentityServerConfiguration configuration, IRelyingPartyRepository relyingPartyRepository)
         {

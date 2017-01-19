@@ -1,17 +1,13 @@
 ﻿@{
-    ViewBag.Title = "Home";
+    ViewBag.Title = "Welcome";
 }
-
-
 <h1 class="heading-xlarge">Welcome</h1>
-
 <div class="form-group">
 @if (HttpContext.Current.User.Identity.IsAuthenticated)
 {
     <a href="@Url.Action("Logout", "Account")" class="button">Log out</a>
 } else {
     <a href="@Url.Action("Login","Home")" class="button">Sign in</a> 
-    <a href="@Url.Action("Register","Account")" class="button-link">Register</a>
 }
-   
+
 </div>

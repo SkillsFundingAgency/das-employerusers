@@ -53,7 +53,8 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
                 {
                     Code = await GenerateCode(),
                     CodeType = Domain.SecurityCodeType.UnlockCode,
-                    ExpiryTime = DateTime.UtcNow.AddDays(1)
+                    ExpiryTime = DateTime.UtcNow.AddDays(1),
+                    ReturnUrl = notification.ReturnUrl
                 };
                 user.AddSecurityCode(unlockCode);
                 await _userRepository.Update(user);

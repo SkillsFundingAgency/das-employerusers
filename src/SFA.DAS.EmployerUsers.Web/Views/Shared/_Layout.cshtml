@@ -68,16 +68,19 @@
 
     <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
 
-    <div id="skiplink-container">
-        <div>
-            <a href="#content" class="skiplink">Skip to main content</a>
+<div id="skiplink-container">
+    <div>
+        <a href="#content" class="skiplink">Skip to main content</a>
+    </div>
+</div>
+    @if (ViewBag.HideCookieMessage?.ToString()?.ToLower() != "true")
+    {
+        <div id="global-cookie-message">
+            <p>
+                GOV.UK uses cookies to make the site simpler. <a href="@Url.Action("Privacy", "Home")">Find out more about cookies</a>
+            </p>
         </div>
-    </div>
-    <div id="global-cookie-message">
-        <p>
-            GOV.UK uses cookies to make the site simpler. <a href="@Url.Action("Privacy","Home")">Find out more about cookies</a>
-        </p>
-    </div>
+    }
     <header role="banner" id="global-header" class="with-proposition">
         <div class="header-wrapper">
             <div class="header-global">
@@ -88,8 +91,8 @@
                 </div>
             </div>
             <div class="header-proposition">
-                <div class="content">
-                    <a id="proposition-name" href="/">Apprenticeships</a>
+                <div class="content" id="proposition-name">
+                    Manage apprenticeships
                 </div>
             </div>
         </div>
@@ -102,7 +105,7 @@
                     <span>This is a new service – your <a href="https://www.surveymonkey.co.uk/r/accessmylevysurvey" target="_blank">feedback</a> will help us to improve it. </span>
                 </p>
             </div>
-            @if (HttpContext.Current.User.Identity.IsAuthenticated)
+            @if (HttpContext.Current.User.Identity.IsAuthenticated && ViewBag.HideSigninLink?.ToString()?.ToLower() != "true")
             {
             <div class="account-information" role="navigation">
                 <a href="#user-nav" id="link-settings" aria-hidden="true" aria-label="Access your settings">Settings</a>
@@ -138,7 +141,7 @@
             <div class="footer-meta">
                 <div class="footer-meta-inner">
                     <ul class="platform-help-links">
-                        <li><a href="mailto:DASPrivateBeta@apprenticeships.gov.uk?subject=Digital Apprenticeship Service beta query">Contact us</a></li>
+                        <li><a href="@Url.Action("Help", "Home")">Help</a></li>
                         <li><a href="https://www.surveymonkey.co.uk/r/accessmylevysurvey" target="_blank">Feedback</a></li>
                         <li><a href="@Url.Action("Privacy", "Home")">Privacy and cookies</a></li>
                         <li>Built by the <a href="http://gov.uk/sfa" target="_blank">Skills Funding Agency</a></li>

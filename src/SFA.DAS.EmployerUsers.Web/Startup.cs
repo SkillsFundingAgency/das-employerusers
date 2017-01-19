@@ -1,4 +1,5 @@
-﻿using Microsoft.Owin;
+﻿using System;
+using Microsoft.Owin;
 using NLog;
 using Owin;
 using SFA.DAS.Configuration;
@@ -16,22 +17,18 @@ namespace SFA.DAS.EmployerUsers.Web
         {
             _logger.Debug("Started running Owin Configuration");
 
-            var configurationService = StructuremapMvc.Container.GetInstance<IConfigurationService>();
+            var identityServerConfiguration = StructuremapMvc.Container.GetInstance<IdentityServerConfiguration>();
             var relyingPartyRepository = StructuremapMvc.Container.GetInstance<IRelyingPartyRepository>();
-            configurationService.GetAsync<EmployerUsersConfiguration>().ContinueWith((task) =>
-            {
-                if (task.Exception != null)
+
+                try
                 {
-                    task.Exception.UnpackAndLog(_logger);
-                    throw task.Exception.InnerExceptions[0];
+            ConfigureIdentityServer(app, identityServerConfiguration, relyingPartyRepository);
+            ConfigureRelyingParty(app, identityServerConfiguration);
                 }
-
-                _logger.Debug("EmployerUsersConfiguration read successfully");
-
-                var configuration = task.Result;
-                ConfigureIdentityServer(app, configuration.IdentityServer, relyingPartyRepository);
-                ConfigureRelyingParty(app, configuration.IdentityServer);
-            }).Wait();
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, $"Error in startup - {ex.Message}");
+                }
         }
     }
 }

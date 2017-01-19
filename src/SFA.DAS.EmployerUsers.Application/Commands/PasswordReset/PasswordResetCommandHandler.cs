@@ -1,15 +1,17 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using NLog;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
+using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 {
-    public class PasswordResetCommandHandler : AsyncRequestHandler<PasswordResetCommand>
+    public class PasswordResetCommandHandler : IAsyncRequestHandler<PasswordResetCommand, PasswordResetResponse>
     {
         private readonly ILogger _logger;
         private readonly IUserRepository _userRepository;
@@ -26,7 +28,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             _logger = logger;
         }
 
-        protected override async Task HandleCore(PasswordResetCommand message)
+        public  async Task<PasswordResetResponse> Handle(PasswordResetCommand message)
         {
             _logger.Info($"Received PasswordResetCommand for user '{message.Email}'");
 
@@ -40,20 +42,28 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
                 throw new InvalidRequestException(validationResult.ValidationDictionary);
             }
 
+            var resetCode = message.User?.SecurityCodes?.OrderByDescending(sc => sc.ExpiryTime)
+                                                    .FirstOrDefault(sc => sc.Code.Equals(message.PasswordResetCode, StringComparison.InvariantCultureIgnoreCase)
+                                                                       && sc.CodeType == Domain.SecurityCodeType.PasswordResetCode);
+
             var securedPassword = await _passwordService.GenerateAsync(message.Password);
 
             message.User.Password = securedPassword.HashedPassword;
             message.User.PasswordProfileId = securedPassword.ProfileId;
             message.User.Salt = securedPassword.Salt;
             message.User.IsActive = true;
-            message.User.ExpireSecurityCodesOfType(Domain.SecurityCodeType.AccessCode);
-            message.User.ExpireSecurityCodesOfType(Domain.SecurityCodeType.PasswordResetCode);
+            message.User.ExpireSecurityCodesOfType(SecurityCodeType.AccessCode);
+            message.User.ExpireSecurityCodesOfType(SecurityCodeType.PasswordResetCode);
 
             await _userRepository.Update(message.User);
             _logger.Info($"Password changed for user '{message.Email}'");
-
-            await _communicationService.SendPasswordResetConfirmationMessage(user, Guid.NewGuid().ToString());
             
+            return new PasswordResetResponse {ResetCode = resetCode};
         }
+    }
+
+    public class PasswordResetResponse
+    {
+        public SecurityCode ResetCode { get; set; }
     }
 }

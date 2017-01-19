@@ -230,30 +230,5 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
             //Assert
             _userRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
         }
-
-
-        [Test]
-        public void ThenTheUserIsNotEmailedIfTheValidatorIsInValid()
-        {
-            //Arrange
-            _validator.Setup(x => x.ValidateAsync(It.IsAny<PasswordResetCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
-
-            //Act
-            Assert.ThrowsAsync<InvalidRequestException>(async () => await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = "someotheremail@local" }));
-
-            //Assert
-            _communicationService.Verify(x => x.SendPasswordResetConfirmationMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
-        }
-
-        [Test]
-        public async Task ThenAnEmailIsSentConfirmingThePasswordHasBeenRestWhenValid()
-        {
-            //Act
-            await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = ActualEmailAddress, Password = "somePassword", ConfirmPassword = "someConfirmPassword" });
-
-            //Assert
-            _communicationService.Verify(x => x.SendPasswordResetConfirmationMessage(It.Is<User>(c => c.Email == ActualEmailAddress), It.IsAny<string>()), Times.Once);
-        }
-        
     }
 }

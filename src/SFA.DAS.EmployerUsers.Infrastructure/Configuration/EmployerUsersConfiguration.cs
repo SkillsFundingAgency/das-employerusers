@@ -2,9 +2,7 @@
 {
     public class EmployerUsersConfiguration
     {
-        public IdentityServerConfiguration IdentityServer { get; set; }
-        public DataStorageConfiguration DataStorage { get; set; }
-        public AccountConfiguration Account { get; set; }
-        public EmployerPortalConfiguration EmployerPortalConfiguration { get; set; }
+        public virtual IdentityServerConfiguration IdentityServer { get; set; }
+        public virtual AccountConfiguration Account { get; set; }
     }
 }

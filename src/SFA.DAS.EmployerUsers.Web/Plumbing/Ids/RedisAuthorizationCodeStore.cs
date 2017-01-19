@@ -5,16 +5,19 @@ using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services;
 using Microsoft.Azure;
 using Newtonsoft.Json;
+using NLog;
 using SFA.DAS.EmployerUsers.Web.Plumbing.Serialization;
 using StackExchange.Redis;
 
 namespace SFA.DAS.EmployerUsers.Web.Plumbing.Ids
 {
-    public class RedisAuthorizationCodeStore : IAuthorizationCodeStore
+    public class RedisAuthorizationCodeStore : IAuthorizationCodeStore, IDisposable
     {
         private readonly IClientStore _clientStore;
         private readonly IScopeStore _scopeStore;
+        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
+        private readonly ConnectionMultiplexer _connectionMultiplexer;
         private readonly IDatabase _cache;
 
         public RedisAuthorizationCodeStore(IClientStore clientStore, IScopeStore scopeStore)
@@ -22,7 +25,8 @@ namespace SFA.DAS.EmployerUsers.Web.Plumbing.Ids
             _clientStore = clientStore;
             _scopeStore = scopeStore;
 
-            _cache = GetDatabase();
+            _connectionMultiplexer = GetConnectionMultiplexer();
+            _cache = GetDatabase(_connectionMultiplexer);
         }
 
         public async Task StoreAsync(string key, AuthorizationCode value)
@@ -32,7 +36,13 @@ namespace SFA.DAS.EmployerUsers.Web.Plumbing.Ids
 
         public async Task<AuthorizationCode> GetAsync(string key)
         {
-            return DeserializeCode(await _cache.StringGetAsync(key));
+            var json = await _cache.StringGetAsync(key);
+            if (string.IsNullOrEmpty(json))
+            {
+                _logger.Info($"Could not find AuthorizationCode with key {key}. This is normally because it has expired.");
+                return null;
+            }
+            return DeserializeCode(json);
         }
 
         public async Task RemoveAsync(string key)
@@ -44,7 +54,7 @@ namespace SFA.DAS.EmployerUsers.Web.Plumbing.Ids
         {
             var matches = new List<ITokenMetadata>();
 
-            var server = GetServer();
+            var server = GetServer(_connectionMultiplexer);
             var keys = server.Keys();
             foreach (var key in keys)
             {
@@ -62,7 +72,7 @@ namespace SFA.DAS.EmployerUsers.Web.Plumbing.Ids
         {
             var toDelete = new List<string>();
 
-            var server = GetServer();
+            var server = GetServer(_connectionMultiplexer);
             var keys = server.Keys();
             foreach (var key in keys)
             {
@@ -98,14 +108,12 @@ namespace SFA.DAS.EmployerUsers.Web.Plumbing.Ids
             return settings;
         }
 
-        private IDatabase GetDatabase()
+        private IDatabase GetDatabase(ConnectionMultiplexer connectionMultiplexer)
         {
-            var connectionMultiplexer = GetConnectionMultiplexer();
             return connectionMultiplexer.GetDatabase();
         }
-        private IServer GetServer()
+        private IServer GetServer(ConnectionMultiplexer connectionMultiplexer)
         {
-            var connectionMultiplexer = GetConnectionMultiplexer();
             var connectionString = GetConnectionString();
             var serverAndPort = connectionString.Substring(0, connectionString.IndexOf(','));
             return connectionMultiplexer.GetServer(serverAndPort);
@@ -117,6 +125,18 @@ namespace SFA.DAS.EmployerUsers.Web.Plumbing.Ids
         private static string GetConnectionString()
         {
             return CloudConfigurationManager.GetSetting("AuthCodeCacheConnectionString");
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                _connectionMultiplexer.Close();
+                _connectionMultiplexer.Dispose();
+            }
+            catch
+            {
+            }
         }
     }
 }

@@ -6,24 +6,63 @@
 
     var invalidAttributes = Model.Data.Valid ? "aria-invalid=\"true\" aria-labeledby=\"invalidMessage\"" : "";
 }
+<a href="@Url.Action("Logout", "Account")" class="link-back">Back</a>
 
-<h1 class="heading-xlarge">Confirm your identity</h1>
-<form method="post">
+@if (!Model.Data.Valid)
+{
+        <div class="error-summary" role="group" tabindex="-1">
+            <h1 class="heading-medium error-summary-heading" id="error-summary-heading"> Errors to fix </h1>
+            <p>Check the following details:</p>
+            <ul class="error-summary-list">
+               @if (string.IsNullOrEmpty(Model.Data.GeneralError))
+               {
+                   if (@Model.Data.ErrorDictionary.ContainsKey(nameof(Model.Data.AccessCode)))
+                   {
+                       <li><a href="#AccessCode">@Model.Data.ErrorDictionary[nameof(Model.Data.AccessCode)]</a></li>
+                   }
+
+                   if (@Model.Data.ErrorDictionary.ContainsKey(nameof(Model.Data.AccessCode) + "Expired"))
+                   {
+                    <li><a href="#AccessCode">@Model.Data.ErrorDictionary[nameof(Model.Data.AccessCode) + "Expired"]</a></li>
+                   }
+               }
+               else
+               {
+                   <p>@Model.Data.GeneralError</p>
+               }
+            </ul>
+        </div>
+}
+
+<h1 class="heading-xlarge">@ViewBag.Title</h1>
+<form method="post"  autocomplete="off" id="form-activate">
     @Html.AntiForgeryToken()
     <fieldset>
         <legend class="visuallyhidden">Access code for user registration</legend>
         <div class="form-group  @(!Model.Data.Valid ? "error" : "")">
             <label for="AccessCode">
                 <span class="form-label-bold">Enter code</span>
-                @if (!Model.Data.Valid)
+                @if (!Model.Data.Valid && string.IsNullOrEmpty(Model.Data.GeneralError))
                 {
-                    <span class="error-message" id="invalidMessage">Invalid code</span>
+                    if (@Model.Data.ErrorDictionary.ContainsKey(nameof(Model.Data.AccessCode)))
+                    {
+                        <span class="error-message" id="invalidMessage">
+                            @Model.Data.ErrorDictionary[nameof(Model.Data.AccessCode)]
+                        </span>
+                    }
+
+                    if (@Model.Data.ErrorDictionary.ContainsKey(nameof(Model.Data.AccessCode) + "Expired"))
+                    {
+                        <span class="error-message" id="invalidMessage">
+                            @Model.Data.ErrorDictionary[nameof(Model.Data.AccessCode) + "Expired"]. You can <a href="@Url.Action("ResendActivation")">request a new code.</a>
+                        </span>
+                    }
                 }
             </label>
             <input @invalidAttributes autofocus="autofocus" aria-required="true" class="form-control" id="AccessCode" name="AccessCode">
         </div>
         <div class="form-group">
-            <button type="submit" class="button" name="command" value="activate">Continue</button>
+            <button type="submit" class="button" name="command" value="activate" id="button-activate">Continue</button>
         </div>
     </fieldset>
     

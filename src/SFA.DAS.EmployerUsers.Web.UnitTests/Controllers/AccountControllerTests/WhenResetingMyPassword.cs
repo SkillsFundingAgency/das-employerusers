@@ -21,16 +21,11 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         private Mock<AccountOrchestrator> _orchestrator;
         private Mock<IOwinWrapper> _owinWrapper;
         private AccountController _controller;
-        private Mock<IConfigurationService> _configurationService;
 
         [SetUp]
         public override void Arrange()
         {
             base.Arrange();
-
-            _configurationService = new Mock<IConfigurationService>();
-            _configurationService.Setup(x => x.GetAsync<EmployerUsersConfiguration>())
-                .ReturnsAsync(new EmployerUsersConfiguration {IdentityServer = new IdentityServerConfiguration {EmployerPortalUrl = ReturnUrl} });
 
             _orchestrator = new Mock<AccountOrchestrator>();
             _orchestrator.Setup(o => o.ResetPassword(It.IsAny<PasswordResetViewModel>())).ReturnsAsync(new PasswordResetViewModel());
@@ -42,7 +37,8 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
                     ReturnUrl = ReturnUrl
                 });
 
-            _controller = new AccountController(_orchestrator.Object, _owinWrapper.Object, _configurationService.Object);
+            var identityServerConfiguration = new IdentityServerConfiguration { EmployerPortalUrl = ReturnUrl };
+            _controller = new AccountController(_orchestrator.Object, _owinWrapper.Object, identityServerConfiguration);
             _controller.ControllerContext = _controllerContext.Object;
         }
 
