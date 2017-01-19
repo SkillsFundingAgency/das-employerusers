@@ -112,6 +112,7 @@ $Thumbprint = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfig
 $checkcert=(Get-ChildItem cert:\LocalMachine\My | Where thumbprint -eq $thumbprint).Thumbprint
 $Ctx = New-AzureStorageContext -ConnectionString "$ConfigurationStorageConnectionString"
 $BlobName = "$environmentname/DasIDPCert.pfx"
+$BlobNamePassword = "$environmentname/password.txt"
 $ContainerName = "certs"
 $localTargetDirectory = "C:\Cert"
              
@@ -138,38 +139,17 @@ $logger.Error("There has been an error downloading the file")
 break
 }
 
-#Gets PFX Password from table storage#
-$TableName = "Configuration"
-$table = Get-AzureStorageTable –Name $TableName -Context $Ctx -ErrorAction SilentlyContinue
-$query = New-Object Microsoft.WindowsAzure.Storage.Table.TableQuery 
-
-if (!$table)
-{
-write-host "Configuration table does not exist"
-$logger.Error("Configuration table does not exist")
+$error.clear()
+Try {Get-AzureStorageBlobContent -Blob $BlobNamePassword -Container $ContainerName -Destination $localTargetDirectory -Context $ctx -Force }
+catch {
+"There has been an error downloading the file"
+$logger.Error("There has been an error downloading the password file")
 break
 }
 
-#Define columns to select.
-$list = New-Object System.Collections.Generic.List[string]
-$list.Add("PartitionKey")
-$list.Add("RowKey")
-$list.Add("Data")
+$CertPassword = Get-Content "C:\Cert\$environmentname\password.txt"
 
-$query.FilterString =  "RowKey eq 'SFA.DAS.EmployerUser.CertPassword' and PartitionKey eq '$EnvironmentName' "
-$query.SelectColumns = $list
-
-$entities = $table.CloudTable.ExecuteQuery($query)
-
-$CertPassword=((($entities.Properties).Values).PropertyAsObject)
-$logger.Error("Password $CertPassword")
-
-if (!$CertPassword)
-{
-write-host "Password not available"
-$logger.Error("Password not available in the table storage $CertPassword")
-break
-}
+$logger.Error("Cert password is $CertPassword")
 
 $mypwd = ConvertTo-SecureString -String "$CertPassword" -Force –AsPlainText
 
