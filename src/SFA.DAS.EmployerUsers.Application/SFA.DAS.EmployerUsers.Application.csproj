@@ -107,6 +107,7 @@
     <Compile Include="Commands\RegisterUser\RegisterUserCommandValidator.cs" />
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommand.cs" />
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandHandler.cs" />
+    <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandResponse.cs" />
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandValidator.cs" />
     <Compile Include="Queries\GetUsersWithExpiredRegistrations\GetUsersWithExpiredRegistrationsQuery.cs" />
     <Compile Include="Queries\GetUsersWithExpiredRegistrations\GetUsersWithExpiredRegistrationsQueryHandler.cs" />

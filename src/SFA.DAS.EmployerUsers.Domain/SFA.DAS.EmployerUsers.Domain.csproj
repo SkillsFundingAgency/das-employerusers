@@ -64,6 +64,8 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Auditing\ChangeEmail\CompleteChangeEmailAuditMessage.cs" />
+    <Compile Include="Auditing\ChangeEmail\RequestChangeEmailAuditMessage.cs" />
     <Compile Include="Auditing\Login\AccountLockedAuditMessage.cs" />
     <Compile Include="Auditing\EmployerUsersAuditMessage.cs" />
     <Compile Include="Auditing\Login\FailedLoginAuditMessage.cs" />
