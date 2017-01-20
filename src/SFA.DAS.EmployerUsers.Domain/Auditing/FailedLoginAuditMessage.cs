@@ -12,7 +12,7 @@ namespace SFA.DAS.EmployerUsers.Domain.Auditing
             {
                 AffectedEntity = new Audit.Types.Entity
                 {
-                    Type = "User",
+                    Type = UserTypeName,
                     Id = user.Id
                 };
                 Description = $"User {user.Email} (id: {user.Id})attempted to login with the incorrect password";

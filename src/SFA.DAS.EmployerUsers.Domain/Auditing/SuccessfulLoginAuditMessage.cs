@@ -8,7 +8,7 @@
             Description = $"User {user.Email} (id: {user.Id}) logged in";
             AffectedEntity = new Audit.Types.Entity
             {
-                Type = "User",
+                Type = UserTypeName,
                 Id = user.Id
             };
         }

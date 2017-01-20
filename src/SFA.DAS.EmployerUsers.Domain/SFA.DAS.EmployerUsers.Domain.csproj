@@ -68,6 +68,7 @@
     <Compile Include="Auditing\EmployerUsersAuditMessage.cs" />
     <Compile Include="Auditing\FailedLoginAuditMessage.cs" />
     <Compile Include="Auditing\IAuditService.cs" />
+    <Compile Include="Auditing\RegisterAuditMessage.cs" />
     <Compile Include="Auditing\SuccessfulLoginAuditMessage.cs" />
     <Compile Include="Data\IPasswordProfileRepository.cs" />
     <Compile Include="Data\IRelyingPartyRepository.cs" />

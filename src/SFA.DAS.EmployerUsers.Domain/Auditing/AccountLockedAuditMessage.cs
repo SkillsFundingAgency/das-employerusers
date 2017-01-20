@@ -11,7 +11,7 @@ namespace SFA.DAS.EmployerUsers.Domain.Auditing
             Description = $"User {user.Email} (id: {user.Id}) has exceeded the limit of failed logins and the account has been locked";
             AffectedEntity = new Entity
             {
-                Type = "User",
+                Type = UserTypeName,
                 Id = user.Id
             };
             ChangedProperties = new List<PropertyUpdate>

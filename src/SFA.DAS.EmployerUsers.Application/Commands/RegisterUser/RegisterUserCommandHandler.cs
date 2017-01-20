@@ -10,6 +10,7 @@ using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.EmployerUsers.Domain.Auditing;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 {
@@ -19,14 +20,22 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
         private readonly IUserRepository _userRepository;
         private readonly ICommunicationService _communicationService;
         private readonly ICodeGenerator _codeGenerator;
+        private readonly IAuditService _auditService;
         private readonly IValidator<RegisterUserCommand> _registerUserCommandValidator;
         private readonly IPasswordService _passwordService;
 
-        public RegisterUserCommandHandler(IValidator<RegisterUserCommand> registerUserCommandValidator, IPasswordService passwordService, IUserRepository userRepository, ICommunicationService communicationService, ICodeGenerator codeGenerator, ILogger logger)
+        public RegisterUserCommandHandler(IValidator<RegisterUserCommand> registerUserCommandValidator, 
+                                          IPasswordService passwordService, 
+                                          IUserRepository userRepository, 
+                                          ICommunicationService communicationService, 
+                                          ICodeGenerator codeGenerator, 
+                                          IAuditService auditService,
+                                          ILogger logger)
         {
             _userRepository = userRepository;
             _communicationService = communicationService;
             _codeGenerator = codeGenerator;
+            _auditService = auditService;
             _logger = logger;
             _registerUserCommandValidator = registerUserCommandValidator;
             _passwordService = passwordService;
@@ -64,6 +73,8 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 
                 await _userRepository.Create(registerUser);
                 SendUserRegistrationMessage(registerUser);
+
+                await _auditService.WriteAudit(new RegisterAuditMessage(registerUser));
             }
             else
             {
@@ -71,6 +82,8 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 
                 await _userRepository.Update(existingUser);
                 SendUserRegistrationMessage(existingUser);
+
+                await _auditService.WriteAudit(new RegisterAuditMessage(existingUser));
             }
         }
 
