@@ -20,9 +20,12 @@
       <Setting name="BaseExternalUrl" value="__BaseExternalUrl__" />
       <Setting name="EmployerPortalUrl" value="__EmployerPortalUrl__" />
       <Setting name="InstrumentationKey" value="__InstrumentationKey__" />
+      <Setting name="TokenCertificateThumbprint" value="__TokenCertificateThumbprint__" />
     </ConfigurationSettings>
     <Certificates>
+
       <Certificate name="WebSslCert" thumbprint="A298766BCF1757C89CDC9FFF3D06A9B8A2E9FA31" thumbprintAlgorithm="sha1" />
+
     </Certificates>
   </Role>
   <NetworkConfiguration>
