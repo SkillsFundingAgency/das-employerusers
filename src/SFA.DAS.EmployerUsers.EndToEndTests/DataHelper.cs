@@ -5,7 +5,6 @@ using System.Security.Cryptography;
 using System.Text;
 using Dapper;
 using SFA.DAS.EmployerUsers.Domain;
-using SFA.DAS.EmployerUsers.EndToEndTests.Contexts;
 
 namespace SFA.DAS.EmployerUsers.EndToEndTests
 {

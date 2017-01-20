@@ -27,6 +27,11 @@
       <Setting name="BaseExternalUrl" />
       <Setting name="EmployerPortalUrl" />
       <Setting name="InstrumentationKey" />
+      <Setting name="AuditApiBaseUrl" />
+      <Setting name="AuditApiClientId" />
+      <Setting name="AuditApiSecret" />
+      <Setting name="AuditApiIdentifierUri" />
+      <Setting name="AuditApiTenant" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="HttpIn" protocol="http" port="80" />

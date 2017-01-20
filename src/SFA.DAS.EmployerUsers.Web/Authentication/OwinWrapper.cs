@@ -1,7 +1,6 @@
 using System;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Security;
 using IdentityServer3.Core.Extensions;

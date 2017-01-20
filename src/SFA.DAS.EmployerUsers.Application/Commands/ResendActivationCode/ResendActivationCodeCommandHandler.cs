@@ -7,6 +7,8 @@ using NLog;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Validation;
+using SFA.DAS.EmployerUsers.Domain.Auditing;
+using SFA.DAS.EmployerUsers.Domain.Auditing.Registration;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode
@@ -14,19 +16,27 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode
     public class ResendActivationCodeCommandHandler : AsyncRequestHandler<ResendActivationCodeCommand>
     {
         private readonly ILogger _logger;
+        private readonly IAuditService _auditService;
 
         private readonly IValidator<ResendActivationCodeCommand> _commandValidator;
         private readonly IUserRepository _userRepository;
         private readonly ICommunicationService _communicationService;
         private readonly ICodeGenerator _codeGenerator;
 
-        public ResendActivationCodeCommandHandler(IValidator<ResendActivationCodeCommand> commandValidator, IUserRepository userRepository, ICommunicationService communicationService, ICodeGenerator codeGenerator, ILogger logger)
+        public ResendActivationCodeCommandHandler(
+            IValidator<ResendActivationCodeCommand> commandValidator, 
+            IUserRepository userRepository, 
+            ICommunicationService communicationService, 
+            ICodeGenerator codeGenerator, 
+            ILogger logger, 
+            IAuditService auditService)
         {
             _commandValidator = commandValidator;
             _userRepository = userRepository;
             _communicationService = communicationService;
             _codeGenerator = codeGenerator;
             _logger = logger;
+            _auditService = auditService;
         }
 
         protected override async Task HandleCore(ResendActivationCodeCommand message)
@@ -55,6 +65,9 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode
                     });
                     await _userRepository.Update(user);
                 }
+
+                await _auditService.WriteAudit(new ResendActivationCodeAuditMessage(user));
+
                 await _communicationService.ResendActivationCodeMessage(user, Guid.NewGuid().ToString());
             }
 

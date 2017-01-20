@@ -20,6 +20,11 @@
       <Setting name="BaseExternalUrl" value="https://localhost:44334/" />
       <Setting name="EmployerPortalUrl" value="http://localhost" />
       <Setting name="InstrumentationKey" value="" />
+      <Setting name="AuditApiBaseUrl" value="" />
+      <Setting name="AuditApiClientId" value="" />
+      <Setting name="AuditApiSecret" value="" />
+      <Setting name="AuditApiIdentifierUri" value="" />
+      <Setting name="AuditApiTenant" value="" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="WebSslCert" thumbprint="FE14C6E906B1E94E93C6AF8FA113EA1221D5DE9C" thumbprintAlgorithm="sha1" />

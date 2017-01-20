@@ -6,6 +6,8 @@ using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
+using SFA.DAS.EmployerUsers.Domain.Auditing;
+using SFA.DAS.EmployerUsers.Domain.Auditing.Login;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 
@@ -15,12 +17,19 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
     {
         private readonly ILogger _logger;
         private readonly IValidator<AuthenticateUserCommand> _validator;
+        private readonly IAuditService _auditService;
         private readonly IUserRepository _userRepository;
         private readonly IPasswordService _passwordService;
         private readonly IConfigurationService _configurationService;
         private readonly IMediator _mediator;
 
-        public AuthenticateUserCommandHandler(IUserRepository userRepository, IPasswordService passwordService, IConfigurationService configurationService, IMediator mediator, ILogger logger, IValidator<AuthenticateUserCommand> validator)
+        public AuthenticateUserCommandHandler(IUserRepository userRepository, 
+                                              IPasswordService passwordService, 
+                                              IConfigurationService configurationService, 
+                                              IMediator mediator, 
+                                              ILogger logger, 
+                                              IValidator<AuthenticateUserCommand> validator,
+                                              IAuditService auditService)
         {
             _userRepository = userRepository;
             _passwordService = passwordService;
@@ -28,6 +37,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
             _mediator = mediator;
             _logger = logger;
             _validator = validator;
+            _auditService = auditService;
         }
 
         public async Task<User> Handle(AuthenticateUserCommand message)
@@ -44,6 +54,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
             var user = await _userRepository.GetByEmailAddress(message.EmailAddress);
             if (user == null)
             {
+                await _auditService.WriteAudit(new FailedLoginAuditMessage(message.EmailAddress, null));
                 return null;
             }
 
@@ -64,6 +75,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
                 user.FailedLoginAttempts = 0;
                 await _userRepository.Update(user);
             }
+            await _auditService.WriteAudit(new SuccessfulLoginAuditMessage(user));
 
             return user;
         }
@@ -73,10 +85,13 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
             var config = await GetAccountConfiguration();
 
             user.FailedLoginAttempts++;
+            await _auditService.WriteAudit(new FailedLoginAuditMessage(user.Email, user));
+
             if (user.FailedLoginAttempts >= config.AllowedFailedLoginAttempts)
             {
                 _logger.Info($"Locking user '{user.Email}' (id: {user.Id})");
                 user.IsLocked = true;
+                await _auditService.WriteAudit(new AccountLockedAuditMessage(user));
             }
             await _userRepository.Update(user);
 
