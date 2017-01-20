@@ -369,13 +369,6 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
                 model.ResetCodeSent = true;
             }
-            catch (UnknownAccountException)
-            {
-                model.ErrorDictionary = new Dictionary<string, string>
-                {
-                    {"Email", "Email address not registered"}
-                };
-            }
             catch (InvalidRequestException ex)
             {
                 _logger.Info(ex, ex.Message);
