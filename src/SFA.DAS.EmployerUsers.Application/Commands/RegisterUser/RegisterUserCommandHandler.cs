@@ -30,8 +30,8 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
                                           IUserRepository userRepository, 
                                           ICommunicationService communicationService, 
                                           ICodeGenerator codeGenerator, 
-                                          IAuditService auditService,
-                                          ILogger logger)
+                                          ILogger logger,
+                                           IAuditService auditService)
         {
             _userRepository = userRepository;
             _communicationService = communicationService;

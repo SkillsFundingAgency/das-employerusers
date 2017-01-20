@@ -32,6 +32,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
         public void Arrange()
         {
             _registerUserCommandValidator = new Mock<IValidator<RegisterUserCommand>>();
+            _auditService = new Mock<IAuditService>();
 
             _passwordService = new Mock<IPasswordService>();
             _passwordService.Setup(s => s.GenerateAsync(It.IsAny<string>()))
@@ -59,8 +60,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
                                                                          _userRepository.Object,
                                                                          _communicationService.Object,
                                                                          _codeGenerator.Object,
-                                                                         _auditService.Object,
-                                                                         _logger.Object);
+                                                                         _logger.Object,
+                                                                         _auditService.Object);
         }
 
         [Test]
