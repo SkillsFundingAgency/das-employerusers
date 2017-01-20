@@ -76,6 +76,7 @@
     <Compile Include="Auditing\Registration\FailedActivationAuditMessage.cs" />
     <Compile Include="Auditing\Registration\RegisterAuditMessage.cs" />
     <Compile Include="Auditing\Login\SuccessfulLoginAuditMessage.cs" />
+    <Compile Include="Auditing\Registration\ResendActivationCodeAuditMessage.cs" />
     <Compile Include="Auditing\Unlock\FailedUnlockAuditMessage.cs" />
     <Compile Include="Auditing\Unlock\UnlockedAuditMessage.cs" />
     <Compile Include="Data\IPasswordProfileRepository.cs" />
