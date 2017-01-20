@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.Audit.Types;
 
-namespace SFA.DAS.EmployerUsers.Domain.Auditing
+namespace SFA.DAS.EmployerUsers.Domain.Auditing.Login
 {
     public class FailedLoginAuditMessage : EmployerUsersAuditMessage
     {

@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.EmployerUsers.Domain.Auditing
+﻿namespace SFA.DAS.EmployerUsers.Domain.Auditing.Login
 {
     public class SuccessfulLoginAuditMessage : EmployerUsersAuditMessage
     {

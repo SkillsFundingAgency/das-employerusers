@@ -11,6 +11,7 @@ using SFA.DAS.EmployerUsers.Domain.Data;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.EmployerUsers.Domain.Auditing;
+using SFA.DAS.EmployerUsers.Domain.Auditing.Registration;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 {
