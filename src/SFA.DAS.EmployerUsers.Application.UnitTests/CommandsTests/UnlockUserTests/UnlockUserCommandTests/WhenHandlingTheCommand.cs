@@ -6,7 +6,6 @@ using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
 using Moq;
 using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
-using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;

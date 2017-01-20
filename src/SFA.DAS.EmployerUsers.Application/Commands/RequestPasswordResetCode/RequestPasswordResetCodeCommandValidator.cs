@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using ValidationResult = SFA.DAS.EmployerUsers.Application.Validation.ValidationResult;
 
