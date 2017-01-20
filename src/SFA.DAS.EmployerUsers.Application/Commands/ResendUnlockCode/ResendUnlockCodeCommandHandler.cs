@@ -5,6 +5,7 @@ using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Auditing.Login;
+using SFA.DAS.EmployerUsers.Domain.Auditing.Registration;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode
 {
