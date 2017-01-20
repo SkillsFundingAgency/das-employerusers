@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SFA.DAS.EmployerUsers.Web.Models
+﻿namespace SFA.DAS.EmployerUsers.Web.Models
 {
     public class RequestPasswordResetViewModel : ViewModelBase
     {

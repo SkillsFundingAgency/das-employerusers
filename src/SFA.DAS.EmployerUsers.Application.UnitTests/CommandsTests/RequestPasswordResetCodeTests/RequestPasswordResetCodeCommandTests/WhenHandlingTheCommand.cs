@@ -11,6 +11,7 @@ using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.UnitTests.TestHelpers;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
+using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Domain.Links;
 using SFA.DAS.TimeProvider;
@@ -28,27 +29,26 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
         private RequestPasswordResetCodeCommandHandler _commandHandler;
         private Mock<ILogger> _logger;
         private Mock<IValidator<RequestPasswordResetCodeCommand>> _validator;
+        private Mock<IAuditService> _auditService;
 
         [SetUp]
         public void Setup()
         {
+            _auditService = new Mock<IAuditService>();
             _userRepository = new Mock<IUserRepository>();
-
             _communicationSerivce = new Mock<ICommunicationService>();
-
             _codeGenerator = new Mock<ICodeGenerator>();
-
             _linkBuilder = new Mock<ILinkBuilder>();
+            _logger = new Mock<ILogger>();
+            _validator = new Mock<IValidator<RequestPasswordResetCodeCommand>>();
+
             _linkBuilder.Setup(b => b.GetRegistrationUrl())
                 .Returns(RegistrationLink);
-
-            _logger = new Mock<ILogger>();
-
-            _validator = new Mock<IValidator<RequestPasswordResetCodeCommand>>();
+            
             _validator.Setup(x => x.ValidateAsync(It.IsAny<RequestPasswordResetCodeCommand>())).ReturnsAsync(new ValidationResult {ValidationDictionary = new Dictionary<string, string>()});
 
             _commandHandler = new RequestPasswordResetCodeCommandHandler(_validator.Object, 
-                _userRepository.Object, _communicationSerivce.Object, _codeGenerator.Object, _linkBuilder.Object, _logger.Object);
+                _userRepository.Object, _communicationSerivce.Object, _codeGenerator.Object, _linkBuilder.Object, _logger.Object, _auditService.Object);
         }
 
         [TearDown]
@@ -68,18 +68,18 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
         }
 
         [Test]
-        public void ThenItShouldThrowAnUnknownAccountExceptionIfNoUserFound()
+        public async Task ThenItShouldNotSendAnEmailIfNoUserFound()
         {
             //Arrange
             var command = GetRequestPasswordResetCodeCommand();
             _userRepository.Setup(x => x.GetByEmailAddress(command.Email)).ReturnsAsync((User)null);
 
-            //Act + assert
-            Assert.ThrowsAsync<UnknownAccountException>(async () => await _commandHandler.Handle(command));
+            //Act
+            await _commandHandler.Handle(command);
 
+            //Assert
             _communicationSerivce.Verify(x => x.SendPasswordResetCodeMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
             _userRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
-
         }
 
         [Test]

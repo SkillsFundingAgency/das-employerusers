@@ -1,5 +1,4 @@
 using IdentityServer3.Core.Models;
-using Microsoft.Owin.Security.Provider;
 
 namespace SFA.DAS.EmployerUsers.Web.Authentication
 {

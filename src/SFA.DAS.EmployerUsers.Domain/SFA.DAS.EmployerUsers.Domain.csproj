@@ -31,6 +31,26 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory, Version=2.28.3.860, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.2.28.3\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory.WindowsForms, Version=2.28.3.860, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.2.28.3\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.WindowsForms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SFA.DAS.Audit.Client, Version=1.0.0.20461, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Audit.Client.1.0.0.20461\lib\net45\SFA.DAS.Audit.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SFA.DAS.Audit.Types, Version=1.0.0.20461, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Audit.Client.1.0.0.20461\lib\net45\SFA.DAS.Audit.Types.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,6 +64,22 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Auditing\ChangeEmail\CompleteChangeEmailAuditMessage.cs" />
+    <Compile Include="Auditing\ChangeEmail\RequestChangeEmailAuditMessage.cs" />
+    <Compile Include="Auditing\Login\AccountLockedAuditMessage.cs" />
+    <Compile Include="Auditing\EmployerUsersAuditMessage.cs" />
+    <Compile Include="Auditing\Login\FailedLoginAuditMessage.cs" />
+    <Compile Include="Auditing\IAuditService.cs" />
+    <Compile Include="Auditing\Login\PasswordResetAuditMessage.cs" />
+    <Compile Include="Auditing\Login\PasswordResetCodeAuditMessage.cs" />
+    <Compile Include="Auditing\Registration\ResendUnlockCodeAuditMessage.cs" />
+    <Compile Include="Auditing\Registration\ActivatedAuditMessage.cs" />
+    <Compile Include="Auditing\Registration\FailedActivationAuditMessage.cs" />
+    <Compile Include="Auditing\Registration\RegisterAuditMessage.cs" />
+    <Compile Include="Auditing\Login\SuccessfulLoginAuditMessage.cs" />
+    <Compile Include="Auditing\Registration\ResendActivationCodeAuditMessage.cs" />
+    <Compile Include="Auditing\Unlock\FailedUnlockAuditMessage.cs" />
+    <Compile Include="Auditing\Unlock\UnlockedAuditMessage.cs" />
     <Compile Include="Data\IPasswordProfileRepository.cs" />
     <Compile Include="Data\IRelyingPartyRepository.cs" />
     <Compile Include="Data\IRepository.cs" />
@@ -56,6 +92,10 @@
     <Compile Include="SecurityCodeType.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
