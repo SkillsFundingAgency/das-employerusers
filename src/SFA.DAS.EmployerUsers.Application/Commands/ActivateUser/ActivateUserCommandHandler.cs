@@ -4,20 +4,24 @@ using System.Threading.Tasks;
 using MediatR;
 using NLog;
 using SFA.DAS.EmployerUsers.Application.Validation;
+using SFA.DAS.EmployerUsers.Domain.Auditing;
+using SFA.DAS.EmployerUsers.Domain.Auditing.Registration;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
 {
     public class ActivateUserCommandHandler : IAsyncRequestHandler<ActivateUserCommand, ActivateUserCommandResult>
     {
+        private readonly IAuditService _auditService;
         private readonly ILogger _logger;
         private readonly IValidator<ActivateUserCommand> _activateUserCommandValidator;
         private readonly IUserRepository _userRepository;
-        
-        public ActivateUserCommandHandler(IValidator<ActivateUserCommand> activateUserCommandValidator, IUserRepository userRepository, ILogger logger)
+
+        public ActivateUserCommandHandler(IValidator<ActivateUserCommand> activateUserCommandValidator, IUserRepository userRepository, IAuditService auditService, ILogger logger)
         {
             _activateUserCommandValidator = activateUserCommandValidator;
             _userRepository = userRepository;
+            _auditService = auditService;
             _logger = logger;
         }
 
@@ -34,6 +38,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
 
             if (!validationResult.IsValid())
             {
+                await _auditService.WriteAudit(new FailedActivationAuditMessage(user, message.AccessCode));
                 throw new InvalidRequestException(validationResult.ValidationDictionary);
             }
 
@@ -41,7 +46,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
             var securityCode = message.User.SecurityCodes?.SingleOrDefault(sc => sc.Code.Equals(message.AccessCode, StringComparison.CurrentCultureIgnoreCase)
                                                                     && sc.CodeType == Domain.SecurityCodeType.AccessCode);
 
-            
+
 
             var result = new ActivateUserCommandResult
             {
@@ -57,7 +62,9 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
             user.IsActive = true;
             user.ExpireSecurityCodesOfType(Domain.SecurityCodeType.AccessCode);
             await _userRepository.Update(user);
-            
+
+            await _auditService.WriteAudit(new ActivatedAuditMessage(user));
+
             return result;
         }
     }
