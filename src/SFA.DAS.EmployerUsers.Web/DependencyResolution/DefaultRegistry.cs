@@ -116,6 +116,14 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
             For<IPasswordProfileRepository>().Use<InMemoryPasswordProfileRepository>();
             For<IAuditApiClient>().Use<AuditApiClient>();
+            For<AuditApiConfiguration>().Use(() => new AuditApiConfiguration
+            {
+                ApiBaseUrl = CloudConfigurationManager.GetSetting("AuditApiBaseUrl"),
+                ClientId = CloudConfigurationManager.GetSetting("AuditApiClientId"),
+                ClientSecret = CloudConfigurationManager.GetSetting("AuditApiSecret"),
+                IdentifierUri = CloudConfigurationManager.GetSetting("AuditApiIdentifierUri"),
+                Tenant = CloudConfigurationManager.GetSetting("AuditApiTenant")
+            });
         }
 
         private void AddMediatrRegistrations()
