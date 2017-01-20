@@ -51,7 +51,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         {
             var errors = new Dictionary<string, string>
             {
-                { "Email", "Unknown email address" }
+                { "Email", "Invalid email address" }
             };
 
             _mediator.Setup(x => x.SendAsync(It.Is<RequestPasswordResetCodeCommand>(m => m.Email == _requestPasswordResetViewModel.Email))).Throws(new InvalidRequestException(errors));
@@ -62,22 +62,6 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             Assert.That(response.ResetCodeSent, Is.False);
             Assert.That(response.ErrorDictionary.Count, Is.EqualTo(1));
             Assert.That(response.ErrorDictionary.ContainsKey("Email"), Is.True);
-        }
-
-        [Test]
-        public async Task ThenUserFriendlyErrorIsReturnedIfAccountIsNotFound()
-        {
-            // Arrange
-            _mediator.Setup(m => m.SendAsync(It.IsAny<RequestPasswordResetCodeCommand>()))
-                .ThrowsAsync(new UnknownAccountException());
-
-            // Act
-            var actual = await _accountOrchestrator.RequestPasswordResetCode(_requestPasswordResetViewModel);
-
-            // Assert
-            Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.Valid);
-            Assert.AreEqual("Email address not registered", actual.EmailError);
         }
     }
 }
