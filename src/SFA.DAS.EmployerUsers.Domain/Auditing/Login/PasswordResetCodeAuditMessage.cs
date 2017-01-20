@@ -9,7 +9,9 @@ namespace SFA.DAS.EmployerUsers.Domain.Auditing.Login
         public PasswordResetCodeAuditMessage(User user)
         {
             //Get the latest security code 
-            var securityCode = user.SecurityCodes.OrderByDescending(x => x.ExpiryTime).FirstOrDefault();
+            var securityCode = user.SecurityCodes.Where(x => x.CodeType == SecurityCodeType.PasswordResetCode)
+                                                 .OrderByDescending(x => x.ExpiryTime)
+                                                 .FirstOrDefault();
 
             Category = "PASSWORD_RESET_CODE";
             AffectedEntity = new Entity
