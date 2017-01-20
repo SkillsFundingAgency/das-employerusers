@@ -6,6 +6,7 @@ using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode;
 using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
 using SFA.DAS.EmployerUsers.Application.Validation;
+using SFA.DAS.EmployerUsers.Domain.Auditing;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendUnlockCodeTests.ResendUnlockCodeCommandTests
 {
@@ -14,13 +15,19 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendUnlock
         private ResendUnlockCodeCommandHandler _resendUnlockCodeCommandHandler;
         private Mock<IValidator<ResendUnlockCodeCommand>> _resendUnlockCodeCommandValidator;
         private Mock<IMediator> _mediator;
+        private Mock<IAuditService> _auditService;
 
         [SetUp]
         public void Arrange()
         {
             _resendUnlockCodeCommandValidator = new Mock<IValidator<ResendUnlockCodeCommand>>();
             _mediator = new Mock<IMediator>();
-            _resendUnlockCodeCommandHandler = new ResendUnlockCodeCommandHandler(_resendUnlockCodeCommandValidator.Object, _mediator.Object);
+            _auditService = new Mock<IAuditService>();
+
+            _resendUnlockCodeCommandHandler = new ResendUnlockCodeCommandHandler(
+                _resendUnlockCodeCommandValidator.Object, 
+                _mediator.Object,
+                _auditService.Object);
         }
 
         [Test]
