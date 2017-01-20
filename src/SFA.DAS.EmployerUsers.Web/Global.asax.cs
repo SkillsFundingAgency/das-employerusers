@@ -10,6 +10,7 @@ using Microsoft.Azure;
 using NLog;
 using SFA.DAS.Audit.Client;
 using SFA.DAS.Audit.Client.Web;
+using SFA.DAS.EmployerUsers.WebClientComponents;
 
 namespace SFA.DAS.EmployerUsers.Web
 {
@@ -30,6 +31,8 @@ namespace SFA.DAS.EmployerUsers.Web
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
+            WebMessageBuilders.UserIdClaim = DasClaimTypes.Id;
+            WebMessageBuilders.UserEmailClaim = DasClaimTypes.Email;
             WebMessageBuilders.Register();
             AuditMessageFactory.RegisterBuilder(message =>
             {
