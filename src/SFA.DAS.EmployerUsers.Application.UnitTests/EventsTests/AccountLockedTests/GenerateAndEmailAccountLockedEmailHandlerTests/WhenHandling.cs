@@ -9,6 +9,7 @@ using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Domain;
+using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 
@@ -27,6 +28,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
         private GenerateAndEmailAccountLockedEmailHandler _handler;
         private AccountLockedEvent _event;
         private Mock<ILogger> _logger;
+        private Mock<IAuditService> _auditService;
 
         [SetUp]
         public void Arrange()
@@ -59,11 +61,14 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
 
             _logger = new Mock<ILogger>();
 
+            _auditService = new Mock<IAuditService>();
+
             _handler = new GenerateAndEmailAccountLockedEmailHandler(
                 _configurationService.Object,
                 _userRepository.Object,
                 _codeGenerator.Object,
                 _communicationService.Object,
+                _auditService.Object,
                 _logger.Object);
 
             _event = new AccountLockedEvent
