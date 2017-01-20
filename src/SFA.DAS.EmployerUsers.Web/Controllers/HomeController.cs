@@ -2,6 +2,7 @@
 using NLog;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Authentication;
+using SFA.DAS.EmployerUsers.WebClientComponents;
 
 namespace SFA.DAS.EmployerUsers.Web.Controllers
 {

@@ -8,7 +8,6 @@ using SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
-using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestChangeEmailTests.RequestChangeEmailCommandHandlerTests
@@ -27,7 +26,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestChang
         private Mock<ICodeGenerator> _codeGenerator;
         private Mock<ICommunicationService> _communicationService;
         private RequestChangeEmailCommandHandler _handler;
-        private Mock<IAuditService> _auditService;
 
         [SetUp]
         public void Arrange()
@@ -58,10 +56,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestChang
 
             _communicationService = new Mock<ICommunicationService>();
 
-            _auditService = new Mock<IAuditService>();
-
             _handler = new RequestChangeEmailCommandHandler(_validator.Object, _userRepository.Object,
-                _codeGenerator.Object, _communicationService.Object, _auditService.Object);
+                _codeGenerator.Object, _communicationService.Object);
         }
 
         [Test]

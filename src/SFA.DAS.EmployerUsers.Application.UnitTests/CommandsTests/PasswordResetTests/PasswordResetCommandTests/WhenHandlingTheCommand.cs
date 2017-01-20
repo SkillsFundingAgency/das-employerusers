@@ -10,7 +10,6 @@ using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
-using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordResetTests.PasswordResetCommandTests
@@ -25,14 +24,12 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         private Mock<ICommunicationService> _communicationService;
         private Mock<IPasswordService> _passwordService;
         private Mock<ILogger> _logger;
-        private Mock<IAuditService> _auditService;
 
         [SetUp]
         public void Arrange()
         {
             _communicationService = new Mock<ICommunicationService>();
 
-            _auditService = new Mock<IAuditService>();
             _passwordService = new Mock<IPasswordService>();
             _passwordService.Setup(x => x.GenerateAsync(It.IsAny<string>())).ReturnsAsync(new SecuredPassword());
 
@@ -60,13 +57,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
 
             _logger = new Mock<ILogger>();
 
-            _passwordResetCommandHandler = new PasswordResetCommandHandler(
-                _userRepository.Object, 
-                _validator.Object, 
-                _communicationService.Object, 
-                _passwordService.Object, 
-                _logger.Object, 
-                _auditService.Object);
+            _passwordResetCommandHandler = new PasswordResetCommandHandler(_userRepository.Object, _validator.Object, _communicationService.Object, _passwordService.Object, _logger.Object);
         }
 
         [Test]

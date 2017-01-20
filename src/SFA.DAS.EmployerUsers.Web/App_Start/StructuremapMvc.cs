@@ -17,8 +17,10 @@
 
 using System.Web.Mvc;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web;
 using SFA.DAS.EmployerUsers.Web.DependencyResolution;
+using SFA.DAS.EmployerUsers.WebClientComponents;
 using StructureMap;
 using WebActivatorEx;
 

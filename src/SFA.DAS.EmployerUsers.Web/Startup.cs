@@ -2,6 +2,7 @@
 using Microsoft.Owin;
 using NLog;
 using Owin;
+using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 

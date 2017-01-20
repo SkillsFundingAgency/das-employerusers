@@ -10,7 +10,6 @@ using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
-using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 
@@ -34,7 +33,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.Authenticate
         private AuthenticateUserCommand _command;
         private Mock<ILogger> _logger;
         private Mock<IValidator<AuthenticateUserCommand>> _validator;
-        private Mock<IAuditService> _auditService;
 
         [SetUp]
         public void Arrange()
@@ -75,16 +73,13 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.Authenticate
             _validator = new Mock<IValidator<AuthenticateUserCommand>>();
             _validator.Setup(x => x.ValidateAsync(It.IsAny<AuthenticateUserCommand>())).ReturnsAsync(new ValidationResult {ValidationDictionary = new Dictionary<string, string>()});
 
-            _auditService = new Mock<IAuditService>();
-
             _commandHandler = new AuthenticateUserCommandHandler(
                 _userRepository.Object, 
                 _passwordService.Object, 
                 _configurationService.Object,
                 _mediator.Object,
                 _logger.Object,
-                _validator.Object,
-                _auditService.Object);
+                _validator.Object);
 
             _command = new AuthenticateUserCommand
             {

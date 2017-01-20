@@ -3,10 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
+using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
-using SFA.DAS.EmployerUsers.Domain.Auditing;
-using SFA.DAS.EmployerUsers.Domain.Auditing.Unlock;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
@@ -16,14 +15,12 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
         private readonly IValidator<UnlockUserCommand> _unlockUserCommandValidator;
         private readonly IUserRepository _userRepository;
         private readonly IMediator _mediator;
-        private readonly IAuditService _auditService;
 
-        public UnlockUserCommandHandler(IValidator<UnlockUserCommand> unlockUserCommandValidator, IUserRepository userRepository, IMediator mediator, IAuditService auditService)
+        public UnlockUserCommandHandler(IValidator<UnlockUserCommand> unlockUserCommandValidator, IUserRepository userRepository, IMediator mediator)
         {
             _unlockUserCommandValidator = unlockUserCommandValidator;
             _userRepository = userRepository;
             _mediator = mediator;
-            _auditService = auditService;
         }
 
         public async Task<UnlockUserResponse> Handle(UnlockUserCommand message)
@@ -47,7 +44,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
                 if (message.User != null)
                 {
                     await _mediator.PublishAsync(new AccountLockedEvent { User = message.User });
-                    await _auditService.WriteAudit(new FailedUnlockAuditMessage(message.User, message.UnlockCode));
                 }
                 throw new InvalidRequestException(result.ValidationDictionary);
             }
@@ -62,9 +58,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
 
             await _userRepository.Update(message.User);
 
-            await _auditService.WriteAudit(new UnlockedAuditMessage(message.User));
-
-            return new UnlockUserResponse() { UnlockCode = matchingUnlockCode };
+            return new UnlockUserResponse() {UnlockCode = matchingUnlockCode };
         }
 
 

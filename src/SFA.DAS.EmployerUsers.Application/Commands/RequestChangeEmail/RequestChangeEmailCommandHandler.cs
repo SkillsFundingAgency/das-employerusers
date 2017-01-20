@@ -5,8 +5,6 @@ using MediatR;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Validation;
-using SFA.DAS.EmployerUsers.Domain.Auditing;
-using SFA.DAS.EmployerUsers.Domain.Auditing.ChangeEmail;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail
@@ -17,19 +15,13 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail
         private readonly IUserRepository _userRepository;
         private readonly ICodeGenerator _codeGenerator;
         private readonly ICommunicationService _communicationService;
-        private readonly IAuditService _auditService;
 
-        public RequestChangeEmailCommandHandler(IValidator<RequestChangeEmailCommand> validator,
-                                                IUserRepository userRepository,
-                                                ICodeGenerator codeGenerator,
-                                                ICommunicationService communicationService,
-                                                IAuditService auditService)
+        public RequestChangeEmailCommandHandler(IValidator<RequestChangeEmailCommand> validator, IUserRepository userRepository, ICodeGenerator codeGenerator, ICommunicationService communicationService)
         {
             _validator = validator;
             _userRepository = userRepository;
             _codeGenerator = codeGenerator;
             _communicationService = communicationService;
-            _auditService = auditService;
         }
 
         public async Task<RequestChangeEmailCommandResponse> Handle(RequestChangeEmailCommand message)
@@ -59,9 +51,14 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestChangeEmail
 
             await _communicationService.SendConfirmEmailChangeMessage(user, Guid.NewGuid().ToString());
 
-            await _auditService.WriteAudit(new RequestChangeEmailAuditMessage(user, securityCode));
 
-            return new RequestChangeEmailCommandResponse() { SecurityCode = securityCode.Code };
+
+            return new RequestChangeEmailCommandResponse() {SecurityCode = securityCode.Code};
         }
+    }
+
+    public class RequestChangeEmailCommandResponse
+    {
+        public string SecurityCode   { get; set; }
     }
 }

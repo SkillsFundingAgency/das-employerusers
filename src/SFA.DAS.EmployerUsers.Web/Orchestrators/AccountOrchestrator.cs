@@ -191,6 +191,14 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 model.ErrorDictionary = ex.ErrorMessages;
                 return model;
             }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, ex.Message);
+
+                model.ErrorDictionary.Add("", "An error has occurred. Please contact support.");
+                
+                return model;
+            }
         }
         public virtual async Task<bool> ResendLastConfirmationCode(ConfirmChangeEmailViewModel model)
         {
@@ -368,6 +376,13 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 });
 
                 model.ResetCodeSent = true;
+            }
+            catch (UnknownAccountException)
+            {
+                model.ErrorDictionary = new Dictionary<string, string>
+                {
+                    {"Email", "Email address not registered"}
+                };
             }
             catch (InvalidRequestException ex)
             {

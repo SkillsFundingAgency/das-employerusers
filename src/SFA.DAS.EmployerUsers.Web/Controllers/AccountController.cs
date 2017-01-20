@@ -1,12 +1,18 @@
 ﻿using System;
+using System.IdentityModel.Claims;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using IdentityServer3.Core;
+using IdentityServer3.Core.Extensions;
+using Microsoft.Owin.Security;
+using Newtonsoft.Json;
+using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Models.SFA.DAS.EAS.Web.Models;
@@ -215,21 +221,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-
-            var flashMessage = new FlashMessageViewModel
-            {
-                Severity = FlashMessageSeverityLevel.Success,
-                Headline = "We've sent you an email",
-                SubMessage = $"To confirm your identity, we've sent a code to {GetLoggedInUserEmail()}"
-            };
-
-            var response = new OrchestratorResponse<ActivateUserViewModel>()
-            {
-                FlashMessage = flashMessage,
-                Data = new ActivateUserViewModel()
-            };
-
-            return View("Confirm", response);
+            return View("Confirm", new OrchestratorResponse<ActivateUserViewModel>() { Data = new ActivateUserViewModel()});
         }
 
         [HttpPost]
@@ -255,18 +247,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                     return Redirect(activateUserViewModel.ReturnUrl);
                 }
 
-                var response = new OrchestratorResponse<ActivateUserViewModel>
-                {
-                    Data = activateUserViewModel,
-                    FlashMessage = new FlashMessageViewModel
-                    {
-                        ErrorMessages = activateUserViewModel.ErrorDictionary,
-                        Severity = FlashMessageSeverityLevel.Error,
-                        Headline = "Errors to fix",
-                        Message = "Check the following details:"
-                    }
-                };
-                return View("Confirm", response);
+                return View("Confirm", new OrchestratorResponse<ActivateUserViewModel> { Data = activateUserViewModel });
             }
             else
             {

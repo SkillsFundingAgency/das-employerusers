@@ -8,7 +8,6 @@ using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
-using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUserTests.ActivateUserCommandTests
@@ -25,7 +24,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
         private Mock<IUserRepository> _userRepository;
         private ActivateUserCommand _command;
         private Mock<ILogger> _logger;
-        private Mock<IAuditService> _auditService;
 
 
         [SetUp]
@@ -51,11 +49,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
             _userRepository.Setup(x => x.GetById(It.IsAny<string>())).ReturnsAsync(_user);
             _userRepository.Setup(x => x.GetByEmailAddress(It.IsAny<string>())).ReturnsAsync(_user);
 
-            _auditService = new Mock<IAuditService>();
-
             _logger = new Mock<ILogger>();
 
-            _handler = new ActivateUserCommandHandler(_activateUserCommandValidator.Object, _userRepository.Object, _auditService.Object, _logger.Object);
+            _handler = new ActivateUserCommandHandler(_activateUserCommandValidator.Object, _userRepository.Object, _logger.Object);
 
             _command = new ActivateUserCommand
             {
@@ -228,7 +224,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
                                                                && !u.SecurityCodes.Any(sc => sc.CodeType == SecurityCodeType.AccessCode))),
                                    Times.Once);
         }
-
+        
         [Test]
         public async Task ThenTheUserIsNotUpdatedIfTheUserIsAlreadyActive()
         {

@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using IdentityServer3.Core.Models;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Controllers;
 using SFA.DAS.EmployerUsers.Web.Models;

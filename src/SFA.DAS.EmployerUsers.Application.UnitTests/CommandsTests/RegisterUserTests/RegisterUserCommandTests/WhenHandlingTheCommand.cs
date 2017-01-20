@@ -11,7 +11,6 @@ using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
-using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUserTests.RegisterUserCommandTests
@@ -26,13 +25,11 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
         private Mock<ICommunicationService> _communicationService;
         private Mock<ICodeGenerator> _codeGenerator;
         private Mock<ILogger> _logger;
-        private Mock<IAuditService> _auditService;
 
         [SetUp]
         public void Arrange()
         {
             _registerUserCommandValidator = new Mock<IValidator<RegisterUserCommand>>();
-            _auditService = new Mock<IAuditService>();
 
             _passwordService = new Mock<IPasswordService>();
             _passwordService.Setup(s => s.GenerateAsync(It.IsAny<string>()))
@@ -51,8 +48,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
             _codeGenerator.Setup(x => x.GenerateAlphaNumeric(6))
                 .Returns("ABC123XYZ");
 
-            _auditService = new Mock<IAuditService>();
-
             _logger = new Mock<ILogger>();
 
             _registerUserCommandHandler = new RegisterUserCommandHandler(_registerUserCommandValidator.Object,
@@ -60,8 +55,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
                                                                          _userRepository.Object,
                                                                          _communicationService.Object,
                                                                          _codeGenerator.Object,
-                                                                         _logger.Object,
-                                                                         _auditService.Object);
+                                                                         _logger.Object);
         }
 
         [Test]

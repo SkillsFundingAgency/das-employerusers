@@ -7,7 +7,6 @@ using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.ChangeEmail;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
-using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangeEmailTests.ChangeEmailCommandHandlerTests
@@ -25,7 +24,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangeEmailT
         private Mock<IUserRepository> _userRepository;
         private ChangeEmailCommandHandler _handler;
         private ChangeEmailCommand _command;
-        private Mock<IAuditService> _auditService;
 
         [SetUp]
         public void Arrange()
@@ -36,9 +34,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangeEmailT
 
             _userRepository = new Mock<IUserRepository>();
 
-            _auditService = new Mock<IAuditService>();
-
-            _handler = new ChangeEmailCommandHandler(_validator.Object, _userRepository.Object, _auditService.Object);
+            _handler = new ChangeEmailCommandHandler(_validator.Object, _userRepository.Object);
 
             _command = new ChangeEmailCommand
             {

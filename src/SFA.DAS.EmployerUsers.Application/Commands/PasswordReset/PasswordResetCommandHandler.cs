@@ -7,8 +7,6 @@ using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
-using SFA.DAS.EmployerUsers.Domain.Auditing;
-using SFA.DAS.EmployerUsers.Domain.Auditing.Login;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
@@ -16,26 +14,18 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
     public class PasswordResetCommandHandler : IAsyncRequestHandler<PasswordResetCommand, PasswordResetResponse>
     {
         private readonly ILogger _logger;
-        private readonly IAuditService _auditService;
         private readonly IUserRepository _userRepository;
         private readonly IValidator<PasswordResetCommand> _validator;
         private readonly ICommunicationService _communicationService;
         private readonly IPasswordService _passwordService;
 
-        public PasswordResetCommandHandler(
-            IUserRepository userRepository, 
-            IValidator<PasswordResetCommand> validator, 
-            ICommunicationService communicationService, 
-            IPasswordService passwordService, 
-            ILogger logger, 
-            IAuditService auditService)
+        public PasswordResetCommandHandler(IUserRepository userRepository, IValidator<PasswordResetCommand> validator, ICommunicationService communicationService, IPasswordService passwordService, ILogger logger)
         {
             _userRepository = userRepository;
             _validator = validator;
             _communicationService = communicationService;
             _passwordService = passwordService;
             _logger = logger;
-            _auditService = auditService;
         }
 
         public  async Task<PasswordResetResponse> Handle(PasswordResetCommand message)
@@ -64,8 +54,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             message.User.IsActive = true;
             message.User.ExpireSecurityCodesOfType(SecurityCodeType.AccessCode);
             message.User.ExpireSecurityCodesOfType(SecurityCodeType.PasswordResetCode);
-
-            await _auditService.WriteAudit(new PasswordResetAuditMessage(message.User));
 
             await _userRepository.Update(message.User);
             _logger.Info($"Password changed for user '{message.Email}'");

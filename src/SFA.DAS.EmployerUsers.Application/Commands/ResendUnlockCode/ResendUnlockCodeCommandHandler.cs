@@ -3,9 +3,6 @@ using MediatR;
 using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
-using SFA.DAS.EmployerUsers.Domain.Auditing;
-using SFA.DAS.EmployerUsers.Domain.Auditing.Login;
-using SFA.DAS.EmployerUsers.Domain.Auditing.Registration;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode
 {
@@ -13,16 +10,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode
     {
         private readonly IValidator<ResendUnlockCodeCommand> _validator;
         private readonly IMediator _mediator;
-        private readonly IAuditService _auditService;
 
-        public ResendUnlockCodeCommandHandler(
-            IValidator<ResendUnlockCodeCommand> validator, 
-            IMediator mediator, 
-            IAuditService auditService)
+        public ResendUnlockCodeCommandHandler(IValidator<ResendUnlockCodeCommand> validator, IMediator mediator)
         {
             _validator = validator;
             _mediator = mediator;
-            _auditService = auditService;
         }
 
         protected override async Task HandleCore(ResendUnlockCodeCommand message)
@@ -33,8 +25,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode
             {
                 throw new InvalidRequestException(result.ValidationDictionary);
             }
-
-            await _auditService.WriteAudit(new ResendUnlockCodeAuditMessage(message.Email));
 
             await _mediator.PublishAsync(new AccountLockedEvent
             {

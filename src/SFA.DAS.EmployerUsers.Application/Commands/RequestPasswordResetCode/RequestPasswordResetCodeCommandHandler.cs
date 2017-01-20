@@ -7,8 +7,6 @@ using SFA.DAS.CodeGenerator;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
-using SFA.DAS.EmployerUsers.Domain.Auditing;
-using SFA.DAS.EmployerUsers.Domain.Auditing.Login;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Domain.Links;
 using SFA.DAS.TimeProvider;
@@ -18,7 +16,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
     public class RequestPasswordResetCodeCommandHandler : AsyncRequestHandler<RequestPasswordResetCodeCommand>
     {
         private readonly ILogger _logger;
-        private readonly IAuditService _auditService;
         private readonly IValidator<RequestPasswordResetCodeCommand> _validator;
         private readonly IUserRepository _userRepository;
         private readonly ICommunicationService _communicationService;
@@ -26,14 +23,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
         private readonly ILinkBuilder _linkBuilder;
         
 
-        public RequestPasswordResetCodeCommandHandler(
-            IValidator<RequestPasswordResetCodeCommand> validator, 
-            IUserRepository userRepository, 
-            ICommunicationService communicationService, 
-            ICodeGenerator codeGenerator, 
-            ILinkBuilder linkBuilder, 
-            ILogger logger, 
-            IAuditService auditService)
+        public RequestPasswordResetCodeCommandHandler(IValidator<RequestPasswordResetCodeCommand> validator, IUserRepository userRepository, ICommunicationService communicationService, ICodeGenerator codeGenerator, ILinkBuilder linkBuilder, ILogger logger)
         {
             _validator = validator;
             _userRepository = userRepository;
@@ -41,7 +31,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
             _codeGenerator = codeGenerator;
             _linkBuilder = linkBuilder;
             _logger = logger;
-            _auditService = auditService;
         }
 
         protected override async Task HandleCore(RequestPasswordResetCodeCommand message)
@@ -60,9 +49,9 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
             if (existingUser == null)
             {
                 _logger.Info($"Request to reset email for unknown email address : '{message.Email}'");
-                return;
+                throw new UnknownAccountException();
             }
-            
+
             if (RequiresPasswordResetCode(existingUser))
             {
                 existingUser.AddSecurityCode(new SecurityCode
@@ -75,8 +64,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
 
                 await _userRepository.Update(existingUser);
             }
-            
-            await _auditService.WriteAudit(new PasswordResetCodeAuditMessage(existingUser));
 
             await _communicationService.SendPasswordResetCodeMessage(existingUser, Guid.NewGuid().ToString());
         }

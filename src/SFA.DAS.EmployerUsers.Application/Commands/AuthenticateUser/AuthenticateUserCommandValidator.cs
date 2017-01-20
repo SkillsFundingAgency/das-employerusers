@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using SFA.DAS.EmployerUsers.Application.Validation;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser

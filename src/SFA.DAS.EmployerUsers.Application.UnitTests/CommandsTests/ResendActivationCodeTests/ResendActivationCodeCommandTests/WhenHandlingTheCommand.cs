@@ -10,7 +10,6 @@ using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
-using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendActivationCodeTests.ResendActivationCodeCommandTests
@@ -24,7 +23,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendActiva
         private ResendActivationCodeCommandHandler _commandHandler;
         private Mock<ILogger> _logger;
         private Mock<ICodeGenerator> _codeGenerator;
-        private Mock<IAuditService> _auditService;
 
         [SetUp]
         public void Setup()
@@ -34,15 +32,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResendActiva
             _communicationSerivce = new Mock<ICommunicationService>();
             _codeGenerator = new Mock<ICodeGenerator>();
             _logger = new Mock<ILogger>();
-            _auditService = new Mock<IAuditService>();
 
-            _commandHandler = new ResendActivationCodeCommandHandler(
-                _validator.Object, 
-                _userRepository.Object, 
-                _communicationSerivce.Object, 
-                _codeGenerator.Object, 
-                _logger.Object, 
-                _auditService.Object);
+            _commandHandler = new ResendActivationCodeCommandHandler(_validator.Object, _userRepository.Object, _communicationSerivce.Object, _codeGenerator.Object, _logger.Object);
         }
 
         [Test]
