@@ -34,8 +34,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode
                 throw new InvalidRequestException(result.ValidationDictionary);
             }
 
-            await _auditService.WriteAudit(new ResendUnlockCodeAuditMessage(message.Email));
-
             await _mediator.PublishAsync(new AccountLockedEvent
             {
                 User = new User

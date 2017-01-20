@@ -6,6 +6,8 @@ using NLog;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
+using SFA.DAS.EmployerUsers.Domain.Auditing;
+using SFA.DAS.EmployerUsers.Domain.Auditing.Registration;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 
@@ -19,13 +21,15 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
         private readonly IUserRepository _userRepository;
         private readonly ICodeGenerator _codeGenerator;
         private readonly ICommunicationService _communicationService;
+        private readonly IAuditService _auditService;
 
-        public GenerateAndEmailAccountLockedEmailHandler(IConfigurationService configurationService, IUserRepository userRepository, ICodeGenerator codeGenerator, ICommunicationService communicationService, ILogger logger)
+        public GenerateAndEmailAccountLockedEmailHandler(IConfigurationService configurationService, IUserRepository userRepository, ICodeGenerator codeGenerator, ICommunicationService communicationService, IAuditService auditService, ILogger logger)
         {
             _configurationService = configurationService;
             _userRepository = userRepository;
             _codeGenerator = codeGenerator;
             _communicationService = communicationService;
+            _auditService = auditService;
             _logger = logger;
         }
 
@@ -66,6 +70,8 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
             if (notification.ResendUnlockCode || sendNotification)
             {
                 await _communicationService.SendAccountLockedMessage(user, Guid.NewGuid().ToString());
+
+                await _auditService.WriteAudit(new SendUnlockCodeAuditMessage(user, unlockCode));
             }
         }
 

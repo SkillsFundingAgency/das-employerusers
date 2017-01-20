@@ -72,12 +72,12 @@
     <Compile Include="Auditing\IAuditService.cs" />
     <Compile Include="Auditing\Login\PasswordResetAuditMessage.cs" />
     <Compile Include="Auditing\Login\PasswordResetCodeAuditMessage.cs" />
-    <Compile Include="Auditing\Registration\ResendUnlockCodeAuditMessage.cs" />
     <Compile Include="Auditing\Registration\ActivatedAuditMessage.cs" />
     <Compile Include="Auditing\Registration\FailedActivationAuditMessage.cs" />
     <Compile Include="Auditing\Registration\RegisterAuditMessage.cs" />
     <Compile Include="Auditing\Login\SuccessfulLoginAuditMessage.cs" />
     <Compile Include="Auditing\Registration\ResendActivationCodeAuditMessage.cs" />
+    <Compile Include="Auditing\Registration\SendUnlockCodeAuditMessage.cs" />
     <Compile Include="Auditing\Unlock\FailedUnlockAuditMessage.cs" />
     <Compile Include="Auditing\Unlock\UnlockedAuditMessage.cs" />
     <Compile Include="Data\IPasswordProfileRepository.cs" />
