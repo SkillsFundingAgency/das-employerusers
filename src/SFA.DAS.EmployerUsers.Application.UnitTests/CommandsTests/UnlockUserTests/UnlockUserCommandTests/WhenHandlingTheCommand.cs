@@ -8,6 +8,7 @@ using Moq;
 using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
+using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTests.UnlockUserCommandTests
@@ -18,6 +19,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         private Mock<IValidator<UnlockUserCommand>> _unlockUserCommandValidator;
         private Mock<IUserRepository> _userRepositry;
         private Mock<IMediator> _mediator;
+        private Mock<IAuditService> _auditService;
         private const string AccessCode = "ABC123456PLM";
         private const string ExpectedEmail = "test@user.local";
         private const string NotAUser = "not@user.local";
@@ -58,7 +60,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
                               }
                           });
             _userRepositry.Setup(x => x.GetByEmailAddress(NotAUser)).ReturnsAsync((User)null);
-            _unlockUserCommand = new UnlockUserCommandHandler(_unlockUserCommandValidator.Object, _userRepositry.Object, _mediator.Object);
+
+            _auditService = new Mock<IAuditService>();
+
+            _unlockUserCommand = new UnlockUserCommandHandler(_unlockUserCommandValidator.Object, _userRepositry.Object, _mediator.Object, _auditService.Object);
         }
 
         [Test]
@@ -124,11 +129,11 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             await _unlockUserCommand.Handle(unlockUserCommand);
 
             //Assert
-            _userRepositry.Verify(x => x.Update(It.Is<User>(c => !c.IsActive 
-                                                              && c.Email == ExpectedEmail 
+            _userRepositry.Verify(x => x.Update(It.Is<User>(c => !c.IsActive
+                                                              && c.Email == ExpectedEmail
                                                               && !c.IsLocked
                                                               && c.FailedLoginAttempts == 0
-                                                              && !c.SecurityCodes.Any(sc => sc.CodeType == SecurityCodeType.UnlockCode))), 
+                                                              && !c.SecurityCodes.Any(sc => sc.CodeType == SecurityCodeType.UnlockCode))),
                                   Times.Once);
         }
 
@@ -197,7 +202,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
             //Act
             Assert.ThrowsAsync<ArgumentNullException>(async () => await _unlockUserCommand.Handle(null));
         }
-        
+
         [Test]
         public async Task ThenTheRespostioryWontBeUpdatedIfTheAccountIsNotLocked()
         {
