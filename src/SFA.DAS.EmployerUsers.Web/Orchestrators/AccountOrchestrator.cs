@@ -178,8 +178,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     AccessCode = model.AccessCode,
                     UserId = model.UserId
                 });
-                
-              
+
+
                 model.ReturnUrl = result.ReturnUrl;
                 return model;
             }
@@ -187,7 +187,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             {
                 _logger.Info(ex, ex.Message);
 
-              
+
                 model.ErrorDictionary = ex.ErrorMessages;
                 return model;
             }
@@ -276,7 +276,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 {
                     unlockUserViewModel.ReturnUrl = unlockResponse.UnlockCode.ReturnUrl;
                 }
-                return new OrchestratorResponse<UnlockUserViewModel> { Data = unlockUserViewModel};
+                return new OrchestratorResponse<UnlockUserViewModel> { Data = unlockUserViewModel };
             }
             catch (InvalidRequestException ex)
             {
@@ -298,7 +298,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 };
 
 
-                return new OrchestratorResponse<UnlockUserViewModel> {Data = unlockUserViewModel, FlashMessage = flashMessage};
+                return new OrchestratorResponse<UnlockUserViewModel> { Data = unlockUserViewModel, FlashMessage = flashMessage };
             }
             catch (Exception ex)
             {
@@ -314,7 +314,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     Message = "Check the following details:",
                     Severity = FlashMessageSeverityLevel.Error
                 };
-                return new OrchestratorResponse<UnlockUserViewModel> { Data = unlockUserViewModel,FlashMessage = flashMessage};
+                return new OrchestratorResponse<UnlockUserViewModel> { Data = unlockUserViewModel, FlashMessage = flashMessage };
             }
         }
 
@@ -325,7 +325,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             {
                 await _mediator.SendAsync(new ResendUnlockCodeCommand
                 {
-                    Email = model.Email
+                    Email = model.Email,
+                    ReturnUrl = model.ReturnUrl
                 });
 
                 model.UnlockCodeSent = true;
@@ -337,7 +338,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     SubMessage = "We've resent an email with a code to unlock your account"
                 };
 
-                return new OrchestratorResponse<UnlockUserViewModel> {Data = model,FlashMessage = flashMessage};
+                return new OrchestratorResponse<UnlockUserViewModel> { Data = model, FlashMessage = flashMessage };
             }
             catch (InvalidRequestException ex)
             {
@@ -421,7 +422,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             };
             try
             {
-     
+
 
                 await ValidateClientIdReturnUrlCombo(clientId, returnUrl, model);
 
@@ -569,7 +570,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     NewPassword = model.NewPassword,
                     ConfirmPassword = model.ConfirmPassword
                 });
-                
+
             }
             catch (InvalidRequestException ex)
             {

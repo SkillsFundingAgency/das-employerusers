@@ -40,7 +40,8 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode
                 {
                     Email = message.Email
                 },
-                ResendUnlockCode = true
+                ResendUnlockCode = true,
+                ReturnUrl = message.ReturnUrl
             });
         }
     }

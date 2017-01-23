@@ -34,7 +34,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("identity/employer/login")]
         public ActionResult Login(string id, string clientId)
         {
-      
+
             var signinMessage = _owinWrapper.GetSignInMessage(id);
             var returnUrl = "";
             if (signinMessage != null)
@@ -49,7 +49,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             }
 
             _owinWrapper.SetIdsContext(returnUrl, clientId);
-            
+
             var model = new OrchestratorResponse<LoginViewModel>
             {
                 Data = new LoginViewModel
@@ -72,7 +72,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View(model);
         }
 
-               
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("identity/employer/login")]
@@ -141,7 +141,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [OutputCache(Duration = 0)]
         public async Task<ActionResult> Register(string clientId, string returnUrl)
         {
-         
+
             if (string.IsNullOrEmpty(clientId))
             {
                 clientId = _owinWrapper.GetIdsClientId();
@@ -156,12 +156,12 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                                  + "identity/connect/authorize";
             var isLocalReturnUrl = returnUrl.ToLower().StartsWith(loginReturnUrl.ToLower());
             var model = await _accountOrchestrator.StartRegistration(clientId, returnUrl, isLocalReturnUrl);
-            
+
             if (!model.Valid)
             {
                 return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
             }
-            
+
             _owinWrapper.RemovePartialLoginCookie();
             _owinWrapper.SignoutUser();
 
@@ -209,7 +209,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         public async Task<ActionResult> Confirm()
         {
             var userId = GetLoggedInUserId();
-            
+
             var confirmationRequired = await _accountOrchestrator.RequestConfirmAccount(userId);
             if (!confirmationRequired)
             {
@@ -249,7 +249,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                             AccessCode = activateUserViewModel.AccessCode,
                             UserId = id
                         });
-                
+
                 if (activateUserViewModel.Valid)
                 {
                     return Redirect(activateUserViewModel.ReturnUrl);
@@ -292,13 +292,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             var email = GetLoggedInUserEmail();
             var model = new OrchestratorResponse<UnlockUserViewModel>
             {
-                Data = new UnlockUserViewModel {Email = email},
+                Data = new UnlockUserViewModel { Email = email },
                 FlashMessage = new FlashMessageViewModel
                 {
                     Severity = FlashMessageSeverityLevel.Success,
                     Headline = "Account locked",
-                    SubMessage = string.IsNullOrEmpty(email) ? 
-                                    "We've sent an email with a code to unlock your account" 
+                    SubMessage = string.IsNullOrEmpty(email) ?
+                                    "We've sent an email with a code to unlock your account"
                                     : $"We've sent an email to {email} with a code to unlock your account"
                 }
             };
@@ -310,7 +310,10 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/unlock")]
         public async Task<ActionResult> Unlock(UnlockUserViewModel unlockUserViewModel, string command)
         {
-
+            if (string.IsNullOrWhiteSpace(unlockUserViewModel.ReturnUrl))
+            {
+                unlockUserViewModel.ReturnUrl = _owinWrapper.GetIdsReturnUrl();
+            }
             if (command.ToLower() == "resend")
             {
                 var result = await _accountOrchestrator.ResendUnlockCode(unlockUserViewModel);
@@ -346,7 +349,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 clientId = _owinWrapper.GetIdsClientId();
             }
             var model = await _accountOrchestrator.StartForgottenPassword(clientId);
- 
+
             if (!model.Valid)
             {
                 return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
