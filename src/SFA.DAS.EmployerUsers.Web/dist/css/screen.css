@@ -2149,7 +2149,7 @@ input[type=number] {
 }
 
 b, strong {
-  font-weight: bold;
+  font-weight: 600;
 }
 
 @media (min-width: 641px) {
