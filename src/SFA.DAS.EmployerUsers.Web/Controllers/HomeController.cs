@@ -2,6 +2,7 @@
 using NLog;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Authentication;
+using SFA.DAS.EmployerUsers.Web.Models;
 
 namespace SFA.DAS.EmployerUsers.Web.Controllers
 {
@@ -24,16 +25,17 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             if (!string.IsNullOrEmpty(returnUrl))
             {
                 Logger.Info($"HomeController:Index - Redirecting user out of iDams to {returnUrl}");
-                return Redirect(returnUrl);
+                return View(new HomePageViewModel { ReturnUrl = returnUrl });
             }
+
             returnUrl = _identityServerConfiguration.EmployerPortalUrl;
             Logger.Info($"HomeController:Index - Redirecting user out of iDams (brute force) to {returnUrl}");
-            return View(_identityServerConfiguration.EmployerPortalUrl);
+            return View(new HomePageViewModel { ReturnUrl = _identityServerConfiguration.EmployerPortalUrl });
         }
 
         public ActionResult CatchAll(string path)
         {
-            return RedirectToAction("NotFound", "Error", new {path});
+            return RedirectToAction("NotFound", "Error", new { path });
         }
 
         [HttpGet]
