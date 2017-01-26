@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ServiceDefinition name="SFA.DAS.EmployerUsersApi" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2015-04.2.6">
+  <WebRole name="SFA.DAS.EmployerUsers.Api" vmsize="Small">
+    <Sites>
+      <Site name="Web">
+        <Bindings>
+          <Binding name="Endpoint1" endpointName="HttpsIn" />
+        </Bindings>
+      </Site>
+    </Sites>
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
+      <Setting name="ConfigurationStorageConnectionString" />
+      <Setting name="UsersConnectionString" />
+      <Setting name="ProfileConnectionString" />
+      <Setting name="AuthCodeCacheConnectionString" />
+      <Setting name="EnvironmentName" />
+      <Setting name="LogLevel" />
+      <Setting name="NotificationsApiBaseUrl" />
+      <Setting name="NotificationsApiClientToken" />
+      <Setting name="LoggingRedisConnectionString" />
+      <Setting name="LoggingRedisKey" />
+      <Setting name="UseStaticCodeGenerator" />
+      <Setting name="StoreEmailsOnDisk" />
+      <Setting name="TokenCertificateThumbprint" />
+      <Setting name="BaseExternalUrl" />
+      <Setting name="EmployerPortalUrl" />
+      <Setting name="InstrumentationKey" />
+      <Setting name="AuditApiBaseUrl" />
+      <Setting name="AuditApiClientId" />
+      <Setting name="AuditApiSecret" />
+      <Setting name="AuditApiIdentifierUri" />
+      <Setting name="AuditApiTenant" />
+    </ConfigurationSettings>
+    <Endpoints>
+      <InputEndpoint name="HttpsIn" protocol="https" port="443" certificate="WebSSLCert" />
+    </Endpoints>
+    <Certificates>
+      <Certificate name="WebSSLCert" storeLocation="LocalMachine" storeName="My" />
+    </Certificates>
+  </WebRole>
+</ServiceDefinition>

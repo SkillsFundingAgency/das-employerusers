@@ -54,6 +54,13 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             return users;
         }
 
+        public async Task<User[]> GetUsers(int pageSize, int pageNumber)
+        {
+            var users = await Query<User>("GetUsers @pageSize, @offSet", new { pageSize, offset = (pageNumber  * pageSize) - pageSize });
+            return users;
+        }
+
+
         public async Task Create(User registerUser)
         {
             try

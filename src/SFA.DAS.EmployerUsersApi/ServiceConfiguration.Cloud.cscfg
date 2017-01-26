@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ServiceConfiguration serviceName="SFA.DAS.EmployerUsersApi" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="4" osVersion="*" schemaVersion="2015-04.2.6">
+  <Role name="SFA.DAS.EmployerUsers.Api">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="ConfigurationStorageConnectionString" value="__ConfigurationStorageConnectionString__" />
+      <Setting name="UsersConnectionString" value="__UsersConnectionString__" />
+      <Setting name="ProfileConnectionString" value="__ProfileConnectionString__" />
+      <Setting name="AuthCodeCacheConnectionString" value="__AuthCodeCacheConnectionString__" />
+      <Setting name="EnvironmentName" value="__EnvironmentName__" />
+      <Setting name="LogLevel" value="Warn" />
+      <Setting name="NotificationsApiBaseUrl" value="__NotificationsApiBaseUrl__" />
+      <Setting name="NotificationsApiClientToken" value="__NotificationsApiClientToken__" />
+      <Setting name="LoggingRedisConnectionString" value="__LoggingRedisConnectionString__" />
+      <Setting name="LoggingRedisKey" value="__LoggingRedisKey__" />
+      <Setting name="UseStaticCodeGenerator" value="__UseStaticCodeGenerator__" />
+      <Setting name="StoreEmailsOnDisk" value="__StoreEmailsOnDisk__" />
+      <Setting name="TokenCertificateThumbprint" value="__TokenCertificateThumbprint__" />
+      <Setting name="BaseExternalUrl" value="__BaseExternalUrl__" />
+      <Setting name="EmployerPortalUrl" value="__EmployerPortalUrl__" />
+      <Setting name="InstrumentationKey" value="__InstrumentationKey__" />
+      <Setting name="AuditApiBaseUrl" value="__AuditApiBaseUrl__" />
+      <Setting name="AuditApiClientId" value="__AuditApiClientId__" />
+      <Setting name="AuditApiSecret" value="__AuditApiSecret__" />
+      <Setting name="AuditApiIdentifierUri" value="__AuditApiIdentifierUri__" />
+      <Setting name="AuditApiTenant" value="__AuditApiTenant__" />
+    </ConfigurationSettings>
+    <Certificates>
+      <Certificate name="WebSSLCert" thumbprint="87A28DF77BBA73983918DF4288A132588AE820F4" thumbprintAlgorithm="sha1" />
+    </Certificates>
+  </Role>
+</ServiceConfiguration>

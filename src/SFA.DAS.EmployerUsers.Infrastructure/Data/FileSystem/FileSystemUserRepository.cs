@@ -51,6 +51,22 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.FileSystem
             return users.ToArray();
         }
 
+        public async Task<User[]> GetUsers(int pageSize, int pageNumber)
+        {
+            var users = new List<User>();
+            var userFiles = GetDataFiles();
+
+            foreach (var path in userFiles)
+            {
+                var user = await ReadFile<User>(path);
+
+                users.Add(user);
+
+            }
+
+            return users.ToArray();
+        }
+
         public async Task Create(User registerUser)
         {
             await CreateFile(registerUser, registerUser.Id);
@@ -69,6 +85,6 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.FileSystem
 
             return Task.FromResult<object>(null);
         }
-       
+
     }
 }

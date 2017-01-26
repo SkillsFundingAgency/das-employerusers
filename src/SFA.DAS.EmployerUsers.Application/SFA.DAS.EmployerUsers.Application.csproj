@@ -111,6 +111,8 @@
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandValidator.cs" />
     <Compile Include="Queries\GetUsersWithExpiredRegistrations\GetUsersWithExpiredRegistrationsQuery.cs" />
     <Compile Include="Queries\GetUsersWithExpiredRegistrations\GetUsersWithExpiredRegistrationsQueryHandler.cs" />
+    <Compile Include="Queries\GetUsers\GetUsersQuery.cs" />
+    <Compile Include="Queries\GetUsers\GetUsersQueryHandler.cs" />
     <Compile Include="Validation\BaseValidator.cs" />
     <Compile Include="Commands\RequestPasswordResetCode\RequestPasswordResetCodeCommand.cs" />
     <Compile Include="Commands\RequestPasswordResetCode\RequestPasswordResetCodeCommandHandler.cs" />

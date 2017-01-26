@@ -82,6 +82,7 @@
     <Build Include="StoredProcedures\DeleteUserPasswordHistory.sql" />
     <Build Include="StoredProcedures\GetUsersWithExpiredRegistrations.sql" />
     <Build Include="StoredProcedures\DeleteUser.sql" />
+    <Build Include="StoredProcedures\GetUsers.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="SeedData\SeedData.sql" />
