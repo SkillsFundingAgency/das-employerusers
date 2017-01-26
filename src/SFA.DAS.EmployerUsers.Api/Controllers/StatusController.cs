@@ -11,16 +11,13 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
     [RoutePrefix("api/status")]
     public class StatusController : ApiController
     {
-        [HttpGet, Route("")]
+        [Route("")]
         public IHttpActionResult Index()
         {
+            // Do some Infrastructre work here to smoke out any issues.
             return Ok();
         }
 
-        [Route("{random}"), HttpGet]
-        public IHttpActionResult Show(string random)
-        {
-            return Ok(random);
-        }
+
     }
 }
