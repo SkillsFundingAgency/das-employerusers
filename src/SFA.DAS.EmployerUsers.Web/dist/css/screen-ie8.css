@@ -1891,6 +1891,11 @@ table.top-border {
   background: #005ea5;
 }
 
+.breadcrumbs {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
 .breadcrumbs li {
   background-image: url("/dist/images/separator.png");
 }

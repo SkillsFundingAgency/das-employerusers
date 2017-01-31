@@ -6,8 +6,6 @@
 
     var invalidAttributes = Model.Data.Valid ? "aria-invalid=\"true\" aria-labeledby=\"invalidMessage\"" : "";
 }
-<a href="@Url.Action("Logout", "Account")" class="link-back">Back</a>
-
 <h1 class="heading-xlarge">@ViewBag.Title</h1>
 <form method="post"  autocomplete="off" id="form-activate">
     @Html.AntiForgeryToken()
@@ -43,3 +41,7 @@
     <h2 class="heading-small">Not received an email?</h2>
     <button type="submit" class="link-button" name="command" value="resend">You can request another email</button>
 </form>
+
+@section breadcrumb {
+    <div id="js-breadcrumbs" class="breadcrumbs"></div>
+}
