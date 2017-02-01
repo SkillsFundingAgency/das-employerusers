@@ -243,6 +243,7 @@
     <Compile Include="App_Start\StructuremapMvc.cs" />
     <Compile Include="App_Start\StructuremapWebApi.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\StatusController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="DependencyResolution\DefaultRegistry.cs" />
@@ -254,6 +255,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Orchestrators\OrchestratorResponse.cs" />
     <Compile Include="Orchestrators\UserOrchestrator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -269,6 +271,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.EmployerUsers.Api.Types\SFA.DAS.EmployerUsers.Api.Types.csproj">
+      <Project>{97BBCDEC-D1DD-4E93-AE77-B5B0E5F9784D}</Project>
+      <Name>SFA.DAS.EmployerUsers.Api.Types</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.Application\SFA.DAS.EmployerUsers.Application.csproj">
       <Project>{2243A091-EE5A-4641-B02E-D7BA560C0086}</Project>
       <Name>SFA.DAS.EmployerUsers.Application</Name>
