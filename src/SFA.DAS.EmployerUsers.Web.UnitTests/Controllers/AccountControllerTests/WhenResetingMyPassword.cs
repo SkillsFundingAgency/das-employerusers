@@ -16,6 +16,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
     {
         private const string Id = "UNIT_TESTS";
         private const string ReturnUrl = "http://unittests.local";
+        private const string EmployerPortalReturnUrl = "http://employerportal.returnurl.local";
 
         private Mock<AccountOrchestrator> _orchestrator;
         private Mock<IOwinWrapper> _owinWrapper;
@@ -35,8 +36,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
                 {
                     ReturnUrl = ReturnUrl
                 });
+            _owinWrapper.Setup(x => x.GetIdsReturnUrl()).Returns(ReturnUrl);
 
-            var identityServerConfiguration = new IdentityServerConfiguration { EmployerPortalUrl = ReturnUrl };
+            var identityServerConfiguration = new IdentityServerConfiguration { EmployerPortalUrl = EmployerPortalReturnUrl };
             _controller = new AccountController(_orchestrator.Object, _owinWrapper.Object, identityServerConfiguration);
             _controller.ControllerContext = _controllerContext.Object;
         }
@@ -50,21 +52,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             //Assert
             _orchestrator.Verify(x=>x.ResetPassword(It.IsAny<PasswordResetViewModel>()),Times.Once);
         }
-
-        [Test]
-        public async Task ThenTheUserIsRedirectedIfTheModelIsValid()
-        {
-            //Act
-            var actual = await _controller.ResetPassword(new PasswordResetViewModel());
-
-            //Assert
-            Assert.IsNotNull(actual);
-            var actualRedirect = actual as RedirectResult;
-            Assert.IsNotNull(actualRedirect);
-            Assert.AreEqual(ReturnUrl, actualRedirect.Url);
-        }
-
-
+        
         [Test]
         public async Task ThenTheUserIsReturnedToThePasswordResetViewIfTheModelIsNotValid()
         {
@@ -79,6 +67,53 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             var actualViewResult = actual as ViewResult;
             Assert.IsNotNull(actualViewResult);
             Assert.AreEqual(actualViewResult.ViewName, "ResetPassword");
+        }
+
+        [Test]
+        public async Task ThenIfTheModelReturnUrlIsNotEmptyWeRedirectToIt()
+        {
+            //Arrange
+            var expectedReturnUrl = "http://test.url";
+            _orchestrator.Setup(o => o.ResetPassword(It.IsAny<PasswordResetViewModel>())).ReturnsAsync(new PasswordResetViewModel {ReturnUrl = expectedReturnUrl});
+
+            //Act
+            var actual = await _controller.ResetPassword(new PasswordResetViewModel());
+
+            //Assert
+            Assert.IsNotNull(actual);
+            var actualRedirect = actual as RedirectResult;
+            Assert.IsNotNull(actualRedirect);
+            Assert.AreEqual(expectedReturnUrl,actualRedirect.Url);
+        }
+
+
+        [Test]
+        public async Task ThenIfTheModelReturnUrlIsEmptyWeRedirectToTheReturnUrlInTheCookie()
+        {
+            //Act
+            var actual = await _controller.ResetPassword(new PasswordResetViewModel());
+
+            //Assert
+            Assert.IsNotNull(actual);
+            var actualRedirect = actual as RedirectResult;
+            Assert.IsNotNull(actualRedirect);
+            Assert.AreEqual(ReturnUrl, actualRedirect.Url);
+        }
+
+        [Test]
+        public async Task ThenIfTheModelReturnUrlIsEmptyAndTheReturnUrlInTheCookieIsEmptyWeRedirectToPortalUrl()
+        {
+            //Arrange
+            _owinWrapper.Setup(x => x.GetIdsReturnUrl()).Returns(string.Empty);
+
+            //Act
+            var actual = await _controller.ResetPassword(new PasswordResetViewModel());
+
+            //Assert
+            Assert.IsNotNull(actual);
+            var actualRedirect = actual as RedirectResult;
+            Assert.IsNotNull(actualRedirect);
+            Assert.AreEqual(EmployerPortalReturnUrl, actualRedirect.Url);
         }
     }
 }
