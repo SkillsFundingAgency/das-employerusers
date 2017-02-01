@@ -86,5 +86,10 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.FileSystem
             return Task.FromResult<object>(null);
         }
 
+        public async Task<int> GetUserCount()
+        {
+            var users = await this.GetUsers(int.MaxValue, 0);
+            return users.Length;
+        }
     }
 }

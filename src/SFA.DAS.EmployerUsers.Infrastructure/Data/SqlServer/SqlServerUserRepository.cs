@@ -119,6 +119,11 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             }
         }
 
+        public async Task<int> GetUserCount()
+        {
+            var recordCount = await QuerySingle<int>("UserCount");
+            return recordCount;
+        }
 
 
         private async Task<SecurityCode[]> GetUserSecurityCodes(User user)

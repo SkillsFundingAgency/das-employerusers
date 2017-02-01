@@ -11,5 +11,6 @@ namespace SFA.DAS.EmployerUsers.Domain.Data
         Task Create(User registerUser);
         Task Update(User user);
         Task Delete(User user);
+        Task<int> GetUserCount();
     }
 }
