@@ -9,7 +9,7 @@ using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.Queries.GetUsers
 {
-    public class GetUsersQueryHandler : IAsyncRequestHandler<GetUsersQuery, User[]>
+    public class GetUsersQueryHandler : IAsyncRequestHandler<GetUsersQuery, GetUsersQueryResponse>
     {
         private readonly IUserRepository _userRepository;
 
@@ -18,7 +18,7 @@ namespace SFA.DAS.EmployerUsers.Application.Queries.GetUsers
             _userRepository = userRepository;
         }
 
-        public Task<User[]> Handle(GetUsersQuery message)
+        public async Task<GetUsersQueryResponse> Handle(GetUsersQuery message)
         {
 
             if (message == null)
@@ -26,7 +26,10 @@ namespace SFA.DAS.EmployerUsers.Application.Queries.GetUsers
                 throw new ArgumentNullException(nameof(message));
             }
 
-            return _userRepository.GetUsers(message.PageSize, message.PageNumber);
+            var users = await _userRepository.GetUsers(message.PageSize, message.PageNumber);
+            var recordCount = await _userRepository.GetUserCount();
+
+            return new GetUsersQueryResponse(){Users = users, RecordCount = recordCount };
         }
     }
 }
