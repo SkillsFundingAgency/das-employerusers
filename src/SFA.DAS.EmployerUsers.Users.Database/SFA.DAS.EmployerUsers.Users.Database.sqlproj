@@ -83,6 +83,7 @@
     <Build Include="StoredProcedures\GetUsersWithExpiredRegistrations.sql" />
     <Build Include="StoredProcedures\DeleteUser.sql" />
     <Build Include="StoredProcedures\GetUsers.sql" />
+    <Build Include="StoredProcedures\UserCount.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="SeedData\SeedData.sql" />
