@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
+using SFA.DAS.EmployerUsers.Api.Orchestrators;
 
 namespace SFA.DAS.EmployerUsers.Api.Controllers
 {
@@ -11,11 +13,26 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
     [RoutePrefix("api/status")]
     public class StatusController : ApiController
     {
-        [Route("")]
-        public IHttpActionResult Index()
+        private readonly UserOrchestrator _orchestrator;
+
+        public StatusController(UserOrchestrator orchestrator)
         {
-            // Do some Infrastructre work here to smoke out any issues.
-            return Ok();
+            _orchestrator = orchestrator;
+        }
+
+        [Route("")]
+        public async Task <IHttpActionResult> Index()
+        {
+            try
+            {
+                // Do some Infrastructre work here to smoke out any issues.
+                var users = await _orchestrator.UsersIndex(1, 1);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e);
+            }
         }
 
 
