@@ -362,11 +362,15 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [Route("account/resetflow")]
-        public ActionResult ResetFlow()
+        public async Task<ActionResult> ResetFlow()
         {
             var returnUrl = _owinWrapper.GetIdsReturnUrl();
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                return new RedirectResult(returnUrl);
+            }
 
-            return Redirect(returnUrl);
+            return await RedirectToEmployerPortal();
         }
 
         [HttpPost]
