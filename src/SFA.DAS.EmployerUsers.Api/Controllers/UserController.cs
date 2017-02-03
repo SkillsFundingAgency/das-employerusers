@@ -18,10 +18,11 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
         public async Task<IHttpActionResult> Index(int pageSize = 1000, int pageNumber = 1)
         {
             var users = await _orchestrator.UsersIndex(pageSize, pageNumber);
-            
-            return Ok(users);
+            users.Data.Data.ForEach(x => x.Href = Url.Route("Show", new { x.Id }));
+            return Ok(users.Data);
         }
-        [Route("{id}"), HttpGet]
+
+        [Route("{id}", Name = "Show"), HttpGet]
         public async Task<IHttpActionResult> Show(string id)
         {
             var user = await _orchestrator.UserShow(id);
