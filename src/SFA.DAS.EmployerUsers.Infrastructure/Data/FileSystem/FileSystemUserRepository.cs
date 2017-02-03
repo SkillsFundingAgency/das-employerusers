@@ -92,6 +92,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.FileSystem
             return users.Length;
         }
 
+        public async Task<Users> SearchUsers(string criteria, int pageSize, int pageNumber)
         {
             var matchedUsers = new List<User>();
             var userFiles = GetDataFiles();
@@ -105,6 +106,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.FileSystem
                 }
             }
 
+            return new Users { UserCount = matchedUsers.Count, UserList = matchedUsers.ToArray() };
         }
 
         private bool UserMatchesSearchCriteria(User user, string criteria)
