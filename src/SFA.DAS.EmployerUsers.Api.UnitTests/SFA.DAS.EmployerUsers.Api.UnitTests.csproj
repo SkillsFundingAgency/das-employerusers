@@ -82,6 +82,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserControllerTests\UserControllerTestsBase.cs" />
+    <Compile Include="UserControllerTests\WhenIAGetUser.cs" />
     <Compile Include="UserControllerTests\WhenIGetUsers.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -43,6 +43,7 @@
     <Compile Include="UserSummaryViewModel.cs" />
     <Compile Include="PagedApiResponseViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SFA.DAS.EmployerUsers.Api.Types.nuspec" />

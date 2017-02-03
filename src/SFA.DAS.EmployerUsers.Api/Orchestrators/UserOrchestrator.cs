@@ -40,16 +40,35 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
             };
         }
 
-        public async Task<OrchestratorResponse<User>> UserShow(string id)
+        public async Task<OrchestratorResponse<UserViewModel>> UserShow(string id)
         {
             _logger.Info($"Getting user account {id}.");
             var user = await _mediator.SendAsync(new GetUserByIdQuery() {UserId = id});
-            return new OrchestratorResponse<User>()
+            return new OrchestratorResponse<UserViewModel>()
             {
-                Data = user
+                Data = ConvertUserToUserViewModel(user)
             }; 
         }
-   
+
+        private UserViewModel ConvertUserToUserViewModel(User user)
+        {
+            if (user == null)
+            {
+                return null;
+            }
+
+            return new UserViewModel
+            {
+                LastName = user.LastName,
+                FirstName = user.FirstName,
+                Id = user.Id,
+                Email = user.Email,
+                IsActive = user.IsActive,
+                IsLocked = user.IsLocked,
+                FailedLoginAttempts = user.FailedLoginAttempts
+            };
+        }
+
         private UserSummaryViewModel ConvertUserToUserSummaryViewModel(User user)
         {
             return new UserSummaryViewModel

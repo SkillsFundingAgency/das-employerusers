@@ -26,7 +26,13 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
         public async Task<IHttpActionResult> Show(string id)
         {
             var user = await _orchestrator.UserShow(id);
-            return Ok(user);
+
+            if (user.Data == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user.Data);
         }
     }
 }
