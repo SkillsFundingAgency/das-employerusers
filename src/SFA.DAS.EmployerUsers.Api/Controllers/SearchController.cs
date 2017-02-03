@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Threading.Tasks;
 using System.Web.Http;
 using SFA.DAS.EmployerUsers.Api.Orchestrators;
 
@@ -10,17 +6,18 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
 {
     public class SearchController : ApiController
     {
-        private readonly SearchOrchestrator _orchestrator;
+        private readonly UserOrchestrator _orchestrator;
 
-        public SearchController(SearchOrchestrator orchestrator)
+        public SearchController(UserOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
         }
 
-        public IHttpActionResult Search(string query, int pageSize = 1000, int pageNumber = 1)
+        public async Task<IHttpActionResult> Search(string criteria, int pageSize = 1000, int pageNumber = 1)
         {
-            // Search for users where the query is contained in Email and FullName
-            return Ok();
+            var users = await _orchestrator.UserSearch(criteria, pageSize, pageNumber);
+            users.Data.Data.ForEach(x => x.Href = Url.Route("Show", new { x.Id }));
+            return Ok(users.Data);
         }
     }
 }

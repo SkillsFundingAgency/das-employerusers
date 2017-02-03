@@ -84,6 +84,7 @@
     <Build Include="StoredProcedures\DeleteUser.sql" />
     <Build Include="StoredProcedures\GetUsers.sql" />
     <Build Include="StoredProcedures\UserCount.sql" />
+    <Build Include="StoredProcedures\SearchUsers.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="SeedData\SeedData.sql" />

@@ -91,5 +91,40 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.FileSystem
             var users = await this.GetUsers(int.MaxValue, 0);
             return users.Length;
         }
+
+        {
+            var matchedUsers = new List<User>();
+            var userFiles = GetDataFiles();
+
+            foreach (var path in userFiles)
+            {
+                var user = await ReadFile<User>(path);
+                if (UserMatchesSearchCriteria(user, criteria))
+                {
+                    matchedUsers.Add(user);
+                }
+            }
+
+        }
+
+        private bool UserMatchesSearchCriteria(User user, string criteria)
+        {
+            if (user.Email.IndexOf(criteria, StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                return true;
+            }
+
+            if (user.FirstName.IndexOf(criteria, StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                return true;
+            }
+
+            if (user.LastName.IndexOf(criteria, StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

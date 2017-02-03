@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
+using Dapper;
 using NLog;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
@@ -124,12 +127,24 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             var recordCount = await QuerySingle<int>("UserCount");
             return recordCount;
         }
+        
+        public async Task<Users> SearchUsers(string criteria, int pageSize, int pageNumber)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Criteria", criteria, DbType.String);
+            parameters.Add("@pageSize", pageSize, DbType.Int32);
+            parameters.Add("@pageNumber", pageNumber, DbType.Int32);
+            parameters.Add("@totalRecords", 0, DbType.Int32, ParameterDirection.Output);
+            var users = await Query<User>("SearchUsers @Criteria, @pageSize, @offSet", new { criteria, pageSize, offset = (pageNumber * pageSize) - pageSize });
 
+            return new Users { UserCount = parameters.Get<int>("@totalRecords"), UserList = users };
+        }
 
         private async Task<SecurityCode[]> GetUserSecurityCodes(User user)
         {
             return await Query<SecurityCode>("GetUserSecurityCodes @Id", user);
         }
+
         private async Task UpdateUserSecurityCodes(User user, IUnitOfWork unitOfWork)
         {
             await unitOfWork.Execute("DeleteAllUserSecurityCodes @UserId", new { UserId = user.Id });
@@ -144,6 +159,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
         {
             return await Query<HistoricalPassword>("GetUserPasswordHistory @Id", user);
         }
+
         private async Task UpdateUserPasswordHistory(User user, IUnitOfWork unitOfWork)
         {
             await unitOfWork.Execute("DeleteUserPasswordHistory @UserId", new { UserId = user.Id });

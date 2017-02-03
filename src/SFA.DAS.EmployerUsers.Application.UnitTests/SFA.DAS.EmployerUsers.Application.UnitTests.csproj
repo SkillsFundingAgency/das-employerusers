@@ -115,6 +115,8 @@
     <Compile Include="EventsTests\AccountLockedTests\GenerateAndEmailAccountLockedEmailHandlerTests\WhenHandling.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueriesTests\GetRelyingPartyTests\GetRelyingPartyQueryHandlerTests\WhenHandlingGetRelyingPartyQuery.cs" />
+    <Compile Include="QueriesTests\GetUsersTests\GetUsersQueryHandlerTests\WhenHandlingRequest.cs" />
+    <Compile Include="QueriesTests\SearchUsersTests\SearchUserQueryHandlerTests\WhenHandlingRequest.cs" />
     <Compile Include="QueriesTests\GetUsersWithExpiredRegistrationsTests\GetUsersWithExpiredRegistrationsQueryHandlerTests\WhenHandlingQuery.cs" />
     <Compile Include="QueriesTests\PasswordReset\ValidatePasswordResetCodeQueryHandlerTests\WhenHandlingRequest.cs" />
     <Compile Include="QueriesTests\GetUserByIdTests\GetUserByIdQueryHandlerTests\WhenHandlingRequest.cs" />

@@ -256,7 +256,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Orchestrators\OrchestratorResponse.cs" />
-    <Compile Include="Orchestrators\SearchOrchestrator.cs" />
     <Compile Include="Orchestrators\UserOrchestrator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

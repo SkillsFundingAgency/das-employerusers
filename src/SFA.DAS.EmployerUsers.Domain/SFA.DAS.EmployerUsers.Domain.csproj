@@ -90,6 +90,7 @@
     <Compile Include="RelyingParty.cs" />
     <Compile Include="SecurityCode.cs" />
     <Compile Include="SecurityCodeType.cs" />
+    <Compile Include="Users.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

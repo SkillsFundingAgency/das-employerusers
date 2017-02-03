@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerUsers.Domain.Data
 {
@@ -12,5 +13,6 @@ namespace SFA.DAS.EmployerUsers.Domain.Data
         Task Update(User user);
         Task Delete(User user);
         Task<int> GetUserCount();
+        Task<Users> SearchUsers(string criteria, int pageSize, int pageNumber);
     }
 }
