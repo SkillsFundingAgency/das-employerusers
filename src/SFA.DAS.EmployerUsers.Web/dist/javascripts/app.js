@@ -39,6 +39,16 @@ sfa.homePage = {
     }
 }
 
+sfa.backLink = {
+    init: function () {
+        var backLink = $('<a>')
+            .attr({ 'href': '#', 'class': 'link-back' })
+            .text('Back')
+            .on('click', function () {  window.history.back(); })
+            .appendTo('#js-breadcrumbs');    
+    }
+}
+
 sfa.navigation = {
     elems: {
         userNav: $('nav#user-nav > ul'),
@@ -102,5 +112,10 @@ sfa.navigation = {
     }
 }
 
+if ($('#js-breadcrumbs')) {
+    sfa.backLink.init();
+}
+
 sfa.navigation.init();
+
 var selectionButtons = new GOVUK.SelectionButtons("label input[type='radio'], label input[type='checkbox']");

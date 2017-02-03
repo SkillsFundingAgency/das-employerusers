@@ -362,11 +362,15 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [Route("account/resetflow")]
-        public ActionResult ResetFlow()
+        public async Task<ActionResult> ResetFlow()
         {
             var returnUrl = _owinWrapper.GetIdsReturnUrl();
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                return new RedirectResult(returnUrl);
+            }
 
-            return Redirect(returnUrl);
+            return await RedirectToEmployerPortal();
         }
 
         [HttpPost]
@@ -400,17 +404,21 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             {
                 if (!string.IsNullOrEmpty(model.ReturnUrl))
                 {
-                    var returnUrl = _owinWrapper.GetIdsReturnUrl();
+                    return new RedirectResult(model.ReturnUrl);
+                }
+
+                var returnUrl = _owinWrapper.GetIdsReturnUrl();
+                if (!string.IsNullOrEmpty(returnUrl))
+                {
                     return new RedirectResult(returnUrl);
                 }
+
                 return await RedirectToEmployerPortal();
             }
 
             return View("ResetPassword", model);
         }
-
-
-
+        
         [HttpGet]
         [Authorize]
         [Route("account/changeemail")]

@@ -128,13 +128,13 @@
             }
         </div>
     </div>
-<main id="content" role="main">
-    @RenderSection("breadcrumb", required: false)
+    <main id="content" role="main">
 
-    @Html.Partial(@"_InfoMessages", Model as OrchestratorResponse)
+        @RenderSection("breadcrumb", required: false)
+        @Html.Partial(@"_InfoMessages", Model as OrchestratorResponse)
+        @RenderBody()
 
-    @RenderBody()
-</main><!-- / #content -->
+    </main><!-- / #content -->
     <footer class="group js-footer" id="footer" role="contentinfo">
         <div class="footer-wrapper">
             <div class="footer-meta">
