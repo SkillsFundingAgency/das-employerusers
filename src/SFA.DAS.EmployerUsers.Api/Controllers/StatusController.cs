@@ -21,6 +21,7 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
         }
 
         [Route("")]
+        [Authorize(Roles = "ReadEmployerUsers")]
         public async Task <IHttpActionResult> Index()
         {
             try

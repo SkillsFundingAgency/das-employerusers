@@ -14,7 +14,8 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
             _orchestrator = orchestrator;
         }
 
-        [Route(""), HttpGet]
+        [Route("{criteria}"), HttpGet]
+        [Authorize(Roles = "ReadEmployerUsers")]
         public async Task<IHttpActionResult> Search(string criteria, int pageSize = 1000, int pageNumber = 1)
         {
             var users = await _orchestrator.UserSearch(criteria, pageSize, pageNumber);

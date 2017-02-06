@@ -15,6 +15,7 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
         }
 
         [Route(""), HttpGet]
+        [Authorize(Roles = "ReadEmployerUsers")]
         public async Task<IHttpActionResult> Index(int pageSize = 1000, int pageNumber = 1)
         {
             var users = await _orchestrator.UsersIndex(pageSize, pageNumber);
@@ -23,6 +24,7 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
         }
 
         [Route("{id}", Name = "Show"), HttpGet]
+        [Authorize(Roles = "ReadEmployerUsers")]
         public async Task<IHttpActionResult> Show(string id)
         {
             var user = await _orchestrator.UserShow(id);

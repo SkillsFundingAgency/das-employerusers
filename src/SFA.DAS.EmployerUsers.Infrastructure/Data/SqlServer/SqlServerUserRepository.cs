@@ -133,9 +133,9 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             var parameters = new DynamicParameters();
             parameters.Add("@Criteria", criteria, DbType.String);
             parameters.Add("@pageSize", pageSize, DbType.Int32);
-            parameters.Add("@pageNumber", pageNumber, DbType.Int32);
+            parameters.Add("@offset", pageNumber, DbType.Int32);
             parameters.Add("@totalRecords", 0, DbType.Int32, ParameterDirection.Output);
-            var users = await Query<User>("SearchUsers @Criteria, @pageSize, @offSet", new { criteria, pageSize, offset = (pageNumber * pageSize) - pageSize });
+            var users = await Query<User>("SearchUsers @Criteria, @pageSize, @offset, @totalRecords OUTPUT", parameters);
 
             return new Users { UserCount = parameters.Get<int>("@totalRecords"), UserList = users };
         }

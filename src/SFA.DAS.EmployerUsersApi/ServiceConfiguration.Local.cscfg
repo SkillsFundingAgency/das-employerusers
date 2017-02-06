@@ -5,8 +5,8 @@
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
       <Setting name="ConfigurationStorageConnectionString" value="UseDevelopmentStorage=true" />
-      <Setting name="UsersConnectionString" value="server=(local);database=EmployerUsers;trusted_connection=true;" />
-      <Setting name="ProfileConnectionString" value="server=(local);database=EmployerUsers;trusted_connection=true;" />
+      <Setting name="UsersConnectionString" value="server=(localdb)\ProjectsV13;database=SFA.DAS.EmployerUsers.Users;trusted_connection=true;" />
+      <Setting name="ProfileConnectionString" value="server=(localdb)\ProjectsV13;database=SFA.DAS.EmployerUsers.Profiles;trusted_connection=true;" />
       <Setting name="AuthCodeCacheConnectionString" value="" />
       <Setting name="EnvironmentName" value="LOCAL" />
       <Setting name="LogLevel" value="Debug" />
@@ -17,14 +17,9 @@
       <Setting name="UseStaticCodeGenerator" value="false" />
       <Setting name="StoreEmailsOnDisk" value="true" />
       <Setting name="TokenCertificateThumbprint" value="6B7ACC520305BFDB4F7252DAEB2177CC091FAAE1" />
-      <Setting name="BaseExternalUrl" value="https://localhost:44334/" />
-      <Setting name="EmployerPortalUrl" value="http://localhost" />
       <Setting name="InstrumentationKey" value="" />
-      <Setting name="AuditApiBaseUrl" value="" />
-      <Setting name="AuditApiClientId" value="" />
-      <Setting name="AuditApiSecret" value="" />
-      <Setting name="AuditApiIdentifierUri" value="" />
-      <Setting name="AuditApiTenant" value="" />
+      <Setting name="idaAudience" value="https://citizenazuresfabisgov.onmicrosoft.com/eas-api" />
+      <Setting name="idaTenant" value="citizenazuresfabisgov.onmicrosoft.com" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="WebSSLCert" thumbprint="FE14C6E906B1E94E93C6AF8FA113EA1221D5DE9C" thumbprintAlgorithm="sha1" />

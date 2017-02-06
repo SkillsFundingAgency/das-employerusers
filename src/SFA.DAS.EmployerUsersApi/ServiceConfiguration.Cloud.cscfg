@@ -17,14 +17,9 @@
       <Setting name="UseStaticCodeGenerator" value="__UseStaticCodeGenerator__" />
       <Setting name="StoreEmailsOnDisk" value="__StoreEmailsOnDisk__" />
       <Setting name="TokenCertificateThumbprint" value="__TokenCertificateThumbprint__" />
-      <Setting name="BaseExternalUrl" value="__BaseExternalUrl__" />
-      <Setting name="EmployerPortalUrl" value="__EmployerPortalUrl__" />
       <Setting name="InstrumentationKey" value="__InstrumentationKey__" />
-      <Setting name="AuditApiBaseUrl" value="__AuditApiBaseUrl__" />
-      <Setting name="AuditApiClientId" value="__AuditApiClientId__" />
-      <Setting name="AuditApiSecret" value="__AuditApiSecret__" />
-      <Setting name="AuditApiIdentifierUri" value="__AuditApiIdentifierUri__" />
-      <Setting name="AuditApiTenant" value="__AuditApiTenant__" />
+      <Setting name="idaAudience" value="__idaAudience__" />
+      <Setting name="idaTenant" value="__idaTenant__" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="WebSSLCert" thumbprint="87A28DF77BBA73983918DF4288A132588AE820F4" thumbprintAlgorithm="sha1" />

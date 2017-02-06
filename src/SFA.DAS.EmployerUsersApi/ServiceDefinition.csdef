@@ -23,14 +23,9 @@
       <Setting name="UseStaticCodeGenerator" />
       <Setting name="StoreEmailsOnDisk" />
       <Setting name="TokenCertificateThumbprint" />
-      <Setting name="BaseExternalUrl" />
-      <Setting name="EmployerPortalUrl" />
       <Setting name="InstrumentationKey" />
-      <Setting name="AuditApiBaseUrl" />
-      <Setting name="AuditApiClientId" />
-      <Setting name="AuditApiSecret" />
-      <Setting name="AuditApiIdentifierUri" />
-      <Setting name="AuditApiTenant" />
+      <Setting name="idaAudience" />
+      <Setting name="idaTenant" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="HttpsIn" protocol="https" port="443" certificate="WebSSLCert" />
