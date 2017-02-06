@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
             //Act
             var actual = await _validator.ValidateAsync(new RegisterUserCommand
             {
-                Email = "test",
+                Email = "test@example.com",
                 FirstName = "Testing",
                 LastName = "Tester",
                 Password = "p24234AAA",
@@ -40,6 +40,29 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
             Assert.IsAssignableFrom<ValidationResult>(actual);
             Assert.IsTrue(actual.IsValid());
         }
+
+
+
+        [Test]
+        public async Task ThenAValidationResultObjectThatIsNotValidIsReturnedIfEmailIsInvalid()
+        {
+            //Act
+            var actual = await _validator.ValidateAsync(new RegisterUserCommand
+            {
+                Email = "test",
+                FirstName = "Testing",
+                LastName = "Tester",
+                Password = "p24234AAA",
+                ConfirmPassword = "p24234AAA",
+                HasAcceptedTermsAndConditions = true
+            });
+
+            //Assert
+            Assert.IsAssignableFrom<ValidationResult>(actual);
+            Assert.IsFalse(actual.IsValid());
+        }
+
+
 
         [TestCase("", "", "", "", "")]
         [TestCase(" ", " ", " ", " ", " ")]
