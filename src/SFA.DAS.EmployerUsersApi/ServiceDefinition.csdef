@@ -16,13 +16,10 @@
       <Setting name="AuthCodeCacheConnectionString" />
       <Setting name="EnvironmentName" />
       <Setting name="LogLevel" />
-      <Setting name="NotificationsApiBaseUrl" />
-      <Setting name="NotificationsApiClientToken" />
       <Setting name="LoggingRedisConnectionString" />
       <Setting name="LoggingRedisKey" />
       <Setting name="UseStaticCodeGenerator" />
       <Setting name="StoreEmailsOnDisk" />
-      <Setting name="TokenCertificateThumbprint" />
       <Setting name="InstrumentationKey" />
       <Setting name="idaAudience" />
       <Setting name="idaTenant" />

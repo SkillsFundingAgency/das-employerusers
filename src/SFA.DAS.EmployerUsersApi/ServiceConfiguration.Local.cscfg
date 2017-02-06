@@ -10,13 +10,10 @@
       <Setting name="AuthCodeCacheConnectionString" value="" />
       <Setting name="EnvironmentName" value="LOCAL" />
       <Setting name="LogLevel" value="Debug" />
-      <Setting name="NotificationsApiBaseUrl" value="" />
-      <Setting name="NotificationsApiClientToken" value="" />
       <Setting name="LoggingRedisConnectionString" value="" />
       <Setting name="LoggingRedisKey" value="" />
       <Setting name="UseStaticCodeGenerator" value="false" />
       <Setting name="StoreEmailsOnDisk" value="true" />
-      <Setting name="TokenCertificateThumbprint" value="6B7ACC520305BFDB4F7252DAEB2177CC091FAAE1" />
       <Setting name="InstrumentationKey" value="" />
       <Setting name="idaAudience" value="https://citizenazuresfabisgov.onmicrosoft.com/eas-api" />
       <Setting name="idaTenant" value="citizenazuresfabisgov.onmicrosoft.com" />

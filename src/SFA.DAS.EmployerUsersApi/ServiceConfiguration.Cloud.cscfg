@@ -10,13 +10,10 @@
       <Setting name="AuthCodeCacheConnectionString" value="__AuthCodeCacheConnectionString__" />
       <Setting name="EnvironmentName" value="__EnvironmentName__" />
       <Setting name="LogLevel" value="Warn" />
-      <Setting name="NotificationsApiBaseUrl" value="__NotificationsApiBaseUrl__" />
-      <Setting name="NotificationsApiClientToken" value="__NotificationsApiClientToken__" />
       <Setting name="LoggingRedisConnectionString" value="__LoggingRedisConnectionString__" />
       <Setting name="LoggingRedisKey" value="__LoggingRedisKey__" />
       <Setting name="UseStaticCodeGenerator" value="__UseStaticCodeGenerator__" />
       <Setting name="StoreEmailsOnDisk" value="__StoreEmailsOnDisk__" />
-      <Setting name="TokenCertificateThumbprint" value="__TokenCertificateThumbprint__" />
       <Setting name="InstrumentationKey" value="__InstrumentationKey__" />
       <Setting name="idaAudience" value="__idaAudience__" />
       <Setting name="idaTenant" value="__idaTenant__" />
