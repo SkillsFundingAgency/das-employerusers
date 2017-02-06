@@ -4,7 +4,7 @@ using SFA.DAS.EmployerUsers.Application.Validation;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 {
-    public class RegisterUserCommandValidator : IValidator<RegisterUserCommand>
+    public class RegisterUserCommandValidator : BaseValidator, IValidator<RegisterUserCommand>
     {
         private readonly IPasswordService _passwordService;
 
@@ -17,7 +17,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
         {
             var validationResult = new ValidationResult();
             
-            if (string.IsNullOrWhiteSpace(item.Email))
+            if (string.IsNullOrWhiteSpace(item.Email) || !IsEmailValid(item.Email))
             {
                 validationResult.AddError(nameof(item.Email), "Enter a valid email address");
             }
