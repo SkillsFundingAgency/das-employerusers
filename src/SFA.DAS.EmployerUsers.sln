@@ -70,6 +70,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Api.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Api.UnitTests", "SFA.DAS.EmployerUsers.Api.UnitTests\SFA.DAS.EmployerUsers.Api.UnitTests.csproj", "{46F0CB8E-C7C6-4C9A-9334-18202CFDDF01}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Api.Client", "SFA.DAS.EmployerUsers.Api.Client\SFA.DAS.EmployerUsers.Api.Client.csproj", "{B131C4F5-A178-4693-AD75-3A3B4FC90C95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Api.Client.UnitTests", "SFA.DAS.EmployerUsers.Api.Client.UnitTests\SFA.DAS.EmployerUsers.Api.Client.UnitTests.csproj", "{A6AA2302-7F91-43C2-B2C7-EBD59FBF5AB4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -164,6 +168,14 @@ Global
 		{46F0CB8E-C7C6-4C9A-9334-18202CFDDF01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46F0CB8E-C7C6-4C9A-9334-18202CFDDF01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46F0CB8E-C7C6-4C9A-9334-18202CFDDF01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B131C4F5-A178-4693-AD75-3A3B4FC90C95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B131C4F5-A178-4693-AD75-3A3B4FC90C95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B131C4F5-A178-4693-AD75-3A3B4FC90C95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B131C4F5-A178-4693-AD75-3A3B4FC90C95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6AA2302-7F91-43C2-B2C7-EBD59FBF5AB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6AA2302-7F91-43C2-B2C7-EBD59FBF5AB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6AA2302-7F91-43C2-B2C7-EBD59FBF5AB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6AA2302-7F91-43C2-B2C7-EBD59FBF5AB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -178,5 +190,6 @@ Global
 		{F9D60797-3A8A-4310-BD8D-31C70297DFBE} = {22D47948-6411-4B2A-A6AD-AA60013CA1DA}
 		{0329A551-AB2F-4C88-83B6-54EC698139A9} = {124D0C03-B1E6-498E-985C-5D7FA1C23596}
 		{46F0CB8E-C7C6-4C9A-9334-18202CFDDF01} = {22D47948-6411-4B2A-A6AD-AA60013CA1DA}
+		{A6AA2302-7F91-43C2-B2C7-EBD59FBF5AB4} = {22D47948-6411-4B2A-A6AD-AA60013CA1DA}
 	EndGlobalSection
 EndGlobal

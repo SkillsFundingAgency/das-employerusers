@@ -4,6 +4,7 @@ using SFA.DAS.EmployerUsers.Api.Orchestrators;
 
 namespace SFA.DAS.EmployerUsers.Api.Controllers
 {
+    [RoutePrefix("api/users/search")]
     public class SearchController : ApiController
     {
         private readonly UserOrchestrator _orchestrator;
@@ -13,6 +14,7 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
             _orchestrator = orchestrator;
         }
 
+        [Route(""), HttpGet]
         public async Task<IHttpActionResult> Search(string criteria, int pageSize = 1000, int pageNumber = 1)
         {
             var users = await _orchestrator.UserSearch(criteria, pageSize, pageNumber);

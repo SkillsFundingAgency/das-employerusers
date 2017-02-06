@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.EmployerUsers.Api.Types
 {
-    public class UserSummaryViewModel
+    public class UserSummaryViewModel : IEmployerUsersResource
     {
         public string Id { get; set; }
         public string FirstName { get; set; }

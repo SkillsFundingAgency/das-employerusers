@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerUsers.Api.Types
 {
-    public class PagedApiResponseViewModel<T>
+    public class PagedApiResponseViewModel<T> : IEmployerUsersResource where T : IEmployerUsersResource
     {
         public List<T> Data { get; set; }
         public int Page { get; set; }
