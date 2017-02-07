@@ -27,7 +27,7 @@
       </InstanceAddress>
     </AddressAssignments>
     <LoadBalancers>
-      <LoadBalancer name="__ilbname__">
+      <LoadBalancer name="__ilbname2__">
         <FrontendIPConfiguration type="private" subnet="__subnet__" staticVirtualNetworkIPAddress="10.78.125.61" />
       </LoadBalancer>
     </LoadBalancers>
