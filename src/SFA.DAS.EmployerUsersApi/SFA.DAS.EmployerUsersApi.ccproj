@@ -33,6 +33,10 @@
   <!-- Items for the project -->
   <ItemGroup>
     <ServiceDefinition Include="ServiceDefinition.csdef" />
+    <None Include="Configuration\ServiceDefinition.Release.csdef" />
+    <None Include="Configuration\ServiceDefinition.PreProd.csdef" />
+    <ServiceConfiguration Include="ServiceConfiguration.PreProd.cscfg" />
+    <ServiceConfiguration Include="ServiceConfiguration.Release.cscfg" />
     <ServiceConfiguration Include="ServiceConfiguration.Local.cscfg" />
     <ServiceConfiguration Include="ServiceConfiguration.Cloud.cscfg" />
   </ItemGroup>
@@ -48,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="SFA.DAS.EmployerUsers.ApiContent\" />
+    <Folder Include="Configuration\" />
   </ItemGroup>
   <ItemGroup>
     <DiagnosticsConfiguration Include="SFA.DAS.EmployerUsers.ApiContent\diagnostics.wadcfgx" />

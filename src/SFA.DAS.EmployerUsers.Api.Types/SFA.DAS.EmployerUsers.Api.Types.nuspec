@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>SFA.DAS.EmployerUser.Api.Types</id>
+    <id>SFA.DAS.EmployerUsers.Api.Types</id>
     <version>1.0.0</version>
     <authors>DAS</authors>
     <owners>DAS</owners>
     <licenseUrl>https://github.com/SkillsFundingAgency/das-employerapprenticeshipsservice/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/SkillsFundingAgency/das-employerapprenticeshipsservice</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Types used by the Employer User API</description>
-    <summary>Types used by the DAS Employer User Api</summary>
+    <description>Types used by the Employer Users API</description>
+    <summary>Types used by the DAS Employer Users Api</summary>
     <releaseNotes />
     <dependencies>
       <group targetFramework=".NETFramework4.5">
@@ -17,6 +17,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\SFA.DAS.EmployerUser.Api.Types.dll" target="lib\net45\SFA.DAS.EmployerUser.Api.Types.dll" />
+    <file src="bin\Release\SFA.DAS.EmployerUsers.Api.Types.dll" target="lib\net45\SFA.DAS.EmployerUsers.Api.Types.dll" />
   </files>
 </package>
