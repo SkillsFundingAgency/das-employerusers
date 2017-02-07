@@ -16,34 +16,17 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-using System;
-using System.Configuration;
-using System.Web;
-using System.Web.WebPages;
 using MediatR;
-using Microsoft.Azure;
 using SFA.DAS.Audit.Client;
-using SFA.DAS.CodeGenerator;
-using SFA.DAS.Configuration;
-using SFA.DAS.Configuration.AzureTableStorage;
-using SFA.DAS.Configuration.FileStorage;
 using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Auditing;
-using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
-using SFA.DAS.EmployerUsers.Infrastructure.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer;
-using SFA.DAS.EmployerUsers.Infrastructure.Notification;
-
-using SFA.DAS.Notifications.Api.Client;
-using SFA.DAS.Notifications.Api.Client.Configuration;
 using StructureMap;
-
+using StructureMap.Graph;
 
 namespace SFA.DAS.EmployerUsers.Api.DependencyResolution {
-    using StructureMap.Configuration.DSL;
-    using StructureMap.Graph;
-	
+
     public class DefaultRegistry : Registry {
    
 
@@ -53,71 +36,12 @@ namespace SFA.DAS.EmployerUsers.Api.DependencyResolution {
                     scan.AssembliesFromApplicationBaseDirectory(a => a.GetName().Name.StartsWith("SFA.DAS.EmployerUsers")
                                && !a.GetName().Name.Equals("SFA.DAS.EmployerUsers.Infrastructure"));
                     scan.RegisterConcreteTypesAgainstTheFirstInterface();
-
                 });
 
 
-            For<IAuditMessageFactory>().Use<AuditMessageFactory>().Singleton();
-            For<IAuditService>().Use<AuditService>();
+            For<IUserRepository>().Use<SqlServerUserRepository>();
 
-            AddConfigSpecifiedRegistrations();
-            AddEnvironmentSpecificRegistrations();
             AddMediatrRegistrations();
-        }
-
-        private void AddEnvironmentSpecificRegistrations()
-        {
-            var environment = Environment.GetEnvironmentVariable("DASENV");
-            if (string.IsNullOrEmpty(environment))
-            {
-                environment = CloudConfigurationManager.GetSetting("EnvironmentName");
-            }
-
-            IConfigurationRepository configurationRepository;
-
-            if (ConfigurationManager.AppSettings["LocalConfig"].AsBool())
-            {
-                configurationRepository = new FileStorageConfigurationRepository();
-            }
-            else
-            {
-                configurationRepository = new AzureTableStorageConfigurationRepository(CloudConfigurationManager.GetSetting("ConfigurationStorageConnectionString"));
-            }
-
-            var configurationService = new ConfigurationService(configurationRepository,
-                new ConfigurationOptions("SFA.DAS.EmployerUsers.Web", environment, "1.0"));
-            For<IConfigurationService>().Use(configurationService);
-
-            if (environment == "LOCAL")
-            {
-                AddDevelopmentRegistrations();
-            }
-            else
-            {
-                AddProductionRegistrations();
-            }
-        }
-        private void AddDevelopmentRegistrations()
-        {
-            For<IUserRepository>().Use<SqlServerUserRepository>();
-            For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
-            For<IPasswordProfileRepository>().Use<SqlServerPasswordProfileRepository>();
-            For<IAuditApiClient>().Use<StubAuditApiClient>().Ctor<string>().Is($@"{AppDomain.CurrentDomain.BaseDirectory}\App_Data\Audit\");
-        }
-        private void AddProductionRegistrations()
-        {
-            For<IUserRepository>().Use<SqlServerUserRepository>();
-            For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
-            For<IPasswordProfileRepository>().Use<InMemoryPasswordProfileRepository>();
-            For<IAuditApiClient>().Use<AuditApiClient>();
-            For<AuditApiConfiguration>().Use(() => new AuditApiConfiguration
-            {
-                ApiBaseUrl = CloudConfigurationManager.GetSetting("AuditApiBaseUrl"),
-                ClientId = CloudConfigurationManager.GetSetting("AuditApiClientId"),
-                ClientSecret = CloudConfigurationManager.GetSetting("AuditApiSecret"),
-                IdentifierUri = CloudConfigurationManager.GetSetting("AuditApiIdentifierUri"),
-                Tenant = CloudConfigurationManager.GetSetting("AuditApiTenant")
-            });
         }
 
         private void AddMediatrRegistrations()
@@ -125,30 +49,6 @@ namespace SFA.DAS.EmployerUsers.Api.DependencyResolution {
             For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => ctx.GetInstance(t));
             For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => ctx.GetAllInstances(t));
             For<IMediator>().Use<Mediator>();
-        }
-
-        private void AddConfigSpecifiedRegistrations()
-        {
-            var useStaticCodeGenerator = CloudConfigurationManager.GetSetting("UseStaticCodeGenerator").Equals("true", StringComparison.CurrentCultureIgnoreCase);
-            if (useStaticCodeGenerator)
-            {
-                For<ICodeGenerator>().Use(new StaticCodeGenerator());
-            }
-            else
-            {
-                For<ICodeGenerator>().Use(new RandomCodeGenerator());
-            }
-
-            var storeEmailsOnDisk = CloudConfigurationManager.GetSetting("StoreEmailsOnDisk").Equals("true", StringComparison.CurrentCultureIgnoreCase);
-            if (storeEmailsOnDisk)
-            {
-                For<INotificationsApi>().Use<StubNotificationsApi>();
-            }
-            else
-            {
-                For<INotificationsApiClientConfiguration>().Use<NotificationsApiConfiguration>();
-                For<INotificationsApi>().Use<NotificationsApi>();
-            }
         }
     }
 }

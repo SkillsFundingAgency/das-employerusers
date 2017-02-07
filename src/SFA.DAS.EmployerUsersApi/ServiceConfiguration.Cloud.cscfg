@@ -4,16 +4,11 @@
     <Instances count="1" />
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
-      <Setting name="ConfigurationStorageConnectionString" value="__ConfigurationStorageConnectionString__" />
       <Setting name="UsersConnectionString" value="__UsersConnectionString__" />
-      <Setting name="ProfileConnectionString" value="__ProfileConnectionString__" />
-      <Setting name="AuthCodeCacheConnectionString" value="__AuthCodeCacheConnectionString__" />
       <Setting name="EnvironmentName" value="__EnvironmentName__" />
       <Setting name="LogLevel" value="Warn" />
       <Setting name="LoggingRedisConnectionString" value="__LoggingRedisConnectionString__" />
       <Setting name="LoggingRedisKey" value="__LoggingRedisKey__" />
-      <Setting name="UseStaticCodeGenerator" value="__UseStaticCodeGenerator__" />
-      <Setting name="StoreEmailsOnDisk" value="__StoreEmailsOnDisk__" />
       <Setting name="InstrumentationKey" value="__InstrumentationKey__" />
       <Setting name="idaAudience" value="__idaAudience__" />
       <Setting name="idaTenant" value="__idaTenant__" />

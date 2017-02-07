@@ -4,16 +4,11 @@
     <Instances count="1" />
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
-      <Setting name="ConfigurationStorageConnectionString" value="UseDevelopmentStorage=true" />
       <Setting name="UsersConnectionString" value="server=(localdb)\ProjectsV13;database=SFA.DAS.EmployerUsers.Users;trusted_connection=true;" />
-      <Setting name="ProfileConnectionString" value="server=(localdb)\ProjectsV13;database=SFA.DAS.EmployerUsers.Profiles;trusted_connection=true;" />
-      <Setting name="AuthCodeCacheConnectionString" value="" />
       <Setting name="EnvironmentName" value="LOCAL" />
       <Setting name="LogLevel" value="Debug" />
       <Setting name="LoggingRedisConnectionString" value="" />
       <Setting name="LoggingRedisKey" value="" />
-      <Setting name="UseStaticCodeGenerator" value="false" />
-      <Setting name="StoreEmailsOnDisk" value="true" />
       <Setting name="InstrumentationKey" value="" />
       <Setting name="idaAudience" value="https://citizenazuresfabisgov.onmicrosoft.com/eas-api" />
       <Setting name="idaTenant" value="citizenazuresfabisgov.onmicrosoft.com" />
