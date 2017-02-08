@@ -78,9 +78,23 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("identity/employer/login")]
         public async Task<ActionResult> Login(string id, LoginViewModel model)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id), "Missing id when posting to login");
+            }
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model), "Missing login model when posting to login");
+            }
+
             model.OriginatingAddress = Request.UserHostAddress;
             var result = await _accountOrchestrator.Login(model);
             var response = new OrchestratorResponse<LoginViewModel>();
+
+            if (result == null)
+            {
+                throw new NullReferenceException("Orchestrator did not return a result");
+            }
 
             if (result.Data.Success)
             {
@@ -90,6 +104,10 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 }
 
                 var signinMessage = _owinWrapper.GetSignInMessage(id);
+                if (signinMessage == null)
+                {
+                    throw new NullReferenceException($"Could not find signin message for id {id}");
+                }
                 return Redirect(signinMessage.ReturnUrl);
             }
 
@@ -418,7 +436,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
             return View("ResetPassword", model);
         }
-        
+
         [HttpGet]
         [Authorize]
         [Route("account/changeemail")]

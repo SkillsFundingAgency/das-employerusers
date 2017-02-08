@@ -10,11 +10,51 @@ namespace SFA.DAS.EmployerUsers.Web.Plumbing.Mvc
         public override void OnException(ExceptionContext filterContext)
         {
             var error = filterContext.Exception;
-            Logger.Error(error, "Unhandled exception - " + error.Message);
+            var controller = GetContollerName(filterContext);
+            var action = GetActionName(filterContext);
+            var verb = GetHttpVerb(filterContext);
+
+            Logger.Error(error, $"Unhandled exception from {controller}.{action}({verb}) - {error.Message}");
+
             var ai = new TelemetryClient();
             ai.TrackException(filterContext.Exception);
 
             base.OnException(filterContext);
+        }
+
+
+        private string GetContollerName(ExceptionContext filterContext)
+        {
+            try
+            {
+                return filterContext?.RouteData?.Values["controller"]?.ToString() ?? "UNKNOWN";
+            }
+            catch
+            {
+                return "UNKNOWN";
+            }
+        }
+        private string GetActionName(ExceptionContext filterContext)
+        {
+            try
+            {
+                return filterContext?.RouteData?.Values["action"]?.ToString() ?? "UNKNOWN";
+            }
+            catch
+            {
+                return "UNKNOWN";
+            }
+        }
+        private string GetHttpVerb(ExceptionContext filterContext)
+        {
+            try
+            {
+                return filterContext?.RequestContext?.HttpContext?.Request?.HttpMethod ?? "UNKNOWN";
+            }
+            catch
+            {
+                return "UNKNOWN";
+            }
         }
     }
 }
