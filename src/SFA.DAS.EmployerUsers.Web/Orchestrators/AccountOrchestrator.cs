@@ -585,9 +585,10 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         }
 
 
-        public async Task<RequestPasswordResetViewModel> StartForgottenPassword(string clientId)
+        public async Task<RequestPasswordResetViewModel> StartForgottenPassword(string clientId, string returnUrl)
         {
             var model = new RequestPasswordResetViewModel();
+            
             var relyingParty = await _mediator.SendAsync(new GetRelyingPartyQuery { Id = clientId });
 
             if (relyingParty == null)
@@ -596,7 +597,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             else
             {
-                model.ReturnUrl = relyingParty.ApplicationUrl;
+                model.ReturnUrl = !string.IsNullOrEmpty(returnUrl) ? returnUrl : relyingParty.ApplicationUrl;
             }
 
             return model;
