@@ -34,12 +34,12 @@
             <input @invalidAttributes autofocus="autofocus" aria-required="true" class="form-control" id="AccessCode" name="AccessCode">
         </div>
         <div class="form-group">
-            <button type="submit" class="button" name="command" value="activate" id="button-activate">Continue</button>
+            <button type="submit" class="button" id="command[activate]" name="command" value="activate">Continue</button>
         </div>
     </fieldset>
     
     <h2 class="heading-small">Not received an email?</h2>
-    <button type="submit" class="link-button" name="command" value="resend">You can request another email</button>
+    <button type="submit" class="link-button" id="command[resend]" name="command" value="resend">You can request another email</button>
 </form>
 
 @section breadcrumb {
