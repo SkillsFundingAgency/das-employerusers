@@ -254,11 +254,11 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [ValidateAntiForgeryToken]
         [Authorize]
         [Route("account/confirm")]
-        public async Task<ActionResult> Confirm(ActivateUserViewModel activateUserViewModel, string command)
+        public async Task<ActionResult> Confirm(ActivateUserViewModel activateUserViewModel, string activatecommand, string resendcommand)
         {
             var id = GetLoggedInUserId();
 
-            if (command.Equals("activate"))
+            if (!string.IsNullOrEmpty(activatecommand))
             {
                 activateUserViewModel =
                     await
@@ -286,18 +286,17 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 };
                 return View("Confirm", response);
             }
-            else
-            {
-                var result = await _accountOrchestrator.ResendActivationCode(new ResendActivationCodeViewModel { UserId = id });
+            
+            await _accountOrchestrator.ResendActivationCode(new ResendActivationCodeViewModel { UserId = id });
 
-                var flashMessage = new FlashMessageViewModel
-                {
-                    Severity = FlashMessageSeverityLevel.Success,
-                    Headline = "We've sent you an email",
-                    SubMessage = $"To confirm your identity, we've sent a code to {GetLoggedInUserEmail()}"
-                };
-                return View("Confirm", new OrchestratorResponse<ActivateUserViewModel> { FlashMessage = flashMessage, Data = new ActivateUserViewModel() });
-            }
+            var flashMessage = new FlashMessageViewModel
+            {
+                Severity = FlashMessageSeverityLevel.Success,
+                Headline = "We've sent you an email",
+                SubMessage = $"To confirm your identity, we've sent a code to {GetLoggedInUserEmail()}"
+            };
+            return View("Confirm", new OrchestratorResponse<ActivateUserViewModel> { FlashMessage = flashMessage, Data = new ActivateUserViewModel() });
+            
         }
 
 
