@@ -7,7 +7,7 @@
     var invalidAttributes = Model.Data.Valid ? "aria-invalid=\"true\" aria-labeledby=\"invalidMessage\"" : "";
 }
 <h1 class="heading-xlarge">@ViewBag.Title</h1>
-<form method="post"  autocomplete="off" id="form-activate">
+<form method="post" autocomplete="off" id="form-activate" action="@Url.Action("Confirm")">
     @Html.AntiForgeryToken()
     <fieldset>
         <legend class="visuallyhidden">Access code for user registration</legend>
@@ -34,13 +34,18 @@
             <input @invalidAttributes autofocus="autofocus" aria-required="true" class="form-control" id="AccessCode" name="AccessCode">
         </div>
         <div class="form-group">
-            <input type="submit" class="button" title="" name="activatecommand" value="Continue"/>
+            <input type="submit" class="button" title="" name="activatecommand" value="Continue" />
         </div>
     </fieldset>
-    
-    <h2 class="heading-small">Not received an email?</h2>
-    <input type="submit" class="link-button" name="resendcommand" value="You can request another email"/>
 </form>
+
+<form method="post" autocomplete="off" id="form-resend" action="@Url.Action("ConfirmResend")">
+    @Html.AntiForgeryToken()
+    <h2 class="heading-small">Not received an email?</h2>
+    <input type="submit" class="link-button" name="resendcommand" value="You can request another email" />
+
+</form>
+
 
 @section breadcrumb {
     <div id="js-breadcrumbs" class="breadcrumbs"></div>

@@ -42,7 +42,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public async Task ThenTheAccountOrchestratorAccessCodeIsCalled()
         {
             //Act
-            await _accountController.Confirm(new ActivateUserViewModel(), Action,"");
+            await _accountController.Confirm(new ActivateUserViewModel());
 
             //Assert
             _accountOrchestrator.Verify(x=>x.ActivateUser(It.IsAny<ActivateUserViewModel>()),Times.Once);
@@ -52,7 +52,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public async Task ThenRedirectsToOriginWhenActivationSuccessful()
         {
             //Act
-            var actual = await _accountController.Confirm(new ActivateUserViewModel(), Action,"");
+            var actual = await _accountController.Confirm(new ActivateUserViewModel());
 
             //Assert
             Assert.IsNotNull(actual);
@@ -73,7 +73,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
                 });
 
             //Act
-            var actual = await _accountController.Confirm(new ActivateUserViewModel(), Action,"");
+            var actual = await _accountController.Confirm(new ActivateUserViewModel());
 
             //Assert
             Assert.IsNotNull(actual);
@@ -92,7 +92,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             var accessCode = "myCode";
             var userId = "myid";
             var accessCodeViewModel = new ActivateUserViewModel {AccessCode = accessCode, UserId = userId};
-            await _accountController.Confirm(accessCodeViewModel, Action,"");
+            await _accountController.Confirm(accessCodeViewModel);
 
             //Assert
             _accountOrchestrator.Verify(x => x.ActivateUser(It.Is<ActivateUserViewModel>(p=>p.AccessCode.Equals(accessCode) && p.UserId.Equals(userId))), Times.Once);
