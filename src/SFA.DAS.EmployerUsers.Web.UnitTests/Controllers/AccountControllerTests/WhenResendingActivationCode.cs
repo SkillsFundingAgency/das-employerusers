@@ -42,7 +42,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         {
             var accessCodeViewModel = new ActivateUserViewModel();
 
-            var actual = await _accountController.Confirm(accessCodeViewModel, Action);
+            var actual = await _accountController.Confirm(accessCodeViewModel, "", Action);
 
             _accountOrchestrator.Verify(x => x.ResendActivationCode(It.Is<ResendActivationCodeViewModel>(p => p.UserId.Equals(UserId))), Times.Once);
 
