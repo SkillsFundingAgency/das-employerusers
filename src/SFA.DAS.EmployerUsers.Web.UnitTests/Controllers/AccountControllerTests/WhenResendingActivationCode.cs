@@ -42,13 +42,13 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         {
             var accessCodeViewModel = new ActivateUserViewModel();
 
-            var actual = await _accountController.Confirm(accessCodeViewModel, "", Action);
+            var actual = await _accountController.ConfirmResend();
 
             _accountOrchestrator.Verify(x => x.ResendActivationCode(It.Is<ResendActivationCodeViewModel>(p => p.UserId.Equals(UserId))), Times.Once);
 
-            var viewResult = actual as ViewResult;
+            var viewResult = actual as RedirectToRouteResult;
             Assert.IsNotNull(viewResult);
-            Assert.That(viewResult.ViewName, Is.EqualTo("Confirm"));
+            Assert.That(viewResult.RouteValues["Action"], Is.EqualTo("Confirm"));
         }
 
         //TODO: Create negative test case for this.

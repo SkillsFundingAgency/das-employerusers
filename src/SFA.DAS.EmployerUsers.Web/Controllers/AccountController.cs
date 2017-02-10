@@ -252,50 +252,49 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("account/confirmresend")]
+        public async Task<ActionResult> ConfirmResend()
+        {
+            await _accountOrchestrator.ResendActivationCode(new ResendActivationCodeViewModel { UserId = GetLoggedInUserId() });
+            
+            return RedirectToAction("Confirm");
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize]
         [Route("account/confirm")]
-        public async Task<ActionResult> Confirm(ActivateUserViewModel activateUserViewModel, string activatecommand, string resendcommand)
+        public async Task<ActionResult> Confirm(ActivateUserViewModel activateUserViewModel)
         {
+
             var id = GetLoggedInUserId();
 
-            if (!string.IsNullOrEmpty(activatecommand))
-            {
-                activateUserViewModel =
-                    await
-                        _accountOrchestrator.ActivateUser(new ActivateUserViewModel
-                        {
-                            AccessCode = activateUserViewModel.AccessCode,
-                            UserId = id
-                        });
-
-                if (activateUserViewModel.Valid)
-                {
-                    return Redirect(activateUserViewModel.ReturnUrl);
-                }
-
-                var response = new OrchestratorResponse<ActivateUserViewModel>
-                {
-                    Data = activateUserViewModel,
-                    FlashMessage = new FlashMessageViewModel
+            activateUserViewModel =
+                await
+                    _accountOrchestrator.ActivateUser(new ActivateUserViewModel
                     {
-                        ErrorMessages = activateUserViewModel.ErrorDictionary,
-                        Severity = FlashMessageSeverityLevel.Error,
-                        Headline = "Errors to fix",
-                        Message = "Check the following details:"
-                    }
-                };
-                return View("Confirm", response);
-            }
-            
-            await _accountOrchestrator.ResendActivationCode(new ResendActivationCodeViewModel { UserId = id });
+                        AccessCode = activateUserViewModel.AccessCode,
+                        UserId = id
+                    });
 
-            var flashMessage = new FlashMessageViewModel
+            if (activateUserViewModel.Valid)
             {
-                Severity = FlashMessageSeverityLevel.Success,
-                Headline = "We've sent you an email",
-                SubMessage = $"To confirm your identity, we've sent a code to {GetLoggedInUserEmail()}"
+                return Redirect(activateUserViewModel.ReturnUrl);
+            }
+
+            var response = new OrchestratorResponse<ActivateUserViewModel>
+            {
+                Data = activateUserViewModel,
+                FlashMessage = new FlashMessageViewModel
+                {
+                    ErrorMessages = activateUserViewModel.ErrorDictionary,
+                    Severity = FlashMessageSeverityLevel.Error,
+                    Headline = "Errors to fix",
+                    Message = "Check the following details:"
+                }
             };
-            return View("Confirm", new OrchestratorResponse<ActivateUserViewModel> { FlashMessage = flashMessage, Data = new ActivateUserViewModel() });
+            return View("Confirm", response);
             
         }
 
