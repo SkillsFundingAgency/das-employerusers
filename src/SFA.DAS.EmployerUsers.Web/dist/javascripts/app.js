@@ -49,6 +49,22 @@ sfa.backLink = {
     }
 }
 
+sfa.forms = {
+    init: function () {
+        this.preventDoubleSubmit();
+    },
+    preventDoubleSubmit: function () {
+        var forms = $('form').not('.has-client-side-validation');
+        forms.on('submit', function (e) {
+            var button = $(this).find('.button');
+            button.attr('disabled', 'disabled');
+            setTimeout(function () {
+                button.removeAttr('disabled');
+            }, 5000);
+        });
+    }
+}
+
 sfa.navigation = {
     elems: {
         userNav: $('nav#user-nav > ul'),
@@ -117,5 +133,6 @@ if ($('#js-breadcrumbs')) {
 }
 
 sfa.navigation.init();
+sfa.forms.init();
 
 var selectionButtons = new GOVUK.SelectionButtons("label input[type='radio'], label input[type='checkbox']");
