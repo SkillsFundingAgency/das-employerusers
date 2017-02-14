@@ -17,6 +17,11 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
         {
             try
             {
+                if (string.IsNullOrEmpty(data))
+                {
+                    return new IdsContext();
+                }
+
                 var unEncData = Encoding.UTF8.GetString(MachineKey.Unprotect(Convert.FromBase64String(data)));
                 return JsonConvert.DeserializeObject<IdsContext>(unEncData);
             }
