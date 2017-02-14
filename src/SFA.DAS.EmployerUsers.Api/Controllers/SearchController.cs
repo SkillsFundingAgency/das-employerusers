@@ -7,9 +7,9 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
     [RoutePrefix("api/users/search")]
     public class SearchController : ApiController
     {
-        private readonly UserOrchestrator _orchestrator;
+        private readonly SearchOrchestrator _orchestrator;
 
-        public SearchController(UserOrchestrator orchestrator)
+        public SearchController(SearchOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
         }

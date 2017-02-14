@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerUsers.Api.UnitTests.SearchControllerTests
             Logger = new Mock<ILogger>();
             UrlHelper = new Mock<UrlHelper>();
 
-            var orchestrator = new UserOrchestrator(Mediator.Object, Logger.Object);
+            var orchestrator = new SearchOrchestrator(Mediator.Object, Logger.Object);
             Controller = new SearchController(orchestrator);
             Controller.Url = UrlHelper.Object;
         }
