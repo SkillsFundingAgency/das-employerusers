@@ -39,11 +39,11 @@ namespace SFA.DAS.EmployerUsers.Web
                 {
                     factory.AuthorizationCodeStore = new Registration<IAuthorizationCodeStore>(typeof(RedisAuthorizationCodeStore));
                 }
-                
+
                 idsrvApp.UseIdentityServer(new IdentityServerOptions
                 {
                     SiteName = "Digital Apprenticeship Service",
-                   
+
                     CspOptions = new CspOptions()
                     {
                         FontSrc = "* data:",
@@ -52,7 +52,11 @@ namespace SFA.DAS.EmployerUsers.Web
                         Enabled = false
                     },
                     SigningCertificate = LoadCertificate(),
-
+                    Endpoints = new EndpointOptions
+                    {
+                        EnableCheckSessionEndpoint = false,
+                        
+                    },
                     Factory = factory,
 
                     AuthenticationOptions = new AuthenticationOptions
