@@ -51,6 +51,22 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.FileSystem
             return users.ToArray();
         }
 
+        public async Task<User[]> GetUsers(int pageSize, int pageNumber)
+        {
+            var users = new List<User>();
+            var userFiles = GetDataFiles();
+
+            foreach (var path in userFiles)
+            {
+                var user = await ReadFile<User>(path);
+
+                users.Add(user);
+
+            }
+
+            return users.ToArray();
+        }
+
         public async Task Create(User registerUser)
         {
             await CreateFile(registerUser, registerUser.Id);
@@ -69,6 +85,48 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.FileSystem
 
             return Task.FromResult<object>(null);
         }
-       
+
+        public async Task<int> GetUserCount()
+        {
+            var users = await this.GetUsers(int.MaxValue, 0);
+            return users.Length;
+        }
+
+        public async Task<Users> SearchUsers(string criteria, int pageSize, int pageNumber)
+        {
+            var matchedUsers = new List<User>();
+            var userFiles = GetDataFiles();
+
+            foreach (var path in userFiles)
+            {
+                var user = await ReadFile<User>(path);
+                if (UserMatchesSearchCriteria(user, criteria))
+                {
+                    matchedUsers.Add(user);
+                }
+            }
+
+            return new Users { UserCount = matchedUsers.Count, UserList = matchedUsers.ToArray() };
+        }
+
+        private bool UserMatchesSearchCriteria(User user, string criteria)
+        {
+            if (user.Email.IndexOf(criteria, StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                return true;
+            }
+
+            if (user.FirstName.IndexOf(criteria, StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                return true;
+            }
+
+            if (user.LastName.IndexOf(criteria, StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

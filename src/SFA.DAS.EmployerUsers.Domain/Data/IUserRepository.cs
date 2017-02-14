@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerUsers.Domain.Data
 {
@@ -7,9 +8,11 @@ namespace SFA.DAS.EmployerUsers.Domain.Data
         Task<User> GetById(string id);
         Task<User> GetByEmailAddress(string emailAddress);
         Task<User[]> GetUsersWithExpiredRegistrations();
-
+        Task<User[]> GetUsers(int pageSize, int pageNumber);
         Task Create(User registerUser);
         Task Update(User user);
         Task Delete(User user);
+        Task<int> GetUserCount();
+        Task<Users> SearchUsers(string criteria, int pageSize, int pageNumber);
     }
 }
