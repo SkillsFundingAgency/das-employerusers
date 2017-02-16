@@ -10,7 +10,7 @@
       <Setting name="LoggingRedisConnectionString" value="" />
       <Setting name="LoggingRedisKey" value="" />
       <Setting name="InstrumentationKey" value="" />
-      <Setting name="idaAudience" value="https://citizenazuresfabisgov.onmicrosoft.com/eas-api" />
+      <Setting name="idaAudience" value="https://citizenazuresfabisgov.onmicrosoft.com/empu-api" />
       <Setting name="idaTenant" value="citizenazuresfabisgov.onmicrosoft.com" />
     </ConfigurationSettings>
     <Certificates>
