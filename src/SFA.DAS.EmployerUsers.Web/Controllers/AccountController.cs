@@ -256,7 +256,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         public async Task<ActionResult> ConfirmResend()
         {
             await _accountOrchestrator.ResendActivationCode(new ResendActivationCodeViewModel { UserId = GetLoggedInUserId() });
-            
+
             return RedirectToAction("Confirm");
         }
 
@@ -295,7 +295,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 }
             };
             return View("Confirm", response);
-            
+
         }
 
 
@@ -324,37 +324,49 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("account/unlock")]
-        public async Task<ActionResult> Unlock(UnlockUserViewModel unlockUserViewModel, string command)
+        public async Task<ActionResult> Unlock(UnlockUserViewModel unlockUserViewModel)
         {
             if (string.IsNullOrWhiteSpace(unlockUserViewModel.ReturnUrl))
             {
                 unlockUserViewModel.ReturnUrl = _owinWrapper.GetIdsReturnUrl();
             }
-            if (command.ToLower() == "resend")
-            {
-                var result = await _accountOrchestrator.ResendUnlockCode(unlockUserViewModel);
 
-                return View("Unlock", result);
-            }
-            else
-            {
-                var result = await _accountOrchestrator.UnlockUser(unlockUserViewModel);
+            var result = await _accountOrchestrator.UnlockUser(unlockUserViewModel);
 
-                if (result.Data.Valid)
+            if (result.Data.Valid)
+            {
+                if (!string.IsNullOrEmpty(result.Data.ReturnUrl))
                 {
-                    if (!string.IsNullOrEmpty(result.Data.ReturnUrl))
-                    {
-                        TempData["AccountUnlocked"] = true;
-                        return new RedirectResult(result.Data.ReturnUrl);
-                    }
-                    return await RedirectToEmployerPortal();
+                    TempData["AccountUnlocked"] = true;
+                    return new RedirectResult(result.Data.ReturnUrl);
                 }
-                result.Data.UnlockCode = string.Empty;
-                return View("Unlock", result);
+                return await RedirectToEmployerPortal();
             }
+            result.Data.UnlockCode = string.Empty;
+            return View("Unlock", result);
+
         }
 
+        [HttpGet]
+        [Route("account/requestunlock")]
+        public ActionResult RequestUnlockCode()
+        {
+            return View(new UnlockUserViewModel());
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("account/requestunlock")]
+        public async Task<ActionResult> RequestUnlockCode(UnlockUserViewModel unlockUserViewModel)
+        {
+            if (string.IsNullOrWhiteSpace(unlockUserViewModel.ReturnUrl))
+            {
+                unlockUserViewModel.ReturnUrl = _owinWrapper.GetIdsReturnUrl();
+            }
+            var result = await _accountOrchestrator.ResendUnlockCode(unlockUserViewModel);
+
+            return View("Unlock", result);
+        }
 
         [HttpGet]
         [Route("account/forgottencredentials")]
