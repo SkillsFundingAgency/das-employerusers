@@ -831,6 +831,7 @@
     </Content>
     <Content Include="Views\Home\Help.cshtml" />
     <Content Include="Views\Home\Privacy.cshtml" />
+    <Content Include="Views\Account\RequestUnlockCode.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
