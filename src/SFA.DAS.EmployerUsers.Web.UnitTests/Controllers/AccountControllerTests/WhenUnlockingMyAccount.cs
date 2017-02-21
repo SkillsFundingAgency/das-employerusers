@@ -92,7 +92,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             var unlockUserViewModel = new UnlockUserViewModel {Email = LoggedInEmail, UnlockCode = unlockCode};
 
             //Act
-            await _accountController.Unlock(unlockUserViewModel,"");
+            await _accountController.Unlock(unlockUserViewModel);
 
             //Assert
             _accountOrchestrator.Verify(x=>x.UnlockUser(It.Is<UnlockUserViewModel>(c=>c.Email == LoggedInEmail && c.UnlockCode == unlockCode)));
@@ -106,7 +106,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             var unlockUserViewModel = new UnlockUserViewModel { Email = LoggedInEmail, UnlockCode = unlockCode };
 
             //Act
-            var actual = await _accountController.Unlock(unlockUserViewModel, "");
+            var actual = await _accountController.Unlock(unlockUserViewModel);
 
             //Assert
             Assert.IsNotNull(actual);
@@ -124,7 +124,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             var unlockUserViewModel = new UnlockUserViewModel { Email = LoggedInEmail, UnlockCode = unlockCode };
 
             //Act
-            var actual = await _accountController.Unlock(unlockUserViewModel, "");
+            var actual = await _accountController.Unlock(unlockUserViewModel);
 
             //Assert
             Assert.IsNotNull(actual);
@@ -141,7 +141,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             _accountOrchestrator.Setup(x => x.ResendUnlockCode(It.IsAny<UnlockUserViewModel>())).ReturnsAsync(new OrchestratorResponse<UnlockUserViewModel> { Data = new UnlockUserViewModel { UnlockCodeSent = true}});
 
             //Act
-            var actual = await _accountController.Unlock(unlockUserViewModel, "Resend");
+            var actual = await _accountController.RequestUnlockCode(unlockUserViewModel);
 
             //Assert
             _accountOrchestrator.Verify(x=>x.ResendUnlockCode(unlockUserViewModel),Times.Once);

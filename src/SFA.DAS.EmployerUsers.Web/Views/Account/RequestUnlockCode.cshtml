@@ -1,0 +1,48 @@
+﻿@model SFA.DAS.EmployerUsers.Web.Models.UnlockUserViewModel
+@{
+    ViewBag.PageID = "page-request-unlock-code";
+    ViewBag.Title = "Request unlock code";
+    ViewBag.HideSigninLink = true;
+    ViewBag.HideCookieMessage = true;
+}
+
+<a href="@Url.Action("ResetFlow","Account")" class="link-back">Back</a>
+
+@if (!Model.Valid)
+{
+    <div class="error-summary" role="group" tabindex="-1">
+        <h1 class="heading-medium error-summary-heading" id="error-summary-heading"> Errors to fix </h1>
+        <p>Check the following details:</p>
+        <ul class="error-summary-list">
+        @if (!string.IsNullOrEmpty(Model.EmailError))
+            {
+            <li>
+                <a href="#@(nameof(Model.Email))">@Model.EmailError</a>
+            </li>
+        }
+        </ul>
+    </div>
+}
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-xlarge">@ViewBag.Title</h1>
+        <p>Enter your email address to get an account unlock code.</p>
+        <form method="post" action="@Url.Action("RequestUnlockCode")" novalidate  autocomplete="off">
+            @Html.AntiForgeryToken()
+            <div class="form-group @(!string.IsNullOrEmpty(Model.EmailError) ? "error" : "") ">
+                <label for="Email">
+                    <span class="form-label-bold">Email</span>
+                    @if (!string.IsNullOrEmpty(Model.EmailError)) { 
+                    <span class="error-message" id="error-email">@Model.EmailError</span>
+                    }
+                </label>
+                <input class="form-control" id="Email" name="Email" type="email" value="@Model.Email"
+                        aria-required="true" @(!string.IsNullOrEmpty(Model.EmailError) ? "aria-invalid=true aria-describedby=error-email" : "" )>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="button" id="forgottenpassword-button">Get unlock code</button>
+            </div>
+            <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl"/>
+        </form>
+    </div>
+</div>
