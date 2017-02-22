@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Mvc;
+
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
@@ -29,7 +31,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             base.Arrange();
 
             AddUserToContext(UserId);
-
+            
             _accountOrchestrator = new Mock<AccountOrchestrator>();
             _accountOrchestrator.Setup(o => o.ChangePassword(It.IsAny<ChangePasswordViewModel>()))
                 .Throws(new System.Exception("Called AccountOrchestrator.ChangePassword with incorrect model"));
@@ -46,7 +48,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 
             _configurationService = new Mock<IConfigurationService>();
 
-            _controller = new AccountController(_accountOrchestrator.Object, _owinWrapper.Object, new IdentityServerConfiguration());
+            _controller = new AccountController(_accountOrchestrator.Object, _owinWrapper.Object, new IdentityServerConfiguration(), _logger.Object);
             _controller.ControllerContext = _controllerContext.Object;
 
             _model = new ChangePasswordViewModel

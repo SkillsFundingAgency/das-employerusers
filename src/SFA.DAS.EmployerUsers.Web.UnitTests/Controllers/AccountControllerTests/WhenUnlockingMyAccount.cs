@@ -31,7 +31,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             _owinWrapper = new Mock<IOwinWrapper>();
 
             var identityServerConfiguration = new IdentityServerConfiguration {EmployerPortalUrl = EmployerPortalUrl};
-            _accountController = new AccountController(_accountOrchestrator.Object,_owinWrapper.Object, identityServerConfiguration);
+            _accountController = new AccountController(_accountOrchestrator.Object,_owinWrapper.Object, identityServerConfiguration, _logger.Object);
             _accountOrchestrator.Setup(x => x.UnlockUser(It.IsAny<UnlockUserViewModel>())).ReturnsAsync(new OrchestratorResponse<UnlockUserViewModel>() { Data = new UnlockUserViewModel {ErrorDictionary = new Dictionary<string, string>() }});
             _accountController.ControllerContext = _controllerContext.Object;
         }

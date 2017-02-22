@@ -40,7 +40,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 
 
 
-            _controller = new AccountController(_orchestrator.Object, _owinWrapper.Object, null);
+            _controller = new AccountController(_orchestrator.Object, _owinWrapper.Object, null, _logger.Object);
             _controller.ControllerContext = _controllerContext.Object;
         }
 

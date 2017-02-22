@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using IdentityServer3.Core;
+using NLog;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Models.SFA.DAS.EAS.Web.Models;
@@ -20,12 +21,14 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         private readonly AccountOrchestrator _accountOrchestrator;
         private readonly IOwinWrapper _owinWrapper;
         private readonly IdentityServerConfiguration _identityServerConfiguration;
+        private readonly ILogger _logger;
 
-        public AccountController(AccountOrchestrator accountOrchestrator, IOwinWrapper owinWrapper, IdentityServerConfiguration identityServerConfiguration)
+        public AccountController(AccountOrchestrator accountOrchestrator, IOwinWrapper owinWrapper, IdentityServerConfiguration identityServerConfiguration, ILogger logger)
         {
             _accountOrchestrator = accountOrchestrator;
             _owinWrapper = owinWrapper;
             _identityServerConfiguration = identityServerConfiguration;
+            _logger = logger;
         }
 
 
@@ -106,7 +109,8 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 var signinMessage = _owinWrapper.GetSignInMessage(id);
                 if (signinMessage == null)
                 {
-                    throw new NullReferenceException($"Could not find signin message for id {id}");
+                   _logger.Info($"Could not find signin message for id {id}, Redirecting to Employer Portal");
+                    return await RedirectToEmployerPortal();
                 }
                 return Redirect(signinMessage.ReturnUrl);
             }

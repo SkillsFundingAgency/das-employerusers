@@ -33,7 +33,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 
             _configurationService = new Mock<IConfigurationService>();
 
-            _accountController = new AccountController(_accountOrchestrator.Object, null, new IdentityServerConfiguration());
+            _accountController = new AccountController(_accountOrchestrator.Object, null, new IdentityServerConfiguration(), _logger.Object);
             _accountController.ControllerContext = _controllerContext.Object;
         }
 

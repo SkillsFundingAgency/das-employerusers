@@ -32,7 +32,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             _urlHelper.Setup(h => h.Action("Index", "Home", null, "https"))
                 .Returns("https://localhost/");
 
-            _accountController = new AccountController(_accountOrchestator.Object, null, null);
+            _accountController = new AccountController(_accountOrchestator.Object, null, null, _logger.Object);
             _accountController.ControllerContext = _controllerContext.Object;
             _accountController.Url = _urlHelper.Object;
         }
