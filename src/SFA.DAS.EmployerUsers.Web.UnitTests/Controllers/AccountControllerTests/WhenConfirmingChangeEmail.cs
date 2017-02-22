@@ -42,7 +42,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 
             _owinWrapper = new Mock<IOwinWrapper>();
 
-            _controller = new AccountController(_accountOrchestrator.Object, _owinWrapper.Object, new IdentityServerConfiguration());
+            _controller = new AccountController(_accountOrchestrator.Object, _owinWrapper.Object, new IdentityServerConfiguration(), _logger.Object);
             _controller.ControllerContext = _controllerContext.Object;
 
             _model = new ConfirmChangeEmailViewModel

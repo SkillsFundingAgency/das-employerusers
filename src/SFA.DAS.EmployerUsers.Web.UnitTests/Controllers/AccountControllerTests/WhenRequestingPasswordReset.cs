@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
@@ -13,7 +15,7 @@ using SFA.DAS.EmployerUsers.Web.Orchestrators;
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 {
     [TestFixture]
-    public class WhenRequestingPasswordReset
+    public class WhenRequestingPasswordReset 
     {
         private Mock<AccountOrchestrator> _accountOrchestrator;
         private Mock<IOwinWrapper> _owinWrapper;
@@ -21,11 +23,12 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         private AccountController _accountController;
         private RequestPasswordResetViewModel _requestPasswordResetViewModel;
         private RequestPasswordResetViewModel _errorResponse;
+        private Mock<ILogger> _logger;
 
         [SetUp]
         public void Setup()
         {
-
+            _logger = new Mock<ILogger>();
             _requestPasswordResetViewModel = new RequestPasswordResetViewModel
             {
                 Email = "test.user@test.org"
@@ -45,7 +48,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 
             _owinWrapper = new Mock<IOwinWrapper>();
             _configurationService = new Mock<IConfigurationService>();
-            _accountController = new AccountController(_accountOrchestrator.Object, _owinWrapper.Object, new IdentityServerConfiguration());
+            _accountController = new AccountController(_accountOrchestrator.Object, _owinWrapper.Object, new IdentityServerConfiguration(), _logger.Object);
 
         }
 

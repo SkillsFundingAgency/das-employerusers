@@ -23,7 +23,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             _accountOrchestrator = new Mock<AccountOrchestrator>();
             _accountOrchestrator.Setup(o => o.RequestConfirmAccount(It.IsAny<string>())).Returns(Task.FromResult(true));
 
-            _controller = new AccountController(_accountOrchestrator.Object, null, null);
+            _controller = new AccountController(_accountOrchestrator.Object, null, null, _logger.Object);
             _controller.ControllerContext = _controllerContext.Object;
         }
 

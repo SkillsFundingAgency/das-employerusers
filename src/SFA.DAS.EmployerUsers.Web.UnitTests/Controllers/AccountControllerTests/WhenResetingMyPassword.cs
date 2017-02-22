@@ -39,7 +39,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             _owinWrapper.Setup(x => x.GetIdsReturnUrl()).Returns(ReturnUrl);
 
             var identityServerConfiguration = new IdentityServerConfiguration { EmployerPortalUrl = EmployerPortalReturnUrl };
-            _controller = new AccountController(_orchestrator.Object, _owinWrapper.Object, identityServerConfiguration);
+            _controller = new AccountController(_orchestrator.Object, _owinWrapper.Object, identityServerConfiguration, _logger.Object);
             _controller.ControllerContext = _controllerContext.Object;
         }
 
