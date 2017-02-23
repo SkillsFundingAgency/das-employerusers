@@ -66,6 +66,7 @@
     </Compile>
     <Compile Include="Auditing\ChangeEmail\CompleteChangeEmailAuditMessage.cs" />
     <Compile Include="Auditing\ChangeEmail\RequestChangeEmailAuditMessage.cs" />
+    <Compile Include="Auditing\Delete\DeleteUserAuditMessage.cs" />
     <Compile Include="Auditing\Login\AccountLockedAuditMessage.cs" />
     <Compile Include="Auditing\EmployerUsersAuditMessage.cs" />
     <Compile Include="Auditing\Login\FailedLoginAuditMessage.cs" />
