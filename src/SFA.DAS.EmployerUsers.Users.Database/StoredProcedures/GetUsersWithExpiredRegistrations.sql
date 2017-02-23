@@ -11,10 +11,12 @@ AS
 		IsActive,
 		FailedLoginAttempts,
 		IsLocked
-	FROM [User] u
-	LEFT JOIN UserSecurityCode sc
-		ON u.Id = sc.UserId
-		AND sc.ExpiryTime > GETDATE()
-	WHERE u.IsActive = 0
-	AND sc.Code IS NULL
+	FROM [User]
+	WHERE IsActive = 0
+	AND Id NOT IN
+	(
+		SELECT UserId
+		FROM UserSecurityCode
+		WHERE ExpiryTime >= GETDATE()
+	)
 GO

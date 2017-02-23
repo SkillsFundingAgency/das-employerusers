@@ -55,6 +55,7 @@
       <HintPath>..\packages\NUnit.3.2.1\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SFA.DAS.Audit.Types, Version=1.0.0.20461, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="SFA.DAS.CodeGenerator, Version=1.0.0.4198, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.CodeGenerator.1.0.0.4198\lib\net45\SFA.DAS.CodeGenerator.dll</HintPath>
       <Private>True</Private>
