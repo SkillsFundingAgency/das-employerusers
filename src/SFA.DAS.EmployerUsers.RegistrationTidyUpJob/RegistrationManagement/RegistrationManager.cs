@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Azure;
 using NLog;
 using SFA.DAS.EmployerUsers.Application.Commands.DeleteUser;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUsersWithExpiredRegistrations;
@@ -21,6 +22,8 @@ namespace SFA.DAS.EmployerUsers.RegistrationTidyUpJob.RegistrationManagement
         public async Task RemoveExpiredRegistrations()
         {
             _logger.Info("Starting deletion of expired registrations");
+
+            _logger.Info($"AuditApiBaseUrl: {CloudConfigurationManager.GetSetting("AuditApiBaseUrl")}");
 
             try
             {
