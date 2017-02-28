@@ -58,6 +58,14 @@ namespace SFA.DAS.EmployerUsers.Web
         protected void Application_Error()
         {
             var ex = Server.GetLastError();
+            if (ex is HttpException)
+            {
+                var code = ((HttpException)ex).GetHttpCode();
+                if (code == 404)
+                {
+                    return;
+                }
+            }
             LogManager.GetCurrentClassLogger().Error(ex, $"Application_Error - {ex.Message}");
         }
     }
