@@ -55,6 +55,7 @@
     <Compile Include="EmployerUsersApiClient.cs" />
     <Compile Include="EmployerUsersApiConfiguration.cs" />
     <Compile Include="IEmployerUsersApiClient.cs" />
+    <Compile Include="IEmployerUsersApiConfiguration.cs" />
     <Compile Include="ISecureHttpClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecureHttpClient.cs" />
