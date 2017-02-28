@@ -7,10 +7,10 @@ namespace SFA.DAS.EmployerUsers.Api.Client
 {
     public class EmployerUsersApiClient : IEmployerUsersApiClient
     {
-        private readonly EmployerUsersApiConfiguration _configuration;
+        private readonly IEmployerUsersApiConfiguration _configuration;
         private ISecureHttpClient _secureHttpClient;
 
-        public EmployerUsersApiClient(EmployerUsersApiConfiguration configuration, ISecureHttpClient secureHttpClient)
+        public EmployerUsersApiClient(IEmployerUsersApiConfiguration configuration, ISecureHttpClient secureHttpClient)
         {
             if (secureHttpClient == null)
                 throw new ArgumentNullException(nameof(secureHttpClient));
