@@ -21,6 +21,7 @@ namespace SFA.DAS.EmployerUsers.RegistrationTidyUpJob.DependencyResolution
                 });
 
             For<IUserRepository>().Use<SqlServerUserRepository>();
+            RegisterEnvironmentSpecificInstances();
 
             For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => ctx.GetInstance(t));
             For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => ctx.GetAllInstances(t));
