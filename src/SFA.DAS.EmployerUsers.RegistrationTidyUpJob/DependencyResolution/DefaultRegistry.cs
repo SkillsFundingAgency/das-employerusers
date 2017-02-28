@@ -45,7 +45,7 @@ namespace SFA.DAS.EmployerUsers.RegistrationTidyUpJob.DependencyResolution
             else
             {
                 For<IAuditApiClient>().Use<AuditApiClient>();
-                For<AuditApiConfiguration>().Use(() => new AuditApiConfiguration
+                For<IAuditApiConfiguration>().Use(() => new AuditApiConfiguration
                 {
                     ApiBaseUrl = CloudConfigurationManager.GetSetting("AuditApiBaseUrl"),
                     ClientId = CloudConfigurationManager.GetSetting("AuditApiClientId"),
