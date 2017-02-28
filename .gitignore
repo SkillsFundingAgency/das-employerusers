@@ -241,3 +241,4 @@ src/tools/**/*.*
 # App specific
 **/App_Data/**/*.*
 *.jfm
+src/Tools/PhantomJS/tools/phantomjs/ChangeLog
