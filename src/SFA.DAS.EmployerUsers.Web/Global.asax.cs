@@ -63,6 +63,7 @@ namespace SFA.DAS.EmployerUsers.Web
                 var code = ((HttpException)ex).GetHttpCode();
                 if (code == 404)
                 {
+                    LogManager.GetCurrentClassLogger().Info(ex, $"Page Not Found - {ex.Message}");
                     return;
                 }
             }
