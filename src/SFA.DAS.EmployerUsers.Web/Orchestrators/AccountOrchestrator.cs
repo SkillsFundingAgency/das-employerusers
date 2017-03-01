@@ -129,8 +129,12 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             return model;
         }
 
-        public virtual async Task<RegisterViewModel> Register(RegisterViewModel registerUserViewModel, string returnUrl)
+        public virtual async Task<OrchestratorResponse<RegisterViewModel>> Register(RegisterViewModel registerUserViewModel, string returnUrl)
         {
+            var returnModel = new OrchestratorResponse<RegisterViewModel>
+            {
+                Data = registerUserViewModel
+            };
             try
             {
                 await _mediator.SendAsync(new RegisterUserCommand
@@ -155,18 +159,31 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             catch (InvalidRequestException ex)
             {
                 _logger.Info(ex, ex.Message);
-                registerUserViewModel.ErrorDictionary = ex.ErrorMessages;
+                returnModel.Data.ErrorDictionary = ex.ErrorMessages;
+
+                returnModel.FlashMessage = new FlashMessageViewModel
+                {
+                    Headline = "Errors to fix",
+                    Message = "Check the following details:",
+                    Severity = FlashMessageSeverityLevel.Error,
+                    ErrorMessages = ex.ErrorMessages
+                };
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, ex.Message);
-                registerUserViewModel.ErrorDictionary = new System.Collections.Generic.Dictionary<string, string>
+                returnModel.FlashMessage = new FlashMessageViewModel
                 {
-                    {"", "Unexpected error occured"}
+                    Headline = "Errors to fix",
+                    Message = "Check the following details:",
+                    Severity = FlashMessageSeverityLevel.Error,
+                    ErrorMessages = new Dictionary<string, string> { { "", "Unexpected error occured" } }
                 };
             }
 
-            return registerUserViewModel;
+            returnModel.Data = registerUserViewModel;
+
+            return returnModel;
         }
 
         public virtual async Task<ActivateUserViewModel> ActivateUser(ActivateUserViewModel model)

@@ -53,7 +53,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             //Assert
             Assert.IsNotNull(actual);
-            Assert.IsAssignableFrom<RegisterViewModel>(actual);
+            Assert.IsAssignableFrom<OrchestratorResponse<RegisterViewModel>>(actual);
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
                                                                            && p.ConfirmPassword.Equals(_registerUserViewModel.ConfirmPassword)
                                                                            && p.HasAcceptedTermsAndConditions == _registerUserViewModel.HasAcceptedTermsAndConditions
                                                                            && p.ReturnUrl == ReturnUrl)), Times.Once);
-            Assert.IsTrue(actual.Valid);
+            Assert.IsTrue(actual.Data.Valid);
         }
 
         [Test]
@@ -124,7 +124,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         }
 
         [Test]
-        public async Task ThenFalseIsReturnedWhenTheRegisterUserCommandHandlerThrowsAnException()
+        public async Task ThenTheErrorDictionaryIsPopulatedWhenTheRegisterUserCommandHandlerThrowsAnException()
         {
             //Arrange
             _mediator.Setup(x => x.SendAsync(It.IsAny<RegisterUserCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { { "FirstName", "Some Error" } }));
@@ -133,7 +133,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _accountOrchestrator.Register(_registerUserViewModel, ReturnUrl);
 
             //Assert
-            Assert.IsFalse(actual.Valid);
+            Assert.IsNotEmpty(actual.FlashMessage.ErrorMessages);
 
         }
 
@@ -147,9 +147,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _accountOrchestrator.Register(_registerUserViewModel, ReturnUrl);
 
             //Assert
-            Assert.IsAssignableFrom<RegisterViewModel>(actual);
-            Assert.Contains(new KeyValuePair<string, string>("FirstName", "Some Error"), actual.ErrorDictionary);
-            Assert.AreEqual("Some Error", actual.FirstNameError);
+            Assert.IsAssignableFrom<OrchestratorResponse<RegisterViewModel>>(actual);
+            Assert.Contains(new KeyValuePair<string, string>("FirstName", "Some Error"), actual.FlashMessage.ErrorMessages);
+            Assert.AreEqual("Some Error", actual.Data.FirstNameError);
         }
 
         [Test]
@@ -175,11 +175,11 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _accountOrchestrator.Register(_registerUserViewModel, ReturnUrl);
 
             //Assert
-            Assert.AreEqual(firstNameError, actual.FirstNameError);
-            Assert.AreEqual(lastNameError, actual.LastNameError);
-            Assert.AreEqual(emailError, actual.EmailError);
-            Assert.AreEqual(passwordError, actual.PasswordError);
-            Assert.AreEqual(confirmPasswordError, actual.ConfirmPasswordError);
+            Assert.AreEqual(firstNameError, actual.Data.FirstNameError);
+            Assert.AreEqual(lastNameError, actual.Data.LastNameError);
+            Assert.AreEqual(emailError, actual.Data.EmailError);
+            Assert.AreEqual(passwordError, actual.Data.PasswordError);
+            Assert.AreEqual(confirmPasswordError, actual.Data.ConfirmPasswordError);
         }
 
     }
