@@ -1,108 +1,57 @@
-﻿@model SFA.DAS.EmployerUsers.Web.Models.RegisterViewModel
+﻿@model SFA.DAS.EmployerUsers.Web.Models.OrchestratorResponse<SFA.DAS.EmployerUsers.Web.Models.RegisterViewModel>
 @{
     ViewBag.PageID = "page-register";
     ViewBag.Title = "Get set up as a user";
     ViewBag.HideSigninLink = "true";
 }
 
-@if (!Model.Valid)
-{
-    <div class="error-summary" role="group" tabindex="-1">
-        <h1 class="heading-medium error-summary-heading" id="error-summary-heading"> Errors to fix </h1>
-        <p>Check the following details:</p>
-        <ul class="error-summary-list">
-        @if (!string.IsNullOrEmpty(Model.GeneralError))
-        {
-            <li>
-                @Model.GeneralError
-            </li>
-        }
-        @if (!string.IsNullOrEmpty(Model.FirstNameError))
-        {
-            <li>
-                <a href="#@(nameof(Model.FirstName))">@Model.FirstNameError</a>
-            </li>
-        }
-        @if (!string.IsNullOrEmpty(Model.LastNameError))
-        {
-            <li>
-                <a href="#@(nameof(Model.LastName))">@Model.LastNameError</a>
-            </li>
-        }
-        @if (!string.IsNullOrEmpty(Model.EmailError))
-        {
-            <li>
-                <a href="#@(nameof(Model.Email))">@Model.EmailError</a>
-            </li>
-        }
-        @if (!string.IsNullOrEmpty(Model.PasswordError))
-        {
-            <li>
-                <a href="#@(nameof(Model.Password))">@Model.PasswordError</a>
-            </li>
-        }
-        @if (!string.IsNullOrEmpty(Model.ConfirmPasswordError))
-        {
-            <li>
-                <a href="#@(nameof(Model.ConfirmPassword))">@Model.ConfirmPasswordError</a>
-            </li>
-        }
-        @if (!string.IsNullOrEmpty(Model.HasAcceptedTermsAndConditionsError))
-        {
-            <li>
-                <a href="#@(nameof(Model.HasAcceptedTermsAndConditions))">@Model.HasAcceptedTermsAndConditionsError</a>
-            </li>
-        }
-        </ul>
-    </div>
-}
 <h1 class="heading-xlarge">@ViewBag.Title</h1>
-<form method="post" action="@Url.Content("~/identity/employer/register")?returnUrl=@Url.Encode(Model.ReturnUrl)" novalidate  autocomplete="off" id="form-register">
+<form method="post" action="@Url.Content("~/identity/employer/register")?returnUrl=@Url.Encode(Model.Data.ReturnUrl)" novalidate  autocomplete="off" id="form-register">
     @Html.AntiForgeryToken()
 
     <fieldset>
         <legend class="visuallyhidden">email address and password to sign in</legend>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.FirstNameError) ? "error" : "") ">
+        <div class="form-group @(!string.IsNullOrEmpty(Model.Data.FirstNameError) ? "error" : "") ">
             <label for="FirstName">
                 <span class="form-label-bold">First name</span>
-                <span class="error-message" id="error-firstname">@Model.FirstNameError</span>
+                <span class="error-message" id="error-firstname">@Model.Data.FirstNameError</span>
             </label>
-            <input class="form-control" id="FirstName" name="FirstName" value="@Model.FirstName" required="required" aria-required="true" 
-                   @(!string.IsNullOrEmpty(Model.FirstNameError) ? "aria-invalid=true aria-describedby=error-firstname" : "" )>
+            <input class="form-control" id="FirstName" name="FirstName" value="@Model.Data.FirstName" required="required" aria-required="true" 
+                   @(!string.IsNullOrEmpty(Model.Data.FirstNameError) ? "aria-invalid=true aria-describedby=error-firstname" : "" )>
         </div>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.LastNameError) ? "error" : "") ">
+        <div class="form-group @(!string.IsNullOrEmpty(Model.Data.LastNameError) ? "error" : "") ">
             <label for="LastName">
                 <span class="form-label-bold">Last name</span>
-                <span class="error-message" id="error-lastname">@Model.LastNameError</span>
+                <span class="error-message" id="error-lastname">@Model.Data.LastNameError</span>
             </label>
-            <input class="form-control" id="LastName" name="LastName" value="@Model.LastName" required="required" aria-required="true" 
-                   @(!string.IsNullOrEmpty(Model.LastNameError) ? "aria-invalid=true aria-describedby=error-lastname" : "" )>
+            <input class="form-control" id="LastName" name="LastName" value="@Model.Data.LastName" required="required" aria-required="true" 
+                   @(!string.IsNullOrEmpty(Model.Data.LastNameError) ? "aria-invalid=true aria-describedby=error-lastname" : "" )>
         </div>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.EmailError) ? "error" : "") ">
+        <div class="form-group @(!string.IsNullOrEmpty(Model.Data.EmailError) ? "error" : "") ">
             <label for="Email">
                 <span class="form-label-bold">Email</span>
                 <span class="form-hint">We'll send you an email to confirm your identity.</span>
-                <span class="error-message" id="error-email">@Model.EmailError</span>
+                <span class="error-message" id="error-email">@Model.Data.EmailError</span>
             </label>
-            <input class="form-control" id="Email" name="Email" type="text" value="@Model.Email" required="required" aria-required="true" autocomplete="off"
-                   @(!string.IsNullOrEmpty(Model.EmailError) ? "aria-invalid=true aria-describedby=error-email" : "" )>
+            <input class="form-control" id="Email" name="Email" type="text" value="@Model.Data.Email" required="required" aria-required="true" autocomplete="off"
+                   @(!string.IsNullOrEmpty(Model.Data.EmailError) ? "aria-invalid=true aria-describedby=error-email" : "" )>
         </div>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.PasswordError) ? "error" : "") ">
+        <div class="form-group @(!string.IsNullOrEmpty(Model.Data.PasswordError) ? "error" : "") ">
             <label for="Password">
                 <span class="form-label-bold">Create new password</span>
                 <span class="form-hint">Password requires upper and lowercase letters, a number and at least 8 characters</span>
-                <span class="error-message" id="error-password">@Model.PasswordError</span>     
+                <span class="error-message" id="error-password">@Model.Data.PasswordError</span>     
             </label> 
             <input class="form-control" id="Password" type="password" name="Password" required="required" aria-required="true" autocomplete="off"
-                   @(!string.IsNullOrEmpty(Model.PasswordError) ? "aria-invalid=true aria-describedby=error-password" : "" )>        
+                   @(!string.IsNullOrEmpty(Model.Data.PasswordError) ? "aria-invalid=true aria-describedby=error-password" : "" )>        
         </div>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.ConfirmPasswordError) ? "error" : "") ">
+        <div class="form-group @(!string.IsNullOrEmpty(Model.Data.ConfirmPasswordError) ? "error" : "") ">
             <label for="ConfirmPassword">
                 <span class="form-label-bold">Confirm password</span>
-                <span class="error-message" id="error-confirmpassword">@Model.ConfirmPasswordError</span>
+                <span class="error-message" id="error-confirmpassword">@Model.Data.ConfirmPasswordError</span>
             </label>
             <input class="form-control" id="ConfirmPassword" type="password" name="ConfirmPassword" required="required" aria-required="true" autocomplete="off"
-                   @(!string.IsNullOrEmpty(Model.ConfirmPasswordError) ? "aria-invalid=true aria-describedby=error-confirmpassword" : "" )>
+                   @(!string.IsNullOrEmpty(Model.Data.ConfirmPasswordError) ? "aria-invalid=true aria-describedby=error-confirmpassword" : "" )>
             
         </div>
         <div class="panel">

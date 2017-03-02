@@ -189,8 +189,9 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
             HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
 
+            var viewModel = new OrchestratorResponse<RegisterViewModel> { Data = new RegisterViewModel { ReturnUrl = returnUrl }};
 
-            return View(new RegisterViewModel { ReturnUrl = returnUrl });
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -212,16 +213,16 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
             var registerResult = await _accountOrchestrator.Register(model, returnUrl);
 
-            if (registerResult.Valid)
+            if (registerResult?.FlashMessage?.ErrorMessages == null || !registerResult.FlashMessage.ErrorMessages.Any())
             {
                 return RedirectToAction("Confirm");
             }
-
-            model.ConfirmPassword = string.Empty;
-            model.Password = string.Empty;
-            model.ReturnUrl = returnUrl;
-
-            return View("Register", model);
+            
+            registerResult.Data.ConfirmPassword = string.Empty;
+            registerResult.Data.Password = string.Empty;
+            registerResult.Data.ReturnUrl = returnUrl;
+            
+            return View("Register", registerResult);
         }
 
 

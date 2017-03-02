@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Web.Controllers;
 using SFA.DAS.EmployerUsers.Web.Models;
+using SFA.DAS.EmployerUsers.Web.Models.SFA.DAS.EAS.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
@@ -42,7 +43,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         {
             //Arrange
             _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>(), It.IsAny<string>()))
-                .ReturnsAsync(new RegisterViewModel());
+                .ReturnsAsync(new OrchestratorResponse<RegisterViewModel> {Data = new RegisterViewModel(), FlashMessage = new FlashMessageViewModel()});
 
             //Act
             await _accountController.Register(new RegisterViewModel(), ReturnUrl);
@@ -57,7 +58,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             //Arrange
             AddUserToContext();
             _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>(), It.IsAny<string>()))
-                .ReturnsAsync(new RegisterViewModel());
+                .ReturnsAsync(new OrchestratorResponse<RegisterViewModel> { Data = new RegisterViewModel() });
 
             //Act
             var actual = await _accountController.Register(new RegisterViewModel(), ReturnUrl);
@@ -75,7 +76,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         {
             //Arrange
             _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>(), It.IsAny<string>()))
-                .ReturnsAsync(new RegisterViewModel { ErrorDictionary = new Dictionary<string, string> { { "Error", "Error" } } });
+                .ReturnsAsync(new OrchestratorResponse<RegisterViewModel> {Data=new RegisterViewModel(), FlashMessage = new FlashMessageViewModel {ErrorMessages = new Dictionary<string, string> { { "Error", "Error" } } }});
 
             //Act
             var actual = await _accountController.Register(new RegisterViewModel(), ReturnUrl);
@@ -85,8 +86,8 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             var actualViewResult = actual as ViewResult;
             Assert.IsNotNull(actualViewResult);
             Assert.AreEqual("Register", actualViewResult.ViewName);
-            Assert.IsAssignableFrom<RegisterViewModel>(actualViewResult.Model);
-            var actualModel = actualViewResult.Model as RegisterViewModel;
+            Assert.IsAssignableFrom<OrchestratorResponse<RegisterViewModel>>(actualViewResult.Model);
+            var actualModel = actualViewResult.Model as OrchestratorResponse<RegisterViewModel>;
             Assert.IsNotNull(actualModel);
         }
         
@@ -97,7 +98,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             AddUserToContext("123456");
             _accountController.ControllerContext = _controllerContext.Object;
             _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>(), It.IsAny<string>()))
-                .ReturnsAsync(new RegisterViewModel());
+                .ReturnsAsync(new OrchestratorResponse<RegisterViewModel> { Data = new RegisterViewModel() });
 
             //Act
             var actual = await _accountController.Register(new RegisterViewModel(), ReturnUrl);

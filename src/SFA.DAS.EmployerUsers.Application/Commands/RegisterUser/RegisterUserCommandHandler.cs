@@ -61,7 +61,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
                 {
                     {
                         nameof(message.Email),
-                        "Your email address has already been activated. Please try signing in again. If you've forgotten your password you can reset it."
+                        "Email already registered. Log in to your account."
                     }
                 });
             }
