@@ -19,6 +19,8 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
 
         Task SendConfirmEmailChangeMessage(User user, string messageId);
         Task SendNoAccountToPasswordResetMessage(string emailAddress, string messageId, string registerUrl);
-       
+
+        Task SendForcePasswordResetMessage(User user, string messageId);
+
     }
 }

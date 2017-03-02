@@ -10,6 +10,7 @@ using NLog;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Api.Orchestrators;
 using SFA.DAS.EmployerUsers.Application;
+using SFA.DAS.EmployerUsers.Application.Commands.ForcePasswordReset;
 using SFA.DAS.EmployerUsers.Application.Commands.UpdateUser;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.Domain;
@@ -43,24 +44,33 @@ namespace SFA.DAS.EmployerUsers.Api.UnitTests.OrchestratorsTests.UserOrchestrato
         }
 
         [Test]
-        public async Task ThenItShouldGetTheFullUserObject()
+        public async Task ThenItShouldForcePasswordResetIfRequiresPasswordResetIsTrue()
         {
             // Act
             await _orchestrator.UpdateUser(UserId, new Types.PatchUserViewModel { RequiresPasswordReset = true });
 
             // Assert
-            _mediator.Verify(m => m.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == UserId)), Times.Once);
+            _mediator.Verify(m => m.SendAsync(It.Is<ForcePasswordResetCommand>(c => c.UserId == UserId)), Times.Once);
         }
 
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task ThenItShouldUpdateTheUserWithUpdatedFields(bool? requirePasswordReset)
+        [Test]
+        public async Task ThenItShouldNotForcePasswordResetIfRequiresPasswordResetIsFalse()
         {
             // Act
-            await _orchestrator.UpdateUser(UserId, new Types.PatchUserViewModel { RequiresPasswordReset = requirePasswordReset });
+            await _orchestrator.UpdateUser(UserId, new Types.PatchUserViewModel { RequiresPasswordReset = false });
 
             // Assert
-            _mediator.Verify(m => m.SendAsync(It.Is<UpdateUserCommand>(q => q.User.Id == _user.Id && q.User.RequiresPasswordReset == requirePasswordReset)), Times.Once);
+            _mediator.Verify(m => m.SendAsync(It.Is<ForcePasswordResetCommand>(c => c.UserId == UserId)), Times.Never);
+        }
+
+        [Test]
+        public async Task ThenItShouldUpdateUserIfRequiresPasswordResetIsFalse()
+        {
+            // Act
+            await _orchestrator.UpdateUser(UserId, new Types.PatchUserViewModel { RequiresPasswordReset = false });
+
+            // Assert
+            _mediator.Verify(m => m.SendAsync(It.Is<UpdateUserCommand>(c => c.User.Id == UserId && c.User.RequiresPasswordReset == false)), Times.Once);
         }
 
         [Test]
@@ -82,7 +92,7 @@ namespace SFA.DAS.EmployerUsers.Api.UnitTests.OrchestratorsTests.UserOrchestrato
                 .ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { { "", "Unit test" } }));
 
             // Act
-            var actual = await _orchestrator.UpdateUser(UserId, new Types.PatchUserViewModel { RequiresPasswordReset = true });
+            var actual = await _orchestrator.UpdateUser(UserId, new Types.PatchUserViewModel { RequiresPasswordReset = false });
 
             // Assert
             Assert.IsNotNull(actual);
@@ -98,7 +108,7 @@ namespace SFA.DAS.EmployerUsers.Api.UnitTests.OrchestratorsTests.UserOrchestrato
                 .ThrowsAsync(new Exception("Unit test"));
 
             // Act
-            var actual = await _orchestrator.UpdateUser(UserId, new Types.PatchUserViewModel { RequiresPasswordReset = true });
+            var actual = await _orchestrator.UpdateUser(UserId, new Types.PatchUserViewModel { RequiresPasswordReset = false });
 
             // Assert
             Assert.IsNotNull(actual);

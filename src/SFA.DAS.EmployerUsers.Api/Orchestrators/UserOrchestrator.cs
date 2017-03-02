@@ -6,6 +6,7 @@ using MediatR;
 using NLog;
 using SFA.DAS.EmployerUsers.Api.Types;
 using SFA.DAS.EmployerUsers.Application;
+using SFA.DAS.EmployerUsers.Application.Commands.ForcePasswordReset;
 using SFA.DAS.EmployerUsers.Application.Commands.UpdateUser;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUsers;
@@ -60,14 +61,20 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
             {
                 _logger.Info($"Updating user account {id}");
 
-                var user = await _mediator.SendAsync(new GetUserByIdQuery { UserId = id });
-
-                if (patch.RequiresPasswordReset.HasValue)
+                if (patch.RequiresPasswordReset.HasValue && patch.RequiresPasswordReset.Value)
                 {
-                    user.RequiresPasswordReset = patch.RequiresPasswordReset.Value;
+                    await _mediator.SendAsync(new ForcePasswordResetCommand { UserId = id });
                 }
+                else // When more properties are patchable then this should change
+                {
+                    var user = await _mediator.SendAsync(new GetUserByIdQuery { UserId = id });
+                    if (patch.RequiresPasswordReset.HasValue && !patch.RequiresPasswordReset.Value)
+                    {
+                        user.RequiresPasswordReset = patch.RequiresPasswordReset.Value;
+                    }
 
-                await _mediator.SendAsync(new UpdateUserCommand { User = user });
+                    await _mediator.SendAsync(new UpdateUserCommand { User = user });
+                }
                 return new OrchestratorResponse { Status = HttpStatusCode.Accepted };
             }
             catch (InvalidRequestException ex)

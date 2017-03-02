@@ -178,7 +178,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
             }
 
         }
-        
+
         public async Task SendConfirmEmailChangeMessage(User user, string messageId)
         {
             var code = GetUserConfirmEmailCode(user);
@@ -228,6 +228,32 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
             catch (Exception ex)
             {
                 _logger.Error(ex, "SendNoAccountToPasswordResetMessage: Error while sending email");
+            }
+        }
+
+        public async Task SendForcePasswordResetMessage(User user, string messageId)
+        {
+            try
+            {
+                var userPasswordResetCode = GetUserPasswordResetCode(user);
+
+                await _notificationsApi.SendEmail(new Email
+                {
+                    SystemId = messageId,
+                    TemplateId = "ForcePasswordReset",
+                    RecipientsAddress = user.Email,
+                    ReplyToAddress = ReplyToAddress,
+                    Subject = "Reset Password: apprenticeship levy account",
+                    Tokens = new Dictionary<string, string>
+                    {
+                        {"Code", userPasswordResetCode.Code},
+                        {"CodeExpiry", userPasswordResetCode.Code}
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"SendForcePasswordResetMessage: Error while sending email: {ex.Message}");
             }
         }
 

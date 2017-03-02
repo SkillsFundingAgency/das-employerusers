@@ -99,6 +99,8 @@
     <Compile Include="Commands\ChangePassword\ChangePasswordCommandValidator.cs" />
     <Compile Include="Commands\DeleteUser\DeleteUserCommand.cs" />
     <Compile Include="Commands\DeleteUser\DeleteUserCommandHandler.cs" />
+    <Compile Include="Commands\ForcePasswordReset\ForcePasswordResetCommand.cs" />
+    <Compile Include="Commands\ForcePasswordReset\ForcePasswordResetCommandHandler.cs" />
     <Compile Include="Commands\PasswordReset\PasswordResetCommand.cs" />
     <Compile Include="Commands\PasswordReset\PasswordResetCommandHandler.cs" />
     <Compile Include="Commands\PasswordReset\PasswordResetCommandValidator.cs" />
