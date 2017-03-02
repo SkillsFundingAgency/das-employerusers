@@ -68,6 +68,7 @@
     <Compile Include="EmployerUsersApiClientTests\WhenGettingAnEmployerUser.cs" />
     <Compile Include="EmployerUsersApiClientTests\WhenSearchingEmployerUsers.cs" />
     <Compile Include="EmployerUsersApiClientTests\WhenGettingAPageOfEmployerUsers.cs" />
+    <Compile Include="EmployerUsersApiClientTests\WhenSettingUserToRequirePasswordReset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

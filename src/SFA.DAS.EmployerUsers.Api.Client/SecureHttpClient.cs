@@ -1,6 +1,8 @@
 ﻿using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Newtonsoft.Json;
 
 namespace SFA.DAS.EmployerUsers.Api.Client
 {
@@ -34,6 +36,22 @@ namespace SFA.DAS.EmployerUsers.Api.Client
                 response.EnsureSuccessStatusCode();
 
                 return await response.Content.ReadAsStringAsync();
+            }
+        }
+
+        public async Task PatchAsync(string url, object body)
+        {
+            var authenticationResult = await GetAuthenticationResult(_configuration.ClientId, _configuration.ClientSecret, _configuration.IdentifierUri, _configuration.Tenant);
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authenticationResult.AccessToken);
+
+                var response = await client.SendAsync(new HttpRequestMessage(new HttpMethod("PATCH"), url)
+                {
+                    Content = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json")
+                });
+                response.EnsureSuccessStatusCode();
             }
         }
     }

@@ -39,5 +39,11 @@ namespace SFA.DAS.EmployerUsers.Api.Client
         {
             return await GetResource<PagedApiResponseViewModel<UserSummaryViewModel>>($"/api/users/search/{criteria}?pageNumber={pageNumber}&pageSize={pageSize}");
         }
+
+        public async Task SetUserToRequirePasswordReset(string userId)
+        {
+            var absoluteUri = new Uri(new Uri(_configuration.ApiBaseUrl), $"/api/users/{userId}");
+            await _secureHttpClient.PatchAsync(absoluteUri.ToString(), new PatchUserViewModel { RequiresPasswordReset = true });
+        }
     }
 }
