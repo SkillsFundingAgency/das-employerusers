@@ -248,6 +248,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                     {
                         {"Code", userPasswordResetCode.Code},
                         {"CodeExpiry", userPasswordResetCode.Code}
+                        //TODO: Send URLs to do password reset
                     }
                 });
             }

@@ -40,7 +40,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ForcePasswordReset
             {
                 Code = _codeGenerator.GenerateAlphaNumeric(),
                 CodeType = Domain.SecurityCodeType.PasswordResetCode,
-                ExpiryTime = DateTime.Today.AddDays(8).AddSeconds(-4)
+                ExpiryTime = DateTime.Today.AddDays(8).AddSeconds(-1)
             });
             await _userRepository.Update(user);
 
