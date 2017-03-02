@@ -15,7 +15,8 @@ AS
 		PasswordProfileId,
 		IsActive,
 		FailedLoginAttempts,
-		IsLocked
+		IsLocked,
+		RequiresPasswordReset
 	INTO #resultSet
 	FROM dbo.[User]
 	WHERE UPPER(FirstName) LIKE @criteria OR UPPER(LastName) LIKE @criteria OR UPPER(Email) LIKE @criteria

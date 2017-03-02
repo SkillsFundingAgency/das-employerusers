@@ -11,7 +11,8 @@ AS
 		PasswordProfileId,
 		IsActive,
 		FailedLoginAttempts,
-		IsLocked
+		IsLocked,
+		RequiresPasswordReset
 	FROM dbo.[User]
 	ORDER BY ID
 	OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY

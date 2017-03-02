@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net;
+using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Results;
 using SFA.DAS.EmployerUsers.Api.Orchestrators;
+using SFA.DAS.EmployerUsers.Api.Types;
 
 namespace SFA.DAS.EmployerUsers.Api.Controllers
 {
@@ -35,6 +38,22 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
             }
 
             return Ok(user.Data);
+        }
+
+        [Route("{id}", Name = "Patch"), HttpPatch]
+        [Authorize(Roles = "UpdateEmployerUsers")]
+        public async Task<IHttpActionResult> Update(string id, PatchUserViewModel patch)
+        {
+            var response = await _orchestrator.UpdateUser(id, patch);
+            if (response.Status == HttpStatusCode.BadRequest)
+            {
+                return BadRequest(response.Exception.Message);
+            }
+            if (response.Status != HttpStatusCode.Accepted)
+            {
+                return InternalServerError();
+            }
+            return new AcceptedResult(HttpStatusCode.Accepted);
         }
     }
 }

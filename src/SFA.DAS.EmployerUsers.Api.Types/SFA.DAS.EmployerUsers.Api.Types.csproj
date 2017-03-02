@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IEmployerUsersResource.cs" />
+    <Compile Include="PatchUserViewModel.cs" />
     <Compile Include="UserSummaryViewModel.cs" />
     <Compile Include="PagedApiResponseViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -91,8 +91,8 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             {
                 using (var unitOfWork = await GetUnitOfWork())
                 {
-                    await unitOfWork.Execute("UpdateUser @Id, @FirstName, @LastName, @Email, @Password, @Salt, @PasswordProfileId, @IsActive, @FailedLoginAttempts, @IsLocked",
-                    user);
+                    await unitOfWork.Execute("UpdateUser @Id, @FirstName, @LastName, @Email, @Password, @Salt, @PasswordProfileId, @IsActive, @FailedLoginAttempts, @IsLocked, @RequiresPasswordReset",
+                        user);
                     await UpdateUserSecurityCodes(user, unitOfWork);
                     await UpdateUserPasswordHistory(user, unitOfWork);
                     unitOfWork.CommitChanges();

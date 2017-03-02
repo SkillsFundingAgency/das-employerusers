@@ -1,11 +1,14 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using NLog;
 using SFA.DAS.EmployerUsers.Api.Types;
+using SFA.DAS.EmployerUsers.Application;
+using SFA.DAS.EmployerUsers.Application.Commands.UpdateUser;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUsers;
-using SFA.DAS.EmployerUsers.Application.Queries.SearchUsers;
 using SFA.DAS.EmployerUsers.Domain;
 
 namespace SFA.DAS.EmployerUsers.Api.Orchestrators
@@ -20,7 +23,11 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
             _mediator = mediator;
             _logger = logger;
         }
-        
+        protected UserOrchestrator()
+        {
+            // For testing
+        }
+
         public async Task<OrchestratorResponse<PagedApiResponseViewModel<UserSummaryViewModel>>> UsersIndex(int pageSize, int pageNumber)
         {
             _logger.Info("Getting all user accounts.");
@@ -40,11 +47,38 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
         public async Task<OrchestratorResponse<UserViewModel>> UserShow(string id)
         {
             _logger.Info($"Getting user account {id}.");
-            var user = await _mediator.SendAsync(new GetUserByIdQuery() {UserId = id});
+            var user = await _mediator.SendAsync(new GetUserByIdQuery() { UserId = id });
             return new OrchestratorResponse<UserViewModel>()
             {
                 Data = ConvertUserToUserViewModel(user)
-            }; 
+            };
+        }
+
+        public virtual async Task<OrchestratorResponse> UpdateUser(string id, PatchUserViewModel patch)
+        {
+            try
+            {
+                _logger.Info($"Updating user account {id}");
+
+                var user = await _mediator.SendAsync(new GetUserByIdQuery { UserId = id });
+
+                if (patch.RequiresPasswordReset.HasValue)
+                {
+                    user.RequiresPasswordReset = patch.RequiresPasswordReset.Value;
+                }
+
+                await _mediator.SendAsync(new UpdateUserCommand { User = user });
+                return new OrchestratorResponse { Status = HttpStatusCode.Accepted };
+            }
+            catch (InvalidRequestException ex)
+            {
+                return new OrchestratorResponse { Status = HttpStatusCode.BadRequest, Exception = ex };
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error updating user account {id}: {ex.Message}");
+                return new OrchestratorResponse { Status = HttpStatusCode.InternalServerError, Exception = ex };
+            }
         }
 
 

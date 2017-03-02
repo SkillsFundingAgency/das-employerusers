@@ -8,7 +8,8 @@ CREATE PROCEDURE UpdateUser
 	@PasswordProfileId varchar(50),
 	@IsActive bit,
 	@FailedLoginAttempts int,
-	@IsLocked bit
+	@IsLocked bit,
+	@RequiresPasswordReset bit
 AS
 	UPDATE [User]
 	SET FirstName = @FirstName, 
@@ -19,6 +20,7 @@ AS
 		PasswordProfileId = @PasswordProfileId, 
 		IsActive = @IsActive, 
 		FailedLoginAttempts = @FailedLoginAttempts, 
-		IsLocked = @IsLocked
+		IsLocked = @IsLocked,
+		RequiresPasswordReset = @RequiresPasswordReset
 	WHERE Id = @Id
 GO

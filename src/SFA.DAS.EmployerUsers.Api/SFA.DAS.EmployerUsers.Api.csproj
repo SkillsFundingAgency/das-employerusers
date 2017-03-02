@@ -278,6 +278,7 @@
     <Folder Include="Views\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AcceptedResult.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\LoggingConfig.cs" />
     <Compile Include="App_Start\Startup.auth.cs" />

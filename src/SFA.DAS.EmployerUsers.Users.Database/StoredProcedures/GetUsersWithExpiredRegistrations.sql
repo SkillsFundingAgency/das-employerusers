@@ -10,7 +10,8 @@ AS
 		PasswordProfileId,
 		IsActive,
 		FailedLoginAttempts,
-		IsLocked
+		IsLocked,
+		RequiresPasswordReset
 	FROM [User]
 	WHERE IsActive = 0
 	AND Id NOT IN

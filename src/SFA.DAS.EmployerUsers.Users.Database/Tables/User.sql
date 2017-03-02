@@ -8,7 +8,8 @@ CREATE TABLE dbo.[User] (
 	[PasswordProfileId]		varchar(50)		NOT NULL,
 	[IsActive]				bit				NOT NULL DEFAULT(1),
 	[FailedLoginAttempts]	int				NOT NULL DEFAULT(0),
-	[IsLocked]				bit				NOT NULL DEFAULT(0)
+	[IsLocked]				bit				NOT NULL DEFAULT(0),
+	[RequiresPasswordReset]	bit				NOT NULL DEFAULT(0),
 	CONSTRAINT [PK_User] PRIMARY KEY (Id),
 	INDEX [IX_User_Email] NONCLUSTERED(Email)
 )
