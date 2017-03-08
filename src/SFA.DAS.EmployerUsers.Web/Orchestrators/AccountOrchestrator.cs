@@ -683,7 +683,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
             if (isValid)
             {
-                return relyingParty.LoginUrl;
+                return relyingParty.LoginCallbackUrl;
             }
             return string.Empty;
         }

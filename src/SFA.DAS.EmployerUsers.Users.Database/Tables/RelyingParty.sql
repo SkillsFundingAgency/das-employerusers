@@ -4,7 +4,7 @@ CREATE TABLE dbo.RelyingParty (
 	[RequireConsent] bit NOT NULL DEFAULT(0),
 	[ApplicationUrl] varchar(max) NOT NULL,
 	[LogoutUrl] varchar(max) NOT NULL,
-	[LoginUrl] varchar(max) NULL,
+	[LoginCallbackUrl] varchar(max) NULL,
 	[Flow] int NOT NULL DEFAULT(1),
 	[ClientSecret] nvarchar(255) NULL,
 	CONSTRAINT [PK_RelyingParty] PRIMARY KEY (Id)
