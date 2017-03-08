@@ -11,6 +11,6 @@ Post-Deployment Script Template
 */
 
 
-update RelyingParty set LoginCallbackUrl = ApplicationUrl + 'service/signin/' where loginurl is null and id <> 'testrp'
+update RelyingParty set LoginCallbackUrl = ApplicationUrl + 'service/signin/' where LoginCallbackUrl is null and id <> 'testrp'
 
 update RelyingParty set LoginCallbackUrl = ApplicationUrl + 'home/login/' where id = 'testrp'
