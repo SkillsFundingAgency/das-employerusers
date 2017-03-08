@@ -118,7 +118,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         {
             var model = new RegisterViewModel
             {
-                ReturnUrl = returnUrl
+                ReturnUrl = returnUrl,
+                ClientId = clientId
             };
 
             if (!isLocalReturnUrl)
@@ -672,6 +673,19 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         public void RedirectToRelyingParty(string getIdsClientId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<string> StartRedirectToAuhorizedClientEndpoint(string clientId, string returnUrl)
+        {
+            var relyingParty = await _mediator.SendAsync(new GetRelyingPartyQuery { Id = clientId });
+
+            var isValid = await IsValidClientIdReturnUrlCombo(clientId, returnUrl);
+
+            if (isValid)
+            {
+                return relyingParty.LoginCallbackUrl;
+            }
+            return string.Empty;
         }
     }
 }

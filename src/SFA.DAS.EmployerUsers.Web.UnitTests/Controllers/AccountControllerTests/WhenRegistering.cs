@@ -111,5 +111,25 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             Assert.AreEqual("Confirm", redirectToRouteResult.RouteValues["Action"].ToString());
 
         }
+
+        [Test]
+        public async Task ThenTheErrorMessageIrlIsSubstituedIfTheUserAlreadyExists()
+        {
+            //Arrange
+            var errors = new Dictionary<string, string> {{"Email","<a href='__loginurl__'>Login to your account</a>"}};
+            _accountOrchestator.Setup(x => x.Register(It.IsAny<RegisterViewModel>(), It.IsAny<string>()))
+                .ReturnsAsync(new OrchestratorResponse<RegisterViewModel> { Data = new RegisterViewModel(),FlashMessage = new FlashMessageViewModel {ErrorMessages = errors} });
+
+            //Act
+            var actual = await _accountController.Register(new RegisterViewModel(), ReturnUrl);
+
+            //Assert
+            Assert.IsNotNull(actual);
+            var actualViewResult = actual as ViewResult;
+            Assert.IsNotNull(actualViewResult);
+            var actualModel = actualViewResult.Model as OrchestratorResponse<RegisterViewModel>;
+            Assert.IsNotNull(actualModel);
+            Assert.AreEqual("<a href=''>Login to your account</a>", actualModel.FlashMessage.ErrorMessages["Email"]);
+        }
     }
 }
