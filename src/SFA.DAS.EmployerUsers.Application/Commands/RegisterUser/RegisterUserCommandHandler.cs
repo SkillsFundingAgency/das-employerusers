@@ -61,7 +61,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
                 {
                     {
                         nameof(message.Email),
-                        "Email already registered. Log in to your account."
+                        "Email already registered.| <a href='__loginurl__'>Log in to your account.</a>"
                     }
                 });
             }

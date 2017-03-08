@@ -25,5 +25,6 @@ namespace SFA.DAS.EmployerUsers.Web.Models
         public string PasswordError => GetErrorMessage(nameof(Password));
         public string ConfirmPasswordError => GetErrorMessage(nameof(ConfirmPassword));
         public string HasAcceptedTermsAndConditionsError => GetErrorMessage(nameof(HasAcceptedTermsAndConditions));
+        public string ClientId { get; set; }
     }
 }

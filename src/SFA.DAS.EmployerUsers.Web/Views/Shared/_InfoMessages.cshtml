@@ -31,7 +31,10 @@
                         @foreach (var errorMessage in viewModel.FlashMessage.ErrorMessages)
                         {
                             <li>
-                                <a class="danger" href="#@errorMessage.Key">@errorMessage.Value</a>
+                                @{
+                                    var message = errorMessage.Value.Split('|')[0];
+                                }
+                                <a class="danger" href="#@errorMessage.Key">@message</a>
                             </li>
                         }
                     </ul>

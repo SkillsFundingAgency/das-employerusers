@@ -189,7 +189,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
             HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
 
-            var viewModel = new OrchestratorResponse<RegisterViewModel> { Data = new RegisterViewModel { ReturnUrl = returnUrl }};
+            var viewModel = new OrchestratorResponse<RegisterViewModel> { Data = model};
 
             return View(viewModel);
         }
@@ -221,6 +221,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             registerResult.Data.ConfirmPassword = string.Empty;
             registerResult.Data.Password = string.Empty;
             registerResult.Data.ReturnUrl = returnUrl;
+
+            if (registerResult.FlashMessage.ErrorMessages.ContainsKey(nameof(model.Email)))
+            {
+                registerResult.FlashMessage.ErrorMessages[nameof(model.Email)] = registerResult.FlashMessage.ErrorMessages[nameof(model.Email)]
+                    .Replace("__loginurl__", Url.Action("RedirectToRelyingPartyLogin","Account",new {clientId=model.ClientId, returnUrl = model.ReturnUrl}));
+            }
+            
             
             return View("Register", registerResult);
         }
@@ -606,7 +613,20 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
 
+        [HttpGet]
+        [Route("account/redirectologin")]
+        public async Task<ActionResult> RedirectToRelyingPartyLogin(string clientId, string returnUrl)
+        {
+            if (string.IsNullOrEmpty(clientId))
+            {
+                clientId = _owinWrapper.GetIdsClientId();
+                returnUrl = _owinWrapper.GetIdsReturnUrl();
+            }
 
+            var redirectUrl = await _accountOrchestrator.StartRedirectToAuhorizedClientEndpoint(clientId, returnUrl);
+
+            return Redirect(redirectUrl);
+        }
 
         private string GetLoggedInUserId()
         {
