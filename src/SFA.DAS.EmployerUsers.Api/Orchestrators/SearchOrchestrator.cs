@@ -18,8 +18,7 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
             _mediator = mediator;
             _logger = logger;
         }
-
-
+        
         public async Task<OrchestratorResponse<PagedApiResponseViewModel<UserSummaryViewModel>>> UserSearch(string criteria, int pageSize, int pageNumber)
         {
             _logger.Info($"Searching for user accounts using criteria {criteria}.");
@@ -31,10 +30,23 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
                 {
                     Data = response.Users.Select(ConvertUserToUserSummaryViewModel).ToList(),
                     Page = pageNumber,
-                    TotalPages = (response.RecordCount / pageSize) + 1
+                    TotalPages = GetNoOfTotalPages(pageSize, response)
                 }
             };
         }
+
+        private int GetNoOfTotalPages(int pageSize, SearchUsersQueryResponse response)
+        {
+            if (pageSize < response.RecordCount)
+            {
+                var remainingResultCountForFinalPage = response.RecordCount % pageSize;
+                var totalPages = response.RecordCount / pageSize;
+                return (remainingResultCountForFinalPage > 0 ? totalPages + 1 : totalPages);
+            }
+
+            return 1;
+        }
+
         private UserSummaryViewModel ConvertUserToUserSummaryViewModel(User user)
         {
             return new UserSummaryViewModel

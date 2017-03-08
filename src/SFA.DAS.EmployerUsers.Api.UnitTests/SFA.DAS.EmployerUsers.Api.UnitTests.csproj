@@ -80,6 +80,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OrchestratorTests\WhenSearchingForEmployerUsers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchControllerTests\SearchControllerTestsBase.cs" />
     <Compile Include="SearchControllerTests\WhenISearchUsers.cs" />

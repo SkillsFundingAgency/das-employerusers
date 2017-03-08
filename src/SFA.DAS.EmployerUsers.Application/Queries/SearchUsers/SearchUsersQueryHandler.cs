@@ -16,7 +16,6 @@ namespace SFA.DAS.EmployerUsers.Application.Queries.SearchUsers
 
         public async Task<SearchUsersQueryResponse> Handle(SearchUsersQuery message)
         {
-
             if (message == null)
             {
                 throw new ArgumentNullException(nameof(message));
