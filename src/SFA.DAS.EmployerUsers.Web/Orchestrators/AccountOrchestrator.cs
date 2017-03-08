@@ -679,13 +679,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         {
             var relyingParty = await _mediator.SendAsync(new GetRelyingPartyQuery { Id = clientId });
 
-            var isValid = await IsValidClientIdReturnUrlCombo(clientId, returnUrl);
-
-            if (isValid)
-            {
-                return relyingParty.LoginCallbackUrl;
-            }
-            return string.Empty;
+            return relyingParty != null ? relyingParty.LoginCallbackUrl : string.Empty;
         }
     }
 }
