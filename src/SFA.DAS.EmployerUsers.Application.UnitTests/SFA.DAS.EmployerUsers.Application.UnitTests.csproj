@@ -137,6 +137,7 @@
     <Compile Include="QueriesTests\PasswordReset\ValidatePasswordResetCodeQueryHandlerTests\WhenHandlingRequest.cs" />
     <Compile Include="QueriesTests\GetUserByIdTests\GetUserByIdQueryHandlerTests\WhenHandlingRequest.cs" />
     <Compile Include="QueriesTests\IsUserActiveTests\IsUserActiveQueryHandlerTests\WhenHandlingRequest.cs" />
+    <Compile Include="ServicesTests\HashingTests\WhenIEncodeAndDecodeGuids.cs" />
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\CommunicationServiceTestBase.cs" />
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenRegisteringAUser.cs" />
     <Compile Include="ServicesTests\NotificationTests\CommunicationServiceTests\WhenSendingAccountUnlockMessage.cs" />

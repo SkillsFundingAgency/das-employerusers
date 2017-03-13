@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Hashids.net, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hashids.net.1.2.2\lib\net45\Hashids.net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MediatR, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MediatR.2.0.2\lib\net45\MediatR.dll</HintPath>
       <Private>True</Private>
@@ -117,6 +121,8 @@
     <Compile Include="Queries\GetUsers\GetUsersQuery.cs" />
     <Compile Include="Queries\GetUsers\GetUsersQueryHandler.cs" />
     <Compile Include="Queries\GetUsers\GetUsersQueryResponse.cs" />
+    <Compile Include="Services\ValueHashing\HashingService.cs" />
+    <Compile Include="Services\ValueHashing\IHashingService.cs" />
     <Compile Include="Validation\BaseValidator.cs" />
     <Compile Include="Commands\RequestPasswordResetCode\RequestPasswordResetCodeCommand.cs" />
     <Compile Include="Commands\RequestPasswordResetCode\RequestPasswordResetCodeCommandHandler.cs" />
