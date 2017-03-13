@@ -113,6 +113,8 @@
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandHandler.cs" />
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandResponse.cs" />
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandValidator.cs" />
+    <Compile Include="Queries\GetUserByHashedId\GetUserByHashedIdQuery.cs" />
+    <Compile Include="Queries\GetUserByHashedId\GetUserByHashedIdQueryHandler.cs" />
     <Compile Include="Queries\GetUserByHashedId\GetUserByHashedIdValidator.cs" />
     <Compile Include="Queries\SearchUsers\SearchUsersQuery.cs" />
     <Compile Include="Queries\SearchUsers\SearchUsersQueryHandler.cs" />
