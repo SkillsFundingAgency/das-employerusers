@@ -89,7 +89,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
             await _commandHandler.Handle(command);
 
             //Assert
-            _communicationSerivce.Verify(x => x.SendPasswordResetCodeMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
+            _communicationSerivce.Verify(x => x.SendPasswordResetCodeMessage(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             _userRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
         }
 
@@ -102,6 +102,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
             var expiryTime = DateTimeProvider.Current.UtcNow.AddHours(1);
             var existingUser = new User
             {
+                Id = _userId.ToString(),
                 Email = command.Email,
                 SecurityCodes = new[]
                 {
@@ -119,10 +120,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
             await _commandHandler.Handle(command);
 
             _communicationSerivce.Verify(x => x.SendPasswordResetCodeMessage(It.Is<User>(u => u.Email == existingUser.Email 
-                                                                                           && u.SecurityCodes.Any(sc => sc.Code == code
-                                                                                                                     && sc.CodeType == SecurityCodeType.PasswordResetCode
-                                                                                                                     && sc.ExpiryTime == expiryTime)
-                                                                                        ), It.IsAny<string>()), Times.Once);
+                                                                                              && u.SecurityCodes.Any(sc => sc.Code == code
+                                                                                                                           && sc.CodeType == SecurityCodeType.PasswordResetCode
+                                                                                                                           && sc.ExpiryTime == expiryTime)
+                ), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -155,10 +156,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
             await _commandHandler.Handle(command);
 
             _communicationSerivce.Verify(x => x.SendPasswordResetCodeMessage(It.Is<User>(u => u.Email == existingUser.Email 
-                                                                                                      && u.SecurityCodes.Any(sc => sc.Code == newCode
-                                                                                                                                && sc.CodeType == SecurityCodeType.PasswordResetCode
-                                                                                                                                && sc.ExpiryTime == DateTimeProvider.Current.UtcNow.AddDays(1))
-                                                                                        ), It.IsAny<string>()), Times.Once);
+                                                                                              && u.SecurityCodes.Any(sc => sc.Code == newCode
+                                                                                                                           && sc.CodeType == SecurityCodeType.PasswordResetCode
+                                                                                                                           && sc.ExpiryTime == DateTimeProvider.Current.UtcNow.AddDays(1))
+                ), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
         
 

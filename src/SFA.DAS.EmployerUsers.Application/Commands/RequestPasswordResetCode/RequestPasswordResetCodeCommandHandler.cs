@@ -67,7 +67,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
                     Code = _codeGenerator.GenerateAlphaNumeric(),
                     CodeType = SecurityCodeType.PasswordResetCode,
                     ExpiryTime = DateTimeProvider.Current.UtcNow.AddDays(1),
-                    ReturnUrl = _linkBuilder.GetForgottenPasswordUrl(_hashingService.HashValue(Guid.Parse(existingUser.Id)))
+                    ReturnUrl = message.ReturnUrl
                 });
 
                 await _userRepository.Update(existingUser);
@@ -75,7 +75,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
             
             await _auditService.WriteAudit(new PasswordResetCodeAuditMessage(existingUser));
 
-            await _communicationService.SendPasswordResetCodeMessage(existingUser, Guid.NewGuid().ToString());
+            await _communicationService.SendPasswordResetCodeMessage(existingUser, Guid.NewGuid().ToString(), _linkBuilder.GetForgottenPasswordUrl(_hashingService.HashValue(Guid.Parse(existingUser.Id))));
         }
 
         private static bool RequiresPasswordResetCode(User user)
