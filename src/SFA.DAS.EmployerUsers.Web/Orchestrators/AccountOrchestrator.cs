@@ -431,7 +431,6 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 model.Password = string.Empty;
                 model.ConfirmPassword = string.Empty;
                 response.Data = model;
-                response.Status = HttpStatusCode.BadRequest;
                 response.FlashMessage = new FlashMessageViewModel
                 {
                     Headline = "Errors to fix",
