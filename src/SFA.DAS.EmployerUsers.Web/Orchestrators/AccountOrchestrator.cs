@@ -18,6 +18,7 @@ using SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode;
 using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
 using SFA.DAS.EmployerUsers.Application.Queries.GetRelyingParty;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserByEmailAddress;
+using SFA.DAS.EmployerUsers.Application.Queries.GetUserByHashedId;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.Application.Queries.IsUserActive;
 using SFA.DAS.EmployerUsers.Web.Authentication;
@@ -396,8 +397,9 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             return model;
         }
 
-        public virtual async Task<PasswordResetViewModel> ResetPassword(PasswordResetViewModel model)
+        public virtual async Task<OrchestratorResponse<PasswordResetViewModel>> ResetPassword(PasswordResetViewModel model)
         {
+            var response = new OrchestratorResponse<PasswordResetViewModel>();
             try
             {
                 var resetResponse = await _mediator.SendAsync(new PasswordResetCommand
@@ -418,16 +420,29 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 {
                     model.ReturnUrl = resetResponse.ResetCode.ReturnUrl;
                 }
-                return model;
+
+                response.Data = model;
+
+                return response;
             }
             catch (InvalidRequestException ex)
             {
-                _logger.Info(ex, ex.Message);
                 model.ErrorDictionary = ex.ErrorMessages;
                 model.Password = string.Empty;
                 model.ConfirmPassword = string.Empty;
-                return model;
+                response.Data = model;
+                response.Status = HttpStatusCode.BadRequest;
+                response.FlashMessage = new FlashMessageViewModel
+                {
+                    Headline = "Errors to fix",
+                    Message = "Check the following details:",
+                    ErrorMessages = ex.ErrorMessages,
+                    Severity = FlashMessageSeverityLevel.Error
+                };
+                response.Exception = ex;
             }
+
+            return response;
         }
 
         public virtual async Task<OrchestratorResponse<ChangeEmailViewModel>> StartRequestChangeEmail(string clientId, string returnUrl)
@@ -680,6 +695,38 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             var relyingParty = await _mediator.SendAsync(new GetRelyingPartyQuery { Id = clientId });
 
             return relyingParty != null ? relyingParty.LoginCallbackUrl : string.Empty;
+        }
+
+        public async Task<OrchestratorResponse<PasswordResetViewModel>>  ForgottenPasswordFromEmail(string hashedUserId)
+        {
+            var response = new OrchestratorResponse<PasswordResetViewModel>();
+
+            try
+            {
+                var user = await _mediator.SendAsync(new GetUserByHashedIdQuery {HashedUserId = hashedUserId});
+
+                if (user == null)
+                {
+                    response.Status = HttpStatusCode.BadRequest;
+                    return response;
+                }
+
+                response.Data = new PasswordResetViewModel {Email = user.Email};
+            }
+            catch (InvalidRequestException ex)
+            {
+                response.Status = HttpStatusCode.BadRequest;
+                response.FlashMessage = new FlashMessageViewModel
+                {
+                    Headline = "Errors to fix",
+                    Message = "Check the following details:",
+                    ErrorMessages = ex.ErrorMessages,
+                    Severity = FlashMessageSeverityLevel.Error
+                };
+                response.Exception = ex;
+            }
+
+            return response;
         }
     }
 }

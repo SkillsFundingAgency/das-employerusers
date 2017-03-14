@@ -67,10 +67,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             var actual = await _accountController.ForgottenCredentials(_requestPasswordResetViewModel, "");
 
             var viewResult = (ViewResult) actual;
-            var viewModel = (PasswordResetViewModel) viewResult.Model;
-
-            Assert.That(viewResult.ViewName, Is.EqualTo("ResetPassword"));
-            Assert.That(viewModel.Email, Is.EqualTo(response.Email));
+            var viewModel = (OrchestratorResponse<PasswordResetViewModel>) viewResult.Model;
+            Assert.IsNotNull(viewModel);
+            Assert.AreEqual(response.Email,viewModel.Data.Email);
+            Assert.AreEqual("ResetPassword", viewResult.ViewName);
             
         }
 
