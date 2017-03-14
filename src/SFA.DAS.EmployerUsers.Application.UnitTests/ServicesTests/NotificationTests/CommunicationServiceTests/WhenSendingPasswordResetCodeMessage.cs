@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.NotificationTests.CommunicationServiceTests
@@ -35,7 +36,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
 
         protected override async Task Act()
         {
-            await CommunicationService.SendPasswordResetCodeMessage(User, MessageId);
+            await CommunicationService.SendPasswordResetCodeMessage(User, MessageId, It.IsAny<string>());
         }
     }
 }

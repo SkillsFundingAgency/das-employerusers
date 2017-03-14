@@ -15,7 +15,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
         Task ResendLastActivationCodeMessage(User user, string messageId);
         Task SendUserUnlockedMessage(User user, string messageId);
 
-        Task SendPasswordResetCodeMessage(User user, string messageId);
+        Task SendPasswordResetCodeMessage(User user, string messageId, string getForgottenPasswordUrl);
 
         Task SendConfirmEmailChangeMessage(User user, string messageId);
         Task SendNoAccountToPasswordResetMessage(string emailAddress, string messageId, string registerUrl);

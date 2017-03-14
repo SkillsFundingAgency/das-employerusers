@@ -49,7 +49,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.Notification
             await _communicationService.SendUserRegistrationMessage(user, "123");
             await _communicationService.SendAccountLockedMessage(user, "123");
             await _communicationService.ResendActivationCodeMessage(user, "123");
-            await _communicationService.SendPasswordResetCodeMessage(user, "123");
+            await _communicationService.SendPasswordResetCodeMessage(user, "123", It.IsAny<string>());
             await _communicationService.SendConfirmEmailChangeMessage(user, "123");
 
             //Assert

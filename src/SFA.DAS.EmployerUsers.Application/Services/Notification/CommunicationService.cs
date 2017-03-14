@@ -151,7 +151,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
             });
         }
 
-        public async Task SendPasswordResetCodeMessage(User user, string messageId)
+        public async Task SendPasswordResetCodeMessage(User user, string messageId, string getForgottenPasswordUrl)
         {
             var resetCode = GetUserPasswordResetCode(user);
 
@@ -168,7 +168,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                         {
                             {"Code", resetCode.Code},
                             {"CodeExpiry", resetCode.ExpiryTime.ToString("d MMMM yyyy")},
-                            {"ReturnUrl", resetCode.ReturnUrl}
+                            {"ReturnUrl", getForgottenPasswordUrl}
                         }
                 });
             }
