@@ -134,6 +134,7 @@
     <Compile Include="Controllers\AccountControllerTests\WhenUnlockingMyAccount.cs" />
     <Compile Include="Controllers\ControllerTestBase.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenChangingPassword.cs" />
+    <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenChangingPasswordThroughExternalLink.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenConfirmingChangeEmail.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenEnteringMyAccessCode.cs" />
     <Compile Include="OrchestratorTests\AccountOrchestratorTests\WhenEnteringPasswordResetCode.cs" />

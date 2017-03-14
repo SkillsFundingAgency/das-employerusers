@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Moq;
@@ -60,8 +61,8 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _accountOrchestrator.ResetPassword(new PasswordResetViewModel());
 
             //Assert
-            Assert.IsNotEmpty(actual.ErrorDictionary);
-            Assert.IsFalse(actual.Valid);
+            Assert.IsNotEmpty(actual.FlashMessage.ErrorMessages);
+            Assert.AreEqual(HttpStatusCode.BadRequest,actual.Status);
         }
 
         [Test]
@@ -79,8 +80,8 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _accountOrchestrator.ResetPassword(new PasswordResetViewModel());
 
             //Assert
-            Assert.AreEqual("Some Confirm Error", actual.ConfirmPasswordError);
-            Assert.AreEqual("Some Password Reset Error", actual.PasswordResetCodeError);
+            Assert.AreEqual("Some Confirm Error", actual.Data.ConfirmPasswordError);
+            Assert.AreEqual("Some Password Reset Error", actual.Data.PasswordResetCodeError);
         }
 
         [Test]
@@ -97,8 +98,8 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _accountOrchestrator.ResetPassword(new PasswordResetViewModel());
 
             //Assert
-            Assert.AreEqual(string.Empty, actual.Password);
-            Assert.AreEqual(string.Empty, actual.ConfirmPassword);
+            Assert.AreEqual(string.Empty, actual.Data.Password);
+            Assert.AreEqual(string.Empty, actual.Data.ConfirmPassword);
         }
 
         [Test]

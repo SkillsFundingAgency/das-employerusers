@@ -401,6 +401,21 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View("ForgottenCredentials", model);
         }
 
+        [HttpGet]
+        [Route("account/forgottencredentials/{hashedUserId}")]
+        public async Task<ActionResult> ForgottenCredentialsReturnEmailUrl(string hashedUserId)
+        {
+
+            if (string.IsNullOrEmpty(hashedUserId))
+            {
+                return RedirectToAction("RequestUnlockCode");
+            }
+
+            var model = await _accountOrchestrator.ForgottenPasswordFromEmail(hashedUserId);
+            
+            return View("ResetPassword",model);
+        }
+
         [Route("account/resetflow")]
         public async Task<ActionResult> ResetFlow()
         {
@@ -428,7 +443,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             }
 
 
-            return View("ResetPassword", new PasswordResetViewModel { Email = requestPasswordResetViewModel.Email });
+            return View("ResetPassword", new OrchestratorResponse<PasswordResetViewModel> {Data = new PasswordResetViewModel { Email = requestPasswordResetViewModel.Email }});
         }
 
 
@@ -438,13 +453,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("identity/employer/resetpassword")]
         public async Task<ActionResult> ResetPassword(PasswordResetViewModel model)
         {
-            model = await _accountOrchestrator.ResetPassword(model);
+            var returnModel = await _accountOrchestrator.ResetPassword(model);
 
-            if (model.Valid)
+            if (returnModel?.FlashMessage?.ErrorMessages == null || !returnModel.FlashMessage.ErrorMessages.Any())
             {
-                if (!string.IsNullOrEmpty(model.ReturnUrl))
+                if (!string.IsNullOrEmpty(returnModel?.Data?.ReturnUrl))
                 {
-                    return new RedirectResult(model.ReturnUrl);
+                    return new RedirectResult(returnModel.Data.ReturnUrl);
                 }
 
                 var returnUrl = _owinWrapper.GetIdsReturnUrl();
@@ -456,7 +471,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 return await RedirectToEmployerPortal();
             }
 
-            return View("ResetPassword", model);
+            return View("ResetPassword", returnModel);
         }
 
         [HttpGet]

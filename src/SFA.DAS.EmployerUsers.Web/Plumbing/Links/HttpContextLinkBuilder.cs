@@ -12,6 +12,11 @@ namespace SFA.DAS.EmployerUsers.Web.Plumbing.Links
             return GetUrlHelper().Action("Register", "Account", null, "https");
         }
 
+        public string GetForgottenPasswordUrl(string hashedUserId)
+        {
+            return GetUrlHelper().Action("ForgottenCredentialsReturnEmailUrl", "Account", new {hashedUserId = hashedUserId}, "https");
+        }
+
         private UrlHelper GetUrlHelper()
         {
             var httpContext = new HttpContextWrapper(HttpContext.Current);

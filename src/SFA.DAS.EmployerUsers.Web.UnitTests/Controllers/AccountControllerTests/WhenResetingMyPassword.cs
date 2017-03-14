@@ -8,6 +8,7 @@ using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Controllers;
 using SFA.DAS.EmployerUsers.Web.Models;
+using SFA.DAS.EmployerUsers.Web.Models.SFA.DAS.EAS.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
 
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
@@ -28,7 +29,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             base.Arrange();
 
             _orchestrator = new Mock<AccountOrchestrator>();
-            _orchestrator.Setup(o => o.ResetPassword(It.IsAny<PasswordResetViewModel>())).ReturnsAsync(new PasswordResetViewModel());
+            _orchestrator.Setup(o => o.ResetPassword(It.IsAny<PasswordResetViewModel>())).ReturnsAsync(new OrchestratorResponse<PasswordResetViewModel>());
 
             _owinWrapper = new Mock<IOwinWrapper>();
             _owinWrapper.Setup(w => w.GetSignInMessage(Id))
@@ -57,7 +58,12 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public async Task ThenTheUserIsReturnedToThePasswordResetViewIfTheModelIsNotValid()
         {
             //Arrange
-            _orchestrator.Setup(o => o.ResetPassword(It.IsAny<PasswordResetViewModel>())).ReturnsAsync(new PasswordResetViewModel {ErrorDictionary = new Dictionary<string, string> { {"someError","some error"} } });
+            _orchestrator
+                .Setup(o => o.ResetPassword(It.IsAny<PasswordResetViewModel>()))
+                .ReturnsAsync(new OrchestratorResponse<PasswordResetViewModel>
+                {
+                    FlashMessage = new FlashMessageViewModel {ErrorMessages = new Dictionary<string, string> { {"someError","some error"} } }
+                });
 
             //Act
             var actual = await _controller.ResetPassword(new PasswordResetViewModel());
@@ -74,7 +80,11 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         {
             //Arrange
             var expectedReturnUrl = "http://test.url";
-            _orchestrator.Setup(o => o.ResetPassword(It.IsAny<PasswordResetViewModel>())).ReturnsAsync(new PasswordResetViewModel {ReturnUrl = expectedReturnUrl});
+            _orchestrator.Setup(o => o.ResetPassword(It.IsAny<PasswordResetViewModel>())).ReturnsAsync(
+                new OrchestratorResponse<PasswordResetViewModel>
+                {
+                    Data = new PasswordResetViewModel {ReturnUrl = expectedReturnUrl}
+                });
 
             //Act
             var actual = await _controller.ResetPassword(new PasswordResetViewModel());

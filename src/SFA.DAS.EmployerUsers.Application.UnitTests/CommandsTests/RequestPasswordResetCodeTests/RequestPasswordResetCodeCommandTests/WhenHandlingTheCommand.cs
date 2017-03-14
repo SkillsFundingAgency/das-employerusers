@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
@@ -8,6 +9,7 @@ using NUnit.Framework;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
+using SFA.DAS.EmployerUsers.Application.Services.ValueHashing;
 using SFA.DAS.EmployerUsers.Application.UnitTests.TestHelpers;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
@@ -20,7 +22,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
 {
     public class WhenHandlingTheCommand
     {
-        private const string RegistrationLink = "register-here";
+        private const string ForgottenPasswordLink = "forgotten-credentials";
+
+        private Guid _userId;
+        private const string HashedUserId = "123RFVTGB";
 
         private Mock<IUserRepository> _userRepository;
         private Mock<ICommunicationService> _communicationSerivce;
@@ -30,10 +35,14 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
         private Mock<ILogger> _logger;
         private Mock<IValidator<RequestPasswordResetCodeCommand>> _validator;
         private Mock<IAuditService> _auditService;
+        private Mock<IHashingService> _hashingService;
 
         [SetUp]
         public void Setup()
         {
+            _userId = Guid.NewGuid();
+            ConfigurationManager.AppSettings["UseStaticCodeGenerator"] = "false";
+
             _auditService = new Mock<IAuditService>();
             _userRepository = new Mock<IUserRepository>();
             _communicationSerivce = new Mock<ICommunicationService>();
@@ -41,14 +50,16 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
             _linkBuilder = new Mock<ILinkBuilder>();
             _logger = new Mock<ILogger>();
             _validator = new Mock<IValidator<RequestPasswordResetCodeCommand>>();
+            _hashingService = new Mock<IHashingService>();
+            _hashingService.Setup(x => x.HashValue(_userId)).Returns(HashedUserId);
 
-            _linkBuilder.Setup(b => b.GetRegistrationUrl())
-                .Returns(RegistrationLink);
+            _linkBuilder.Setup(b => b.GetForgottenPasswordUrl(HashedUserId))
+                .Returns(ForgottenPasswordLink);
             
             _validator.Setup(x => x.ValidateAsync(It.IsAny<RequestPasswordResetCodeCommand>())).ReturnsAsync(new ValidationResult {ValidationDictionary = new Dictionary<string, string>()});
 
             _commandHandler = new RequestPasswordResetCodeCommandHandler(_validator.Object, 
-                _userRepository.Object, _communicationSerivce.Object, _codeGenerator.Object, _linkBuilder.Object, _logger.Object, _auditService.Object);
+                _userRepository.Object, _communicationSerivce.Object, _codeGenerator.Object, _linkBuilder.Object, _logger.Object, _auditService.Object, _hashingService.Object);
         }
 
         [TearDown]
@@ -124,6 +135,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
 
             var existingUser = new User
             {
+                Id = _userId.ToString(),
                 Email = command.Email,
                 SecurityCodes = new[]
                 {
