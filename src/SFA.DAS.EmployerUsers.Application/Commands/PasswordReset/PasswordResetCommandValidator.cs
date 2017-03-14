@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Azure;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 
@@ -27,7 +28,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             {
                 validationResult.AddError(nameof(item.PasswordResetCode), "Reset code is invalid");
             }
-            else if (resetCode.ExpiryTime < DateTime.UtcNow)
+            else if (resetCode.ExpiryTime < DateTime.UtcNow && CloudConfigurationManager.GetSetting("UseStaticCodeGenerator").Equals("false", StringComparison.CurrentCultureIgnoreCase))
             {
                 validationResult.AddError(nameof(item.PasswordResetCode), "Reset code has expired");
             }

@@ -3,5 +3,6 @@
     public interface ILinkBuilder
     {
         string GetRegistrationUrl();
+        string GetForgottenPasswordUrl(string hashedUserId);
     }
 }

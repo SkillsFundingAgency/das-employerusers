@@ -6,6 +6,7 @@ using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.PasswordReset;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Domain;
+using System.Configuration;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordResetTests.PasswordResetCommandValidatorTests
 {
@@ -19,6 +20,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         {
             _passwordService = new Mock<IPasswordService>();
             _passwordService.Setup(x => x.CheckPasswordMatchesRequiredComplexity(It.IsAny<string>())).Returns(true);
+
+            ConfigurationManager.AppSettings["UseStaticCodeGenerator"] = "false";
 
             _validator = new PasswordResetCommandValidator(_passwordService.Object);
         }

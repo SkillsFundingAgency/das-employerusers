@@ -2,9 +2,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Azure;
 using NLog;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
+using SFA.DAS.EmployerUsers.Application.Services.ValueHashing;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Auditing;
@@ -19,6 +21,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
     {
         private readonly ILogger _logger;
         private readonly IAuditService _auditService;
+        private readonly IHashingService _hashingService;
         private readonly IValidator<RequestPasswordResetCodeCommand> _validator;
         private readonly IUserRepository _userRepository;
         private readonly ICommunicationService _communicationService;
@@ -26,14 +29,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
         private readonly ILinkBuilder _linkBuilder;
         
 
-        public RequestPasswordResetCodeCommandHandler(
-            IValidator<RequestPasswordResetCodeCommand> validator, 
-            IUserRepository userRepository, 
-            ICommunicationService communicationService, 
-            ICodeGenerator codeGenerator, 
-            ILinkBuilder linkBuilder, 
-            ILogger logger, 
-            IAuditService auditService)
+        public RequestPasswordResetCodeCommandHandler(IValidator<RequestPasswordResetCodeCommand> validator, IUserRepository userRepository, ICommunicationService communicationService, ICodeGenerator codeGenerator, ILinkBuilder linkBuilder, ILogger logger, IAuditService auditService, IHashingService hashingService)
         {
             _validator = validator;
             _userRepository = userRepository;
@@ -42,6 +38,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
             _linkBuilder = linkBuilder;
             _logger = logger;
             _auditService = auditService;
+            _hashingService = hashingService;
         }
 
         protected override async Task HandleCore(RequestPasswordResetCodeCommand message)
@@ -70,7 +67,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
                     Code = _codeGenerator.GenerateAlphaNumeric(),
                     CodeType = SecurityCodeType.PasswordResetCode,
                     ExpiryTime = DateTimeProvider.Current.UtcNow.AddDays(1),
-                    ReturnUrl = message.ReturnUrl
+                    ReturnUrl = _linkBuilder.GetForgottenPasswordUrl(_hashingService.HashValue(Guid.Parse(existingUser.Id)))
                 });
 
                 await _userRepository.Update(existingUser);
@@ -83,8 +80,14 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
 
         private static bool RequiresPasswordResetCode(User user)
         {
+            if (!user.SecurityCodes.Any())
+            {
+                return true;
+            }
+
             return !user.SecurityCodes.Any(sc => sc.CodeType == SecurityCodeType.PasswordResetCode
-                                             && sc.ExpiryTime >= DateTime.UtcNow);
+                                                 && sc.ExpiryTime >= DateTime.UtcNow 
+                ) && CloudConfigurationManager.GetSetting("UseStaticCodeGenerator").Equals("false", StringComparison.CurrentCultureIgnoreCase);
         }
     }
 }
