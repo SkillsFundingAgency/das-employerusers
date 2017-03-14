@@ -62,7 +62,6 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             //Assert
             Assert.IsNotEmpty(actual.FlashMessage.ErrorMessages);
-            Assert.AreEqual(HttpStatusCode.BadRequest,actual.Status);
         }
 
         [Test]
