@@ -18,7 +18,10 @@ AS
 		IsLocked
 	INTO #resultSet
 	FROM dbo.[User]
-	WHERE UPPER(FirstName) LIKE @criteria OR UPPER(LastName) LIKE @criteria OR UPPER(Email) LIKE @criteria
+	WHERE UPPER(FirstName) LIKE @criteria 
+	OR UPPER(LastName) LIKE @criteria 
+	OR UPPER(FirstName) + ' ' + UPPER(LastName) LIKE @criteria
+	OR UPPER(Email) LIKE @criteria
 
 	SELECT @totalRecords = COUNT(*) FROM #resultSet
 	
