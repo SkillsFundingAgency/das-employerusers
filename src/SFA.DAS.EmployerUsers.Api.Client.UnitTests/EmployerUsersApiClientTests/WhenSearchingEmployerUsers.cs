@@ -33,7 +33,7 @@ namespace SFA.DAS.EmployerUsers.Api.Client.UnitTests.EmployerUsersApiClientTests
                 }
             };
 
-            HttpClient.Setup(x => x.GetAsync(Configuration.ApiBaseUrl + $"api/users/search/{criteria}?pageNumber={pageNumber}&pageSize={pageSize}")).ReturnsAsync(JsonConvert.SerializeObject(expectedResult));
+            HttpClient.Setup(x => x.GetAsync(Configuration.ApiBaseUrl + $"api/users/search/{criteria}/?pageNumber={pageNumber}&pageSize={pageSize}")).ReturnsAsync(JsonConvert.SerializeObject(expectedResult));
 
             var response = await Client.SearchEmployerUsers(criteria, pageNumber, pageSize);
 
