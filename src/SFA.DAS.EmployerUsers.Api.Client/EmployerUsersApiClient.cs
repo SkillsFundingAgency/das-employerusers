@@ -37,7 +37,7 @@ namespace SFA.DAS.EmployerUsers.Api.Client
 
         public async Task<PagedApiResponseViewModel<UserSummaryViewModel>> SearchEmployerUsers(string criteria, int pageNumber = 1, int pageSize = 1000)
         {
-            return await GetResource<PagedApiResponseViewModel<UserSummaryViewModel>>($"/api/users/search?criteria={criteria}&pageNumber={pageNumber}&pageSize={pageSize}");
+            return await GetResource<PagedApiResponseViewModel<UserSummaryViewModel>>($"/api/users/search/{criteria}/?pageNumber={pageNumber}&pageSize={pageSize}");
         }
     }
 }
