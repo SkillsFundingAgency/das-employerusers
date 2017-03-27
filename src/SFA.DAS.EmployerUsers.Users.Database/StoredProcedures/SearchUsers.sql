@@ -5,7 +5,7 @@
 	@totalRecords INT OUTPUT
 AS
 
-	SET @criteria = '%' + UPPER(@criteria) + '%'
+	SET @criteria = '%' + @criteria + '%'
 
 	SELECT
 		Id,
@@ -18,9 +18,12 @@ AS
 		IsLocked
 	INTO #resultSet
 	FROM dbo.[User]
-	WHERE UPPER(FirstName) LIKE @criteria OR UPPER(LastName) LIKE @criteria OR UPPER(Email) LIKE @criteria
+	WHERE FirstName LIKE @criteria 
+	OR LastName LIKE @criteria 
+	OR FirstName + ' ' + LastName LIKE @criteria
+	OR Email LIKE @criteria
 
-	SELECT @totalRecords = COUNT(*) FROM #resultSet
+	SELECT @totalRecords = COUNT(1) FROM #resultSet
 	
 	SELECT * FROM #resultSet
 	ORDER BY ID
