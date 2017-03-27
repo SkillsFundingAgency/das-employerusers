@@ -105,7 +105,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
                           {
                               Code = "SomeCode",
                               CodeType = SecurityCodeType.UnlockCode,
-                              ExpiryTime = DateTime.Now.AddMinutes(-1)
+                              ExpiryTime = DateTime.UtcNow.AddMinutes(-1)
                           }
                         }
                     }
