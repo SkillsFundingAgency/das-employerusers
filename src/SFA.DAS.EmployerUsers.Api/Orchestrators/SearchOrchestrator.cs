@@ -53,7 +53,10 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
             {
                 Id = user.Id,
                 FirstName = user.FirstName,
-                LastName = user.LastName
+                LastName = user.LastName,
+                Email = user.Email,
+                IsActive = user.IsActive,
+                IsLocked = user.IsLocked
             };
         }
     }

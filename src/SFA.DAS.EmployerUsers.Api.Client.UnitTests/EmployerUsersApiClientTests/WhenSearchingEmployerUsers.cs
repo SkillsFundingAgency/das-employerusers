@@ -28,7 +28,10 @@ namespace SFA.DAS.EmployerUsers.Api.Client.UnitTests.EmployerUsersApiClientTests
                         FirstName = "Joe",
                         LastName = "Bloggs",
                         Id = "ABC123",
-                        Href = "api/users/ABC123"
+                        Href = "api/users/ABC123",
+                        Email = "joe@blogs.com",
+                        IsActive = true,
+                        IsLocked = false
                     }
                 }
             };
