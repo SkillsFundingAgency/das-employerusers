@@ -6,9 +6,9 @@ namespace SFA.DAS.EmployerUsers.Api.Client
 {
     internal class SecureHttpClient : ISecureHttpClient
     {
-        private readonly EmployerUsersApiConfiguration _configuration;
+        private readonly IEmployerUsersApiConfiguration _configuration;
 
-        internal SecureHttpClient(EmployerUsersApiConfiguration configuration)
+        internal SecureHttpClient(IEmployerUsersApiConfiguration configuration)
         {
             _configuration = configuration;
         }
