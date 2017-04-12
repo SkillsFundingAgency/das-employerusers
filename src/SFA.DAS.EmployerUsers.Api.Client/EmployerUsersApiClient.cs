@@ -8,7 +8,7 @@ namespace SFA.DAS.EmployerUsers.Api.Client
     public class EmployerUsersApiClient : IEmployerUsersApiClient
     {
         private readonly IEmployerUsersApiConfiguration _configuration;
-        private ISecureHttpClient _secureHttpClient;
+        private readonly ISecureHttpClient _secureHttpClient;
 
         public EmployerUsersApiClient(IEmployerUsersApiConfiguration configuration, ISecureHttpClient secureHttpClient)
         {
@@ -19,7 +19,7 @@ namespace SFA.DAS.EmployerUsers.Api.Client
             _secureHttpClient = secureHttpClient;
         }
 
-        public EmployerUsersApiClient(EmployerUsersApiConfiguration configuration) : this(configuration, new SecureHttpClient(configuration))
+        public EmployerUsersApiClient(IEmployerUsersApiConfiguration configuration) : this(configuration, new SecureHttpClient(configuration))
         {
         }
 
