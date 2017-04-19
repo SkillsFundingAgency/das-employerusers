@@ -1,8 +1,11 @@
-﻿namespace SFA.DAS.EmployerUsers.Web.Models
+﻿using System.Web.Mvc;
+
+namespace SFA.DAS.EmployerUsers.Web.Models
 {
     public class LoginViewModel : ViewModelBase
     {
         public string EmailAddress { get; set; }
+        [AllowHtml]
         public string Password { get; set; }
         public string OriginatingAddress { get; set; }
         
