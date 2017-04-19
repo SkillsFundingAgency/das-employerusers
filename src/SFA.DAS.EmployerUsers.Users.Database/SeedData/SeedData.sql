@@ -9,14 +9,12 @@ Post-Deployment Script Template
                SELECT * FROM [$(TableName)]					
 --------------------------------------------------------------------------------------
 */
-IF NOT EXISTS(Select 1 from dbo.RelyingParty where Id='testrp' and ApplicationUrl='http://localhost:17995/')
-BEGIN
-	INSERT INTO dbo.RelyingParty (Id,Name,RequireConsent,ApplicationUrl,LogoutUrl,Flow,ClientSecret)
-	VALUES ('testrp','Test relying party',0,'http://localhost:17995/','http://localhost:17995/',0,'rsgISEW0GmlS1Gy6ocm3mGWUh//RM3ltldBbpF2QlsI=')
-END
-
-IF NOT EXISTS(Select 1 from dbo.RelyingParty where Id='employerportal' and ApplicationUrl='http://localhost:58887/')
-BEGIN
-	INSERT INTO dbo.RelyingParty (Id,Name,RequireConsent,ApplicationUrl,LogoutUrl,Flow,ClientSecret)
-	VALUES ('employerportal','Employer Portal',0,'http://localhost:58887/','http://localhost:58887/',1,NULL)
-END
+IF (@@servername NOT LIKE '%pp%' AND @@servername NOT LIKE '%prd%')
+	BEGIN
+	   RAISERROR('Server %s is in development - seeding test data',10,1,@@servername) WITH NOWAIT
+	   :r .\SeedDataDev.sql
+	END
+ELSE
+	BEGIN
+		RAISERROR('Server %s is managed - seeding no data.',10,1,@@servername) WITH NOWAIT
+	END
