@@ -1,10 +1,15 @@
-﻿namespace SFA.DAS.EmployerUsers.Web.Models
+﻿using System.Web.Mvc;
+
+namespace SFA.DAS.EmployerUsers.Web.Models
 {
     public class ChangePasswordViewModel : ViewModelBase
     {
         public string UserId { get; set; }
+        [AllowHtml]
         public string CurrentPassword { get; set; }
+        [AllowHtml]
         public string NewPassword { get; set; }
+        [AllowHtml]
         public string ConfirmPassword { get; set; }
 
         public string ClientId { get; set; }
