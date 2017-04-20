@@ -93,5 +93,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.Publish.xml" />
+    <None Include="SeedData\SeedDataDev.sql" />
   </ItemGroup>
 </Project>
