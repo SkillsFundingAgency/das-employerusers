@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.EmployerUsers.Api.Client
+﻿using System.Security.Cryptography.X509Certificates;
+
+namespace SFA.DAS.EmployerUsers.Api.Client
 {
     public interface IEmployerUsersApiConfiguration
     {
@@ -29,5 +31,7 @@
         /// </summary>
         /// <example>xxxx.omicrosoft.com</example>
         string Tenant { get; }
+
+        string ClientCertificateThumbprint { get; }
     }
 }

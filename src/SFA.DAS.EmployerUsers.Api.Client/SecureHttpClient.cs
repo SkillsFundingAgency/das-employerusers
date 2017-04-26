@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
@@ -27,8 +28,16 @@ namespace SFA.DAS.EmployerUsers.Api.Client
             var authenticationResult = await GetAuthenticationResult(_configuration.ClientId, _configuration.ClientSecret, _configuration.IdentifierUri, _configuration.Tenant);
 
             using (var client = new HttpClient())
+            using (var store = new ClientCertificateStore(new X509Store(StoreLocation.LocalMachine)))
+            using (var handler = new WebRequestHandler())
             {
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authenticationResult.AccessToken);
+
+                var certificate = store.FindCertificateByThumbprint(_configuration.ClientCertificateThumbprint);
+                if (certificate != null)
+                {
+                    handler.ClientCertificates.Add(certificate);
+                }
 
                 var response = await client.GetAsync(url);
                 response.EnsureSuccessStatusCode();

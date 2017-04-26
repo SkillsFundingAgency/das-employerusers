@@ -26,5 +26,10 @@
         /// </summary>
         /// <example>xxxx.omicrosoft.com</example>
         public string Tenant { get; set; }
+
+        /// <summary>
+        /// X509 client certificate thumbprint
+        /// </summary>
+        public string ClientCertificateThumbprint { get; set; }
     }
 }
