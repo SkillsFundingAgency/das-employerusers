@@ -10,6 +10,10 @@ namespace SFA.DAS.EmployerUsers.Api.Client
         private readonly IEmployerUsersApiConfiguration _configuration;
         private readonly ISecureHttpClient _secureHttpClient;
 
+        public EmployerUsersApiClient(IEmployerUsersApiConfiguration configuration) : this(configuration, new SecureHttpClient(configuration))
+        {
+        }
+
         public EmployerUsersApiClient(IEmployerUsersApiConfiguration configuration, ISecureHttpClient secureHttpClient)
         {
             if (secureHttpClient == null)
@@ -17,10 +21,6 @@ namespace SFA.DAS.EmployerUsers.Api.Client
 
             _configuration = configuration;
             _secureHttpClient = secureHttpClient;
-        }
-
-        public EmployerUsersApiClient(IEmployerUsersApiConfiguration configuration) : this(configuration, new SecureHttpClient(configuration))
-        {
         }
 
         public async Task<T> GetResource<T>(string resourceUri) where T : IEmployerUsersResource
