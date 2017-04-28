@@ -20,7 +20,7 @@
       <Setting name="idaTenant" />
     </ConfigurationSettings>
     <Endpoints>
-      <InputEndpoint name="HttpsIn" protocol="https" port="443" certificate="WebSSLCert" />
+      <InputEndpoint name="HttpsIn" protocol="https" port="443" certificate="WebSSLCert" loadBalancer="das-empu-ilb" />
     </Endpoints>
     <Certificates>
       <Certificate name="WebSSLCert" storeLocation="LocalMachine" storeName="My" />
