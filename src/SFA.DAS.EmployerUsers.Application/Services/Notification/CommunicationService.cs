@@ -34,6 +34,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                 Subject = "Access your apprenticeship levy account",
                 Tokens = new Dictionary<string, string>
                 {
+                    { "FirstName", user.FirstName },
                     { "AccessCode", userAccessCode.Code },
                     { "CodeExpiry", userAccessCode.ExpiryTime.ToString("d MMMM yyyy") },
                     { "ReturnUrl" , userAccessCode.ReturnUrl }
@@ -76,6 +77,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                     Subject = "Unlock Code: apprenticeship levy account",
                     Tokens = new Dictionary<string, string>
                 {
+                    { "FirstName", user.FirstName },
                     { "UnlockCode", userUnlockCode.Code },
                     { "CodeExpiry", userUnlockCode.ExpiryTime.ToString("d MMMM yyyy") },
                     { "ReturnUrl", userUnlockCode.ReturnUrl }
@@ -102,6 +104,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                     Subject = "Access your apprenticeship levy account",
                     Tokens = new Dictionary<string, string>
                     {
+                        { "FirstName", user.FirstName },
                         {"AccessCode", userAccessCode.Code},
                         {"CodeExpiry", userAccessCode.ExpiryTime.ToString("d MMMM yyyy")},
                         {"ReturnUrl", userAccessCode.ReturnUrl}
@@ -127,6 +130,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                     Subject = "Access your apprenticeship levy account",
                     Tokens = new Dictionary<string, string>
                     {
+                        { "FirstName", user.FirstName },
                         {"AccessCode", userAccessCode.Code},
                         {"CodeExpiry", userAccessCode.ExpiryTime.ToString("d MMMM yyyy")},
                         {"ReturnUrl", userAccessCode.ReturnUrl}
@@ -166,6 +170,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                     Subject = "Reset Password: apprenticeship levy account",
                     Tokens = new Dictionary<string, string>
                         {
+                            { "FirstName", user.FirstName },
                             {"Code", resetCode.Code},
                             {"CodeExpiry", resetCode.ExpiryTime.ToString("d MMMM yyyy")},
                             {"ReturnUrl", getForgottenPasswordUrl}
@@ -193,6 +198,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Notification
                     Subject = "Change your apprenticeship levy account email address",
                     Tokens = new Dictionary<string, string>
                 {
+                    { "FirstName", user.FirstName },
                     {"Code", code.Code},
                     {"CodeExpiry", code.ExpiryTime.ToString("d MMMM yyyy")},
                     {"ReturnUrl", code.ReturnUrl}
