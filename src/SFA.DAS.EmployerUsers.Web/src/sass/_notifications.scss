@@ -6,13 +6,13 @@ $warning-colour:    $orange;
     border-width: 4px;
     border-style: solid;
     margin-top: $gutter-half;
-    margin-bottom: $gutter-half;
+    margin-bottom: 10px;
     padding: $gutter-half 10px;
 
     @include media(tablet) {
         border-width: 5px;
         margin-top: $gutter;
-        margin-bottom: $gutter;
+        margin-bottom: 0;
         padding: $gutter-two-thirds $gutter-half $gutter-half;
     }
 
@@ -49,6 +49,12 @@ $warning-colour:    $orange;
             text-decoration: underline;
         }
     }  
+}
+
+.error-summary {
+    h1 {
+        display: none;
+    }
 }
 
 .notification-wrapper {
