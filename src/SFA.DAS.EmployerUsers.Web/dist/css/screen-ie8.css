@@ -2329,7 +2329,7 @@ a#link-settings:focus {
   text-decoration: underline;
 }
 
-.error-summary h1 {
+.error-summary h1, .error-summary p {
   display: none;
 }
 
