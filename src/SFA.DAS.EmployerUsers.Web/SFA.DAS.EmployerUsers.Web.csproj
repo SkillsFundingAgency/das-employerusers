@@ -832,6 +832,7 @@
     <Content Include="Views\Home\Help.cshtml" />
     <Content Include="Views\Home\Privacy.cshtml" />
     <Content Include="Views\Account\RequestUnlockCode.cshtml" />
+    <Content Include="src\sass\_notifications.scss" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
