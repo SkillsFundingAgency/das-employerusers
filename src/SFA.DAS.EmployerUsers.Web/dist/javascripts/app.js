@@ -44,7 +44,7 @@ sfa.backLink = {
         var backLink = $('<a>')
             .attr({ 'href': '#', 'class': 'link-back' })
             .text('Back')
-            .on('click', function () {  window.history.back(); })
+            .on('click', function (e) { window.history.back(); e.preventDefault(); })
             .appendTo('#js-breadcrumbs');    
     }
 }

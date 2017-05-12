@@ -67,11 +67,20 @@
 
     <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
 
-<div id="skiplink-container">
-    <div>
-        <a href="#content" class="skiplink">Skip to main content</a>
+    <div id="skiplink-container">
+        <div>
+            <a href="#content" class="skiplink">Skip to main content</a>
+        </div>
     </div>
-</div>
+    
+    <!--[if lt IE 8]>
+    <div id="unsupported-browser-message" aria-hidden="true">
+        <p>
+            You're using a web browser that we don't support. Upgrade to one of the <a href="https://www.gov.uk/help/browsers" target="_blank">browsers that we do support</a> to access all the site's features.
+        </p>
+    </div>
+    <![endif]-->
+
     @if (ViewBag.HideCookieMessage?.ToString()?.ToLower() != "true")
     {
         <div id="global-cookie-message">
