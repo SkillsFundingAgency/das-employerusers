@@ -46,7 +46,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
             {
                 if (message.User != null)
                 {
-                    await _mediator.PublishAsync(new AccountLockedEvent { User = message.User });
+                    await _mediator.PublishAsync(new AccountLockedEvent { User = message.User, ReturnUrl = message.ReturnUrl});
                     await _auditService.WriteAudit(new FailedUnlockAuditMessage(message.User, message.UnlockCode));
                 }
                 throw new InvalidRequestException(result.ValidationDictionary);
