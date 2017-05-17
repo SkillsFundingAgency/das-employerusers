@@ -159,6 +159,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
         public void ThenAnAccountLockedEventIsRaisedIfTheValidationFailsAndTheUserIsNotNull()
         {
             //Arrange
+            var expectedReturnUrl = "http://local.test";
             _unlockUserCommandValidator.Setup(x => x.ValidateAsync(It.IsAny<UnlockUserCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = { { "", "" } } });
             var unlockUserCommand = new UnlockUserCommand
             {
@@ -167,14 +168,15 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UnlockUserTe
                 User = new User
                 {
                     Email = ExpectedEmail
-                }
+                },
+                ReturnUrl = expectedReturnUrl
             };
 
             //Act
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _unlockUserCommand.Handle(unlockUserCommand));
 
             //Assert
-            _mediator.Verify(x => x.PublishAsync(It.Is<AccountLockedEvent>(c => c.User.Email.Equals(ExpectedEmail))), Times.Once);
+            _mediator.Verify(x => x.PublishAsync(It.Is<AccountLockedEvent>(c => c.User.Email.Equals(ExpectedEmail) && c.ReturnUrl.Equals(expectedReturnUrl))), Times.Once);
         }
 
 

@@ -284,7 +284,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 var unlockResponse = await _mediator.SendAsync(new UnlockUserCommand
                 {
                     Email = unlockUserViewModel.Email,
-                    UnlockCode = unlockUserViewModel.UnlockCode
+                    UnlockCode = unlockUserViewModel.UnlockCode,
+                    ReturnUrl = unlockUserViewModel.ReturnUrl
                 });
 
                 await _mediator.SendAsync(new ActivateUserCommand

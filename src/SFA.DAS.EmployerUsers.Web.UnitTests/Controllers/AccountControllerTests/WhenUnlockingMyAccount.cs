@@ -89,13 +89,14 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         {
             //Arrange
             var unlockCode = "123RET678";
-            var unlockUserViewModel = new UnlockUserViewModel {Email = LoggedInEmail, UnlockCode = unlockCode};
+            var returnUrl = "http://test.local";
+            var unlockUserViewModel = new UnlockUserViewModel {Email = LoggedInEmail, UnlockCode = unlockCode, ReturnUrl = returnUrl};
 
             //Act
             await _accountController.Unlock(unlockUserViewModel);
 
             //Assert
-            _accountOrchestrator.Verify(x=>x.UnlockUser(It.Is<UnlockUserViewModel>(c=>c.Email == LoggedInEmail && c.UnlockCode == unlockCode)));
+            _accountOrchestrator.Verify(x=>x.UnlockUser(It.Is<UnlockUserViewModel>(c=>c.Email == LoggedInEmail && c.UnlockCode == unlockCode && c.ReturnUrl == returnUrl)));
         }
 
         [Test]
