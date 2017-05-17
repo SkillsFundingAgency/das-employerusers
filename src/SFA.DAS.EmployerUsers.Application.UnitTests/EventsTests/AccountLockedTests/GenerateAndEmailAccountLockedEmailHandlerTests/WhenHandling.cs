@@ -250,6 +250,21 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
         }
 
         [Test]
+        public async Task ThenItShouldUseTheUrlFromTheRequestIfTheUnlockCodeIsNull()
+        {
+            //Arrange
+            _user.SecurityCodes = null;
+            _event.ReturnUrl = "http://test.local";
+
+            //Act
+            await _handler.Handle(_event);
+
+            //Assert
+            _communicationService.Verify(
+                s => s.SendAccountLockedMessage(It.Is<User>(c => c.SecurityCodes.Any(sc => sc.ReturnUrl == _event.ReturnUrl)),It.IsAny<string>()), Times.Once);
+        }
+
+        [Test]
         public async Task ThenTheUserShouldBeRetrievedByEmailIfTheIdIsNotProvided()
         {
             //Arrange
