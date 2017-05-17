@@ -83,6 +83,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
         [Test]
         public async Task ThenItShouldUpdateUserWithNewlyGeneratedCodeAndAnExpiryOf1DayIfNoCodeAttached()
         {
+            //Arrange
+            _event.ReturnUrl = "http://test.local";
+
             // Act
             await _handler.Handle(_event);
 
@@ -116,6 +119,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
         [Test]
         public async Task ThenItShouldSendUserNotificationIfNewCodeGenerated()
         {
+            //Arrange
+            _event.ReturnUrl = "http://test.local";
+
             // Act
             await _handler.Handle(_event);
 
@@ -158,7 +164,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
                 {
                     Code = "UNLOCK_CODE",
                     CodeType = SecurityCodeType.UnlockCode,
-                    ExpiryTime = DateTime.MinValue
+                    ExpiryTime = DateTime.MinValue,
+                    ReturnUrl = "http://test.local"
                 }
             };
 
@@ -234,7 +241,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
                 {
                     Code = "UNLOCK_CODE",
                     CodeType = SecurityCodeType.UnlockCode,
-                    ExpiryTime = DateTime.MinValue
+                    ExpiryTime = DateTime.MinValue,
+                    ReturnUrl = "http://test.local"
                 }
             };
 
@@ -270,6 +278,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
             //Arrange
             _event.User.Id = null;
             _event.User.Email = UserEmail;
+            _event.ReturnUrl = "http://test.local";
 
             //Act
             await _handler.Handle(_event);
