@@ -113,28 +113,30 @@
                     <span>This is a new service – your <a href="https://www.surveymonkey.co.uk/r/2JPLQ9T" target="_blank">feedback</a> will help us to improve it. </span>
                 </p>
             </div>
-            @if (HttpContext.Current.User.Identity.IsAuthenticated && ViewBag.HideSigninLink?.ToString()?.ToLower() != "true")
-            {
+            
+
             <div class="account-information" role="navigation">
                 <a href="#user-nav" id="link-settings" aria-hidden="true" aria-label="Access your settings">Settings</a>
                 <nav id="user-nav">
                     <ul role="menubar">
-                        
-                        @{
+                        <li><a href="@Url.Action("Help", "Home")">Help</a></li>
+                        @if (HttpContext.Current.User.Identity.IsAuthenticated && ViewBag.HideSigninLink?.ToString()?.ToLower() != "true")
+                        {
+                     
                             var identity = (ClaimsIdentity)User?.Identity;
                             var displayName = identity?.Claims.FirstOrDefault(c => c.Type == DasClaimTypes.DisplayName)?.Value ?? "";
-                        }
+                       
                             <li class="has-sub-menu">
                                 <a href="/" role="menuitem">@displayName</a>
                                 <ul role="menu">
                                     <li><a href="@Url.Action("Logout", "Account")" role="menuitem">Log out</a></li>
                                 </ul>
                             </li>
-                        
+                        }
                     </ul>
                 </nav>
             </div>
-            }
+          
         </div>
     </div>
     <main id="content" role="main">
