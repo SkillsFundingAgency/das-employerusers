@@ -333,7 +333,6 @@
     <Compile Include="Plumbing\Ids\RedisAuthorizationCodeStore.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Plumbing\Ids\StartsWithRedirectUriValidator.cs" />
-    <Compile Include="App_Start\Startup.RelyingParty.cs" />
     <Compile Include="App_Start\StructuremapMvc.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="AttemptAuthoriseAttribute.cs" />
