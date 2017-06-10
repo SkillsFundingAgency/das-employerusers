@@ -27,7 +27,7 @@
       <Setting name="AuditApiTenant" value="" />
     </ConfigurationSettings>
     <Certificates>
-      <Certificate name="WebSslCert" thumbprint="FE14C6E906B1E94E93C6AF8FA113EA1221D5DE9C" thumbprintAlgorithm="sha1" />
+      <Certificate name="WebSslCert" thumbprint="2DDD67D7C551CC4EEBDEE4C3DF6E1E6B309CA846" thumbprintAlgorithm="sha1" />
 
     </Certificates>
   </Role>
