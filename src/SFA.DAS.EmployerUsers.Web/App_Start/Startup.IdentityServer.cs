@@ -9,9 +9,11 @@ using IdentityServer3.Core.Services;
 using IdentityServer3.Core.Services.Default;
 using Microsoft.Azure;
 using Owin;
+using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Authentication;
+using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Plumbing.Ids;
 using SFA.DAS.EmployerUsers.WebClientComponents;
 
@@ -128,6 +130,9 @@ namespace SFA.DAS.EmployerUsers.Web
             var clients = new List<Client> { self };
 
             var relyingParties = relyingPartyRepository.GetAllAsync().Result;
+
+            PopulateRelyingPartyModel(relyingParties);
+
             clients.AddRange(relyingParties.Select(rp => new Client
             {
                 ClientName = rp.Name,
@@ -156,6 +161,16 @@ namespace SFA.DAS.EmployerUsers.Web
 
             return clients;
         }
+
+        private void PopulateRelyingPartyModel(IEnumerable<RelyingParty> relyingParties)
+        {
+            RelyingPartyLoginUrlModel.RelyingPartyDictionary = new Dictionary<string, string>();
+            foreach (var relyingParty in relyingParties)
+            {
+                RelyingPartyLoginUrlModel.RelyingPartyDictionary.Add(relyingParty.Id,relyingParty.LoginCallbackUrl);
+            }
+        }
+
         private List<Scope> GetScopes()
         {
             var scopes = new List<Scope>();
