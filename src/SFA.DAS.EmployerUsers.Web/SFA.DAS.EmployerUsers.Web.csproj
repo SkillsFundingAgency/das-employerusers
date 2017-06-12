@@ -328,12 +328,13 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\LoggingConfig.cs" />
     <Compile Include="App_Start\SystemWebCookieManager.cs" />
+    <Compile Include="Attributes\IdsAuthorizeAttribute.cs" />
     <Compile Include="Authentication\IdsContext.cs" />
     <Compile Include="Models\HomePageViewModel.cs" />
+    <Compile Include="Models\RelyingPartyLoginUrlModel.cs" />
     <Compile Include="Plumbing\Ids\RedisAuthorizationCodeStore.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Plumbing\Ids\StartsWithRedirectUriValidator.cs" />
-    <Compile Include="App_Start\Startup.RelyingParty.cs" />
     <Compile Include="App_Start\StructuremapMvc.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="AttemptAuthoriseAttribute.cs" />

@@ -9,6 +9,7 @@ using SFA.DAS.EmployerUsers.Web.Authentication;
 using IdentityServer3.Core;
 using NLog;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
+using SFA.DAS.EmployerUsers.Web.Attributes;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Models.SFA.DAS.EAS.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
@@ -234,7 +235,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
 
         [HttpGet]
-        [Authorize]
+        [IdsAuthorize]
         [Route("account/confirm")]
         public async Task<ActionResult> Confirm()
         {
@@ -275,7 +276,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [IdsAuthorize]
         [Route("account/confirm")]
         public async Task<ActionResult> Confirm(ActivateUserViewModel activateUserViewModel)
         {
@@ -475,7 +476,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [IdsAuthorize]
         [Route("account/changeemail")]
         public async Task<ActionResult> ChangeEmail(string clientId, string returnUrl)
         {
@@ -511,7 +512,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [IdsAuthorize]
         [ValidateAntiForgeryToken]
         [Route("account/changeemail")]
         public async Task<ActionResult> ChangeEmail(ChangeEmailViewModel model, string clientId, string returnUrl)
@@ -538,7 +539,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [IdsAuthorize]
         [Route("account/confirmchangeemail")]
         public ActionResult ConfirmChangeEmail()
         {
@@ -569,7 +570,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [IdsAuthorize]
         [ValidateAntiForgeryToken]
         [Route("account/confirmchangeemail")]
         public async Task<ActionResult> ConfirmChangeEmail(ConfirmChangeEmailViewModel model)
@@ -589,7 +590,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
 
         [HttpGet]
-        [Authorize]
+        [IdsAuthorize]
         [Route("account/changepassword")]
         public async Task<ActionResult> ChangePassword(string clientId, string returnUrl)
         {
@@ -608,7 +609,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [IdsAuthorize]
         [ValidateAntiForgeryToken]
         [Route("account/changepassword")]
         public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model, string clientId, string returnUrl)

@@ -1,11 +1,17 @@
 using System;
+using System.Collections.Generic;
 using System.Web;
 using Microsoft.Owin;
 using Microsoft.Owin.Infrastructure;
 
 namespace SFA.DAS.EmployerUsers.Web
 {
-    public class SystemWebCookieManager : ICookieManager
+    public interface IIdSrvCookieManager : Microsoft.Owin.Infrastructure.ICookieManager
+    {
+        RequestCookieCollection GetCookiesNames(Microsoft.Owin.IOwinContext context);
+    }
+
+    public class SystemWebCookieManager : IIdSrvCookieManager
     {
         public string GetRequestCookie(IOwinContext context, string key)
         {
@@ -82,6 +88,25 @@ namespace SFA.DAS.EmployerUsers.Web
                     Domain = options.Domain,
                     Expires = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 });
+        }
+
+        public RequestCookieCollection GetCookiesNames(IOwinContext context)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
+
+            var webContext = context.Get<HttpContextBase>(typeof(HttpContextBase).FullName);
+
+            var coockies = webContext.Response.Cookies;
+            var dicc = new Dictionary<string, string>();
+            foreach (var cookieName in coockies.AllKeys)
+            {
+                dicc.Add(cookieName, coockies[cookieName].Value);
+            }
+
+            return new RequestCookieCollection(dicc);
         }
     }
 }

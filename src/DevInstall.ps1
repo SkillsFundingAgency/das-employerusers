@@ -1,3 +1,7 @@
+<#
+New-SelfSignedCertificate -Subject localhost -CertStoreLocation cert:\LocalMachine\My -DnsName localhost
+#>
+
 #Requires -RunAsAdministrator
 
 $localhostpwd = ConvertTo-SecureString -String password -Force -AsPlainText
