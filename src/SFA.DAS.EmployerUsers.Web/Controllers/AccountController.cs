@@ -235,7 +235,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
 
         [HttpGet]
-        [IdsAuthorize]
+        [Authorize]
         [Route("account/confirm")]
         public async Task<ActionResult> Confirm()
         {
@@ -276,7 +276,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [IdsAuthorize]
+        [Authorize]
         [Route("account/confirm")]
         public async Task<ActionResult> Confirm(ActivateUserViewModel activateUserViewModel)
         {
