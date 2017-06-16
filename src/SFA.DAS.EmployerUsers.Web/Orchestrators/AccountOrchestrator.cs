@@ -61,7 +61,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 });
                 if (user == null)
                 {
-                    _logger.Warn(
+                    _logger.Info(
                         $"Failed login attempt for email address '{loginViewModel.EmailAddress}' originating from {loginViewModel.OriginatingAddress}");
                     return new OrchestratorResponse<LoginResultModel>
                     {
