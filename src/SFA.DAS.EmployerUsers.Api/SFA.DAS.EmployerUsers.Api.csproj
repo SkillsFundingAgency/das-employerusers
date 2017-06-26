@@ -284,6 +284,7 @@
     <Compile Include="App_Start\StructuremapMvc.cs" />
     <Compile Include="App_Start\StructuremapWebApi.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\HealthCheckController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Orchestrators\SearchOrchestrator.cs" />
     <Compile Include="Controllers\StatusController.cs" />
