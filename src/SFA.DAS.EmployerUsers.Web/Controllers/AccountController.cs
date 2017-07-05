@@ -512,7 +512,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [HttpPost]
-        [IdsAuthorize]
+        [Authorize]
         [ValidateAntiForgeryToken]
         [Route("account/changeemail")]
         public async Task<ActionResult> ChangeEmail(ChangeEmailViewModel model, string clientId, string returnUrl)
@@ -590,7 +590,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
 
         [HttpGet]
-        [IdsAuthorize]
+        [Authorize]
         [Route("account/changepassword")]
         public async Task<ActionResult> ChangePassword(string clientId, string returnUrl)
         {
