@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
@@ -8,15 +11,15 @@ using SFA.DAS.EmployerUsers.Api.Types;
 
 namespace SFA.DAS.EmployerUsers.Api.Client.UnitTests.EmployerUsersApiClientTests
 {
-    [TestFixture]
-    public class WhenSearchingEmployerUsers : EmployerUsersApiClientTestsBase
+    public class WhenSearchingWithSpecialCharacters : EmployerUsersApiClientTestsBase
     {
         [Test]
-        public async Task ThenEmployerUsersAreReturned()
+        [TestCase("joe@blogs.co.uk", "joe%40blogs%2Eco%2Euk")]
+        [TestCase("hammer & anvil", "hammer%20%26%20anvil")]
+        public async Task ThenEmployerUsersAreReturned(string criteria, string encoded)
         {
             var pageNumber = 123;
             var pageSize = 9485;
-            var criteria = "abc";
             var expectedResult = new PagedApiResponseViewModel<UserSummaryViewModel>
             {
                 Page = pageNumber,
@@ -28,19 +31,17 @@ namespace SFA.DAS.EmployerUsers.Api.Client.UnitTests.EmployerUsersApiClientTests
                         FirstName = "Joe",
                         LastName = "Bloggs",
                         Id = "ABC123",
-                        Href = "api/users/ABC123",
-                        Email = "joe@blogs.com",
-                        IsActive = true,
-                        IsLocked = false
+                        Href = "api/users/ABC123"
                     }
                 }
             };
-            HttpClient.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(JsonConvert.SerializeObject(expectedResult));
 
+            HttpClient.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(JsonConvert.SerializeObject(expectedResult));
 
             var response = await Client.SearchEmployerUsers(criteria, pageNumber, pageSize);
 
-            HttpClient.Verify(x => x.GetAsync(Configuration.ApiBaseUrl + $"api/users/search/{criteria}/?pageNumber={pageNumber}&pageSize={pageSize}"));
+            // Assert
+            HttpClient.Verify(x => x.GetAsync(Configuration.ApiBaseUrl + $"api/users/search/{encoded}/?pageNumber={pageNumber}&pageSize={pageSize}"));
             response.ShouldBeEquivalentTo(expectedResult);
         }
     }

@@ -32,10 +32,11 @@ namespace SFA.DAS.EmployerUsers.Api.Client.UnitTests.EmployerUsersApiClientTests
                 }
             };
 
-            HttpClient.Setup(x => x.GetAsync(Configuration.ApiBaseUrl + $"api/users?pageNumber={pageNumber}&pageSize={pageSize}")).ReturnsAsync(JsonConvert.SerializeObject(expectedResult));
+            HttpClient.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(JsonConvert.SerializeObject(expectedResult));
 
             var response = await Client.GetPageOfEmployerUsers(pageNumber, pageSize);
 
+            HttpClient.Verify(x => x.GetAsync(Configuration.ApiBaseUrl + $"api/users?pageNumber={pageNumber}&pageSize={pageSize}"));
             response.ShouldBeEquivalentTo(expectedResult);
         }
     }

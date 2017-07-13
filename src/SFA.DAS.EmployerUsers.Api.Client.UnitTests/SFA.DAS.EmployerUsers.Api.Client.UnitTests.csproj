@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="EmployerUsersApiClientTests\EmployerUsersApiClientTestsBase.cs" />
     <Compile Include="EmployerUsersApiClientTests\WhenGettingAnEmployerUser.cs" />
+    <Compile Include="EmployerUsersApiClientTests\WhenSearchingWithSpecialCharacters.cs" />
     <Compile Include="EmployerUsersApiClientTests\WhenSearchingEmployerUsers.cs" />
     <Compile Include="EmployerUsersApiClientTests\WhenGettingAPageOfEmployerUsers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

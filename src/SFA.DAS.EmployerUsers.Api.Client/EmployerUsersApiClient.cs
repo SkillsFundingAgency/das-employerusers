@@ -25,8 +25,8 @@ namespace SFA.DAS.EmployerUsers.Api.Client
 
         public async Task<T> GetResource<T>(string resourceUri) where T : IEmployerUsersResource
         {
-            var absoluteUri = new Uri(new Uri(_configuration.ApiBaseUrl), resourceUri);
-            var json = await _secureHttpClient.GetAsync(absoluteUri.ToString());
+            var absoluteUri = Combine(_configuration.ApiBaseUrl, resourceUri);
+            var json = await _secureHttpClient.GetAsync(absoluteUri);
             return JsonConvert.DeserializeObject<T>(json);
         }
 
@@ -37,7 +37,19 @@ namespace SFA.DAS.EmployerUsers.Api.Client
 
         public async Task<PagedApiResponseViewModel<UserSummaryViewModel>> SearchEmployerUsers(string criteria, int pageNumber = 1, int pageSize = 1000)
         {
-            return await GetResource<PagedApiResponseViewModel<UserSummaryViewModel>>($"/api/users/search/{Uri.EscapeDataString(criteria)}/?pageNumber={pageNumber}&pageSize={pageSize}");
+            return await GetResource<PagedApiResponseViewModel<UserSummaryViewModel>>($"/api/users/search/{SanitiseUrl(criteria)}/?pageNumber={pageNumber}&pageSize={pageSize}");
+        }
+
+        private static string SanitiseUrl(string criteria)
+        {
+            return Uri.EscapeDataString(criteria).Replace(".", "%2E").Replace(" ", "%20");
+        }
+
+        public static string Combine(string uri1, string uri2)
+        {
+            uri1 = uri1.TrimEnd('/');
+            uri2 = uri2.TrimStart('/');
+            return $"{uri1}/{uri2}";
         }
     }
 }
