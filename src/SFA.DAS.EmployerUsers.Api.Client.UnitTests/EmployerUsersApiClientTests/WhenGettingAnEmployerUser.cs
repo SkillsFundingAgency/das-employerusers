@@ -25,10 +25,11 @@ namespace SFA.DAS.EmployerUsers.Api.Client.UnitTests.EmployerUsersApiClientTests
                 FailedLoginAttempts = 3
             };
 
-            HttpClient.Setup(x => x.GetAsync(Configuration.ApiBaseUrl + resourceUri)).ReturnsAsync(JsonConvert.SerializeObject(expectedResult));
+            HttpClient.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(JsonConvert.SerializeObject(expectedResult));
 
             var response = await Client.GetResource<UserViewModel>(resourceUri);
 
+            HttpClient.Verify(x => x.GetAsync(Configuration.ApiBaseUrl + resourceUri));
             response.ShouldBeEquivalentTo(expectedResult);
         }
     }
