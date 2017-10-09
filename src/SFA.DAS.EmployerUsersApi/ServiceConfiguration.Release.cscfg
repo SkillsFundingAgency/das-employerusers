@@ -9,7 +9,7 @@
       <Setting name="LogLevel" value="Warn" />
       <Setting name="LoggingRedisConnectionString" value="__LoggingRedisConnectionString__" />
       <Setting name="LoggingRedisKey" value="__LoggingRedisKey__" />
-      <Setting name="InstrumentationKey" value="__InstrumentationKey__" />
+      <Setting name="InstrumentationKey" value="__ApiInstrumentationKey__" />
       <Setting name="idaAudience" value="__idaAudience__" />
       <Setting name="idaTenant" value="__idaTenant__" />
     </ConfigurationSettings>
