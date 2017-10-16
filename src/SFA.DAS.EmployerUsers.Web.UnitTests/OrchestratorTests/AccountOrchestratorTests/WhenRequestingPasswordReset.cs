@@ -42,7 +42,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var response = await _accountOrchestrator.RequestPasswordResetCode(_requestPasswordResetViewModel);
 
             Assert.That(response.Email, Is.EqualTo(_requestPasswordResetViewModel.Email));
-            Assert.That(response.ResetCodeSent, Is.True);,
+            Assert.That(response.ResetCodeSent, Is.True);
             Assert.That(response.ErrorDictionary.Count, Is.EqualTo(0));
         }
 
