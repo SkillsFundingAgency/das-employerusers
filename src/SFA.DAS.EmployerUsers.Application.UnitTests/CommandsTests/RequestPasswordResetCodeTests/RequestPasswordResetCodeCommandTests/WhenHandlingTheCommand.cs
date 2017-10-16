@@ -9,7 +9,7 @@ using NUnit.Framework;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
-using SFA.DAS.EmployerUsers.Application.Services.ValueHashing;
+using SFA.DAS.HashingService;
 using SFA.DAS.EmployerUsers.Application.UnitTests.TestHelpers;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;

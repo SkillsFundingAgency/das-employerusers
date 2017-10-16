@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.EmployerUsers.Application.Services.ValueHashing;
+using SFA.DAS.HashingService;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
@@ -30,7 +30,7 @@ namespace SFA.DAS.EmployerUsers.Application.Queries.GetUserByHashedId
                 throw new InvalidRequestException(validationResult.ValidationDictionary);
             }
 
-            var userId = _hashingService.DecodeValue(message.HashedUserId);
+            var userId = _hashingService.DecodeValueToGuid(message.HashedUserId);
 
             if (userId == Guid.Empty)
             {
