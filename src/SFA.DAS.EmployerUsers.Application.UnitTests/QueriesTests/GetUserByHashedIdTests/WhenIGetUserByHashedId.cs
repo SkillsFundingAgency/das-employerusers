@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserByHashedId;
-using SFA.DAS.EmployerUsers.Application.Services.ValueHashing;
+using SFA.DAS.HashingService;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
@@ -26,7 +26,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.QueriesTests.GetUserByHash
             _expectedUserId = Guid.NewGuid();
 
             _hashingService = new Mock<IHashingService>();
-            _hashingService.Setup(x => x.DecodeValue(HashedUserId)).Returns(_expectedUserId);
+            _hashingService.Setup(x => x.DecodeValueToGuid(HashedUserId)).Returns(_expectedUserId);
 
             _validator = new Mock<IValidator<GetUserByHashedIdQuery>>();
             _validator.Setup(x => x.ValidateAsync(It.IsAny<GetUserByHashedIdQuery>())).ReturnsAsync(new ValidationResult {ValidationDictionary = new Dictionary<string, string>()});

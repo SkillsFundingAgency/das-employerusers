@@ -41,7 +41,9 @@ using StructureMap.Web.Pipeline;
 
 namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
 {
+    using SFA.DAS.HashingService;
     using StructureMap.Graph;
+    using System.Threading.Tasks;
 
     public class DefaultRegistry : Registry
     {
@@ -67,11 +69,19 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             For<IAuditService>().Use<AuditService>();
 
             AddConfigSpecifiedRegistrations();
-            AddEnvironmentSpecificRegistrations();
+
+            var environment = GetEnvironment();
+            var configService = GetconfigService(environment);
+            var employerUserConfig = EmployerUserConfig(configService);
+
+            For<IConfigurationService>().Use(configService);
+            ConfigureHashingService(employerUserConfig);
+            
+            AddEnvironmentSpecificRegistrations(environment);
             AddMediatrRegistrations();
         }
 
-        private void AddEnvironmentSpecificRegistrations()
+        private string GetEnvironment()
         {
             var environment = Environment.GetEnvironmentVariable("DASENV");
             if (string.IsNullOrEmpty(environment))
@@ -79,6 +89,11 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
                 environment = CloudConfigurationManager.GetSetting("EnvironmentName");
             }
 
+            return environment;
+        }
+
+        private ConfigurationService GetconfigService(string environment)
+        {
             IConfigurationRepository configurationRepository;
 
             if (ConfigurationManager.AppSettings["LocalConfig"].AsBool())
@@ -92,8 +107,12 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
 
             var configurationService = new ConfigurationService(configurationRepository,
                 new ConfigurationOptions("SFA.DAS.EmployerUsers.Web", environment, "1.0"));
-            For<IConfigurationService>().Use(configurationService);
 
+            return configurationService;
+        }
+
+        private void AddEnvironmentSpecificRegistrations(string environment)
+        {
             if (environment == "LOCAL")
             {
                 AddDevelopmentRegistrations();
@@ -103,6 +122,7 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
                 AddProductionRegistrations();
             }
         }
+
         private void AddDevelopmentRegistrations()
         {
             For<IUserRepository>().Use<SqlServerUserRepository>();
@@ -156,5 +176,16 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
                 For<INotificationsApi>().Use<NotificationsApi>();
             }
         }
+
+        private EmployerUsersConfiguration EmployerUserConfig(ConfigurationService configurationService)
+        {
+            return configurationService.Get<EmployerUsersConfiguration>();
+        }
+
+        private void ConfigureHashingService(EmployerUsersConfiguration config)
+        {
+            For<IHashingService>().Use(x => new HashingService(config.AllowedHashstringCharacters, config.Hashstring));
+        }
+
     }
 }

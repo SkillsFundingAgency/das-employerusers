@@ -6,7 +6,7 @@ using Microsoft.Azure;
 using NLog;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
-using SFA.DAS.EmployerUsers.Application.Services.ValueHashing;
+using SFA.DAS.HashingService;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Auditing;

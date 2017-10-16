@@ -5,5 +5,6 @@
         public virtual IdentityServerConfiguration IdentityServer { get; set; }
         public virtual AccountConfiguration Account { get; set; }
         public string Hashstring { get; set; }
+        public string AllowedHashstringCharacters { get; set; }
     }
 }
