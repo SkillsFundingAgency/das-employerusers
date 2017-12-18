@@ -1,11 +1,13 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using FluentAssertions;
 using MediatR;
 using Moq;
 using NLog;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Api.Orchestrators;
+using SFA.DAS.EmployerUsers.Api.Types;
 using SFA.DAS.EmployerUsers.Application.Queries.SearchUsers;
 using SFA.DAS.EmployerUsers.Domain;
 
@@ -14,6 +16,7 @@ namespace SFA.DAS.EmployerUsers.Api.UnitTests.OrchestratorTests
     [TestFixture]
     public sealed class WhenSearchingForEmployerUsers
     {
+        private Mock<IMapper> _mapper;
         private Mock<IMediator> _mediator;
         private SearchOrchestrator _orchestrator;
         private Mock<ILogger> _logger;
@@ -21,11 +24,13 @@ namespace SFA.DAS.EmployerUsers.Api.UnitTests.OrchestratorTests
         [SetUp]
         public void Arrange()
         {
+            _mapper = new Mock<IMapper>();
+
             _mediator = new Mock<IMediator>();
             
             _logger = new Mock<ILogger>();
             
-            _orchestrator = new SearchOrchestrator(_mediator.Object, _logger.Object);
+            _orchestrator = new SearchOrchestrator(_mapper.Object, _mediator.Object, _logger.Object);
         }
 
         [TestCase(9, 3, 3)]

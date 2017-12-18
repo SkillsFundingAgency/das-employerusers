@@ -16,6 +16,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
+using AutoMapper;
 using MediatR;
 using SFA.DAS.Audit.Client;
 using SFA.DAS.EmployerUsers.Domain.Auditing;
@@ -41,7 +42,20 @@ namespace SFA.DAS.EmployerUsers.Api.DependencyResolution {
 
             For<IUserRepository>().Use<SqlServerUserRepository>();
 
+            AddAutoMapperRegistrations();
             AddMediatrRegistrations();
+        }
+
+        private void AddAutoMapperRegistrations()
+        {
+            var config = new MapperConfiguration(c =>
+            {
+                c.AddProfile<DefaultProfile>();
+            });
+
+            var mapper = config.CreateMapper();
+            
+            For<IMapper>().Use(mapper);
         }
 
         private void AddMediatrRegistrations()
