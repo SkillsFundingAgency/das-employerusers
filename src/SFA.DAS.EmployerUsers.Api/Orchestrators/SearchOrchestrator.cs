@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using MediatR;
 using NLog;
 using SFA.DAS.EmployerUsers.Api.Types;
@@ -10,11 +11,13 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
 {
     public class SearchOrchestrator
     {
+        private readonly IMapper _mapper;
         private readonly IMediator _mediator;
         private readonly ILogger _logger;
 
-        public SearchOrchestrator(IMediator mediator, ILogger logger)
+        public SearchOrchestrator(IMapper mapper, IMediator mediator, ILogger logger)
         {
+            _mapper = mapper;
             _mediator = mediator;
             _logger = logger;
         }
@@ -28,7 +31,7 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
             {
                 Data = new PagedApiResponseViewModel<UserSummaryViewModel>()
                 {
-                    Data = response.Users.Select(ConvertUserToUserSummaryViewModel).ToList(),
+                    Data = response.Users.Select(_mapper.Map<UserSummaryViewModel>).ToList(),
                     Page = pageNumber,
                     TotalPages = GetNoOfTotalPages(pageSize, response)
                 }
@@ -45,19 +48,6 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
             }
 
             return 1;
-        }
-
-        private UserSummaryViewModel ConvertUserToUserSummaryViewModel(User user)
-        {
-            return new UserSummaryViewModel
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                IsActive = user.IsActive,
-                IsLocked = user.IsLocked
-            };
         }
     }
 

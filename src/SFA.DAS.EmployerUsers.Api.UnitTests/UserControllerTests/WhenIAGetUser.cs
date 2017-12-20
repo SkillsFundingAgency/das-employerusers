@@ -30,7 +30,7 @@ namespace SFA.DAS.EmployerUsers.Api.UnitTests.UserControllerTests
                 Salt = "ABC123",
                 PasswordProfileId = "ZZZ999"
             };
-
+            
             Mediator.Setup(x => x.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == userId))).ReturnsAsync(user);
 
             var response = await Controller.Show(userId);

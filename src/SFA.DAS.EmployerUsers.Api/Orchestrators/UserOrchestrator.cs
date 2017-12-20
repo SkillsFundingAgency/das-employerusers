@@ -1,22 +1,23 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using MediatR;
 using NLog;
 using SFA.DAS.EmployerUsers.Api.Types;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUsers;
-using SFA.DAS.EmployerUsers.Application.Queries.SearchUsers;
-using SFA.DAS.EmployerUsers.Domain;
 
 namespace SFA.DAS.EmployerUsers.Api.Orchestrators
 {
     public class UserOrchestrator
     {
+        private readonly IMapper _mapper;
         private readonly IMediator _mediator;
         private readonly ILogger _logger;
 
-        public UserOrchestrator(IMediator mediator, ILogger logger)
+        public UserOrchestrator(IMapper mapper, IMediator mediator, ILogger logger)
         {
+            _mapper = mapper;
             _mediator = mediator;
             _logger = logger;
         }
@@ -30,7 +31,7 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
             {
                 Data = new PagedApiResponseViewModel<UserSummaryViewModel>()
                 {
-                    Data = response.Users.Select(ConvertUserToUserSummaryViewModel).ToList(),
+                    Data = response.Users.Select(_mapper.Map<UserSummaryViewModel>).ToList(),
                     Page = pageNumber,
                     TotalPages = (response.RecordCount / pageSize) + 1
                 }
@@ -43,39 +44,8 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
             var user = await _mediator.SendAsync(new GetUserByIdQuery() {UserId = id});
             return new OrchestratorResponse<UserViewModel>()
             {
-                Data = ConvertUserToUserViewModel(user)
+                Data = _mapper.Map<UserViewModel>(user)
             }; 
-        }
-
-
-
-        private UserViewModel ConvertUserToUserViewModel(User user)
-        {
-            if (user == null)
-            {
-                return null;
-            }
-
-            return new UserViewModel
-            {
-                LastName = user.LastName,
-                FirstName = user.FirstName,
-                Id = user.Id,
-                Email = user.Email,
-                IsActive = user.IsActive,
-                IsLocked = user.IsLocked,
-                FailedLoginAttempts = user.FailedLoginAttempts
-            };
-        }
-
-        private UserSummaryViewModel ConvertUserToUserSummaryViewModel(User user)
-        {
-            return new UserSummaryViewModel
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName
-            };
         }
     }
 }
