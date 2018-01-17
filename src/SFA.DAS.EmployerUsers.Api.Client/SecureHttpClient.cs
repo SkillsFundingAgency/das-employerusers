@@ -33,7 +33,7 @@ namespace SFA.DAS.EmployerUsers.Api.Client
             {
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authenticationResult.AccessToken);
 
-                if (!string.IsNullOrEmpty(_configuration.ClientCertificateThumbprint))
+                if (!string.IsNullOrWhiteSpace(_configuration.ClientCertificateThumbprint))
                 {
                     var certificate = store.FindCertificateByThumbprint(_configuration.ClientCertificateThumbprint);
                     if (certificate != null)
