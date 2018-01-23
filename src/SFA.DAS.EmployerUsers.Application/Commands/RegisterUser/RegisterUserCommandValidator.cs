@@ -16,11 +16,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
         public Task<ValidationResult> ValidateAsync(RegisterUserCommand item)
         {
             var validationResult = new ValidationResult();
-            
-            if (string.IsNullOrWhiteSpace(item.Email) || !IsEmailValid(item.Email))
-            {
-                validationResult.AddError(nameof(item.Email), "Enter a valid email address");
-            }
 
             if (string.IsNullOrEmpty(item.FirstName))
             {
@@ -30,6 +25,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
             if (string.IsNullOrEmpty(item.LastName))
             {
                 validationResult.AddError(nameof(item.LastName), "Enter last name");
+            }
+
+            if (string.IsNullOrWhiteSpace(item.Email) || !IsEmailValid(item.Email))
+            {
+                validationResult.AddError(nameof(item.Email), "Enter a valid email address");
             }
 
             if (string.IsNullOrEmpty(item.Password))

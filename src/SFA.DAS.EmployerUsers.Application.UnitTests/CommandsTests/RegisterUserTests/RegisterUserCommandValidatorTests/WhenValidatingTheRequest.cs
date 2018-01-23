@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.RegisterUser;
@@ -192,5 +193,32 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
             Assert.Contains(new KeyValuePair<string, string>("ConfirmPassword", "Passwords don't match"), actual.ValidationDictionary);
         }
 
+        [Test]
+        public async Task ThenTheDictionaryIsPopulatedWithTheFailedFieldsInTheRequiredOrderWhenTheCommandIsNotValid()
+        {
+            //Act
+            var actual = await _validator.ValidateAsync(new RegisterUserCommand
+            {
+                Email = "",
+                FirstName = "",
+                LastName = "",
+                Password = "",
+                ConfirmPassword = "",
+                HasAcceptedTermsAndConditions = false
+            });
+
+            var valuesInAppendedSequence = actual.ValidationDictionary.Values.Select(v => v).ToArray();
+
+            //Assert
+            const int expectedNumberOfErrors = 6;
+
+            Assert.AreEqual(expectedNumberOfErrors, valuesInAppendedSequence.Length);
+            Assert.AreEqual("Enter first name", valuesInAppendedSequence[0]);
+            Assert.AreEqual("Enter last name", valuesInAppendedSequence[1]);
+            Assert.AreEqual("Enter a valid email address", valuesInAppendedSequence[2]);
+            Assert.AreEqual("Enter password", valuesInAppendedSequence[3]);
+            Assert.AreEqual("Re-type password", valuesInAppendedSequence[4]);
+            Assert.AreEqual("You need to accept the terms of use", valuesInAppendedSequence[5]);
+        }
     }
 }
