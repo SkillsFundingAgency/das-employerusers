@@ -30,6 +30,8 @@ let isAutomationProject = getBuildParamOrDefault "AcceptanceTests" "false"
 let devWebsitePort = getBuildParamOrDefault "devport" "7071"
 let accWebsitePort = getBuildParamOrDefault "accport" "5051"
 
+let acceptanceTestPlayList = getBuildParamOrDefault "playList" ""
+
 let mutable projectName = ""
 let mutable folderPrecompiled = @"\"+ projectName + ".Release_precompiled "
 let mutable publishDirectory = rootPublishDirectory @@ projectName
@@ -195,32 +197,47 @@ Target "Build Cloud Projects"(fun _ ->
 
     if solutionFilePresent && buildMode.ToLower().Equals("release") then
         
-        for file in !! ("./**/ServiceConfiguration.*.cscfg") do
-            let configurationName = FileSystemHelper.fileInfo(file).Name.Replace("ServiceConfiguration.","").Replace(".cscfg","")
+        let fileIncludes = !! ("./**/Configuration/ServiceDefinition.*.csdef")
+        
+        let seqFileIncludes : seq<string> = Seq.cast fileIncludes
 
-            let directory = FileSystemHelper.fileInfo(file).DirectoryName
+        if (Seq.length seqFileIncludes <> 0) then
+            for file in fileIncludes do
+                trace file
+                let configurationName = FileSystemHelper.fileInfo(file).Name.Replace("ServiceDefinition.","").Replace(".csdef","")
 
-            let configFile = FileSystemHelper.fileInfo(directory @@ (@"./Configuration/ServiceDefinition." + configurationName + ".csdef"))
+                let directory = FileSystemHelper.fileInfo(file).DirectoryName
 
-            let targetFile = FileSystemHelper.fileInfo(directory @@ (@"ServiceDefinition.csdef"))
+                let configFile = FileSystemHelper.fileInfo(file)
 
-            let fileExists = FileSystemHelper.fileExists configFile.FullName
+                let targetFile = FileSystemHelper.fileInfo(directory @@ (@"./../ServiceDefinition.csdef"))
 
-            if fileExists && testDirectory.ToLower() = "release" then
-                let fileRename = FileSystemHelper.fileInfo((configFile.DirectoryName @@ "./ServiceDefinition.csdef")).FullName
-                FileHelper.CopyFile fileRename configFile.FullName
-                FileHelper.MoveFile targetFile.DirectoryName fileRename
+                let fileExists = FileSystemHelper.fileExists configFile.FullName
 
-            if configurationName.ToUpper() <> "LOCAL" then
-                let properties = 
-                        [
-                            ("TargetProfile",configurationName);
-                            ("OutputPath",@"bin/" @@ configurationName);
-                        ]    
+                if fileExists && testDirectory.ToLower() = "release" then
+                    let fileRename = FileSystemHelper.fileInfo((configFile.DirectoryName @@ "./ServiceDefinition.csdef")).FullName
+                    FileHelper.CopyFile fileRename configFile.FullName
+                    FileHelper.MoveFile targetFile.DirectoryName fileRename
+
+                if configurationName.ToUpper() <> "LOCAL" then
+                    let properties = 
+                            [
+                                ("TargetProfile",configurationName);
+                                ("OutputPath",@"bin/" @@ configurationName);
+                            ]    
             
-                !! (@"./" + directory + "/*.ccproj")
-                    |> MSBuildReleaseExt null properties "Publish"
-                    |> Log "Build-Output: "
+                    !! (@"./" + directory + "/../*.ccproj")
+                        |> MSBuildReleaseExt null properties "Publish"
+                        |> Log "Build-Output: "
+        else
+            let properties = 
+                            [
+                                ("TargetProfile","cloud");
+                                ("OutputPath",@"bin/");
+                            ]  
+            !! (@".\**\*.ccproj")
+                        |> MSBuildReleaseExt null properties "Publish"
+                        |> Log "Build-Output: "
 )
 
 
@@ -429,7 +446,8 @@ Target "Run Acceptance Tests" (fun _ ->
             {p with
                 ToolPath = nUnitToolPath;
                 StopOnError = false;
-                Agents = Some 1;                
+                Agents = Some 1;    
+                Testlist = acceptanceTestPlayList;
                 ResultSpecs = [("TestResult.xml;format=" + nunitTestFormat)];
                 })
 )
