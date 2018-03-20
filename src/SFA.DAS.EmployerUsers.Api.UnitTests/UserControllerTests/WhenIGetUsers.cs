@@ -2,11 +2,13 @@
 using System.Threading.Tasks;
 using System.Web.Http.Results;
 using FluentAssertions;
+using FluentAssertions.Common;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Api.Types;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUsers;
 using SFA.DAS.EmployerUsers.Domain;
+using SFA.DAS.EmployerUsers.TestCommon.Extensions;
 
 namespace SFA.DAS.EmployerUsers.Api.UnitTests.UserControllerTests
 {
@@ -32,7 +34,7 @@ namespace SFA.DAS.EmployerUsers.Api.UnitTests.UserControllerTests
                 Users = users.ToArray()
             };
             Mediator.Setup(x => x.SendAsync(It.Is<GetUsersQuery>(q => q.PageNumber == pageNumber && q.PageSize == pageSize))).ReturnsAsync(usersResponse);
-            users.ForEach(x => UrlHelper.Setup(y => y.Route("Show", It.Is<object>(o => o.GetHashCode() == new { x.Id }.GetHashCode()))).Returns($"/api/users/{x.Id}"));
+            users.ForEach(x => UrlHelper.Setup(y => y.Route("Show", It.Is<object>(o => o.IsEquivalentTo( new { x.Id })))).Returns($"/api/users/{x.Id}"));
 
             var response = await Controller.Index(pageSize, pageNumber);
 
