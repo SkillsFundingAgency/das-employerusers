@@ -1,0 +1,40 @@
+html {
+    height: 100%;
+    background: #fff;
+}
+
+body {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+}
+
+#content {
+    background: white;
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+}
+
+.sub-nav {
+    order: -1;
+}
+
+main {
+    display: block;
+    padding: 20px;
+}
+
+@media (min-width: 768px) {
+    #content {
+        flex-direction: row;
+        flex: 1 0 auto;
+    }
+    main {
+        flex: 1;
+    }
+    .sub-nav {
+        flex: 0 0 250px;
+        border-right: 1px solid $grey-2;
+    }
+}

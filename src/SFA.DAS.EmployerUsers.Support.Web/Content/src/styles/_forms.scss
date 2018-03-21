@@ -1,0 +1,325 @@
+// Forms
+// ==========================================================================
+
+// Contents:
+//
+// 1. Helpers
+// 2. Form wrappers
+// 3. Form labels
+// 4. Form hints
+// 5. Form controls
+// 6. Form control widths
+
+// 1. Helpers
+// ==========================================================================
+
+// Fieldset is used to group more than one .form-group
+fieldset {
+  @extend %clearfix;
+  width: 100%;
+  margin: 0;
+}
+
+// Remove margin under textarea in Chrome and FF
+textarea {
+  display: block;
+}
+
+
+// 2. Form wrappers
+// ==========================================================================
+
+// Form section is used to wrap .form-group and has twice its margin
+.form-section {
+  @extend %clearfix;
+
+  float: left;
+  width: 100%;
+
+  margin-bottom: 5px;
+
+  @include breakpoint($medium) {
+    margin-bottom: 5px * 2;
+  }
+}
+
+// Form group is used to wrap label and input pairs
+.form-group {
+  @extend %clearfix;
+
+  float: left;
+  width: 100%;
+
+  margin-bottom: 10px;
+
+  @include breakpoint($medium) {
+    margin-bottom: 5px * 3;
+    font-size: 19px;
+  }
+}
+
+// Form group related is used to reduce the space between label and input pairs
+.form-group-related {
+  margin-bottom: 10px;
+
+  @include breakpoint($medium) {
+    margin-bottom: 20px;
+  }
+}
+
+// Form group compound is used to reduce the space between label and input pairs
+.form-group-compound {
+  margin-bottom: 10px;
+}
+
+
+// 3. Form labels
+// ==========================================================================
+
+// Form labels, or for legends styled to look like labels
+// TODO: Amend so there is only one label style
+label {
+  display: block;
+  color: $text-colour;
+  padding-bottom: 2px;
+  font-weight: bold;
+}
+
+
+// Used for the 'or' in between block label options
+.form-block {
+  @extend %clearfix;
+  float: left;
+  width: 100%;
+
+  margin-top: -5px;
+  margin-bottom: 5px;
+
+  @include breakpoint($medium) {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+}
+
+// 4. Form hints
+// ==========================================================================
+
+// Form hints and example text are light grey and sit above a form control
+.form-hint {
+  display: block;
+  color: $secondary-text-colour;
+  font-weight: normal;
+
+  margin-top: -2px;
+  padding-bottom: 2px;
+}
+
+.form-label .form-hint,
+.form-label-bold .form-hint {
+  margin-top: 0;
+  padding-bottom: 0;
+}
+
+// 5. Form controls
+// ==========================================================================
+
+// By default, form controls are 50% width for desktop,
+// and 100% width for mobile
+.form-control {
+  width: 100%;
+
+  padding: 5px 4px 4px;
+  color: inherit;
+  background-color: transparent;
+  border: 2px solid;
+
+
+  @include breakpoint($medium) {
+    width: 50%;
+  }
+  &.single-char {
+      width: 2em;
+      display: inline-block;
+      text-align: center;
+  }
+
+}
+
+// Allow a qualifying element, remove rounded corners from inputs and textareas
+// scss-lint:disable QualifyingElement
+input.form-control,
+textarea.form-control {
+  // Remove inner shadow
+  -webkit-appearance: none;
+  // Remove rounded corners
+  border-radius: 0;
+  background: white;
+}
+
+.form-control {
+	background: white;
+}
+// scss-lint:enable QualifyingElement
+
+// Radio buttons
+.form-radio {
+  display: block;
+  margin: 10px 0;
+
+  input {
+    vertical-align: middle;
+    margin: -4px 5px 0 0;
+  }
+}
+
+// Checkboxes
+.form-checkbox {
+  display: block;
+  margin: 5px 0;
+
+  input {
+    vertical-align: middle;
+    margin: -2px 5px 0 0;
+  }
+}
+
+
+// 6. Form control widths
+// ==========================================================================
+
+// TODO: Update these
+// Form control widths
+
+.form-control-3-4 {
+  width: 100%;
+
+  @include breakpoint($medium) {
+    width: 75%;
+  }
+}
+
+.form-control-2-3 {
+  width: 100%;
+
+  @include breakpoint($medium) {
+    width: 66.66%;
+  }
+}
+
+.form-control-1-2 {
+  width: 100%;
+
+  @include breakpoint($medium) {
+    width: 50%;
+  }
+}
+
+.form-control-1-3 {
+  width: 100%;
+
+  @include breakpoint($medium) {
+    width: 33.33%;
+  }
+}
+
+.form-control-1-4 {
+  width: 50%;
+
+  @include breakpoint($medium) {
+    width: 25%;
+  }
+}
+
+.form-control-1-8 {
+  width: 100%;
+
+  @include breakpoint($medium) {
+    width: 12.5%;
+  }
+}
+
+.form-filter {
+	background: $grey-4;
+	border: 1px solid $grey-3;
+	padding: 20px;
+	margin: 20px 0;
+}
+
+@include breakpoint($medium) {
+	.form-inline {
+		.form-group {
+			width: 33%;
+			float: left;
+			padding-right: 20px;
+			.form-control {
+				width: 100%;
+			}
+		}
+	}
+}
+
+// Search form 
+
+.search-field {
+
+  position: relative;
+  margin-bottom: 20px;
+  @include breakpoint($medium) { 
+      width: 50%;
+  }
+  label {
+      margin-bottom: 5px;
+  }
+  .search-input {
+    input {
+      line-height: 39px;
+      min-height: 50px;
+      width: 100%;
+      font-size: 19px;
+      padding-left: 10px;
+      padding-right: 60px;
+      border: 1px solid $border-colour;
+    }
+  }
+  .search-submit {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    bottom: 0;
+    right: 0;
+    button {
+      box-shadow: none;
+      position: absolute;
+      z-index: 4;
+      right: 0;
+      top: 0;
+      width: 50px;
+      height: 50px;
+      border: none;
+      overflow: hidden;
+      text-indent: -5000px;
+      color: #fff;
+      background-color: $govuk-blue;
+      background-image: url(../img/icon-search-2x.png);
+      background-position: 13px 12px;
+      background-repeat: no-repeat;
+      background-size: 30px 22px;
+      margin: 0;
+    }
+  }
+}
+
+
+// Error Summaries 
+
+.error-summary {
+    border: 4px solid $red;
+    padding: 15px;
+    margin-bottom: 15px;
+    p {
+        font-weight: bold;
+        color: $red;
+        font-size: 18px;
+        margin: 0;
+    }
+}

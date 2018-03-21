@@ -1,0 +1,102 @@
+$susy: (
+  columns: 12,
+  gutters: 1/4,
+  math: fluid,
+  output: float,
+  gutter-position: inside,
+);
+
+*, *::after, *::before {
+    box-sizing: border-box;
+}
+
+body {
+    background: $grey-4;
+}
+
+html,
+body,
+button,
+input,
+table,
+td,
+th {
+  font-family: "nta",Arial,sans-serif;
+}
+
+// basic styles for HTML5 and other elements
+html,
+body,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+article,
+aside,
+footer,
+header,
+hgroup,
+nav,
+section {
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+}
+
+// HTML5 display definition
+main {
+  display: block;
+}
+
+html {
+	font-size: 62.5%; 
+	overflow-y: scroll; 
+}
+
+body {
+	background: $grey-3;
+	color: $text-colour;
+	font-size: 160%;
+	line-height: 1.5;
+	font-weight: 400;
+}
+ol,
+ul,
+nav ol,
+nav ul {
+  list-style: inherit;
+}
+
+fieldset {
+  border: none;
+  padding: 0;
+}
+
+b,
+strong {
+  font-weight: 600;
+}
+
+img {
+  border: 0;
+}
+
+abbr[title] {
+  cursor: help;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+button:focus {
+  outline: 3px solid $focus-colour;
+  outline-offset: 0;
+}
+
+
+.container {
+	@include container(80em);
+}
