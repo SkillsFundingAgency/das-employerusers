@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
+using NLog;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
@@ -12,7 +12,6 @@ using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
-using ILogger = NLog.ILogger;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedTests.GenerateAndEmailAccountLockedEmailHandlerTests
 {
