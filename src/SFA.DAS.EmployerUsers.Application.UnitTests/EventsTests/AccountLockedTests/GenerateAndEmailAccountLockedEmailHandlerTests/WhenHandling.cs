@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
-using NLog;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
@@ -12,6 +12,7 @@ using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
+using ILogger = NLog.ILogger;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedTests.GenerateAndEmailAccountLockedEmailHandlerTests
 {
@@ -33,35 +34,13 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
         [SetUp]
         public void Arrange()
         {
-            _configurationService = new Mock<IConfigurationService>();
-            _configurationService.Setup(c => c.GetAsync<EmployerUsersConfiguration>())
-                .Returns(Task.FromResult(new EmployerUsersConfiguration
-                {
-                    Account = new AccountConfiguration
-                    {
-                        UnlockCodeLength = 10
-                    }
-                }));
-
-            _user = new User
-            {
-                Id = "xxx",
-                Email = UserEmail
-            };
-            _userRepository = new Mock<IUserRepository>();
-            _userRepository.Setup(r => r.GetById("xxx")).Returns(Task.FromResult(_user));
-            _userRepository.Setup(r => r.GetByEmailAddress(UserEmail)).Returns(Task.FromResult(_user));
-
-            _codeGenerator = new Mock<ICodeGenerator>();
-            _codeGenerator.Setup(cg => cg.GenerateAlphaNumeric(10)).Returns(UnlockCode);
-
-            _communicationService = new Mock<ICommunicationService>();
-            _communicationService.Setup(s => s.SendAccountLockedMessage(It.IsAny<User>(), It.IsAny<string>()))
-                .Returns(Task.FromResult<object>(null));
-
-            _logger = new Mock<ILogger>();
-
-            _auditService = new Mock<IAuditService>();
+            _configurationService = GetConfigurationServiceMock();
+            _user = GetUser();
+            _userRepository = GetUserRepostoryMock(_user);
+            _codeGenerator = GetCodeGenerator(_user);
+            _communicationService = GetCodeCommunicationServiceMockedObject();
+            _auditService = GetCodeAuditServiceMockedObject();
+            _logger = GetLoggerMockedObject();
 
             _handler = new GenerateAndEmailAccountLockedEmailHandler(
                 _configurationService.Object,
@@ -78,6 +57,71 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
                     Id = _user.Id
                 }
             };
+        }
+
+        private User GetUser()
+        {
+           return new User
+            {
+                Id = "xxx",
+                Email = UserEmail
+            };
+        }
+
+        private Mock<IUserRepository> GetUserRepostoryMock(User user)
+        {
+            var userRepository = new Mock<IUserRepository>();
+            userRepository.Setup(r => r.GetById("xxx")).Returns(Task.FromResult(user));
+            userRepository.Setup(r => r.GetByEmailAddress(UserEmail)).Returns(Task.FromResult(user));
+
+            return userRepository;
+        }
+
+        private Mock<IConfigurationService> GetConfigurationServiceMock(bool usingStaticCodeGenerator = true)
+        {
+            var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(c => c.GetAsync<AccountConfiguration>()).ReturnsAsync(
+                new AccountConfiguration
+                {
+                    UsingStaticCodeGenerator = usingStaticCodeGenerator
+                });
+
+            configurationService.Setup(c => c.GetAsync<EmployerUsersConfiguration>())
+                .Returns(Task.FromResult(new EmployerUsersConfiguration
+                {
+                    Account = new AccountConfiguration
+                    {
+                        UnlockCodeLength = 10
+                    }
+                }));
+
+            return configurationService;
+        }
+
+        private Mock<ICodeGenerator> GetCodeGenerator(User user)
+        {
+            var codeGenerator = new Mock<ICodeGenerator>();
+            codeGenerator.Setup(cg => cg.GenerateAlphaNumeric(10)).Returns(UnlockCode);
+            return codeGenerator;
+        }
+
+        private Mock<ICommunicationService> GetCodeCommunicationServiceMockedObject()
+        {
+            var communicationService = new Mock<ICommunicationService>();
+            communicationService.Setup(s => s.SendAccountLockedMessage(It.IsAny<User>(), It.IsAny<string>()))
+                .Returns(Task.FromResult<object>(null));
+
+            return communicationService;
+        }
+
+        private Mock<IAuditService> GetCodeAuditServiceMockedObject()
+        {
+            return new Mock<IAuditService>();
+        }
+
+        private Mock<ILogger> GetLoggerMockedObject()
+        {
+            return new Mock<ILogger>();
         }
 
         [Test]
@@ -184,6 +228,53 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
         }
 
         [Test]
+        public async Task ThenItShouldNotGenerateANewCodeIfTheCurrentCodeHasExpiredAndUseStaticCodeGeneratorIsFalse()
+        {
+            // Arrange
+            var configurationService = GetConfigurationServiceMock(false);
+            var user = GetUser();
+            user.SecurityCodes = new[]
+            {
+                new SecurityCode
+                {
+                    Code = "UNLOCK_CODE",
+                    CodeType = SecurityCodeType.UnlockCode,
+                    ExpiryTime = DateTime.MinValue,
+                    ReturnUrl = "http://test.local"
+                }
+            };
+
+            var userRepository = GetUserRepostoryMock(user);
+            var codeGenerator = GetCodeGenerator(user);
+            var communicationService = GetCodeCommunicationServiceMockedObject();
+            var auditService = GetCodeAuditServiceMockedObject();
+            var logger = GetLoggerMockedObject();
+
+            var handler = new GenerateAndEmailAccountLockedEmailHandler(
+                configurationService.Object,
+                userRepository.Object,
+                codeGenerator.Object,
+                communicationService.Object,
+                auditService.Object,
+                logger.Object);
+
+            // Act
+            await handler.Handle(_event);
+
+            // Assert
+            communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.SecurityCodes.Any(sc => sc.Code == UnlockCode && sc.CodeType == SecurityCodeType.UnlockCode)
+                                                                                         && c.Id == user.Id
+                                                                                         && c.Email == user.Email), It.IsAny<string>()), Times.Never());
+
+
+
+
+            // Assert
+            userRepository.Verify(r => r.Update(It.IsAny<User>()), Times.Never);
+            communicationService.Verify(s => s.SendAccountLockedMessage(It.IsAny<User>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
         public async Task ThenItShouldNotGenerateANewCodeIfTheCurrentCodeHasNotExpired()
         {
             // Arrange
@@ -201,9 +292,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
             await _handler.Handle(_event);
 
             // Assert
-            _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.SecurityCodes.Any(sc => sc.Code == UnlockCode && sc.CodeType == SecurityCodeType.UnlockCode) 
-                                                                                       && c.Id == _user.Id 
-                                                                                       && c.Email == _user.Email), It.IsAny<string>()), Times.Never());
+            _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.SecurityCodes.Any(sc => sc.Code == UnlockCode && sc.CodeType == SecurityCodeType.UnlockCode)
+                                                                                          && c.Id == _user.Id
+                                                                                          && c.Email == _user.Email), It.IsAny<string>()), Times.Never());
         }
 
         [Test]

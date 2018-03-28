@@ -24,7 +24,12 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
         private readonly ICommunicationService _communicationService;
         private readonly IAuditService _auditService;
 
-        public GenerateAndEmailAccountLockedEmailHandler(IConfigurationService configurationService, IUserRepository userRepository, ICodeGenerator codeGenerator, ICommunicationService communicationService, IAuditService auditService, ILogger logger)
+        public GenerateAndEmailAccountLockedEmailHandler(IConfigurationService configurationService, 
+            IUserRepository userRepository, 
+            ICodeGenerator codeGenerator, 
+            ICommunicationService communicationService, 
+            IAuditService auditService, 
+            ILogger logger)
         {
             _configurationService = configurationService;
             _userRepository = userRepository;
@@ -61,11 +66,12 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
             var unlockCode = user.SecurityCodes?.OrderByDescending(sc => sc.ExpiryTime)
                                                 .FirstOrDefault(sc => sc.CodeType == Domain.SecurityCodeType.UnlockCode);
 
-            var useStaticCodeGenerator = CloudConfigurationManager.GetSetting("UseStaticCodeGenerator").Equals("false", StringComparison.CurrentCultureIgnoreCase);
+            var useStaticCodeGenerator =
+                (await _configurationService.GetAsync<AccountConfiguration>()).UsingStaticCodeGenerator;
 
             if (unlockCode != null && unlockCode.ExpiryTime < DateTime.UtcNow && !useStaticCodeGenerator)
             {
-                _logger.Warn($"Could not generate new unlock code for expired code, UseStaticCodeGenerator = false");
+                _logger.Warn("Could not generate new unlock code for expired code, wrong code generator loaded");
             }
 
             if (unlockCode == null || unlockCode.ExpiryTime < DateTime.UtcNow
