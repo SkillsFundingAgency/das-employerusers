@@ -36,7 +36,14 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
 
         public async Task Handle(AccountLockedEvent notification)
         {
-            _logger.Debug($"Handling AccountLockedEvent for user '{notification.User?.Email}' (id: {notification.User?.Id})");
+            if (notification.User == null)
+            {
+                _logger.Warn($"AccountLockedEvent: User was not set");
+
+                return;
+            }
+
+            _logger.Debug($"Handling AccountLockedEvent for user (id: {notification.User?.Id})");
 
             var user = !string.IsNullOrEmpty(notification.User.Id)
                             ? await _userRepository.GetById(notification.User.Id)
@@ -44,6 +51,8 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
 
             if (user == null)
             {
+                _logger.Debug($"Handling AccountLockedEvent for user '{notification.User?.Email}' (id: {notification.User?.Id})");
+
                 return;
             }
 
@@ -52,8 +61,15 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
             var unlockCode = user.SecurityCodes?.OrderByDescending(sc => sc.ExpiryTime)
                                                 .FirstOrDefault(sc => sc.CodeType == Domain.SecurityCodeType.UnlockCode);
 
+            var useStaticCodeGenerator = CloudConfigurationManager.GetSetting("UseStaticCodeGenerator").Equals("false", StringComparison.CurrentCultureIgnoreCase);
+
+            if (unlockCode != null && unlockCode.ExpiryTime < DateTime.UtcNow && !useStaticCodeGenerator)
+            {
+                _logger.Warn($"Could not generate new unlock code for expired code, UseStaticCodeGenerator = false");
+            }
+
             if (unlockCode == null || unlockCode.ExpiryTime < DateTime.UtcNow
-                && CloudConfigurationManager.GetSetting("UseStaticCodeGenerator").Equals("false", StringComparison.CurrentCultureIgnoreCase))
+                && useStaticCodeGenerator)
             {
                 unlockCode = new Domain.SecurityCode
                 {
