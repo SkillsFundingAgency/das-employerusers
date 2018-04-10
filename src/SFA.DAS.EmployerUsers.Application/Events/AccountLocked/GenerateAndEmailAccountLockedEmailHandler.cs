@@ -66,18 +66,28 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
             var unlockCode = user.SecurityCodes?.OrderByDescending(sc => sc.ExpiryTime)
                                                 .FirstOrDefault(sc => sc.CodeType == Domain.SecurityCodeType.UnlockCode);
 
-            var useStaticCodeGenerator =
-                (await _configurationService.GetAsync<AccountConfiguration>()).UsingStaticCodeGenerator;
+            var useStaticCodeGenerator = CloudConfigurationManager.GetSetting("UseStaticCodeGenerator").Equals("false", StringComparison.CurrentCultureIgnoreCase);
 
-            if (unlockCode != null && unlockCode.ExpiryTime < DateTime.UtcNow && !useStaticCodeGenerator)
+
+            if (unlockCode == null)
             {
-                _logger.Warn("Could not generate new unlock code for expired code, wrong code generator loaded");
+                _logger.Warn($"Could not generate new unlock code for null unlock code");
+            }
+
+            if (unlockCode != null && unlockCode.ExpiryTime >= DateTime.UtcNow)
+            {
+                _logger.Warn($"Could not generate new unlock code for un-expired code");
+            }
+
+            if (unlockCode != null && unlockCode.ExpiryTime < DateTime.UtcNow && useStaticCodeGenerator)
+            {
+                _logger.Warn($"Could not generate new unlock code: UseStaticCodeGenerator not equal to False");
             }
 
             if (unlockCode == null || unlockCode.ExpiryTime < DateTime.UtcNow
                 && useStaticCodeGenerator)
-            {
-                unlockCode = new Domain.SecurityCode
+                {
+                    unlockCode = new Domain.SecurityCode
                 {
                     Code = await GenerateCode(),
                     CodeType = Domain.SecurityCodeType.UnlockCode,

@@ -13,7 +13,6 @@
   "Account": {
     "ActivePasswordProfileId": "b1fae38b-2325-4aa9-b0c3-3a31ef367210",
     "AllowedFailedLoginAttempts": "1",
-    "UnlockCodeLength": 8,
-    "UsingStaticCodeGenerator": true
+    "UnlockCodeLength": 8
   }
 }

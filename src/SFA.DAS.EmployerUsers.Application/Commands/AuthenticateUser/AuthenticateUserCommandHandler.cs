@@ -55,7 +55,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
             if (user == null)
             {
                 _logger.Debug($"AuthenticateUserCommandHandler Could not find user '{message.EmailAddress}'");
-                //await _auditService.WriteAudit(new FailedLoginAuditMessage(message.EmailAddress, null));
                 return null;
             }
 
