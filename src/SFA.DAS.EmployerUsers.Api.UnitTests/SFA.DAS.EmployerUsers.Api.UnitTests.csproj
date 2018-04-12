@@ -114,6 +114,10 @@
       <Project>{2686243C-201A-45C1-ADBC-99B05BD83D73}</Project>
       <Name>SFA.DAS.EmployerUsers.Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.EmployerUsers.TestCommon.Extensions\SFA.DAS.EmployerUsers.TestCommon.Extensions.csproj">
+      <Project>{a3355664-028b-496f-8017-20a708c9c226}</Project>
+      <Name>SFA.DAS.EmployerUsers.TestCommon.Extensions</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

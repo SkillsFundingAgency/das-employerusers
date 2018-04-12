@@ -1,0 +1,162 @@
+body {
+	font-family: "nta",Arial,sans-serif;
+}
+
+a {
+	color: $link-colour;
+	&:hover {
+		color: $link-hover-colour
+	}
+	&:active {
+		color: $link-active-colour
+	}
+	&:visited {
+		color: $link-visited-colour
+	}
+	&:focus {
+	    background-color: $focus-colour;
+	    outline: 3px solid $focus-colour;
+	}
+}
+
+ul.inline {
+	padding: 0;
+	margin: 0;
+	li {
+		display: inline-block;
+		&:after {
+			content: ", "
+		}
+		&:last-child:after {
+			content: ""
+		}
+	}
+}
+
+ul.list {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+dl {
+	overflow: hidden;
+}
+
+dt {
+	font-weight: 600;
+	@include breakpoint($small) {
+		width: 200px;
+		float: left;
+	}
+}
+
+dd {
+	margin: 0 0 10px;
+	@include breakpoint($small) {
+		margin-left: 210px;
+	}
+}
+
+ol {
+  li {
+    list-style: decimal
+  }
+}
+
+.no-wrap {
+    white-space: nowrap;
+}
+
+ol.role-key {
+  padding: 0;
+  li {
+    list-style: none;
+    padding: 5px 0 5px 30px;
+    position: relative;
+    span {
+      position: absolute;
+      left: 0;
+      top: 5px;
+    }
+  }
+}
+
+span.role {
+  height: 1.4em;
+  line-height: 1.5em;
+  width: 1.4em;
+  border-radius: 50%;
+  display: inline-block;
+  background: $grey-1;
+  color: $white;
+  text-align: center;
+}
+
+span.desc {
+  display: none;
+}
+
+span.role.r1 {
+  background: $brown;
+  background: $mauve
+}
+
+span.role.r2 {
+  background: $grey-1;
+  background: $light-blue;
+}
+
+span.role.r3 {
+  background: $yellow;
+  background: $govuk-blue
+}
+
+.data-wrap {
+    @extend %clearfix;
+    margin: 0 -20px;
+}
+
+.data {
+    dl {
+        padding: 20px; 
+        background: $fuschia;
+        color: white;
+        dt {
+            display: table-footer-group;
+            float: none;
+            width: auto;
+        }
+        dd {
+            display: table-header-group;
+            margin: 0;
+            font-size: 48px;
+            font-weight: bold;
+            line-height: 1.05em;
+        }
+    }
+    @include breakpoint($small) {
+        padding: 0 20px;
+        float: left;
+        width: 50%;
+        dd.long {
+            font-size: 42px;
+            line-height: 50px;
+        }
+        dd.longer {
+            font-size: 32px;
+            line-height: 50px;
+        }
+    }
+    @include breakpoint($medium) {
+        width: 33.33%;
+        dd.long {
+            font-size: 48px;
+            line-height: 50px;
+        }
+        dd.longer {
+            font-size: 42px;
+            line-height: 50px;
+        }
+    }
+}

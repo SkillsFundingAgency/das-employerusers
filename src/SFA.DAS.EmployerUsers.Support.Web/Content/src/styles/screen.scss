@@ -1,0 +1,108 @@
+@import "susy";
+@import "breakpoint";
+@import "normalize/import-now";
+@import "govuk/colours";
+@import "variables";
+@import "base";
+@import "layout";
+@import "helpers";
+@import "mixins";
+@import "typography";
+@import "header";
+@import "buttons";
+@import "forms";
+@import "tables";
+
+.sub-nav {
+	background: $grey-4;
+	ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		@include  breakpoint($medium) {
+			
+		}
+		li {
+			border-bottom: 1px solid $grey-2;
+			a {
+				display: block;
+				padding: 5px 20px;
+				@include  breakpoint($medium) {
+					padding: 10px 20px;
+				}
+				&:hover, 
+				&:focus {
+					background: $light-blue;
+					color: white;
+				}
+				&.selected {
+					background: $govuk-blue;
+					color: white;
+				}
+			}
+            ul {
+                border-top: 1px solid $grey-2;
+                font-size: 15px;
+                li {
+                    a {
+                        padding: 3px 20px 3px 30px;
+				            @include  breakpoint($medium) {
+					            padding: 5px 20px 5px 30px;
+				            }
+                    }
+                    &:last-child {
+                        border-bottom: none;
+                    }
+                }
+            }
+		}
+	}
+}
+
+.selected {
+	font-weight: bold;
+}
+
+.js-enabled {
+	ul.js-tabs {
+		@extend %clearfix;
+		list-style: none;
+		margin: 20px 0;
+		padding: 0;
+		@include  breakpoint($medium) {
+		  border-bottom: 1px solid $border-colour;
+		  padding: 0 10px;
+		}
+		li {
+  		margin-bottom: -1px;
+  		@include  breakpoint($medium) {
+  			float: left;
+  			margin-bottom: 0;
+  			margin-right: 5px;
+			}
+		}
+		a {
+			display: block;
+			padding: 10px 20px;
+			border: 1px solid $border-colour;
+			position: relative;
+			margin-bottom: -1px;
+			background: $grey-4;
+			&.selected {
+				background: white;
+				@include  breakpoint($medium) {
+			  	border-bottom: 1px solid white;
+				}
+				text-decoration: none;
+				color: $black;
+			}
+		}
+	}
+}
+
+.pagination {
+    margin: 20px 0;
+    a {
+        @include button($grey-3);
+    }
+}
