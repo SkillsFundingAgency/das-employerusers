@@ -1,19 +1,19 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Azure;
 using NLog;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
-using SFA.DAS.HashingService;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Auditing.Login;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Domain.Links;
+using SFA.DAS.HashingService;
 using SFA.DAS.TimeProvider;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
 {
@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
         private readonly ICommunicationService _communicationService;
         private readonly ICodeGenerator _codeGenerator;
         private readonly ILinkBuilder _linkBuilder;
-        
+
 
         public RequestPasswordResetCodeCommandHandler(IValidator<RequestPasswordResetCodeCommand> validator, IUserRepository userRepository, ICommunicationService communicationService, ICodeGenerator codeGenerator, ILinkBuilder linkBuilder, ILogger logger, IAuditService auditService, IHashingService hashingService)
         {
@@ -43,6 +43,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
 
         protected override async Task HandleCore(RequestPasswordResetCodeCommand message)
         {
+            //TODO: How do we remove email from this logging?
             _logger.Debug($"Received RequestPasswordResetCodeCommand for user '{message.Email}'");
 
             var validationResult = await _validator.ValidateAsync(message);
@@ -59,7 +60,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
                 _logger.Info($"Request to reset email for unknown email address : '{message.Email}'");
                 return;
             }
-            
+
             if (RequiresPasswordResetCode(existingUser))
             {
                 existingUser.AddSecurityCode(new SecurityCode
@@ -72,7 +73,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
 
                 await _userRepository.Update(existingUser);
             }
-            
+
             await _auditService.WriteAudit(new PasswordResetCodeAuditMessage(existingUser));
 
             await _communicationService.SendPasswordResetCodeMessage(existingUser, Guid.NewGuid().ToString(), _linkBuilder.GetForgottenPasswordUrl(_hashingService.HashValue(Guid.Parse(existingUser.Id))));
@@ -86,7 +87,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
             }
 
             return !user.SecurityCodes.Any(sc => sc.CodeType == SecurityCodeType.PasswordResetCode
-                                                 && sc.ExpiryTime >= DateTime.UtcNow 
+                                                 && sc.ExpiryTime >= DateTime.UtcNow
                 ) && CloudConfigurationManager.GetSetting("UseStaticCodeGenerator").Equals("false", StringComparison.CurrentCultureIgnoreCase);
         }
     }

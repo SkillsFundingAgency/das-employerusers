@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using NLog;
 using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
@@ -10,6 +9,7 @@ using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Auditing.Login;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
 {
@@ -23,11 +23,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
         private readonly IConfigurationService _configurationService;
         private readonly IMediator _mediator;
 
-        public AuthenticateUserCommandHandler(IUserRepository userRepository, 
-                                              IPasswordService passwordService, 
-                                              IConfigurationService configurationService, 
-                                              IMediator mediator, 
-                                              ILogger logger, 
+        public AuthenticateUserCommandHandler(IUserRepository userRepository,
+                                              IPasswordService passwordService,
+                                              IConfigurationService configurationService,
+                                              IMediator mediator,
+                                              ILogger logger,
                                               IValidator<AuthenticateUserCommand> validator,
                                               IAuditService auditService)
         {
@@ -42,6 +42,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
 
         public async Task<User> Handle(AuthenticateUserCommand message)
         {
+            //TODO: How can we log this without using email
             _logger.Debug($"Received AuthenticateUserCommand for user '{message.EmailAddress}'");
 
             var validationResult = await _validator.ValidateAsync(message);
@@ -89,7 +90,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
 
             if (user.FailedLoginAttempts >= config.AllowedFailedLoginAttempts)
             {
-                _logger.Info($"Locking user '{user.Email}' (id: {user.Id})");
+                _logger.Info($"Locking user (id: {user.Id})");
                 user.IsLocked = true;
                 await _auditService.WriteAudit(new AccountLockedAuditMessage(user));
             }
@@ -97,7 +98,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
 
             if (user.IsLocked)
             {
-                _logger.Debug($"Publishing event for user '{user.Email}' (id: {user.Id}) being locked");
+                _logger.Debug($"Publishing event for user (id: {user.Id}) being locked");
                 await _mediator.PublishAsync(new AccountLockedEvent { ReturnUrl = returnUrl, User = user });
                 throw new AccountLockedException(user);
             }

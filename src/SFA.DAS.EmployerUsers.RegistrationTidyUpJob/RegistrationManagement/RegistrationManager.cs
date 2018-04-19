@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Azure;
 using NLog;
 using SFA.DAS.EmployerUsers.Application.Commands.DeleteUser;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUsersWithExpiredRegistrations;
+using System;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerUsers.RegistrationTidyUpJob.RegistrationManagement
 {
@@ -32,7 +32,7 @@ namespace SFA.DAS.EmployerUsers.RegistrationTidyUpJob.RegistrationManagement
 
                 foreach (var user in users)
                 {
-                    _logger.Info($"Deleting user with email '{user.Email}' (id: '{user.Id}')");
+                    _logger.Info($"Deleting user with id: '{user.Id}')");
                     await _mediator.SendAsync(new DeleteUserCommand
                     {
                         User = user
