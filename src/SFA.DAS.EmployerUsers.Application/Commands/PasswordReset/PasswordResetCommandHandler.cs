@@ -40,7 +40,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 
         public async Task<PasswordResetResponse> Handle(PasswordResetCommand message)
         {
-            _logger.Info($"Received PasswordResetCommand for user id '{message.User.Id}'");
+            _logger.Info($"Received PasswordResetCommand for user id '{message.User?.Id}'");
 
             var user = await _userRepository.GetByEmailAddress(message.Email);
             message.User = user;
