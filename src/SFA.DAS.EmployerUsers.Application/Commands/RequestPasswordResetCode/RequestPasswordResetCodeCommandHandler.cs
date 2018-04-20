@@ -43,7 +43,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
 
         protected override async Task HandleCore(RequestPasswordResetCodeCommand message)
         {
-            //TODO: How do we remove email from this logging?
             _logger.Debug($"Received RequestPasswordResetCodeCommand for user '{message.Email}'");
 
             var validationResult = await _validator.ValidateAsync(message);

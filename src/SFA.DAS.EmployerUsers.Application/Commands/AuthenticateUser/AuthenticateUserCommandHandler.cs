@@ -42,7 +42,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
 
         public async Task<User> Handle(AuthenticateUserCommand message)
         {
-            //TODO: How can we log this without using email
             _logger.Debug($"Received AuthenticateUserCommand for user '{message.EmailAddress}'");
 
             var validationResult = await _validator.ValidateAsync(message);
