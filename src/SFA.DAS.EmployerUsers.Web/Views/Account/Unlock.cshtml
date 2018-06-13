@@ -10,6 +10,7 @@
     <p>You should receive a @Model.Data.UnlockCodeLength character code in your email. Enter the code to unlock your account.</p>
     <form method="POST" action="@Url.Action("Unlock")" autocomplete="off">
         @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Data.UnlockCodeLength)
         <fieldset>
             <legend class="visuallyhidden">Enter your email address and unlock code</legend>
             <div class="form-group @(!string.IsNullOrEmpty(Model.Data.EmailError) ? "error" : "") ">
