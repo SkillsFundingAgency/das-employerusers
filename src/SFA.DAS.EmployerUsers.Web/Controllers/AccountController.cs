@@ -358,7 +358,10 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 }
                 return await RedirectToEmployerPortal();
             }
+
             result.Data.UnlockCode = string.Empty;
+            result.Data.UnlockCodeLength = await GetUnlockCodeLength();
+
             return View("Unlock", result);
 
         }
