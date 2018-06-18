@@ -24,7 +24,12 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
         private readonly ICommunicationService _communicationService;
         private readonly IAuditService _auditService;
 
-        public GenerateAndEmailAccountLockedEmailHandler(IConfigurationService configurationService, IUserRepository userRepository, ICodeGenerator codeGenerator, ICommunicationService communicationService, IAuditService auditService, ILogger logger)
+        public GenerateAndEmailAccountLockedEmailHandler(IConfigurationService configurationService, 
+            IUserRepository userRepository, 
+            ICodeGenerator codeGenerator, 
+            ICommunicationService communicationService, 
+            IAuditService auditService, 
+            ILogger logger)
         {
             _configurationService = configurationService;
             _userRepository = userRepository;
@@ -36,7 +41,14 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
 
         public async Task Handle(AccountLockedEvent notification)
         {
-            _logger.Debug($"Handling AccountLockedEvent for user '{notification.User?.Email}' (id: {notification.User?.Id})");
+            if (notification.User == null)
+            {
+                _logger.Warn($"AccountLockedEvent: User was not set");
+
+                return;
+            }
+
+            _logger.Debug($"Handling AccountLockedEvent for user (id: {notification.User?.Id})");
 
             var user = !string.IsNullOrEmpty(notification.User.Id)
                             ? await _userRepository.GetById(notification.User.Id)
@@ -44,6 +56,8 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
 
             if (user == null)
             {
+                _logger.Debug($"Handling AccountLockedEvent for user '{notification.User?.Email}' (id: {notification.User?.Id})");
+
                 return;
             }
 
@@ -52,10 +66,28 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
             var unlockCode = user.SecurityCodes?.OrderByDescending(sc => sc.ExpiryTime)
                                                 .FirstOrDefault(sc => sc.CodeType == Domain.SecurityCodeType.UnlockCode);
 
-            if (unlockCode == null || unlockCode.ExpiryTime < DateTime.UtcNow
-                && CloudConfigurationManager.GetSetting("UseStaticCodeGenerator").Equals("false", StringComparison.CurrentCultureIgnoreCase))
+            var useStaticCodeGenerator = CloudConfigurationManager.GetSetting("UseStaticCodeGenerator").Equals("false", StringComparison.CurrentCultureIgnoreCase);
+
+
+            if (unlockCode == null)
             {
-                unlockCode = new Domain.SecurityCode
+                _logger.Warn($"Could not generate new unlock code for null unlock code");
+            }
+
+            if (unlockCode != null && unlockCode.ExpiryTime >= DateTime.UtcNow)
+            {
+                _logger.Warn($"Could not generate new unlock code for un-expired code");
+            }
+
+            if (unlockCode != null && unlockCode.ExpiryTime < DateTime.UtcNow && useStaticCodeGenerator)
+            {
+                _logger.Warn($"Could not generate new unlock code: UseStaticCodeGenerator not equal to False");
+            }
+
+            if (unlockCode == null || unlockCode.ExpiryTime < DateTime.UtcNow
+                && useStaticCodeGenerator)
+                {
+                    unlockCode = new Domain.SecurityCode
                 {
                     Code = await GenerateCode(),
                     CodeType = Domain.SecurityCodeType.UnlockCode,

@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using IdentityServer3.Core;
 using NLog;
+using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Attributes;
 using SFA.DAS.EmployerUsers.Web.Models;
@@ -23,6 +24,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         private readonly IOwinWrapper _owinWrapper;
         private readonly IdentityServerConfiguration _identityServerConfiguration;
         private readonly ILogger _logger;
+        private readonly IConfigurationService _configurationService;
 
         public AccountController(AccountOrchestrator accountOrchestrator, IOwinWrapper owinWrapper, IdentityServerConfiguration identityServerConfiguration, ILogger logger)
         {
@@ -31,8 +33,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             _identityServerConfiguration = identityServerConfiguration;
             _logger = logger;
         }
-
-
 
         [HttpGet]
         [Route("identity/employer/login")]
@@ -316,12 +316,14 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [HttpGet]
         [AttemptAuthorise]
         [Route("account/unlock")]
-        public ActionResult Unlock()
+        public async Task<ActionResult> Unlock()
         {
             var email = GetLoggedInUserEmail();
+            var unlockCodeLength = await GetUnlockCodeLength();
+
             var model = new OrchestratorResponse<UnlockUserViewModel>
             {
-                Data = new UnlockUserViewModel { Email = email },
+                Data = new UnlockUserViewModel { Email = email, UnlockCodeLength = unlockCodeLength },
                 FlashMessage = new FlashMessageViewModel
                 {
                     Severity = FlashMessageSeverityLevel.Success,
@@ -331,6 +333,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                                     : $"We've sent an email to {email} with a code to unlock your account"
                 }
             };
+
             return View("Unlock", model);
         }
 
@@ -355,7 +358,10 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 }
                 return await RedirectToEmployerPortal();
             }
+
             result.Data.UnlockCode = string.Empty;
+            result.Data.UnlockCodeLength = await GetUnlockCodeLength();
+
             return View("Unlock", result);
 
         }
@@ -438,16 +444,16 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             requestPasswordResetViewModel.ClientId = clientId;
             requestPasswordResetViewModel = await _accountOrchestrator.RequestPasswordResetCode(requestPasswordResetViewModel);
 
+            var unlockCodeLength = await GetUnlockCodeLength();
+
             if (string.IsNullOrEmpty(requestPasswordResetViewModel.Email) || !requestPasswordResetViewModel.Valid)
             {
                 return View("ForgottenCredentials", requestPasswordResetViewModel);
             }
 
 
-            return View("ResetPassword", new OrchestratorResponse<PasswordResetViewModel> {Data = new PasswordResetViewModel { Email = requestPasswordResetViewModel.Email }});
+            return View("ResetPassword", new OrchestratorResponse<PasswordResetViewModel> {Data = new PasswordResetViewModel { Email = requestPasswordResetViewModel.Email, UnlockCodeLength = unlockCodeLength } });
         }
-
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -676,6 +682,9 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return Task.FromResult<ActionResult>(Redirect(_identityServerConfiguration.EmployerPortalUrl));
         }
 
-
+        private async Task<int> GetUnlockCodeLength()
+        {
+            return await _accountOrchestrator.GetUnlockCodeLength();
+        }
     }
 }

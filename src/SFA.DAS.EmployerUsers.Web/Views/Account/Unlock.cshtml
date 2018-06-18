@@ -7,7 +7,7 @@
 <div class="grid-row">
 <div class="column-two-thirds">
     <h1 class="heading-xlarge">@ViewBag.Title</h1>
-    <p>You should receive a 6 character code in your email. Enter the code to unlock your account.</p>
+    <p>You should receive a @Model.Data.UnlockCodeLength character code in your email. Enter the code to unlock your account.</p>
     <form method="POST" action="@Url.Action("Unlock")" autocomplete="off">
         @Html.AntiForgeryToken()
         <fieldset>
@@ -16,9 +16,9 @@
                 <label for="Email">
                     <span class="form-label-bold">Email</span>
                     @if (!string.IsNullOrEmpty(Model.Data.EmailError))
-                    {
-                        <span class="error-message" id="error-email">@Model.Data.EmailError</span>
-                    }
+                {
+                    <span class="error-message" id="error-email">@Model.Data.EmailError</span>
+            }
                 </label>
                 <input class="form-control" id="Email" name="Email" value="@Model.Data.Email"
                        aria-required="true" @(!string.IsNullOrEmpty(Model.Data.EmailError) ? "aria-invalid=true aria-describedby=error-email" : "" )>
@@ -27,9 +27,9 @@
                 <label for="UnlockCode">
                     <span class="form-label-bold">Unlock code</span>
                     @if (!string.IsNullOrEmpty(Model.Data.UnlockCodeError))
-                    {
-                        <span class="error-message" id="error-unlockcode">@Model.Data.UnlockCodeError</span>
-                    }
+                {
+                    <span class="error-message" id="error-unlockcode">@Model.Data.UnlockCodeError</span>
+            }
                 </label>
                 <input class="form-control" id="UnlockCode" name="UnlockCode" value="@Model.Data.UnlockCode"
                        aria-required="true" @(!string.IsNullOrEmpty(Model.Data.UnlockCodeError) ? "aria-invalid=true aria-describedby=error-unlockcode" : "" )>

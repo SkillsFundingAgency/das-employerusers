@@ -178,8 +178,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
                                                                                          && sc.ExpiryTime.Date == DateTime.Today.AddDays(1)))));
             _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.SecurityCodes.Any(sc => sc.Code == UnlockCode
                                                                                                                  && sc.CodeType == SecurityCodeType.UnlockCode)
-                                                                                       && c.Id == _user.Id 
-                                                                                       && c.Email == _user.Email), 
+                                                                                       && c.Id == _user.Id
+                                                                                       && c.Email == _user.Email),
                                                                          It.IsAny<string>()), Times.Once());
         }
 
@@ -201,8 +201,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
             await _handler.Handle(_event);
 
             // Assert
-            _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.SecurityCodes.Any(sc => sc.Code == UnlockCode && sc.CodeType == SecurityCodeType.UnlockCode) 
-                                                                                       && c.Id == _user.Id 
+            _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.SecurityCodes.Any(sc => sc.Code == UnlockCode && sc.CodeType == SecurityCodeType.UnlockCode)
+                                                                                       && c.Id == _user.Id
                                                                                        && c.Email == _user.Email), It.IsAny<string>()), Times.Never());
         }
 
@@ -225,8 +225,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
             await _handler.Handle(_event);
 
             // Assert
-            _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.SecurityCodes.Any(sc => sc.Code == "UNLOCK_CODE" && sc.CodeType == SecurityCodeType.UnlockCode) 
-                                                                                       && c.Id == _user.Id 
+            _communicationService.Verify(s => s.SendAccountLockedMessage(It.Is<User>(c => c.SecurityCodes.Any(sc => sc.Code == "UNLOCK_CODE" && sc.CodeType == SecurityCodeType.UnlockCode)
+                                                                                       && c.Id == _user.Id
                                                                                        && c.Email == _user.Email), It.IsAny<string>()), Times.Once());
         }
 
@@ -269,7 +269,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
 
             //Assert
             _communicationService.Verify(
-                s => s.SendAccountLockedMessage(It.Is<User>(c => c.SecurityCodes.Any(sc => sc.ReturnUrl == _event.ReturnUrl)),It.IsAny<string>()), Times.Once);
+                s => s.SendAccountLockedMessage(It.Is<User>(c => c.SecurityCodes.Any(sc => sc.ReturnUrl == _event.ReturnUrl)), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
