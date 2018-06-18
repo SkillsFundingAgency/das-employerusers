@@ -14,6 +14,5 @@ namespace SFA.DAS.EmployerUsers.Web.Models
         public string PasswordResetCodeError => GetErrorMessage(nameof(PasswordResetCode));
         public string PasswordError => GetErrorMessage(nameof(Password));
         public string ReturnUrl { get; set; }
-        public int UnlockCodeLength { get; set; }
     }
 }

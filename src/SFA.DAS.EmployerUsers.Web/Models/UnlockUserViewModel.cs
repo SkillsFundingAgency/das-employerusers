@@ -9,6 +9,5 @@
         public string EmailError => GetErrorMessage(nameof(Email));
         public bool UnlockCodeSent { get; set; }
         public string ReturnUrl { get; set; }
-        public int UnlockCodeLength { get; set; }
     }
 }

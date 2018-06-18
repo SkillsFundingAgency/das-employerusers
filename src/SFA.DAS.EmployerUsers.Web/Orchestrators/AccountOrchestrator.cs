@@ -17,7 +17,6 @@ using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode;
 using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
 using SFA.DAS.EmployerUsers.Application.Queries.GetRelyingParty;
-using SFA.DAS.EmployerUsers.Application.Queries.GetUnlockCodeLength;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserByEmailAddress;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserByHashedId;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
@@ -424,7 +423,6 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 }
 
                 response.Data = model;
-                response.Data.UnlockCodeLength = await GetUnlockCodeLength();
 
                 return response;
             }
@@ -712,7 +710,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     response.Status = HttpStatusCode.BadRequest;
                     return response;
                 }
-                response.Data = new PasswordResetViewModel {Email = user.Email, UnlockCodeLength = await GetUnlockCodeLength() };
+
+                response.Data = new PasswordResetViewModel {Email = user.Email};
             }
             catch (InvalidRequestException ex)
             {
@@ -728,13 +727,6 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
 
             return response;
-        }
-
-        public virtual async Task<int> GetUnlockCodeLength()
-        {
-            var model = await _mediator.SendAsync(new GetUnlockCodeQuery());
-
-            return model.UnlockCodeLength;
         }
     }
 }

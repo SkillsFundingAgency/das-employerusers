@@ -137,7 +137,6 @@
     <Compile Include="EventsTests\AccountLockedTests\GenerateAndEmailAccountLockedEmailHandlerTests\WhenHandling.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueriesTests\GetRelyingPartyTests\GetRelyingPartyQueryHandlerTests\WhenHandlingGetRelyingPartyQuery.cs" />
-    <Compile Include="QueriesTests\GetUnlockCodeLength\WhenIGetUnlockCodeLength.cs" />
     <Compile Include="QueriesTests\GetUserByHashedIdTests\WhenIGetUserByHashedId.cs" />
     <Compile Include="QueriesTests\GetUserByHashedIdTests\WhenIValidateTheRequest.cs" />
     <Compile Include="QueriesTests\GetUsersTests\GetUsersQueryHandlerTests\WhenHandlingRequest.cs" />

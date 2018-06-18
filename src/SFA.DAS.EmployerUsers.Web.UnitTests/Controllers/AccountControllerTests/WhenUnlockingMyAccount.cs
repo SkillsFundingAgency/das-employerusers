@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Controllers;
@@ -19,8 +18,6 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         private Mock<IOwinWrapper> _owinWrapper;
         private const string LoggedInEmail = "local@test.com";
         private const string EmployerPortalUrl = "employerportal";
-        private const int UnlockCodeLength = 99;
-        private Mock<IConfigurationService> _configurationService;
 
         [SetUp]
         public override void Arrange()
@@ -34,29 +31,16 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             _owinWrapper = new Mock<IOwinWrapper>();
 
             var identityServerConfiguration = new IdentityServerConfiguration {EmployerPortalUrl = EmployerPortalUrl};
-
-            _configurationService = new Mock<IConfigurationService>();
-            _configurationService.Setup(s => s.GetAsync<EmployerUsersConfiguration>()).Returns(Task.FromResult(
-                new EmployerUsersConfiguration
-                {
-                    Account = new AccountConfiguration
-                    {
-                        UnlockCodeLength = UnlockCodeLength
-                    }
-                }));
-
             _accountController = new AccountController(_accountOrchestrator.Object,_owinWrapper.Object, identityServerConfiguration, _logger.Object);
             _accountOrchestrator.Setup(x => x.UnlockUser(It.IsAny<UnlockUserViewModel>())).ReturnsAsync(new OrchestratorResponse<UnlockUserViewModel>() { Data = new UnlockUserViewModel {ErrorDictionary = new Dictionary<string, string>() }});
-            _accountOrchestrator.Setup(x => x.GetUnlockCodeLength()).ReturnsAsync(UnlockCodeLength);
-
             _accountController.ControllerContext = _controllerContext.Object;
         }
 
         [Test]
-        public async Task ThenTheUnlockViewIsReturned()
+        public void ThenTheUnlockViewIsReturned()
         {
             //Act
-            var actual = await _accountController.Unlock();
+            var actual = _accountController.Unlock();
 
             //Assert
             Assert.IsNotNull(actual);
@@ -66,26 +50,12 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             Assert.IsAssignableFrom<OrchestratorResponse<UnlockUserViewModel>>(viewResult.Model);
         }
 
-
         [Test]
-        public async Task ThenTheUnlockCodeLengthIsPopulatedInTheModel()
-        {
-            //Act
-            var actual = await _accountController.Unlock();
-
-            //Assert
-            var actualModel = ((ViewResult)actual).Model as OrchestratorResponse<UnlockUserViewModel>;
-
-            Assert.AreEqual(UnlockCodeLength, actualModel.Data.UnlockCodeLength);
-        }
-
-
-        [Test]
-        public async Task ThenMyEmailAddressIsPopulatedInTheModelIfImLoggedIn()
+        public void ThenMyEmailAddressIsPopulatedInTheModelIfImLoggedIn()
         {
 
             //Act
-            var actual = await _accountController.Unlock();
+            var actual = _accountController.Unlock();
 
             //Assert
             Assert.IsNotNull(actual);
@@ -97,13 +67,13 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         }
 
         [Test]
-        public async Task ThenMyEmailIsNotPopulatedIfIAmNotLoggedIn()
+        public void ThenMyEmailIsNotPopulatedIfIAmNotLoggedIn()
         {
             //Arrange
             _accountController.ControllerContext = null;
 
             //Act
-            var actual = await _accountController.Unlock();
+            var actual = _accountController.Unlock();
 
             //Assert
             Assert.IsNotNull(actual);
