@@ -7,7 +7,7 @@
 <div class="grid-row">
 <div class="column-two-thirds">
     <h1 class="heading-xlarge">@ViewBag.Title</h1>
-    <p>You should receive a 6 character code in your email. Enter the code to unlock your account.</p>
+    <p>You should receive a @Model.Data.UnlockCodeLength character code in your email. Enter the code to unlock your account.</p>
     <form method="POST" action="@Url.Action("Unlock")" autocomplete="off">
         @Html.AntiForgeryToken()
         <fieldset>

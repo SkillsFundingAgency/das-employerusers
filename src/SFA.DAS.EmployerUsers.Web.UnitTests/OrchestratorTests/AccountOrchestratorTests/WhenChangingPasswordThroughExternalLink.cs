@@ -9,6 +9,7 @@ using Moq;
 using NLog;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Queries.GetRelyingParty;
+using SFA.DAS.EmployerUsers.Application.Queries.GetUnlockCodeLength;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserByHashedId;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.Web.Authentication;
@@ -36,6 +37,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
                     Id = "1234RDF",
                     Email = "test@test.com"
                 }));
+            _mediator.Setup(x => x.SendAsync(It.IsAny<GetUnlockCodeQuery>())).ReturnsAsync(new GetUnlockCodeResponse { UnlockCodeLength = 99 });
 
             _owinWrapper = new Mock<IOwinWrapper>();
 
