@@ -239,3 +239,4 @@ src/tools/**/*.*
 **/App_Data/**/*.*
 *.jfm
 src/Tools/PhantomJS/tools/phantomjs/ChangeLog
+/src/Tools/FAKE/docs/CNAME
