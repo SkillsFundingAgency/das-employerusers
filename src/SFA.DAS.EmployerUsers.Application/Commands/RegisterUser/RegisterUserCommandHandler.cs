@@ -1,17 +1,17 @@
-﻿using System;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using NLog;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
-using SFA.DAS.EmployerUsers.Domain.Data;
-using System.Collections.Generic;
-using System.Linq;
 using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Auditing.Registration;
+using SFA.DAS.EmployerUsers.Domain.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 {
@@ -25,11 +25,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
         private readonly IValidator<RegisterUserCommand> _registerUserCommandValidator;
         private readonly IPasswordService _passwordService;
 
-        public RegisterUserCommandHandler(IValidator<RegisterUserCommand> registerUserCommandValidator, 
-                                          IPasswordService passwordService, 
-                                          IUserRepository userRepository, 
-                                          ICommunicationService communicationService, 
-                                          ICodeGenerator codeGenerator, 
+        public RegisterUserCommandHandler(IValidator<RegisterUserCommand> registerUserCommandValidator,
+                                          IPasswordService passwordService,
+                                          IUserRepository userRepository,
+                                          ICommunicationService communicationService,
+                                          ICodeGenerator codeGenerator,
                                           ILogger logger,
                                            IAuditService auditService)
         {
@@ -44,7 +44,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 
         protected override async Task HandleCore(RegisterUserCommand message)
         {
-            _logger.Debug($"Received RegisterUserCommand for user '{message.Email}'");
+            _logger.Debug($"Received RegisterUserCommand for user Id'{message.Id}'");
 
             var validationResult = await _registerUserCommandValidator.ValidateAsync(message);
 
@@ -90,7 +90,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 
         private void SendUserRegistrationMessage(User user)
         {
-            Task.Factory.StartNew(() =>_communicationService.SendUserRegistrationMessage(user, Guid.NewGuid().ToString()));
+            Task.Factory.StartNew(() => _communicationService.SendUserRegistrationMessage(user, Guid.NewGuid().ToString()));
         }
 
         private void Update(User user, RegisterUserCommand message, SecuredPassword securedPassword)
