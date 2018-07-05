@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using NLog;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
@@ -10,6 +7,9 @@ using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Auditing.Login;
 using SFA.DAS.EmployerUsers.Domain.Data;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 {
@@ -23,11 +23,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
         private readonly IPasswordService _passwordService;
 
         public PasswordResetCommandHandler(
-            IUserRepository userRepository, 
-            IValidator<PasswordResetCommand> validator, 
-            ICommunicationService communicationService, 
-            IPasswordService passwordService, 
-            ILogger logger, 
+            IUserRepository userRepository,
+            IValidator<PasswordResetCommand> validator,
+            ICommunicationService communicationService,
+            IPasswordService passwordService,
+            ILogger logger,
             IAuditService auditService)
         {
             _userRepository = userRepository;
@@ -38,15 +38,15 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             _auditService = auditService;
         }
 
-        public  async Task<PasswordResetResponse> Handle(PasswordResetCommand message)
+        public async Task<PasswordResetResponse> Handle(PasswordResetCommand message)
         {
-            _logger.Info($"Received PasswordResetCommand for user '{message.Email}'");
+            _logger.Info($"Received PasswordResetCommand for user id '{message.User?.Id}'");
 
             var user = await _userRepository.GetByEmailAddress(message.Email);
             message.User = user;
 
             var validationResult = await _validator.ValidateAsync(message);
-            
+
             if (!validationResult.IsValid())
             {
                 throw new InvalidRequestException(validationResult.ValidationDictionary);
@@ -68,9 +68,9 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             await _auditService.WriteAudit(new PasswordResetAuditMessage(message.User));
 
             await _userRepository.Update(message.User);
-            _logger.Info($"Password changed for user '{message.Email}'");
-            
-            return new PasswordResetResponse {ResetCode = resetCode};
+            _logger.Info($"Password changed for user id '{message.User.Id}'");
+
+            return new PasswordResetResponse { ResetCode = resetCode };
         }
     }
 
