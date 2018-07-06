@@ -29,6 +29,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution {
                 c.AddRegistry<InfrastructureRegistry>();
                 c.AddRegistry<ApplicationServicesRegistry>();
                 c.AddRegistry<WebRegistry>();
+                
             });
         }
     }

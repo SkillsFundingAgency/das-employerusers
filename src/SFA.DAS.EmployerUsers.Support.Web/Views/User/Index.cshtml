@@ -1,6 +1,4 @@
-﻿@using System.Globalization
-@model SFA.DAS.EmployerUsers.Support.Core.Domain.Model.EmployerUser
-
+﻿@model SFA.DAS.EmployerUsers.Support.Core.Domain.Model.EmployerUser
 <h1 class="heading-large">User overview</h1>
 
 @if (Model != null)
@@ -18,6 +16,8 @@
 
     if (Model.Accounts.Any())
     {
+        /*Rework view to handle Account list resource as a raw rendering of data from the view model*/
+
         <table class="responsive">
             <thead>
                 <tr>

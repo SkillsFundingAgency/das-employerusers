@@ -15,6 +15,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
+using System.IO;
+using SFA.DAS.Support.Shared.Navigation;
+
 namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
 {
     using Microsoft.Azure;
@@ -30,18 +34,21 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
     using System.Diagnostics.CodeAnalysis;
 
     [ExcludeFromCodeCoverage]
-    public class DefaultRegistry : Registry {
+    public class DefaultRegistry : Registry
+    {
         private const string ServiceName = "SFA.DAS.Support.EmployerUsers";
         private const string Version = "1.0";
-      
+
         #region Constructors and Destructors
 
-        public DefaultRegistry() {
+        public DefaultRegistry()
+        {
             Scan(
-                scan => {
+                scan =>
+                {
                     scan.TheCallingAssembly();
                     scan.WithDefaultConventions();
-					scan.With(new ControllerConvention());
+                    scan.With(new ControllerConvention());
                 });
 
             For<IServiceConfiguration>().Singleton().Use(new ServiceConfiguration
@@ -55,15 +62,29 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
             WebConfiguration configuration = GetConfiguration();
 
             For<IWebConfiguration>().Use(configuration);
-            For<IEmployerUsersApiConfiguration>().Use( configuration.EmployerUsersApi);
+            For<IEmployerUsersApiConfiguration>().Use(configuration.EmployerUsersApi);
             For<IAccountApiConfiguration>().Use(configuration.AccountApi);
-            For<ISiteValidatorSettings>().Use( configuration.SiteValidator);
+          
+
+            For<ISiteConnectorSettings>().Use(configuration.SiteConnector);
+            For<ISiteValidatorSettings>().Use(configuration.SiteValidator);
+            For<ISiteSettings>().Use(configuration.Site);
+
+
+
+            For<IMenuTemplateTransformer>().Singleton().Use<MenuTemplateTransformer>();
+            For<IMenuTemplateDatasource>().Singleton().Use( new MenuTemplateDatasource("~/App_Data"));
+            For<IMenuClient>().Singleton().Use<MenuClient>();
+
+            For<IMenuService>().Singleton().Use<MenuService>();
+
+
 
         }
 
         private WebConfiguration GetConfiguration()
         {
-            var environment = CloudConfigurationManager.GetSetting("EnvironmentName") ?? 
+            var environment = CloudConfigurationManager.GetSetting("EnvironmentName") ??
                               "LOCAL";
             var storageConnectionString = CloudConfigurationManager.GetSetting("ConfigurationStorageConnectionString") ??
                                           "UseDevelopmentStorage=true;";
@@ -74,7 +95,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
 
             var configurationService = new ConfigurationService(configurationRepository, configurationOptions);
 
-            var webConfiguration = configurationService.Get<WebConfiguration>();    
+            var webConfiguration = configurationService.Get<WebConfiguration>();
 
             return webConfiguration;
         }

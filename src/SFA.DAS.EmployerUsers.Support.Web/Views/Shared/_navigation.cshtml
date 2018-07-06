@@ -1,0 +1,30 @@
+﻿@using SFA.DAS.Support.Shared.Navigation
+@{
+    MenuViewModel menu = (ViewBag ?? new { }).Menu ?? new MenuViewModel { MenuItems = new List<MenuItem>() };
+    var menuItems = menu.MenuItems;
+
+    var activeMenuRoot = menuItems.FirstOrDefault(x => x.Key == (menu.SelectedMenuItemKeys.LastOrDefault() ?? ""));
+
+    var orientation = menu.MenuOrientation == MenuOrientations.Vertical ? "flex-column" : "";
+
+    // if we have nav items and we have the root item
+    if (menu.MenuItems.Count > 0 && activeMenuRoot != null)
+    {
+        /* The selected (active) menu item should have submenus' to display
+            as a pill based sub menu across the top of the payments*/
+
+        <ul class="nav nav-pills @orientation">
+            @foreach (var subMenuItem in activeMenuRoot.MenuItems)
+            {
+                var isActive = menu.SelectedMenuItemKeys.Contains(subMenuItem.Key) ? "active" : "";
+                <li class="nav-item">
+                    <a class="nav-link @isActive"
+                       id="@subMenuItem.Key"
+                       href="@subMenuItem.NavigateUrl">
+                        @subMenuItem.Text
+                    </a>
+                </li>
+            }
+        </ul>
+    }
+}

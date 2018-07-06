@@ -17,4 +17,6 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Configuration
 
         [JsonRequired] public string Tenant { get; set; }
     }
+
+
 }

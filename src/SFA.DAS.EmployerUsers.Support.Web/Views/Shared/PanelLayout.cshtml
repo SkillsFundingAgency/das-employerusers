@@ -1,0 +1,42 @@
+﻿@using SFA.DAS.Support.Shared.Navigation
+@{
+    MenuViewModel menu = (ViewBag ?? new {}).Menu ?? new MenuViewModel {MenuItems = new List<MenuItem>()};
+    var menuItems = menu.MenuItems;
+}
+<div class="row">
+    <div class="col-md-12" id="panelHeader">
+        @Html.Raw((ViewBag ?? new {}).Header ?? string.Empty)
+    </div>
+</div>
+<div class="row">
+    @if (menuItems.Count > 0)
+    {
+        var activeMenuItem = menu.SelectedMenuItemKeys.LastOrDefault() ?? string.Empty;
+        var orientation = "flex-column";
+
+        <div class="col-md-2" id="panelNavigation">
+            <ul class="nav nav-pills @orientation">
+                @foreach (var menuItem in menuItems)
+                {
+                    var isActive = menu.SelectedMenuItemKeys.Contains(menuItem.Key) ? "active" : "";
+                <li class="nav-item">
+                    <a class="nav-link @isActive"
+                       id="menu@menuItem.Key"
+                       href="@menuItem.NavigateUrl">
+                        @menuItem.Text
+                    </a>
+                </li>
+                }
+            </ul>
+        </div>
+        <div class="col-md-10" id="panelContent">
+            @RenderBody()
+        </div>
+    }
+    else
+    {
+        <div class="col-md-12" id="panelContent">
+            @RenderBody()
+        </div>
+    }
+</div>

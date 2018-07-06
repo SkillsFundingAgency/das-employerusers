@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
 using SFA.DAS.NLog.Logger;
 using SFA.DAS.Support.Shared.Authentication;
 using SFA.DAS.Support.Shared.SiteConnection;
+using SFA.DAS.Support.Shared.Views;
 using SFA.DAS.Web.Policy;
 
 namespace SFA.DAS.EmployerUsers.Support.Web
@@ -18,6 +20,10 @@ namespace SFA.DAS.EmployerUsers.Support.Web
         //public static Collection<DelegatingHandler> ConfigurationMessageHandlers;
         protected void Application_Start()
         {
+            HostingEnvironment
+                .RegisterVirtualPathProvider(
+                    new EmbeddedResourceViewPathProvider());
+
             MvcHandler.DisableMvcResponseHeader = true;
             var ioc = DependencyResolver.Current;
             var logger = ioc.GetService<ILog>();

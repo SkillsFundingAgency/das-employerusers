@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using SFA.DAS.Support.Shared.SiteConnection;
+using StructureMap;
 
 namespace SFA.DAS.EmployerUsers.Support.Web.Configuration
 {
@@ -11,8 +13,13 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Configuration
         [JsonRequired]
         public AccountApiConfiguration AccountApi { get; set; }
 
-        
+
         [JsonRequired]
         public SiteValidatorSettings SiteValidator { get; set; }
+
+
+        [JsonRequired] public SiteConnectorSettings SiteConnector { get; set; }
+
+        [JsonRequired] public SiteSettings Site { get; set; }
     }
 }
