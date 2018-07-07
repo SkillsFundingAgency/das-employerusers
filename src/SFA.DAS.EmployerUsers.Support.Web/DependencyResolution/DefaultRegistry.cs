@@ -17,6 +17,8 @@
 
 using System;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using SFA.DAS.Support.Shared.Navigation;
 
 namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
@@ -70,9 +72,12 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
             For<ISiteValidatorSettings>().Use(configuration.SiteValidator);
             For<ISiteSettings>().Use(configuration.Site);
 
+            Uri portalUri = new Uri(
+                configuration.Site.BaseUrls
+                    .Split(',').FirstOrDefault(x=>x.StartsWith($"{SupportServiceIdentity.SupportPortal}"))?
+                    .Split('|').LastOrDefault()?? "/", UriKind.RelativeOrAbsolute);
 
-
-            For<IMenuTemplateTransformer>().Singleton().Use<MenuTemplateTransformer>();
+            For<IMenuTemplateTransformer>().Singleton().Use(new MenuTemplateTransformer(portalUri));
             For<IMenuTemplateDatasource>().Singleton().Use( new MenuTemplateDatasource("~/App_Data"));
             For<IMenuClient>().Singleton().Use<MenuClient>();
 

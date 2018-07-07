@@ -15,8 +15,8 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
         private readonly IServiceConfiguration _serviceConfiguration;
 
         public UserController(IEmployerUserRepository repository, IServiceConfiguration serviceConfiguration, 
-            IMenuService menuService, IMenuTemplateTransformer menuTemplateTransformer,
-            Uri supportPortalUri): base(menuService, menuTemplateTransformer, supportPortalUri)
+            IMenuService menuService, IMenuTemplateTransformer menuTemplateTransformer
+            ): base(menuService, menuTemplateTransformer)
         {
             _repository = repository;
             _serviceConfiguration = serviceConfiguration;

@@ -13,14 +13,13 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
         protected static readonly MenuRoot EmptyMenu = new MenuRoot() { MenuItems = new List<MenuItem>(), Perspective = SupportMenuPerspectives.None };
         protected MenuRoot RootMenu = EmptyMenu;
         protected Dictionary<string, string> MenuTransformationIdentifiers = new Dictionary<string, string>();
-        private readonly Uri _supportPortalUri;
         protected SupportMenuPerspectives MenuPerspective;
 
-        protected SupportController(IMenuService menuService, IMenuTemplateTransformer menuTemplateTransformer, Uri supportPortalUri)
+        protected SupportController(IMenuService menuService, IMenuTemplateTransformer menuTemplateTransformer)
         {
             MenuService = menuService;
             MenuTemplateTransformer = menuTemplateTransformer;
-            _supportPortalUri = supportPortalUri ?? new Uri($"/", UriKind.RelativeOrAbsolute);
+          
         }
 
         protected override void OnActionExecuted(ActionExecutedContext filterContext)
@@ -31,7 +30,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
 
 
             // set the menu into the viewbag for the layour to pick up
-            ViewBag.Menu = MenuTemplateTransformer.TransformMenuTemplates(RootMenu.MenuItems, _supportPortalUri, MenuTransformationIdentifiers);
+            ViewBag.Menu = MenuTemplateTransformer.TransformMenuTemplates(RootMenu.MenuItems,  MenuTransformationIdentifiers);
             
         }
     }

@@ -125,8 +125,8 @@
     <Reference Include="SFA.DAS.NLog.Targets.Redis, Version=1.0.0.43242, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.NLog.Targets.Redis.1.0.0.43242\lib\net45\SFA.DAS.NLog.Targets.Redis.dll</HintPath>
     </Reference>
-    <Reference Include="SFA.DAS.Support.Shared, Version=2.1.61.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Support.Shared.2.1.61\lib\net462\SFA.DAS.Support.Shared.dll</HintPath>
+    <Reference Include="SFA.DAS.Support.Shared, Version=2.1.62.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Support.Shared.2.1.62\lib\net462\SFA.DAS.Support.Shared.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.Web.Policy, Version=1.1.0.44309, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.Web.Policy.1.1.0.44309\lib\net45\SFA.DAS.Web.Policy.dll</HintPath>
