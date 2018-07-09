@@ -31,7 +31,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Tests
             _unit = new UserController(_mockEmployerUserRepository.Object, 
                 _mockServiceConfiguration.Object, 
                 _mockMenuService.Object, 
-                _mockMenuTemplateTransformer.Object, new Uri("https://localhost"));
+                _mockMenuTemplateTransformer.Object);
         }
     }
 }

@@ -77,10 +77,11 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
                     .Split(',').FirstOrDefault(x=>x.StartsWith($"{SupportServiceIdentity.SupportPortal}"))?
                     .Split('|').LastOrDefault()?? "/", UriKind.RelativeOrAbsolute);
 
-            For<IMenuTemplateTransformer>().Singleton().Use(new MenuTemplateTransformer(portalUri));
+            For<Uri>().Singleton().Use((portalUri));
+
+            For<IMenuTemplateTransformer>().Singleton().Use<MenuTemplateTransformer>();
             For<IMenuTemplateDatasource>().Singleton().Use( new MenuTemplateDatasource("~/App_Data"));
             For<IMenuClient>().Singleton().Use<MenuClient>();
-
             For<IMenuService>().Singleton().Use<MenuService>();
 
 

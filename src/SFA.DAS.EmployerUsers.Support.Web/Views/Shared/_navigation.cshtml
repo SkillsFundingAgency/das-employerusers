@@ -13,18 +13,20 @@
         /* The selected (active) menu item should have submenus' to display
             as a pill based sub menu across the top of the payments*/
 
-        <ul class="nav nav-pills @orientation">
-            @foreach (var subMenuItem in activeMenuRoot.MenuItems)
-            {
-                var isActive = menu.SelectedMenuItemKeys.Contains(subMenuItem.Key) ? "active" : "";
-                <li class="nav-item">
-                    <a class="nav-link @isActive"
-                       id="@subMenuItem.Key"
-                       href="@subMenuItem.NavigateUrl">
-                        @subMenuItem.Text
-                    </a>
-                </li>
-            }
-        </ul>
+        <nav class="sub-nav" @orientation>
+            <ul role="menu">
+                @foreach (var subMenuItem in activeMenuRoot.MenuItems)
+                {
+                    var isActive = menu.SelectedMenuItemKeys.Contains(subMenuItem.Key) ? "selected" : "";
+                    <li>
+                        <a class="nav-link @isActive"
+                           id="@subMenuItem.Key"
+                           href="@subMenuItem.NavigateUrl">
+                            @subMenuItem.Text
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
     }
 }
