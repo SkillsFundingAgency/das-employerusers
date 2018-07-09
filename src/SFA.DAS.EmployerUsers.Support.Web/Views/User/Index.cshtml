@@ -1,8 +1,7 @@
-﻿@model SFA.DAS.EmployerUsers.Support.Core.Domain.Model.EmployerUser
+﻿@using SFA.DAS.Support.Shared.ViewModels
+@model SFA.DAS.EmployerUsers.Support.Core.Domain.Model.EmployerUser
 <h1 class="heading-large">User overview</h1>
-@{
-    Html.RenderPartial("_header", @Model);
-}
+
 @if (Model != null)
 {
     <dl class="definition-list">

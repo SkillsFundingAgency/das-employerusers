@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.IdentityModel;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using SFA.DAS.EmployerUsers.Support.Infrastructure;
 using SFA.DAS.Support.Shared.Discovery;
 using SFA.DAS.Support.Shared.Navigation;
+using SFA.DAS.Support.Shared.ViewModels;
+using StructureMap.Query;
 
 namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
 {
@@ -36,6 +39,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
             {
                 return View("_notFound", new { Identifiers = new Dictionary<string, string>() { { "User Id", $"{id}" } } });
             }
+            ViewBag.Header = new HeaderViewModel() { Content = new HtmlString($"{response.FirstName} {response.LastName}") }; ;
 
             MenuPerspective = SupportMenuPerspectives.EmployerUser;
             MenuTransformationIdentifiers = new Dictionary<string, string>() { { "userId", $"{id}" } };
@@ -44,7 +48,6 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
 
             response.Accounts = await _repository.GetAccounts(id);
 
-            ViewBag.Header = response.Accounts;
             response.AccountsUri = $"/resource/index/{{0}}?key={SupportServiceResourceKey.EmployerAccount}";
 
 

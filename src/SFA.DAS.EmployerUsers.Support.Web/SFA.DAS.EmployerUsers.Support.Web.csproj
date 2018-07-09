@@ -125,8 +125,8 @@
     <Reference Include="SFA.DAS.NLog.Targets.Redis, Version=1.0.0.43242, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.NLog.Targets.Redis.1.0.0.43242\lib\net45\SFA.DAS.NLog.Targets.Redis.dll</HintPath>
     </Reference>
-    <Reference Include="SFA.DAS.Support.Shared, Version=2.1.63.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Support.Shared.2.1.63\lib\net462\SFA.DAS.Support.Shared.dll</HintPath>
+    <Reference Include="SFA.DAS.Support.Shared, Version=2.1.65.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Support.Shared.2.1.65\lib\net462\SFA.DAS.Support.Shared.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.Web.Policy, Version=1.1.0.44309, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.Web.Policy.1.1.0.44309\lib\net45\SFA.DAS.Web.Policy.dll</HintPath>
@@ -323,7 +323,7 @@
   <ItemGroup>
     <Content Include="Views\web.config" />
     <Content Include="Content\src\styles\_layout.scss" />
-    <Content Include="Views\User\_header.cshtml" />
+    <Content Include="Views\Shared\_header.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
@@ -343,6 +343,8 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\PanelLayout.cshtml" />
     <Content Include="Views\Shared\_navigation.cshtml" />
+    <Content Include="Views\Shared\_notUnderstood.cshtml" />
+    <Content Include="Views\Shared\_notfound.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,13 +1,16 @@
-﻿@using SFA.DAS.Support.Shared.Navigation
+﻿@using System.Web.Mvc.Html
+@using SFA.DAS.Support.Shared.Navigation
+@using SFA.DAS.Support.Shared.ViewModels
 @{
     MenuViewModel menu = (ViewBag ?? new { }).Menu ?? new MenuViewModel { MenuItems = new List<MenuItem>() };
     var menuItems = menu.MenuItems;
+
+    var header = ViewBag.Header as HeaderViewModel ?? new HeaderViewModel();
+    if (header != null)
+    {
+        Html.RenderPartial("_header", header);
+    }
 }
-<div class="grid-row">
-    <div class="column-full" id="panelHeader">
-        @Html.Raw((ViewBag ?? new { }).Header ?? string.Empty)
-    </div>
-</div>
 <div class="grid-row">
     @if (menuItems.Count > 0)
     {
