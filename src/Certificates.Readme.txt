@@ -7,7 +7,13 @@ Then perform a one off install of the localhost certificate on your machine.
 Then use the thumbprint in the localhsot.cer.thumbprint.txt file to change all of your Cloud configuration or Web.Config files to use that thumbprint.
 
 Delete any and all excess localhost certificates from your repositories as requried, or,
-copy this readme file and the SFA.Dev.Local.Cer and localhost.pfx, and the localhost.cer.thumbprint.txt Files into your repo.
+copy this readme file and the SFA.Dev.Local.pfx and localhost.pfx  Files into your repo.
+
+The localhost thumbprint for the Config files is;
+
+9D922D0785282FE6F0B057231D6B45F5169F9E01
+
+
 
 Install local certificate authority!
 
