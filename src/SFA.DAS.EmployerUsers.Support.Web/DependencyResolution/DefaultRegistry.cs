@@ -29,6 +29,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
     using SFA.DAS.EAS.Account.Api.Client;
     using SFA.DAS.EmployerUsers.Api.Client;
     using SFA.DAS.EmployerUsers.Support.Web.Configuration;
+    using SFA.DAS.NLog.Logger;
     using SFA.DAS.Support.Shared.Discovery;
     using SFA.DAS.Support.Shared.SiteConnection;
     using StructureMap.Configuration.DSL;
@@ -80,11 +81,9 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
             For<Uri>().Singleton().Use((portalUri));
 
             For<IMenuTemplateTransformer>().Singleton().Use<MenuTemplateTransformer>();
-            For<IMenuTemplateDatasource>().Singleton().Use( new MenuTemplateDatasource("~/App_Data"));
+            For<IMenuTemplateDatasource>().Singleton().Use(x=> new MenuTemplateDatasource("~/App_Data", x.GetInstance<ILog>()));
             For<IMenuClient>().Singleton().Use<MenuClient>();
             For<IMenuService>().Singleton().Use<MenuService>();
-
-
 
         }
 

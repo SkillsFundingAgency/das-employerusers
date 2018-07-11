@@ -26,6 +26,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
 
         }
 
+        [Route("users/{id}")]
         public async Task<ActionResult> Index(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -45,10 +46,9 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
             MenuTransformationIdentifiers = new Dictionary<string, string>() { { "userId", $"{id}" } };
             MenuSelection = "User";
 
-
             response.Accounts = await _repository.GetAccounts(id);
 
-            response.AccountsUri = $"/resource/index/{{0}}?key={SupportServiceResourceKey.EmployerAccount}";
+            response.AccountsUri = $"/accounts//{{0}}";
 
 
             return View(response);
