@@ -44,7 +44,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
 
             MenuPerspective = SupportMenuPerspectives.EmployerUser;
             MenuTransformationIdentifiers = new Dictionary<string, string>() { { "userId", $"{id}" } };
-            MenuSelection = "User";
+            MenuSelection = "User.Details";
 
             response.Accounts = await _repository.GetAccounts(id);
 
