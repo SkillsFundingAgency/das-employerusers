@@ -116,7 +116,6 @@
   <ItemGroup>
     <Compile Include="Configuration\FormatSchemaProvider.cs" />
     <Compile Include="Configuration\WebConfigurationTesting.cs" />
-    <Compile Include="WhenCallingTheHeaderMethod.cs" />
     <Compile Include="WhenCallingTheIndexMethod.cs" />
     <Compile Include="WhenTestingUserController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
