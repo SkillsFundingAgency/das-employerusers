@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -8,10 +6,10 @@ using SFA.DAS.EmployerUsers.Support.Infrastructure;
 using SFA.DAS.Support.Shared.Discovery;
 using SFA.DAS.Support.Shared.Navigation;
 using SFA.DAS.Support.Shared.ViewModels;
-using StructureMap.Query;
 
 namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
 {
+    [RoutePrefix("employers")]
     public class UserController : BaseController
     {
         private readonly IEmployerUserRepository _repository;
