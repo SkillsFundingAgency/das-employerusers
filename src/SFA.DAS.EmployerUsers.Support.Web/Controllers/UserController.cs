@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using SFA.DAS.EmployerUsers.Support.Infrastructure;
+using SFA.DAS.Support.Shared.Authentication;
+using SFA.DAS.Support.Shared.Challenge;
 using SFA.DAS.Support.Shared.Discovery;
 using SFA.DAS.Support.Shared.Navigation;
 using SFA.DAS.Support.Shared.ViewModels;
@@ -14,14 +16,15 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
     {
         private readonly IEmployerUserRepository _repository;
         private readonly IServiceConfiguration _serviceConfiguration;
-
+        
         public UserController(IEmployerUserRepository repository, IServiceConfiguration serviceConfiguration, IMenuService menuService,
-            IMenuTemplateTransformer menuTemplateTransformer
-            ) : base(menuService, menuTemplateTransformer)
+            IMenuTemplateTransformer menuTemplateTransformer, IChallengeService challengeService, int challengeExpiryMinutes, 
+            IIdentityHandler identityHandler) : 
+            base(menuService, menuTemplateTransformer, challengeService, identityHandler,challengeExpiryMinutes)
         {
             _repository = repository;
             _serviceConfiguration = serviceConfiguration;
-
+           
         }
 
         [Route("users/{id}")]
@@ -37,7 +40,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
             if (response == null)
             {
                 return View("_notFound", new { Identifiers = new Dictionary<string, string>() { { "User Id", $"{id}" } } });
-            }
+                                                                                }
             ViewBag.Header = new HeaderViewModel() { Content = new HtmlString($"{response.FirstName} {response.LastName}") }; ;
 
             MenuPerspective = SupportMenuPerspectives.EmployerUser;
