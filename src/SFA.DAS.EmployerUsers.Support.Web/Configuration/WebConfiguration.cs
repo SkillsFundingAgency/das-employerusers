@@ -13,7 +13,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Configuration
         [JsonRequired]
         public AccountApiConfiguration AccountApi { get; set; }
 
-
+        [JsonRequired] public ChallengeSettings Challenge { get; set; }
         [JsonRequired]
         public SiteValidatorSettings SiteValidator { get; set; }
 

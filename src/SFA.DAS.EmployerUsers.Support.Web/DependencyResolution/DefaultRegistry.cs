@@ -42,8 +42,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
         private const string ServiceName = "SFA.DAS.Support.EmployerUsers";
         private const string Version = "1.0";
 
-        #region Constructors and Destructors
-
+       
         public DefaultRegistry()
         {
             Scan(
@@ -84,6 +83,8 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
             For<IMenuTemplateDatasource>().Singleton().Use(x=> new MenuTemplateDatasource("~/App_Data", x.GetInstance<ILog>()));
             For<IMenuClient>().Singleton().Use<MenuClient>();
             For<IMenuService>().Singleton().Use<MenuService>();
+            For<IChallengeSettings>().Use(configuration.Challenge);
+            For<IChallengeService>().Singleton().Use(c => new InMemoryChallengeService(new Dictionary<Guid, SupportAgentChallenge>(), c.GetInstance<IChallengeSettings>()));
 
         }
 
@@ -105,6 +106,6 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
             return webConfiguration;
         }
 
-        #endregion
+       
     }
 }
