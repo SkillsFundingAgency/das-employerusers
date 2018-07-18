@@ -30,10 +30,12 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
     using SFA.DAS.EmployerUsers.Api.Client;
     using SFA.DAS.EmployerUsers.Support.Web.Configuration;
     using SFA.DAS.NLog.Logger;
+    using SFA.DAS.Support.Shared.Challenge;
     using SFA.DAS.Support.Shared.Discovery;
     using SFA.DAS.Support.Shared.SiteConnection;
     using StructureMap.Configuration.DSL;
     using StructureMap.Graph;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
 
     [ExcludeFromCodeCoverage]

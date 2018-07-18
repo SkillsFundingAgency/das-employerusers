@@ -1,5 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
+using SFA.DAS.Support.Shared.Challenge;
 using SFA.DAS.Support.Shared.SiteConnection;
 using StructureMap;
 
