@@ -1,8 +1,7 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using SFA.DAS.Support.Shared.Authentication;
 using SFA.DAS.Support.Shared.Challenge;
 using SFA.DAS.Support.Shared.SiteConnection;
-using StructureMap;
 
 namespace SFA.DAS.EmployerUsers.Support.Web.Configuration
 {
@@ -15,6 +14,9 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Configuration
         public AccountApiConfiguration AccountApi { get; set; }
 
         [JsonRequired] public ChallengeSettings Challenge { get; set; }
+
+        [JsonRequired] public CryptoSettings Crypto { get;set; }
+
         [JsonRequired]
         public SiteValidatorSettings SiteValidator { get; set; }
 
@@ -22,5 +24,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Configuration
         [JsonRequired] public SiteConnectorSettings SiteConnector { get; set; }
 
         [JsonRequired] public SiteSettings Site { get; set; }
+
+
     }
 }

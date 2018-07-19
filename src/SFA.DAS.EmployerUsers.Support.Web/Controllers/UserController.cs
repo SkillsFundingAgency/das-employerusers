@@ -11,7 +11,7 @@ using SFA.DAS.Support.Shared.ViewModels;
 
 namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
 {
-    [RoutePrefix("employers")]
+    [RoutePrefix("employerusers")]
     public class UserController : BaseController
     {
         private readonly IEmployerUserRepository _repository;

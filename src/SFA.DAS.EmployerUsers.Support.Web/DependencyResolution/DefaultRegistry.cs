@@ -18,7 +18,9 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
+using SFA.DAS.Support.Shared.Authentication;
 using SFA.DAS.Support.Shared.Navigation;
 
 namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
@@ -28,6 +30,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
     using SFA.DAS.Configuration.AzureTableStorage;
     using SFA.DAS.EAS.Account.Api.Client;
     using SFA.DAS.EmployerUsers.Api.Client;
+    using SFA.DAS.EmployerUsers.Support.Infrastructure.DependencyResolution;
     using SFA.DAS.EmployerUsers.Support.Web.Configuration;
     using SFA.DAS.NLog.Logger;
     using SFA.DAS.Support.Shared.Challenge;
@@ -37,6 +40,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
     using StructureMap.Graph;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Net.Http;
 
     [ExcludeFromCodeCoverage]
     public class DefaultRegistry : Registry
@@ -62,17 +66,27 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
                 }
             );
 
+            For<ILoggingPropertyFactory>().Use<LoggingPropertyFactory>();
+
+            For<ILog>().Use(x => new NLogLogger(
+                x.ParentType,
+                x.GetInstance<IRequestContext>(),
+                x.GetInstance<ILoggingPropertyFactory>().GetProperties())).AlwaysUnique();
+
 
             WebConfiguration configuration = GetConfiguration();
 
             For<IWebConfiguration>().Use(configuration);
             For<IEmployerUsersApiConfiguration>().Use(configuration.EmployerUsersApi);
             For<IAccountApiConfiguration>().Use(configuration.AccountApi);
-          
 
+
+            For<HttpClient>().AlwaysUnique().Use(c => new HttpClient());
             For<ISiteConnectorSettings>().Use(configuration.SiteConnector);
+            For<ISiteConnector>().Use<SiteConnector>();
             For<ISiteValidatorSettings>().Use(configuration.SiteValidator);
             For<ISiteSettings>().Use(configuration.Site);
+            For<ICryptoSettings>().Use(configuration.Crypto);
 
             Uri portalUri = new Uri(
                 configuration.Site.BaseUrls
@@ -81,6 +95,9 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
 
             For<Uri>().Singleton().Use((portalUri));
 
+            For<IIdentityHandler>().Use<RequestHeaderIdentityHandler>();
+            For<ICrypto>().Use<Crypto>();
+            For<IIdentityHash>().Use<IdentityHash>();
             For<IMenuTemplateTransformer>().Singleton().Use<MenuTemplateTransformer>();
             For<IMenuTemplateDatasource>().Singleton().Use(x=> new MenuTemplateDatasource("~/App_Data", x.GetInstance<ILog>()));
             For<IMenuClient>().Singleton().Use<MenuClient>();

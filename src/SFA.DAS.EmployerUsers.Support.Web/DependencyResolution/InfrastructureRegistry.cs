@@ -14,14 +14,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
     {
         public InfrastructureRegistry()
         {
-            For<ILoggingPropertyFactory>().Use<LoggingPropertyFactory>();
-
-            For<ILog>().Use(x => new NLogLogger(
-                x.ParentType,
-                x.GetInstance<IRequestContext>(),
-                x.GetInstance<ILoggingPropertyFactory>().GetProperties())).AlwaysUnique();
-
-
+            
             For<IEmployerUsersApiClient>().Use("", ctx =>
             {
                 var empUserApiSettings = ctx.GetInstance<IEmployerUsersApiConfiguration>();

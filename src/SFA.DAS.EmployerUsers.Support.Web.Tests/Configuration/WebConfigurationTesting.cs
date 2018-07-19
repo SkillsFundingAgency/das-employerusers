@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Schema.Generation;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Support.Web.Configuration;
+using SFA.DAS.Support.Shared.Authentication;
 using SFA.DAS.Support.Shared.SiteConnection;
 
 namespace SFA.DAS.EmployerUsers.Support.Web.Tests.Configuration
@@ -24,6 +25,11 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Tests.Configuration
                     IdentifierUri = "--- configuration value goes here ---",
                     Tenant = "--- configuration value goes here ---",
                     ClientCertificateThumbprint = "--- configuration value goes here ---"
+                },
+                Crypto = new CryptoSettings()
+                {
+                    Salt = "SaltySwedishSeaDog",
+                    Secret = "secretSquirrel"
                 },
                 SiteValidator = new SiteValidatorSettings
                 {
