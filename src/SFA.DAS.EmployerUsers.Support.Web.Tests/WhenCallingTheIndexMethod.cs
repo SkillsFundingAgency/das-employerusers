@@ -46,19 +46,24 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Tests
 
             var actual = await _unit.Index("234");
 
-            Assert.IsInstanceOf<HttpNotFoundResult>(actual);
+            Assert.IsInstanceOf<ViewResult>(actual);
+            Assert.AreEqual("_notFound", ((ViewResult)actual).ViewName);
         }
 
         [Test]
-        public void ItShouldThrowABadRequestExceptionIfTheIdIsNull()
+        public async Task ItShouldThrowABadRequestExceptionIfTheIdIsNull()
         {
-            Assert.ThrowsAsync<BadRequestException>(async () => await _unit.Index(null));
+            var actual = await _unit.Index(null);
+            Assert.IsInstanceOf<ViewResult>(actual);
+            Assert.AreEqual("_notUnderstood", ((ViewResult)actual).ViewName);
         }
 
         [Test]
-        public void ItShouldThrowABadRequestExceptionIfTheIdIsWhiteSpace()
+        public async Task ItShouldThrowABadRequestExceptionIfTheIdIsWhiteSpace()
         {
-            Assert.ThrowsAsync<BadRequestException>(async () => await _unit.Index(" "));
+           var actual = await _unit.Index(" ");
+            Assert.IsInstanceOf<ViewResult>(actual);
+            Assert.AreEqual("_notUnderstood", ((ViewResult)actual).ViewName);
         }
     }
 }

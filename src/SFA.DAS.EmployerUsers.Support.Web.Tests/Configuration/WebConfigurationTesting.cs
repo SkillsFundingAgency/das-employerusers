@@ -5,6 +5,7 @@ using Newtonsoft.Json.Schema.Generation;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Support.Web.Configuration;
 using SFA.DAS.Support.Shared.Authentication;
+using SFA.DAS.Support.Shared.Challenge;
 using SFA.DAS.Support.Shared.SiteConnection;
 
 namespace SFA.DAS.EmployerUsers.Support.Web.Tests.Configuration
@@ -26,6 +27,11 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Tests.Configuration
                     Tenant = "--- configuration value goes here ---",
                     ClientCertificateThumbprint = "--- configuration value goes here ---"
                 },
+                Challenge = new ChallengeSettings()
+                {
+                    ChallengeExpiryMinutes = 10,
+                    ChallengeMaxRetries = 3
+                },
                 Crypto = new CryptoSettings()
                 {
                     Salt = "SaltySwedishSeaDog",
@@ -44,6 +50,17 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Tests.Configuration
                     ClientId = "00000000-0000-0000-0000-000000000000",
                     ClientSecret = "--- configuration value goes here ---",
                     IdentifierUri = "--- configuration value goes here ---"
+                },
+                SiteConnector = new SiteConnectorSettings()
+                {
+                    ClientId = "--- configuration value goes here ---",
+                    ClientSecret = "--- configuration value goes here ---",
+                    IdentifierUri = "--- configuration value goes here ---",
+                    Tenant = "--- configuration value goes here ---"
+                },
+                Site = new SiteSettings()
+                {
+                    BaseUrls = "--- configuration|value goes here ---,--- configuration|value goes here ---"
                 }
             };
         }
