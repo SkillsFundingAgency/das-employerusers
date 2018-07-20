@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IdentityModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Castle.Components.DictionaryAdapter;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EAS.Account.Api.Types;
