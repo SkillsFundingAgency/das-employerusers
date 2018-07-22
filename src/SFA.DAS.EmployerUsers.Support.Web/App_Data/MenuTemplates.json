@@ -1,0 +1,70 @@
+[
+  {
+    "Perspective": 2,
+    "MenuItems": [
+      {
+        "Key": "User.Details",
+        "Text": "Overview",
+        "NavigateUrl": "views/employerusers/users/{userId}",
+        "Ordinal": 0,
+        "Roles": [],
+        "MenuItems": []
+      }
+    ]
+  },
+  {
+    "Perspective": 1,
+    "MenuItems": [
+      {
+        "Key": "Account.Organisations",
+        "Text": "Organisations",
+        "NavigateUrl": "views/employers/accounts/{accountId}/organisations",
+        "Ordinal": 0,
+        "Roles": [],
+        "MenuItems": []
+      },
+      {
+        "Key": "Account.Finance",
+        "Text": "Finance",
+        "NavigateUrl": "views/employers/accounts/{accountId}/finance/paye",
+        "Ordinal": 1,
+        "Roles": [ "Tier2" ],
+        "MenuItems": [
+          {
+            "Key": "Account.Finance.PAYE",
+            "Text": "PAYE",
+            "NavigateUrl": "views/employers/accounts/{accountId}/finance/paye",
+            "Ordinal": 0,
+            "Roles": [ "Tier2" ],
+            "MenuItems": [
+              {
+                "Key": "Account.Finance.PAYE.Submissions",
+                "Text": "Submissions",
+                "NavigateUrl": "views/employers/accounts/{accountId}/finance/paye/{payeshchemeId}",
+                "Ordinal": 0,
+                "Roles": [ "Tier2" ],
+                "MenuItems": []
+              }
+            ]
+          },
+          {
+            "Key": "Account.Finance.Transactions",
+            "Text": "Transactions",
+            "NavigateUrl": "views/employers/accounts/{accountId}/finance/transactions",
+            "Ordinal": 1,
+            "Roles": [ "Tier2" ],
+            "MenuItems": []
+          }
+        ]
+      },
+      {
+        "Key": "Account.Teams",
+        "Text": "Team",
+        "NavigateUrl": "views/employers/accounts/{accountId}/teams",
+        "Ordinal": 0,
+        "Roles": [],
+        "MenuItems": []
+      }
+    ]
+  }
+]
