@@ -18,7 +18,7 @@
       {
         "Key": "Account.Organisations",
         "Text": "Organisations",
-        "NavigateUrl": "views/employers/accounts/{accountId}/organisations",
+        "NavigateUrl": "views/employers/accounts/{accountId}",
         "Ordinal": 0,
         "Roles": [],
         "MenuItems": []
@@ -59,7 +59,7 @@
       },
       {
         "Key": "Account.Teams",
-        "Text": "Team",
+        "Text": "Team members",
         "NavigateUrl": "views/employers/accounts/{accountId}/teams",
         "Ordinal": 0,
         "Roles": [],
