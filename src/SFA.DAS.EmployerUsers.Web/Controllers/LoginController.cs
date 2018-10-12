@@ -42,16 +42,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             {
                 var returnUrl = await _accountOrchestrator.LogoutUrlForClientId(_owinWrapper.GetIdsClientId());
 
-                var easPortalUrl = _identityServerConfiguration.EmployerPortalUrl;
-
-                if (returnUrl.StartsWith(easPortalUrl))
-                {
-                    if (!easPortalUrl.EndsWith("/"))
-                        easPortalUrl += "/";
-
-                    returnUrl = $"{easPortalUrl}service/signOut";
-                }
-
                 return returnUrl;
 
             }).Result;
