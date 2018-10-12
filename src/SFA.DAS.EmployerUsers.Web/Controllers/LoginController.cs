@@ -40,14 +40,9 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             // I dont know how many times this event will fire
             var url = Task.Run(async () =>
             {
-                var easPortalUrl = _identityServerConfiguration.EmployerPortalUrl;
-
-                if (!easPortalUrl.EndsWith("/"))
-                    easPortalUrl += "/";
-
-                var returnUrl = $"{easPortalUrl}service/signOut";
-
+                var returnUrl = await _accountOrchestrator.LogoutUrlForClientId(_owinWrapper.GetIdsClientId());
                 return returnUrl;
+
             }).Result;
 
             if (!string.IsNullOrEmpty(url))
