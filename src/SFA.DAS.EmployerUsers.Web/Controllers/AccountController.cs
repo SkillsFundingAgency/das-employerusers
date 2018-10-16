@@ -146,8 +146,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/logout")]
         public async Task<ActionResult> Logout()
         {
-            Request.GetOwinContext().Authentication.SignOut();
-            
             return RedirectToEasSignOut();
         }
 
