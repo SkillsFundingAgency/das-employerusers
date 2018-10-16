@@ -147,19 +147,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         public async Task<ActionResult> Logout()
         {
             Request.GetOwinContext().Authentication.SignOut();
-            var redirect = _owinWrapper.GetIdsReturnUrl();
-            var Uri = new Uri(redirect);
-            var redirectUri = HttpUtility.ParseQueryString(Uri.Query)["redirect_uri"];
-            if (!string.IsNullOrEmpty(redirectUri))
-            {
-                if (redirectUri.StartsWith(_identityServerConfiguration.EmployerPortalUrl))
-                {
-                    return RedirectToEasSignOut();
-                }
-
-                return Redirect(redirectUri);
-            }
-
+            
             return RedirectToEasSignOut();
         }
 
