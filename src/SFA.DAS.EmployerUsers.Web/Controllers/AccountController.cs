@@ -152,18 +152,16 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             var redirectUri = HttpUtility.ParseQueryString(Uri.Query)["redirect_uri"];
             if (!string.IsNullOrEmpty(redirectUri))
             {
+                if (redirectUri.StartsWith(_identityServerConfiguration.EmployerPortalUrl))
+                {
+                    return RedirectToEasSignOut();
+                }
+
                 return Redirect(redirectUri);
             }
 
-            var redirectUrl = _identityServerConfiguration.EmployerPortalUrl;
-
-            if (!redirectUrl.EndsWith("/"))
-                redirectUrl += "/";
-
-            return new RedirectResult($"{redirectUrl}service/signOut");
+            return RedirectToEasSignOut();
         }
-
-
 
         [HttpGet]
         [Route("account/register")]
@@ -316,7 +314,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View("Confirm", response);
 
         }
-
 
 
         [HttpGet]
@@ -691,6 +688,16 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         private async Task<int> GetUnlockCodeLength()
         {
             return await _accountOrchestrator.GetUnlockCodeLength();
+        }
+
+        private ActionResult RedirectToEasSignOut()
+        {
+            var redirectUrl = _identityServerConfiguration.EmployerPortalUrl;
+
+            if (!redirectUrl.EndsWith("/"))
+                redirectUrl += "/";
+
+            return new RedirectResult($"{redirectUrl}service/signOut");
         }
     }
 }
