@@ -154,7 +154,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             {
                 return Redirect(redirectUri);
             }
-            return Redirect(_identityServerConfiguration.EmployerPortalUrl);
+
+            var redirectUrl = _identityServerConfiguration.EmployerPortalUrl;
+
+            if (!redirectUrl.EndsWith("/"))
+                redirectUrl += "/";
+
+            return new RedirectResult($"{redirectUrl}service/signOut");
         }
 
 
