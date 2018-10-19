@@ -2,7 +2,9 @@
 using IdentityServer3.Core.ViewModels;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Authentication;
+using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace SFA.DAS.EmployerUsers.Web.Controllers
@@ -35,12 +37,24 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         {
             _owinWrapper.SignoutUser();
 
-            var easPortalUrl = _identityServerConfiguration.EmployerPortalUrl;
+            // I dont know how many times this event will fire
+            var url = Task.Run(async () =>
+            {
+                var returnUrl = await _accountOrchestrator.LogoutUrlForClientId(_owinWrapper.GetIdsClientId());
 
-            if (!easPortalUrl.EndsWith("/"))
-                easPortalUrl += "/";
+                return returnUrl;
 
-            return new RedirectResult($"{easPortalUrl}service/signout");
+            }).Result;
+
+            if (!string.IsNullOrEmpty(url))
+            {
+                message.ReturnUrl = url;
+            }
+            return View(new LogOutViewModel
+            {
+                IdsLogoutModel = model,
+                SignOutMessage = message
+            });
         }
     }
 }
