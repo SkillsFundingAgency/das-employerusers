@@ -146,18 +146,8 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/logout")]
         public async Task<ActionResult> Logout()
         {
-            Request.GetOwinContext().Authentication.SignOut();
-            var redirect = _owinWrapper.GetIdsReturnUrl();
-            var Uri = new Uri(redirect);
-            var redirectUri = HttpUtility.ParseQueryString(Uri.Query)["redirect_uri"];
-            if (!string.IsNullOrEmpty(redirectUri))
-            {
-                return Redirect(redirectUri);
-            }
-            return Redirect(_identityServerConfiguration.EmployerPortalUrl);
+            return RedirectToEasSignOut();
         }
-
-
 
         [HttpGet]
         [Route("account/register")]
@@ -310,7 +300,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View("Confirm", response);
 
         }
-
 
 
         [HttpGet]
@@ -685,6 +674,16 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         private async Task<int> GetUnlockCodeLength()
         {
             return await _accountOrchestrator.GetUnlockCodeLength();
+        }
+
+        private ActionResult RedirectToEasSignOut()
+        {
+            var redirectUrl = _identityServerConfiguration.EmployerPortalUrl;
+
+            if (!redirectUrl.EndsWith("/"))
+                redirectUrl += "/";
+
+            return new RedirectResult($"{redirectUrl}service/signOut");
         }
     }
 }
