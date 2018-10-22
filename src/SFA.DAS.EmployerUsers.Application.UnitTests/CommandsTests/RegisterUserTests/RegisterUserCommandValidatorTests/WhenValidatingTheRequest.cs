@@ -151,7 +151,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
             Assert.Contains(new KeyValuePair<string, string>("LastName", "Enter last name"), actual.ValidationDictionary);
             Assert.Contains(new KeyValuePair<string, string>("Password", "Enter password"), actual.ValidationDictionary);
             Assert.Contains(new KeyValuePair<string, string>("ConfirmPassword", "Re-type password"), actual.ValidationDictionary);
-            Assert.Contains(new KeyValuePair<string, string>("HasAcceptedTermsAndConditions", "You need to accept the terms of use"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("HasAcceptedTermsAndConditions", "You need to accept the Terms and Conditions"), actual.ValidationDictionary);
         }
 
         [Test]
@@ -218,7 +218,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
             Assert.AreEqual("Enter a valid email address", valuesInAppendedSequence[2]);
             Assert.AreEqual("Enter password", valuesInAppendedSequence[3]);
             Assert.AreEqual("Re-type password", valuesInAppendedSequence[4]);
-            Assert.AreEqual("You need to accept the terms of use", valuesInAppendedSequence[5]);
+            Assert.AreEqual("You need to accept the Terms and Conditions", valuesInAppendedSequence[5]);
         }
     }
 }
