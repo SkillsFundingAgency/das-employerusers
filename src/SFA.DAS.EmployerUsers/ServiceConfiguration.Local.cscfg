@@ -18,7 +18,7 @@
       <Setting name="StoreEmailsOnDisk" value="true" />
       <Setting name="TokenCertificateThumbprint" value="6B7ACC520305BFDB4F7252DAEB2177CC091FAAE1" />
       <Setting name="BaseExternalUrl" value="https://localhost:44334/" />
-      <Setting name="EmployerPortalUrl" value="http://localhost" />
+      <Setting name="EmployerPortalUrl" value="https://localhost" />
       <Setting name="InstrumentationKey" value="" />
       <Setting name="AuditApiBaseUrl" value="" />
       <Setting name="AuditApiClientId" value="" />
@@ -27,7 +27,7 @@
       <Setting name="AuditApiTenant" value="" />
     </ConfigurationSettings>
     <Certificates>
-      <Certificate name="WebSslCert" thumbprint="2DDD67D7C551CC4EEBDEE4C3DF6E1E6B309CA846" thumbprintAlgorithm="sha1" />
+      <Certificate name="WebSslCert" thumbprint="7E0C8989B70195C9AF040EBAD6F6E5012E07F050" thumbprintAlgorithm="sha1" />
 
     </Certificates>
   </Role>
