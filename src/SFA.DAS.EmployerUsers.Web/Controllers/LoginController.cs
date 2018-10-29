@@ -1,4 +1,5 @@
-﻿using IdentityServer3.Core.Models;
+﻿using System.Collections.Generic;
+using IdentityServer3.Core.Models;
 using IdentityServer3.Core.ViewModels;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Authentication;
@@ -37,19 +38,17 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         {
             _owinWrapper.SignoutUser();
 
-            // I dont know how many times this event will fire
-            var url = Task.Run(async () =>
+            var logoutUrls = Task.Run(async () =>
             {
-                var returnUrl = await _accountOrchestrator.LogoutUrlForClientId(_owinWrapper.GetIdsClientId());
+                var returnUrl = await _accountOrchestrator.GetRelyingPartyLogoutUrls();
 
                 return returnUrl;
 
             }).Result;
-
-            if (!string.IsNullOrEmpty(url))
-            {
-                message.ReturnUrl = url;
-            }
+            
+            model.IFrameUrls = logoutUrls;
+            message = new SignOutMessage { ReturnUrl = _identityServerConfiguration.EmployerPortalUrl };
+            
             return View(new LogOutViewModel
             {
                 IdsLogoutModel = model,

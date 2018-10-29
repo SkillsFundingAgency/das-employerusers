@@ -146,7 +146,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/logout")]
         public async Task<ActionResult> Logout()
         {
-            return RedirectToEasSignOut();
+            return RedirectToAction("Logout", "Login");
         }
 
         [HttpGet]
@@ -674,16 +674,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         private async Task<int> GetUnlockCodeLength()
         {
             return await _accountOrchestrator.GetUnlockCodeLength();
-        }
-
-        private ActionResult RedirectToEasSignOut()
-        {
-            var redirectUrl = _identityServerConfiguration.EmployerPortalUrl;
-
-            if (!redirectUrl.EndsWith("/"))
-                redirectUrl += "/";
-
-            return new RedirectResult($"{redirectUrl}service/signOut");
         }
     }
 }
