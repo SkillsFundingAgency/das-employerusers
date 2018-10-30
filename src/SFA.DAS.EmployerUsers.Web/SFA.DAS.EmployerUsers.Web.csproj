@@ -334,7 +334,6 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\LoggingConfig.cs" />
     <Compile Include="App_Start\SystemWebCookieManager.cs" />
-    <Compile Include="Attributes\IdsAuthorizeAttribute.cs" />
     <Compile Include="Authentication\IdsContext.cs" />
     <Compile Include="Models\HomePageViewModel.cs" />
     <Compile Include="Models\RelyingPartyLoginUrlModel.cs" />
@@ -864,6 +863,9 @@
       <Project>{06C4FA3C-23A2-462B-AEA8-D2F1F1EB3246}</Project>
       <Name>SFA.DAS.EmployerUsers.WebClientComponents</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Attributes\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
