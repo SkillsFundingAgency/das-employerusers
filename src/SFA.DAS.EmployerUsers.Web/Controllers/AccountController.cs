@@ -146,7 +146,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/logout")]
         public async Task<ActionResult> Logout()
         {
-            var url = $"https://{HttpContext.Request.Url.Authority}/connect/endsession";
+            var url = $"https://{HttpContext.Request.Url.Authority}/identity/connect/endsession";
 
             return new RedirectResult(url);
         }
