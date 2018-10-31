@@ -140,12 +140,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View(response);
         }
 
-
-
         [Route("account/logout")]
         public async Task<ActionResult> Logout()
         {
-            var url = $"https://{HttpContext.Request.Url.Authority}/identity/connect/endsession";
+            var authenticationManager = HttpContext.GetOwinContext().Authentication;
+            var idToken = authenticationManager.User.FindFirst("id_token")?.Value;
+            _owinWrapper.SignoutUser();
+            var url = $"https://{HttpContext.Request.Url.Authority}/identity/connect/endsession?id_token_hint=" + idToken;
 
             return new RedirectResult(url);
         }
