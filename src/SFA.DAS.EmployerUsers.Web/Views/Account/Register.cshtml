@@ -10,56 +10,50 @@
     @Html.AntiForgeryToken()
     <input type="hidden" value="@Model.Data.ClientId" name="ClientId" id="ClientId"/>
     <input type="hidden" value="@Model.Data.ReturnUrl" name="ReturnUrl" id="ReturnUrl"/>
-    <fieldset>
-        <legend class="visuallyhidden">email address and password to sign in</legend>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.Data.FirstNameError) ? "error" : "") ">
-            <label for="FirstName">
-                <span class="form-label-bold">First name</span>
-                <span class="error-message" id="error-firstname">@Model.Data.FirstNameError</span>
-            </label>
-            <input class="form-control" id="FirstName" name="FirstName" value="@Html.Encode(Model.Data.FirstName)" required="required" aria-required="true" 
-                   @(!string.IsNullOrEmpty(Model.Data.FirstNameError) ? "aria-invalid=true aria-describedby=error-firstname" : "" )>
-        </div>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.Data.LastNameError) ? "error" : "") ">
-            <label for="LastName">
-                <span class="form-label-bold">Last name</span>
-                <span class="error-message" id="error-lastname">@Model.Data.LastNameError</span>
-            </label>
-            <input class="form-control" id="LastName" name="LastName" value="@Html.Encode(Model.Data.LastName)" required="required" aria-required="true" 
-                   @(!string.IsNullOrEmpty(Model.Data.LastNameError) ? "aria-invalid=true aria-describedby=error-lastname" : "" )>
-        </div>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.Data.EmailError) ? "error" : "") ">
-            <label for="Email">
-                <span class="form-label-bold">Email</span>
-                <span class="form-hint">We'll send you an email to confirm your identity.</span>
-                <span class="error-message" id="error-email">@Html.Raw(Model.Data.EmailError.Replace("|",""))</span>
-            </label>
-            <input class="form-control" id="Email" name="Email" type="text" value="@Html.Encode(Model.Data.Email)" required="required" aria-required="true" autocomplete="off"
-                   @(!string.IsNullOrEmpty(Model.Data.EmailError) ? "aria-invalid=true aria-describedby=error-email" : "" )>
-        </div>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.Data.PasswordError) ? "error" : "") ">
-            <label for="Password">
-                <span class="form-label-bold">Create new password</span>
-                <span class="form-hint">Password requires upper and lowercase letters, a number and at least 8 characters.</span>
-                <span class="error-message" id="error-password">@Model.Data.PasswordError</span>     
-            </label> 
-            <input class="form-control" id="Password" type="password" name="Password" required="required" aria-required="true" autocomplete="off"
-                   @(!string.IsNullOrEmpty(Model.Data.PasswordError) ? "aria-invalid=true aria-describedby=error-password" : "" )>        
-        </div>
-        <div class="form-group @(!string.IsNullOrEmpty(Model.Data.ConfirmPasswordError) ? "error" : "") ">
-            <label for="ConfirmPassword">
-                <span class="form-label-bold">Confirm password</span>
-                <span class="error-message" id="error-confirmpassword">@Model.Data.ConfirmPasswordError</span>
-            </label>
-            <input class="form-control" id="ConfirmPassword" type="password" name="ConfirmPassword" required="required" aria-required="true" autocomplete="off"
-                   @(!string.IsNullOrEmpty(Model.Data.ConfirmPasswordError) ? "aria-invalid=true aria-describedby=error-confirmpassword" : "" )>
+  
+    <div class="form-group @(!string.IsNullOrEmpty(Model.Data.FirstNameError) ? "error" : "") ">
+        <label for="FirstName">
+            <span class="form-label-bold">First name</span>
+            <span class="error-message" id="error-firstname">@Model.Data.FirstNameError</span>
+        </label>
+        <input class="form-control" id="FirstName" name="FirstName" value="@Html.Encode(Model.Data.FirstName)" required="required">
+    </div>
+    <div class="form-group @(!string.IsNullOrEmpty(Model.Data.LastNameError) ? "error" : "") ">
+        <label for="LastName">
+            <span class="form-label-bold">Last name</span>
+            <span class="error-message" id="error-lastname">@Model.Data.LastNameError</span>
+        </label>
+        <input class="form-control" id="LastName" name="LastName" value="@Html.Encode(Model.Data.LastName)" required="required">
+    </div>
+    <div class="form-group @(!string.IsNullOrEmpty(Model.Data.EmailError) ? "error" : "") ">
+        <label for="Email">
+            <span class="form-label-bold">Email</span>
+            <span class="form-hint">We'll send you an email to confirm your identity.</span>
+            <span class="error-message" id="error-email">@Html.Raw(Model.Data.EmailError.Replace("|",""))</span>
+        </label>
+        <input class="form-control" id="Email" name="Email" type="text" value="@Html.Encode(Model.Data.Email)" required="required">
+    </div>
+    <div class="form-group @(!string.IsNullOrEmpty(Model.Data.PasswordError) ? "error" : "") ">
+        <label for="Password">
+            <span class="form-label-bold">Create new password</span>
+            <span class="form-hint">Password requires upper and lowercase letters, a number and at least 8 characters.</span>
+            <span class="error-message" id="error-password">@Model.Data.PasswordError</span>     
+        </label> 
+        <input class="form-control" id="Password" type="password" name="Password" required="required">        
+    </div>
+    <div class="form-group @(!string.IsNullOrEmpty(Model.Data.ConfirmPasswordError) ? "error" : "") ">
+        <label for="ConfirmPassword">
+            <span class="form-label-bold">Confirm password</span>
+            <span class="error-message" id="error-confirmpassword">@Model.Data.ConfirmPasswordError</span>
+        </label>
+        <input class="form-control" id="ConfirmPassword" type="password" name="ConfirmPassword" required="required">
             
-        </div>
-        <div class="panel">
-            <input type="hidden" class="form-checkbox" id="HasAcceptedTermsAndConditions" name="HasAcceptedTermsAndConditions" value="true" />
-            By continuing you accept the <a href="@Url.Action("Index", "TermsAndConditions")" target="_blank">Terms and Conditions</a>.
-        </div>
-    </fieldset>
+    </div>
+    <div class="panel">
+        <input type="hidden" class="form-checkbox" id="HasAcceptedTermsAndConditions" name="HasAcceptedTermsAndConditions" value="true" />
+        By continuing you accept the <a href="@Url.Action("Index", "TermsAndConditions")" target="_blank">Terms and Conditions</a>.
+    </div>
+    
     <button type="submit" class="button" id="button-register">Set me up</button>
 </form>
 @section scripts {
