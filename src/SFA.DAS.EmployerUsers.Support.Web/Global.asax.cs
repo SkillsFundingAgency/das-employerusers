@@ -31,6 +31,8 @@ namespace SFA.DAS.EmployerUsers.Support.Web
 
             GlobalConfiguration.Configuration.MessageHandlers.Add(new TokenValidationHandler(siteValidatorSettings, logger));
             GlobalFilters.Filters.Add(new TokenValidationFilter(siteValidatorSettings, logger));
+            GlobalFilters.Filters.Add(new System.Web.Mvc.AuthorizeAttribute { Roles = "das-support-portal" });
+
             logger.Info("Web role started");
         }
         protected void Application_PreSendRequestHeaders(object sender, EventArgs e)
