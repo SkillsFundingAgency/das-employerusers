@@ -48,7 +48,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PreReqs", "PreReqs", "{A039
 	ProjectSection(SolutionItems) = preProject
 		DasIDPCert.pfx = DasIDPCert.pfx
 		DevInstall.ps1 = DevInstall.ps1
-		localhost.pfx = localhost.pfx
+		GenCert.ps1 = GenCert.ps1
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.WebClientComponents", "SFA.DAS.EmployerUsers.WebClientComponents\SFA.DAS.EmployerUsers.WebClientComponents.csproj", "{06C4FA3C-23A2-462B-AEA8-D2F1F1EB3246}"
@@ -91,6 +91,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Api.Client.UnitTests", "SFA.DAS.EmployerUsers.Api.Client.UnitTests\SFA.DAS.EmployerUsers.Api.Client.UnitTests.csproj", "{A6AA2302-7F91-43C2-B2C7-EBD59FBF5AB4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.TestCommon.Extensions", "SFA.DAS.EmployerUsers.TestCommon.Extensions\SFA.DAS.EmployerUsers.TestCommon.Extensions.csproj", "{A3355664-028B-496F-8017-20A708C9C226}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Certificates", "Certificates", "{DE632FAC-B738-41C4-9EA2-F58DD0EB8A31}"
+	ProjectSection(SolutionItems) = preProject
+		Certificates\localhost.pfx = Certificates\localhost.pfx
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

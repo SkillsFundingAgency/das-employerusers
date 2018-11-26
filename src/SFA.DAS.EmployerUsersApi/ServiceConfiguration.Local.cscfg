@@ -14,7 +14,7 @@
       <Setting name="idaTenant" value="citizenazuresfabisgov.onmicrosoft.com" />
     </ConfigurationSettings>
     <Certificates>
-      <Certificate name="WebSSLCert" thumbprint="FE14C6E906B1E94E93C6AF8FA113EA1221D5DE9C" thumbprintAlgorithm="sha1" />
+      <Certificate name="WebSSLCert" thumbprint="C330ADC8A2164D684E5ED7F0140ADD22505CC9E7" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
 </ServiceConfiguration>

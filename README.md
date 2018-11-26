@@ -10,6 +10,14 @@ Install the Azure SDK v2.8 (or higher).
 
 Run the `DevInstall.ps1` script (run as administrator) to install the test certificate in your local stores. Certificates are required for SSL. 
 
+A new localhost certificate was generated as of 23-Nov-2018. 
+
+You should re-run DevInstall.ps1  (As Administrator) once per local development environment. After this date.
+
+When a new certificate is needed please run GenCert.ps1 (As Administrator) Take a note of the Thumprint displayed, and paste those into all of the WebSslCert entries Thumbprint values in CloudService local config files and reset the above certificate generation date. 
+
+Please also warn other team developers through normal channels that they should re-run DevInstall.ps1.
+
 Note: you may need to set your execution policy to unrestricted in PowerShell - if so, run the following in an administrator PowerShell window:
 
 	Set-ExecutionPolicy Unrestricted
