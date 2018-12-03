@@ -10,8 +10,6 @@ using SFA.DAS.Support.Shared.Authentication;
 using SFA.DAS.Support.Shared.SiteConnection;
 using SFA.DAS.Web.Policy;
 
-//using AuthorizeAttribute = System.Web.Http.AuthorizeAttribute;
-
 namespace SFA.DAS.EmployerUsers.Support.Web
 {
     [ExcludeFromCodeCoverage]
