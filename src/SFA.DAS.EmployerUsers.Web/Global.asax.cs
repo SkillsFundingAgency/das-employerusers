@@ -28,8 +28,7 @@ namespace SFA.DAS.EmployerUsers.Web
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            GlobalFilters.Filters.Add(new System.Web.Mvc.AuthorizeAttribute { Roles = "das-support-portal" });
-
+            
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
