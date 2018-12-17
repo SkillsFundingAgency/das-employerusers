@@ -57,6 +57,7 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
             Thread.CurrentPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
 
             var env = _owinContext.Authentication;
+            env.SignOut("Cookies");
             env.SignOut();
             
 

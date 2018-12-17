@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
@@ -16,6 +17,7 @@ using SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode;
 using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
+using SFA.DAS.EmployerUsers.Application.Queries.GetRelyingParties;
 using SFA.DAS.EmployerUsers.Application.Queries.GetRelyingParty;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUnlockCodeLength;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserByEmailAddress;
@@ -583,6 +585,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
             return response;
         }
+
         public virtual async Task<ChangePasswordViewModel> ChangePassword(ChangePasswordViewModel model)
         {
             try
@@ -619,7 +622,6 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             return model;
         }
 
-
         public async Task<RequestPasswordResetViewModel> StartForgottenPassword(string clientId, string returnUrl)
         {
             var model = new RequestPasswordResetViewModel();
@@ -653,6 +655,12 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
         }
 
+        public async Task<IEnumerable<string>> GetRelyingPartyLogoutUrls()
+        {
+            var relyingParties = await _mediator.SendAsync(new GetRelyingPartiesQuery());
+            return relyingParties.Select(x => x.LogoutUrl);
+        }
+
         private void LoginUser(string id, string firstName, string lastName)
         {
             _owinWrapper.IssueLoginCookie(id, $"{firstName} {lastName}");
@@ -684,12 +692,6 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 model.ErrorDictionary = new Dictionary<string, string>();
             }
             model.ErrorDictionary.Add("", "Invalid client id / return url");
-        }
-
-
-        public void RedirectToRelyingParty(string getIdsClientId)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<string> StartRedirectToAuhorizedClientEndpoint(string clientId, string returnUrl)

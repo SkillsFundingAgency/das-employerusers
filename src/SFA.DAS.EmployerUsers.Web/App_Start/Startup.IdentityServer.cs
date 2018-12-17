@@ -63,7 +63,7 @@ namespace SFA.DAS.EmployerUsers.Web
 
                     AuthenticationOptions = new AuthenticationOptions
                     {
-                        EnablePostSignOutAutoRedirect = true,
+                        EnablePostSignOutAutoRedirect = false,
                         EnableAutoCallbackForFederatedSignout = true,
                         EnableSignOutPrompt = false,
                         CookieOptions = new CookieOptions
