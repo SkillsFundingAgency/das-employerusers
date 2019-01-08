@@ -7,6 +7,7 @@ using SFA.DAS.Support.Shared;
 
 namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
 {
+    [Authorize(Roles = "das-support-portal")]
     [RoutePrefix("api/status")]
     public class StatusController : ApiController
     {
@@ -22,7 +23,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
                 Request = AddRequestContext()
             });
         }
-        
+
         private string AddServiceVersion()
         {
             try
@@ -34,6 +35,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
                 return "Unknown";
             }
         }
+
         private string AddRequestContext()
         {
             try
