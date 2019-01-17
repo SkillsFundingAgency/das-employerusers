@@ -66,13 +66,6 @@ namespace SFA.DAS.EmployerUsers.Web.Authentication
         public void SignoutUser()
         {
             _owinContext.Authentication.SignOut("Cookies");
-
-            _owinContext.Authentication.User = new ClaimsPrincipal(new ClaimsIdentity(string.Empty));
-
-            _owinContext.Request.User = new ClaimsPrincipal(new ClaimsIdentity(string.Empty));
-
-            HttpContext.Current.User = new ClaimsPrincipal(new ClaimsIdentity(string.Empty));
-            
         }
     }
 }

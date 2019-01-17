@@ -15,7 +15,6 @@ namespace SFA.DAS.EmployerUsers.Support.Web
     [ExcludeFromCodeCoverage]
     public class MvcApplication : HttpApplication
     {
-        //public static Collection<DelegatingHandler> ConfigurationMessageHandlers;
         protected void Application_Start()
         {
             MvcHandler.DisableMvcResponseHeader = true;
@@ -29,16 +28,18 @@ namespace SFA.DAS.EmployerUsers.Support.Web
 
             var siteValidatorSettings = ioc.GetService<ISiteValidatorSettings>();
 
-            GlobalConfiguration.Configuration.MessageHandlers.Add(new TokenValidationHandler(siteValidatorSettings, logger));
+            GlobalConfiguration.Configuration.MessageHandlers.Add(
+                new TokenValidationHandler(siteValidatorSettings, logger));
             GlobalFilters.Filters.Add(new TokenValidationFilter(siteValidatorSettings, logger));
+
             logger.Info("Web role started");
         }
+
         protected void Application_PreSendRequestHeaders(object sender, EventArgs e)
         {
-
             if (HttpContext.Current == null) return;
             new HttpContextPolicyProvider(
-                new List<IHttpContextPolicy>()
+                new List<IHttpContextPolicy>
                 {
                     new ResponseHeaderRestrictionPolicy()
                 }

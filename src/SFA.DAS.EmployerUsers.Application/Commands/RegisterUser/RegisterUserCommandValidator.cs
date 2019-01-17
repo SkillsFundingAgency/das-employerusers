@@ -52,7 +52,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RegisterUser
 
             if (!item.HasAcceptedTermsAndConditions)
             {
-                validationResult.AddError(nameof(item.HasAcceptedTermsAndConditions), "You need to accept the terms of use");
+                validationResult.AddError(nameof(item.HasAcceptedTermsAndConditions), "You need to accept the Terms and Conditions");
             }
 
             return Task.FromResult(validationResult);

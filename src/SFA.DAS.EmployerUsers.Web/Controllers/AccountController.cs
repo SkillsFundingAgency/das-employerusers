@@ -10,7 +10,6 @@ using IdentityServer3.Core;
 using NLog;
 using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
-using SFA.DAS.EmployerUsers.Web.Attributes;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Models.SFA.DAS.EAS.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
@@ -141,23 +140,16 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View(response);
         }
 
-
-
         [Route("account/logout")]
         public async Task<ActionResult> Logout()
         {
-            Request.GetOwinContext().Authentication.SignOut();
-            var redirect = _owinWrapper.GetIdsReturnUrl();
-            var Uri = new Uri(redirect);
-            var redirectUri = HttpUtility.ParseQueryString(Uri.Query)["redirect_uri"];
-            if (!string.IsNullOrEmpty(redirectUri))
-            {
-                return Redirect(redirectUri);
-            }
-            return Redirect(_identityServerConfiguration.EmployerPortalUrl);
+            var authenticationManager = HttpContext.GetOwinContext().Authentication;
+            var idToken = authenticationManager.User.FindFirst("id_token")?.Value;
+            _owinWrapper.SignoutUser();
+            var url = $"https://{HttpContext.Request.Url.Authority}/identity/connect/endsession?id_token_hint=" + idToken;
+
+            return new RedirectResult(url);
         }
-
-
 
         [HttpGet]
         [Route("account/register")]
@@ -310,7 +302,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View("Confirm", response);
 
         }
-
 
 
         [HttpGet]
@@ -482,7 +473,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [HttpGet]
-        [IdsAuthorize]
+        [Authorize]
         [Route("account/changeemail")]
         public async Task<ActionResult> ChangeEmail(string clientId, string returnUrl)
         {
@@ -545,7 +536,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [HttpGet]
-        [IdsAuthorize]
+        [Authorize]
         [Route("account/confirmchangeemail")]
         public ActionResult ConfirmChangeEmail()
         {
@@ -576,7 +567,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [HttpPost]
-        [IdsAuthorize]
+        [Authorize]
         [ValidateAntiForgeryToken]
         [Route("account/confirmchangeemail")]
         public async Task<ActionResult> ConfirmChangeEmail(ConfirmChangeEmailViewModel model)
@@ -615,7 +606,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [HttpPost]
-        [IdsAuthorize]
+        [Authorize]
         [ValidateAntiForgeryToken]
         [Route("account/changepassword")]
         public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model, string clientId, string returnUrl)
