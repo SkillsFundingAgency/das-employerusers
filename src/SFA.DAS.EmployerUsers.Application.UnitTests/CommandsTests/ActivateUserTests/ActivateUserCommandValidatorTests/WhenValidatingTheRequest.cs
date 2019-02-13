@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -8,6 +9,7 @@ using SFA.DAS.EmployerUsers.Domain;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUserTests.ActivateUserCommandValidatorTests
 {
+    [ExcludeFromCodeCoverage]
     public class WhenValidatingTheRequest
     {
         private ActivateUserCommandValidator _activateUserCommandValidator;

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.Domain;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUserTests.ActivateUserCommandValidatorTests
 {
+    [ExcludeFromCodeCoverage]
     public class ActivateUserCommandBuilder
     {
         private string _accessCode = "AccessCode";
