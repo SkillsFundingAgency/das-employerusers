@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
@@ -37,6 +38,71 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
 
             //Assert
             Assert.IsFalse(actual.IsValid());
+        }
+
+        [Test]
+        public async Task ThenFalseIsReturnedIfAccessCodeIsNull()
+        {
+            var command =
+                new ActivateUserCommandBuilder()
+                    .WithValidUser()
+                    .WithNullAccessCode()
+                    .Build();
+
+            var result = await _activateUserCommandValidator.ValidateAsync(command);
+
+            Assert.IsFalse(result.IsValid());
+        }
+
+        [TestCase("")]
+        [TestCase("       ")]
+        public async Task ThenFalseIsReturnedIfAccessCodeIsEmptyOrWhiteSpace(string accessCode)
+        {
+            var command =
+                new ActivateUserCommandBuilder()
+                    .WithValidUser()
+                    .WithAccessCode(accessCode)
+                    .Build();
+
+            var result = await _activateUserCommandValidator.ValidateAsync(command);
+
+            Assert.IsFalse(result.IsValid());
+        }
+
+        [Test]
+        public async Task ThenResultContainsMissingCodeMessageIfAccessCodeIsNull()
+        {
+            var command =
+                new ActivateUserCommandBuilder()
+                    .WithValidUser()
+                    .WithNullAccessCode()
+                    .Build();
+
+            var result = await _activateUserCommandValidator.ValidateAsync(command);
+
+            Assert.IsTrue(
+                result
+                    .ValidationDictionary.Values.Any(message => message.Contains("Missing code"))
+            );
+        }
+
+        [TestCase("")]
+        [TestCase("       ")]
+        public async Task ThenResultContainsMissingCodeMessageIfAccessCodeIsEmptyOrWhiteSpace(string accessCode)
+        {
+            var command =
+                new ActivateUserCommandBuilder()
+                    .WithValidUser()
+                    .WithAccessCode(accessCode)
+                    .Build();
+
+            var result = await _activateUserCommandValidator.ValidateAsync(command);
+
+
+            Assert.IsTrue(
+                result
+                    .ValidationDictionary.Values.Any(message => message.Contains("Missing code"))
+            );
         }
 
         [Test]
