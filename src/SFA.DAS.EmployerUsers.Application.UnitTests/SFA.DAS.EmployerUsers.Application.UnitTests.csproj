@@ -112,6 +112,7 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CommandsTests\ActivateUserTests\ActivateUserCommandTests\WhenHandlingTheCommand.cs" />
+    <Compile Include="CommandsTests\ActivateUserTests\ActivateUserCommandValidatorTests\ActivateUserCommandBuilder.cs" />
     <Compile Include="CommandsTests\ActivateUserTests\ActivateUserCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="CommandsTests\AuthenticateUserTests\AuthenticateUserCommandHandlerTests\WhenHandling.cs" />
     <Compile Include="CommandsTests\AuthenticateUserTests\AuthenticateUserCommandHandlerTests\WhenValidating.cs" />

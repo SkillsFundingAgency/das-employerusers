@@ -20,7 +20,13 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
                 return Task.FromResult(validationResult);
             }
 
-            if (string.IsNullOrEmpty(item?.AccessCode) || string.IsNullOrEmpty(item.UserId))
+            if (string.IsNullOrWhiteSpace(item?.AccessCode))
+            {
+                validationResult.ValidationDictionary = new Dictionary<string, string> { { nameof(item.AccessCode), "Missing code" } };
+                return Task.FromResult(validationResult);
+            }
+
+            if (string.IsNullOrEmpty(item.UserId))
             {
                 validationResult.ValidationDictionary = new Dictionary<string, string> { { nameof(item.AccessCode), "Invalid code" } };
                 return Task.FromResult(validationResult);
