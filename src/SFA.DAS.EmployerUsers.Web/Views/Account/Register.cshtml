@@ -6,11 +6,15 @@
 }
 
 <h1 class="heading-xlarge">@ViewBag.Title</h1>
-<form method="post" action="@Url.Content("~/identity/employer/register")?returnUrl=@Url.Encode(Model.Data.ReturnUrl)" novalidate  autocomplete="off" id="form-register">
+<form method="post" action="@Url.Content("~/identity/employer/register")?returnUrl=@Url.Encode(Model.Data.ReturnUrl)" novalidate autocomplete="off" id="form-register">
     @Html.AntiForgeryToken()
-    <input type="hidden" value="@Model.Data.ClientId" name="ClientId" id="ClientId"/>
-    <input type="hidden" value="@Model.Data.ReturnUrl" name="ReturnUrl" id="ReturnUrl"/>
-  
+    <input type="hidden" value="@Model.Data.ClientId" name="ClientId" id="ClientId" />
+    <input type="hidden" value="@Model.Data.ReturnUrl" name="ReturnUrl" id="ReturnUrl" />
+
+    <p>
+        <span>If you already have an account <a href="@Url.Action("Login", "Account", new {ClientId = Model.Data.ClientId, ReturnUrl = Model.Data.ReturnUrl })">sign in</a></span>
+    </p>
+
     <div class="form-group @(!string.IsNullOrEmpty(Model.Data.FirstNameError) ? "error" : "") ">
         <label for="FirstName">
             <span class="form-label-bold">First name</span>
@@ -29,7 +33,7 @@
         <label for="Email">
             <span class="form-label-bold">Email</span>
             <span class="form-hint">We'll send you an email to confirm your identity.</span>
-            <span class="error-message" id="error-email">@Html.Raw(Model.Data.EmailError.Replace("|",""))</span>
+            <span class="error-message" id="error-email">@Html.Raw(Model.Data.EmailError.Replace("|", ""))</span>
         </label>
         <input class="form-control" id="Email" name="Email" type="text" value="@Html.Encode(Model.Data.Email)" required="required">
     </div>
@@ -37,9 +41,9 @@
         <label for="Password">
             <span class="form-label-bold">Create new password</span>
             <span class="form-hint">Password requires upper and lowercase letters, a number and at least 8 characters.</span>
-            <span class="error-message" id="error-password">@Model.Data.PasswordError</span>     
-        </label> 
-        <input class="form-control" id="Password" type="password" name="Password" required="required">        
+            <span class="error-message" id="error-password">@Model.Data.PasswordError</span>
+        </label>
+        <input class="form-control" id="Password" type="password" name="Password" required="required">
     </div>
     <div class="form-group @(!string.IsNullOrEmpty(Model.Data.ConfirmPasswordError) ? "error" : "") ">
         <label for="ConfirmPassword">
@@ -47,13 +51,13 @@
             <span class="error-message" id="error-confirmpassword">@Model.Data.ConfirmPasswordError</span>
         </label>
         <input class="form-control" id="ConfirmPassword" type="password" name="ConfirmPassword" required="required">
-            
+
     </div>
     <div class="panel">
         <input type="hidden" class="form-checkbox" id="HasAcceptedTermsAndConditions" name="HasAcceptedTermsAndConditions" value="true" />
         By continuing you accept the <a href="@Url.Action("Index", "TermsAndConditions")" target="_blank">terms and conditions</a>.
     </div>
-    
+
     <button type="submit" class="button" id="button-register">Set me up</button>
 </form>
 @section scripts {
