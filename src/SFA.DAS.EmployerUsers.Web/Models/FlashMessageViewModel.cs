@@ -24,7 +24,7 @@
                     switch (Severity)
                     {
                         case FlashMessageSeverityLevel.Success:
-                            return "govuk-box-highlight";
+                            return "success-summary";
                         case FlashMessageSeverityLevel.Error:
                             return "error-summary";
                         case FlashMessageSeverityLevel.Danger:
