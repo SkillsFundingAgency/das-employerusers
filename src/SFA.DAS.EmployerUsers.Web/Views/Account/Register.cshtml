@@ -12,7 +12,8 @@
     <input type="hidden" value="@Model.Data.ReturnUrl" name="ReturnUrl" id="ReturnUrl" />
 
     <p>
-        <span>If you already have an account <a href="@Url.Action("Login", "Account", new {ClientId = Model.Data.ClientId, ReturnUrl = Model.Data.ReturnUrl })">sign in</a></span>
+        <span>If you already have an account <a href="@Model.Data.ReturnUrl">sign in</a></span>
+        
     </p>
 
     <div class="form-group @(!string.IsNullOrEmpty(Model.Data.FirstNameError) ? "error" : "") ">
