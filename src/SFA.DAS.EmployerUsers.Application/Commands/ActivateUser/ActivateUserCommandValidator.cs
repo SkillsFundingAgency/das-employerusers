@@ -8,6 +8,9 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
 {
     public class ActivateUserCommandValidator : IValidator<ActivateUserCommand>
     {
+        private string _invalidCodeMessage = "Code is not recognised";
+        private string _missingCodeMessage = "Enter the code we emailed you";
+
         public Task<ValidationResult> ValidateAsync(ActivateUserCommand item)
         {
             var validationResult = new ValidationResult
@@ -22,13 +25,13 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
 
             if (string.IsNullOrWhiteSpace(item?.AccessCode))
             {
-                validationResult.ValidationDictionary = new Dictionary<string, string> { { nameof(item.AccessCode), "Missing code" } };
+                validationResult.ValidationDictionary = new Dictionary<string, string> { { nameof(item.AccessCode), _missingCodeMessage } };
                 return Task.FromResult(validationResult);
             }
 
             if (string.IsNullOrEmpty(item.UserId))
             {
-                validationResult.ValidationDictionary = new Dictionary<string, string> { { nameof(item.AccessCode), "Invalid code" } };
+                validationResult.ValidationDictionary = new Dictionary<string, string> { { nameof(item.AccessCode), _invalidCodeMessage } };
                 return Task.FromResult(validationResult);
             }
 
@@ -39,7 +42,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ActivateUser
 
             if (!matchingAccessCodes.Any())
             {
-                validationResult.ValidationDictionary = new Dictionary<string, string> { { nameof(item.AccessCode), "Invalid code" } };
+                validationResult.ValidationDictionary = new Dictionary<string, string> { { nameof(item.AccessCode), _invalidCodeMessage } };
                 return Task.FromResult(validationResult);
             }
 
