@@ -13,8 +13,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
     public class WhenValidatingTheRequest
     {
         private ActivateUserCommandValidator _activateUserCommandValidator;
-        private string _invalidCodeMessage = "Code is not recognised";
-        private string _missingCodeMessage = "Enter the code we emailed you";
+        private const string InvalidCodeMessage = "Code is not recognised";
+        private const string MissingCodeMessage = "Enter the code we emailed you";
 
 
         [SetUp]
@@ -87,7 +87,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
 
             Assert.IsTrue(
                 result
-                    .ValidationDictionary.Values.Any(message => message.Equals(_missingCodeMessage, StringComparison.Ordinal))
+                    .ValidationDictionary.Values.Any(message => message.Equals(MissingCodeMessage, StringComparison.Ordinal))
             );
         }
 
@@ -106,7 +106,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
 
             Assert.IsTrue(
                 result
-                    .ValidationDictionary.Values.Any(message => message.Equals(_missingCodeMessage, StringComparison.Ordinal))
+                    .ValidationDictionary.Values.Any(message => message.Equals(MissingCodeMessage, StringComparison.Ordinal))
             );
         }
 
@@ -162,7 +162,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
 
             Assert.IsTrue(
                 result
-                    .ValidationDictionary.Values.Any(message => message.Equals(_invalidCodeMessage, StringComparison.Ordinal))
+                    .ValidationDictionary.Values.Any(message => message.Equals(InvalidCodeMessage, StringComparison.Ordinal))
             );
         }
 
