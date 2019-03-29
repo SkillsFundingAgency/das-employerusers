@@ -13,6 +13,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
     public class WhenValidatingTheRequest
     {
         private ActivateUserCommandValidator _activateUserCommandValidator;
+        private const string InvalidCodeMessage = "Code is not recognised";
+        private const string MissingCodeMessage = "Enter the code we emailed you";
+
 
         [SetUp]
         public void Arrange()
@@ -84,7 +87,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
 
             Assert.IsTrue(
                 result
-                    .ValidationDictionary.Values.Any(message => message.Contains("Missing code"))
+                    .ValidationDictionary.Values.Any(message => message.Equals(MissingCodeMessage, StringComparison.Ordinal))
             );
         }
 
@@ -103,7 +106,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
 
             Assert.IsTrue(
                 result
-                    .ValidationDictionary.Values.Any(message => message.Contains("Missing code"))
+                    .ValidationDictionary.Values.Any(message => message.Equals(MissingCodeMessage, StringComparison.Ordinal))
             );
         }
 
@@ -132,6 +135,35 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ActivateUser
 
             //Assert
             Assert.IsTrue(actual.IsValid());
+        }
+
+        [Test]
+        public async Task ThenResultContainsInvalidCodeMessageIfTheAccessCodeDoesntMatchTheAnyOnTheUser()
+        {
+            //Act
+            var command = new ActivateUserCommand
+            {
+                AccessCode = "AccessCode",
+                UserId = Guid.NewGuid().ToString(),
+                User = new User
+                {
+                    SecurityCodes = new[]
+                    {
+                        new SecurityCode
+                        {
+                            Code = "Edocssecca",
+                            CodeType = SecurityCodeType.AccessCode,
+                            ExpiryTime = DateTime.MaxValue
+                        }
+                    }
+                }
+            };
+            var result = await _activateUserCommandValidator.ValidateAsync(command);
+
+            Assert.IsTrue(
+                result
+                    .ValidationDictionary.Values.Any(message => message.Equals(InvalidCodeMessage, StringComparison.Ordinal))
+            );
         }
 
         [Test]
