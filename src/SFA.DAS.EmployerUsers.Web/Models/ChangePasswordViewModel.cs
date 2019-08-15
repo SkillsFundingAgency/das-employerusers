@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.EmployerUsers.Web.Models
 {
-    public class ChangePasswordViewModel : ViewModelBase
+    public class ChangePasswordViewModel : ViewModelBase, ISignedInUserModel
     {
         public string UserId { get; set; }
         [AllowHtml]

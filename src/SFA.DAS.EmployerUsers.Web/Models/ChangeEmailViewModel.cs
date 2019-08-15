@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.EmployerUsers.Web.Models
 {
-    public class ChangeEmailViewModel : ViewModelBase
+    public class ChangeEmailViewModel : ViewModelBase, ISignedInUserModel
     {
         public string NewEmailAddress { get; set; }
         public string ConfirmEmailAddress { get; set; }

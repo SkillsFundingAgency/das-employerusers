@@ -1,4 +1,6 @@
-﻿@using System.Security.Claims
+﻿@using System
+@using System.Security.Claims
+@using System.Security.Policy
 @using Microsoft.ApplicationInsights.Extensibility
 @using SFA.DAS.EmployerUsers.Web.Models
 @using SFA.DAS.EmployerUsers.WebClientComponents
@@ -35,6 +37,12 @@
     <!--[if IE 6]><link href="@Styles.Url("~/bundles/screenie6")" media="screen" rel="stylesheet" /><![endif]-->
     <!--[if IE 7]><link href="@Styles.Url("~/bundles/screenie7")" media="screen" rel="stylesheet" /><![endif]-->
     <!--[if IE 8]><link href="@Styles.Url("~/bundles/screenie8")" media="screen" rel="stylesheet" /><![endif]-->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            userID: @Model.UserId
+        });
+    </script>
     <!-- Google Tag Manager -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-83918739-9"></script>
     <script>

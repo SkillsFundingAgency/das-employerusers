@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.EmployerUsers.Web.Models
 {
-    public class ConfirmChangeEmailViewModel : ViewModelBase
+    public class ConfirmChangeEmailViewModel : ViewModelBase, ISignedInUserModel
     {
         public string SecurityCode { get; set; }
         [AllowHtml]

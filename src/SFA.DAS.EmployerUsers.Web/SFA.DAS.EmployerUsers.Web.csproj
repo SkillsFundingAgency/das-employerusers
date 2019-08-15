@@ -336,6 +336,7 @@
     <Compile Include="App_Start\SystemWebCookieManager.cs" />
     <Compile Include="Authentication\IdsContext.cs" />
     <Compile Include="Models\HomePageViewModel.cs" />
+    <Compile Include="Models\ISignedInUserModel.cs" />
     <Compile Include="Models\RelyingPartyLoginUrlModel.cs" />
     <Compile Include="Plumbing\Ids\RedisAuthorizationCodeStore.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
