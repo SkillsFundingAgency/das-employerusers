@@ -40,7 +40,7 @@
     <script>
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
-            userID: @Model.UserId
+            userID: "@((Model as ISignedInUserModel) != null ? (Model as ISignedInUserModel).UserId : String.Empty)"
         });
     </script>
     <!-- Google Tag Manager -->
