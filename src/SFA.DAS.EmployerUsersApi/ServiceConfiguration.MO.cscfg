@@ -13,7 +13,7 @@
       <Setting name="idaTenant" value="__idaTenant__" />
     </ConfigurationSettings>
     <Certificates>
-      <Certificate name="WebSSLCert" thumbprint="D4B7EBCE1013CBB10A6DD74D1A20E2C9A69107A2" thumbprintAlgorithm="sha1" />
+      <Certificate name="WebSSLCert" thumbprint="__CertificateThumbprint__" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
   <NetworkConfiguration>
