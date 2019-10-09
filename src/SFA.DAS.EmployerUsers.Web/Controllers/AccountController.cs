@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -154,7 +155,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [HttpGet]
         [Route("account/register")]
         [OutputCache(Duration = 0)]
-        public async Task<ActionResult> Register(string clientId, string returnUrl)
+        public async Task<ActionResult> Register(string clientId, string returnUrl, string firstName, string lastName, string email)
         {
 
             if (string.IsNullOrEmpty(clientId))
@@ -176,6 +177,10 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             {
                 return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
             }
+
+            if (!string.IsNullOrWhiteSpace(firstName)) model.FirstName = firstName;
+            if (!string.IsNullOrWhiteSpace(lastName)) model.LastName = lastName;
+            if (!string.IsNullOrWhiteSpace(email)) model.Email = email;
 
             _owinWrapper.RemovePartialLoginCookie();
             _owinWrapper.SignoutUser();
