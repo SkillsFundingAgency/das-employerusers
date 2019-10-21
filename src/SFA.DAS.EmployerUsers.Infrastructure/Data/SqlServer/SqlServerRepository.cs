@@ -45,6 +45,17 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
                 return (await connection.QueryAsync<T>(command, param)).ToArray();
             }
         }
+
+        protected async Task<T[]> Query<T>(SqlConnection connection, string command, object param = null)
+        {
+            return (await connection.QueryAsync<T>(command, param)).ToArray();
+        }
+
+        protected async Task<T> QuerySingle<T>(SqlConnection connection, string command, object param = null)
+        {
+            return (await Query<T>(connection, command, param)).SingleOrDefault();
+        }
+
         protected async Task<T> QuerySingle<T>(string command, object param = null)
         {
             return (await Query<T>(command, param)).SingleOrDefault();
