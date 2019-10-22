@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
         
         public async Task<User> GetById(string id)
         {
-            using (var connection = await GetOpenConnection())
+            using (var connection = await CreateOpenConnection())
             {
                 var user = await QuerySingle<User>(connection, "GetUserById @id", new { id });
                 if (user == null)
@@ -38,7 +38,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
 
         public async Task<User> GetByEmailAddress(string emailAddress)
         {
-            using (var connection = await GetOpenConnection())
+            using (var connection = await CreateOpenConnection())
             {
                 var user = await QuerySingle<User>(connection, "GetUserByEmail @emailAddress", new {emailAddress});
                 if (user == null)
@@ -54,7 +54,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
 
         public async Task<User[]> GetUsersWithExpiredRegistrations()
         {
-            using (var connection = await GetOpenConnection())
+            using (var connection = await CreateOpenConnection())
             {
                 var users = await Query<User>(connection, "GetUsersWithExpiredRegistrations");
 

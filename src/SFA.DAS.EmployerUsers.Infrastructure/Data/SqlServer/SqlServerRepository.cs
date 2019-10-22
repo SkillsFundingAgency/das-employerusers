@@ -16,7 +16,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
 
         protected string ConnectionStringName { get; }
 
-        protected async Task<SqlConnection> GetOpenConnection()
+        protected async Task<SqlConnection> CreateOpenConnection()
         {
             var connectionString = CloudConfigurationManager.GetSetting(ConnectionStringName);
             var connection = new SqlConnection(connectionString);
@@ -35,12 +35,12 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
 
         protected async Task<UnitOfWork> GetUnitOfWork()
         {
-            return new UnitOfWork(await GetOpenConnection());
+            return new UnitOfWork(await CreateOpenConnection());
         }
 
         protected async Task<T[]> Query<T>(string command, object param = null)
         {
-            using (var connection = await GetOpenConnection())
+            using (var connection = await CreateOpenConnection())
             {
                 return (await connection.QueryAsync<T>(command, param)).ToArray();
             }
@@ -63,7 +63,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
 
         protected async Task Execute(string command, object param = null)
         {
-            using (var connection = await GetOpenConnection())
+            using (var connection = await CreateOpenConnection())
             {
                 await connection.ExecuteAsync(command, param);
             }
