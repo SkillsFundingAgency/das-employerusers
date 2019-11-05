@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Dapper;
 using NLog;
@@ -18,43 +19,53 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
         {
             _logger = logger;
         }
-
-
+        
         public async Task<User> GetById(string id)
         {
-            var user = await QuerySingle<User>("GetUserById @id", new { id });
-            if (user == null)
+            using (var connection = await CreateOpenConnection())
             {
-                return null;
-            }
+                var user = await QuerySingle<User>(connection, "GetUserById @id", new { id });
+                if (user == null)
+                {
+                    return null;
+                }
 
-            user.SecurityCodes = await GetUserSecurityCodes(user);
-            user.PasswordHistory = await GetUserPasswordHistory(user);
-            return user;
+                user.SecurityCodes = await GetUserSecurityCodes(connection, user);
+                user.PasswordHistory = await GetUserPasswordHistory(connection, user);
+                return user;
+            }
         }
+
         public async Task<User> GetByEmailAddress(string emailAddress)
         {
-            var user = await QuerySingle<User>("GetUserByEmail @emailAddress", new { emailAddress });
-            if (user == null)
+            using (var connection = await CreateOpenConnection())
             {
-                return null;
-            }
+                var user = await QuerySingle<User>(connection, "GetUserByEmail @emailAddress", new {emailAddress});
+                if (user == null)
+                {
+                    return null;
+                }
 
-            user.SecurityCodes = await GetUserSecurityCodes(user);
-            user.PasswordHistory = await GetUserPasswordHistory(user);
-            return user;
+                user.SecurityCodes = await GetUserSecurityCodes(connection, user);
+                user.PasswordHistory = await GetUserPasswordHistory(connection, user);
+                return user;
+            }
         }
+
         public async Task<User[]> GetUsersWithExpiredRegistrations()
         {
-            var users = await Query<User>("GetUsersWithExpiredRegistrations");
-
-            foreach (var user in users)
+            using (var connection = await CreateOpenConnection())
             {
-                user.SecurityCodes = await GetUserSecurityCodes(user);
-                user.PasswordHistory = await GetUserPasswordHistory(user);
-            }
+                var users = await Query<User>(connection, "GetUsersWithExpiredRegistrations");
 
-            return users;
+                foreach (var user in users)
+                {
+                    user.SecurityCodes = await GetUserSecurityCodes(connection, user);
+                    user.PasswordHistory = await GetUserPasswordHistory(connection, user);
+                }
+
+                return users;
+            }
         }
 
         public async Task<User[]> GetUsers(int pageSize, int pageNumber)
@@ -62,8 +73,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             var users = await Query<User>("GetUsers @pageSize, @offSet", new { pageSize, offset = (pageNumber  * pageSize) - pageSize });
             return users;
         }
-
-
+        
         public async Task Create(User registerUser)
         {
             try
@@ -140,9 +150,9 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             return new Users { UserCount = parameters.Get<int>("@totalRecords"), UserList = users };
         }
 
-        private async Task<SecurityCode[]> GetUserSecurityCodes(User user)
+        private async Task<SecurityCode[]> GetUserSecurityCodes(SqlConnection connection, User user)
         {
-            return await Query<SecurityCode>("GetUserSecurityCodes @Id", user);
+            return await Query<SecurityCode>(connection, "GetUserSecurityCodes @Id", user);
         }
 
         private async Task UpdateUserSecurityCodes(User user, IUnitOfWork unitOfWork)
@@ -155,9 +165,9 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             }
         }
 
-        private async Task<HistoricalPassword[]> GetUserPasswordHistory(User user)
+        private async Task<HistoricalPassword[]> GetUserPasswordHistory(SqlConnection connection, User user)
         {
-            return await Query<HistoricalPassword>("GetUserPasswordHistory @Id", user);
+            return await Query<HistoricalPassword>(connection, "GetUserPasswordHistory @Id", user);
         }
 
         private async Task UpdateUserPasswordHistory(User user, IUnitOfWork unitOfWork)
