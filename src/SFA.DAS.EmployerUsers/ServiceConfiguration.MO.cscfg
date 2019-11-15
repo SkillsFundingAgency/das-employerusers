@@ -24,6 +24,7 @@
       <Setting name="AuditApiSecret" value="__AuditApiSecret__" />
       <Setting name="AuditApiIdentifierUri" value="__AuditApiIdentifierUri__" />
       <Setting name="AuditApiTenant" value="__AuditApiTenant__" />
+      <Setting name="ZenDeskHelpCentreUrl" value="__ZenDeskHelpCentreUrl__" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="WebSslCert" thumbprint="D4B7EBCE1013CBB10A6DD74D1A20E2C9A69107A2" thumbprintAlgorithm="sha1" />
