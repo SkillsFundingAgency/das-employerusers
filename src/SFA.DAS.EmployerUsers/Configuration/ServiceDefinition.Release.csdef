@@ -31,6 +31,7 @@
       <Setting name="AuditApiSecret" />
       <Setting name="AuditApiIdentifierUri" />
       <Setting name="AuditApiTenant" />
+      <Setting name="ZenDeskHelpCentreUrl" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="HttpIn" protocol="http" port="80" loadBalancer="das-prd-empu-ilb"/>
