@@ -36,5 +36,19 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
 
             return Ok(user.Data);
         }
+
+        [Route("email/{emailAddress}", Name = "Email"), HttpGet]
+        [Authorize(Roles = "ReadEmployerUsers")]
+        public async Task<IHttpActionResult> Email(string emailAddress)
+        {
+            var user = await _orchestrator.UserByEmail(emailAddress);
+
+            if (user.Data == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user.Data);
+        }
     }
 }
