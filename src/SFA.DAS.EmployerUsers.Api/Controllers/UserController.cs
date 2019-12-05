@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
 using SFA.DAS.EmployerUsers.Api.Orchestrators;
 
@@ -24,11 +23,11 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
             return Ok(users.Data);
         }
 
-        [Route("{id}", Name = "Show"), HttpGet]
+        [Route("email", Name = "Email"), HttpGet]
         [Authorize(Roles = "ReadEmployerUsers")]
-        public async Task<IHttpActionResult> Show(string id)
+        public async Task<IHttpActionResult> Email(string emailAddress)
         {
-            var user = await _orchestrator.UserShow(id);
+            var user = await _orchestrator.UserByEmail(emailAddress);
 
             if (user.Data == null)
             {
@@ -38,11 +37,11 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
             return Ok(user.Data);
         }
 
-        [Route("email/{emailAddress}", Name = "Email"), HttpGet]
+        [Route("{id}", Name = "Show"), HttpGet]
         [Authorize(Roles = "ReadEmployerUsers")]
-        public async Task<IHttpActionResult> Email(string emailAddress)
+        public async Task<IHttpActionResult> Show(string id)
         {
-            var user = await _orchestrator.UserByEmail(HttpUtility.UrlDecode(emailAddress));
+            var user = await _orchestrator.UserShow(id);
 
             if (user.Data == null)
             {
