@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using SFA.DAS.EmployerUsers.Api.Orchestrators;
 
@@ -41,7 +42,7 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
         [Authorize(Roles = "ReadEmployerUsers")]
         public async Task<IHttpActionResult> Email(string emailAddress)
         {
-            var user = await _orchestrator.UserByEmail(emailAddress);
+            var user = await _orchestrator.UserByEmail(HttpUtility.UrlDecode(emailAddress));
 
             if (user.Data == null)
             {
