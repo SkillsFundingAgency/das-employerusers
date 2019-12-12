@@ -4,6 +4,7 @@ using AutoMapper;
 using MediatR;
 using NLog;
 using SFA.DAS.EmployerUsers.Api.Types;
+using SFA.DAS.EmployerUsers.Application.Queries.GetUserByEmailAddress;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUsers;
 
@@ -41,11 +42,21 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
         public async Task<OrchestratorResponse<UserViewModel>> UserShow(string id)
         {
             _logger.Info($"Getting user account {id}.");
-            var user = await _mediator.SendAsync(new GetUserByIdQuery() {UserId = id});
-            return new OrchestratorResponse<UserViewModel>()
+            var user = await _mediator.SendAsync(new GetUserByIdQuery { UserId = id });
+            return new OrchestratorResponse<UserViewModel>
             {
                 Data = _mapper.Map<UserViewModel>(user)
             }; 
+        }
+
+        public async Task<OrchestratorResponse<UserViewModel>> UserByEmail(string emailAddress)
+        {
+            _logger.Info($"Getting user account for email address {emailAddress}.");
+            var user = await _mediator.SendAsync(new GetUserByEmailAddressQuery { EmailAddress = emailAddress });
+            return new OrchestratorResponse<UserViewModel>
+            {
+                Data = _mapper.Map<UserViewModel>(user)
+            };
         }
     }
 }

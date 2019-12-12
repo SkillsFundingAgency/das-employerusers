@@ -23,6 +23,20 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
             return Ok(users.Data);
         }
 
+        [Route("email", Name = "Email"), HttpGet]
+        [Authorize(Roles = "ReadEmployerUsers")]
+        public async Task<IHttpActionResult> Email(string emailAddress)
+        {
+            var user = await _orchestrator.UserByEmail(emailAddress);
+
+            if (user.Data == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user.Data);
+        }
+
         [Route("{id}", Name = "Show"), HttpGet]
         [Authorize(Roles = "ReadEmployerUsers")]
         public async Task<IHttpActionResult> Show(string id)
