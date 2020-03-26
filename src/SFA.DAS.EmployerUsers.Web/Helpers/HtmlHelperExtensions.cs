@@ -26,6 +26,8 @@ namespace SFA.DAS.EmployerUsers.Web.Helpers
 
     public static class ZenDeskLabels
     {
-        public static string SetUpAsAUser = "Set up as a user";
+        public static string SetUpAsAUser = "reg-setup-as-a-user";
+        public static string ChangeYourEmailAddress = "reg-change-your-email-address";
+        public static string ChangeYourPassword = "reg-change-your-password";
     }
 }
