@@ -1,4 +1,5 @@
 ﻿
+@using SFA.DAS.EmployerUsers.Web.Helpers
 @model SFA.DAS.EmployerUsers.Web.Models.OrchestratorResponse<SFA.DAS.EmployerUsers.Web.Models.ChangeEmailViewModel>
 
 @{
@@ -11,7 +12,7 @@
 
 
 <h1 class="heading-xlarge">@ViewBag.Title</h1>
-<form method="post"  autocomplete="off">
+<form method="post" autocomplete="off">
     @Html.AntiForgeryToken()
     <fieldset>
         <legend class="visuallyhidden">New email address</legend>
@@ -24,7 +25,7 @@
                 }
             </label>
             <input autofocus="autofocus" aria-required="true" class="form-control" id="NewEmailAddress" name="NewEmailAddress"
-                    @(!string.IsNullOrEmpty(Model.Data.NewEmailAddressError) ? "aria-invalid=true aria-describedby=error-message-email" : "" )>
+                   @(!string.IsNullOrEmpty(Model.Data.NewEmailAddressError) ? "aria-invalid=true aria-describedby=error-message-email" : "" )>
         </div>
         <div class="form-group @(!string.IsNullOrEmpty(Model.Data.ConfirmEmailAddressError) ? "error" : "")">
             <label for="ConfirmEmailAddress">
@@ -35,7 +36,7 @@
                 }
             </label>
             <input aria-required="true" class="form-control" id="ConfirmEmailAddress" name="ConfirmEmailAddress"
-                    @(!string.IsNullOrEmpty(Model.Data.ConfirmEmailAddressError) ? "aria-invalid=true aria-describedby=error-message-confirm-email" : "" )>
+                   @(!string.IsNullOrEmpty(Model.Data.ConfirmEmailAddressError) ? "aria-invalid=true aria-describedby=error-message-confirm-email" : "" )>
         </div>
     </fieldset>
     <button type="submit" class="button">Continue</button>
@@ -48,3 +49,6 @@
         </ol>
     </div>
 }
+
+
+@Html.SetZenDeskLabels(ZenDeskLabels.ChangeYourEmailAddress)
