@@ -74,6 +74,7 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             var configService = GetconfigService(environment);
             var employerUserConfig = EmployerUserConfig(configService);
 
+            For<EmployerUsersConfiguration>().Use(employerUserConfig);
             For<IConfigurationService>().Use(configService);
             ConfigureHashingService(employerUserConfig);
             
