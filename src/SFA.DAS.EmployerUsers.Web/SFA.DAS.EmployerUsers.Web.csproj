@@ -334,6 +334,7 @@
     <Compile Include="App_Start\LoggingConfig.cs" />
     <Compile Include="App_Start\SystemWebCookieManager.cs" />
     <Compile Include="Authentication\IdsContext.cs" />
+    <Compile Include="Extensions\UrlHelperExtensions.cs" />
     <Compile Include="Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="Models\HomePageViewModel.cs" />
     <Compile Include="Models\RelyingPartyLoginUrlModel.cs" />
@@ -493,6 +494,7 @@
     <Content Include="dist\images\separator-2x.png" />
     <Content Include="dist\images\separator.png" />
     <Content Include="dist\javascripts\app.js" />
+    <Content Include="dist\javascripts\cookiebanner.js" />
     <Content Include="dist\javascripts\govuk-template.js" />
     <Content Include="dist\javascripts\ie.js" />
     <Content Include="dist\javascripts\jquery-1.11.0.min.js" />
@@ -839,6 +841,8 @@
     <Content Include="Views\Home\Privacy.cshtml" />
     <Content Include="Views\Account\RequestUnlockCode.cshtml" />
     <Content Include="src\sass\_notifications.scss" />
+    <Content Include="Views\Shared\_CookieBanner.cshtml" />
+    <Content Include="src\sass\_cookiebanner.scss" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

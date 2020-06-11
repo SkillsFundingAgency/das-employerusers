@@ -1,5 +1,6 @@
 ﻿@using System.Security.Claims
 @using Microsoft.ApplicationInsights.Extensibility
+@using SFA.DAS.EmployerUsers.Web.Extensions
 @using SFA.DAS.EmployerUsers.Web.Models
 @using SFA.DAS.EmployerUsers.WebClientComponents
 <!DOCTYPE html>
@@ -111,7 +112,7 @@
     <!-- End Google Tag Manager (noscript) -->
 
     <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
-
+    @Html.Partial("_CookieBanner")
     <div id="skiplink-container">
         <div>
             <a href="#content" class="skiplink">Skip to main content</a>
@@ -126,14 +127,6 @@
     </div>
     <![endif]-->
 
-    @if (ViewBag.HideCookieMessage?.ToString()?.ToLower() != "true")
-    {
-        <div id="global-cookie-message">
-            <p>
-                GOV.UK uses cookies to make the site simpler. <a href="@Url.Action("Privacy", "Home")">Find out more about cookies</a>
-            </p>
-        </div>
-    }
     <header id="global-header" class="with-proposition">
         <div class="header-wrapper">
             <div class="header-global">
@@ -164,11 +157,14 @@
                     <ul class="platform-help-links">
                         <li><a href="@Url.Action("Help", "Home")" target="_blank">Help</a></li>
                         <li><a href="https://www.smartsurvey.co.uk/s/apprenticeshipservicefeedback/" target="_blank">Feedback</a></li>
-                        <li><a href="@Url.Action("Privacy", "Home")">Privacy and cookies</a></li>
-                        <li>Built by the <a href="http://gov.uk/esfa" target="_blank">
-                            Education &amp; Skills
-                            Funding Agency
-                        </a></li>
+                        <li><a href="@Url.EmployerAccountsAction("Service/Privacy")">Privacy</a></li>
+                        <li><a href="@Url.EmployerAccountsAction("Cookieconsent")">Cookies</a></li>
+                        <li>
+                            Built by the <a href="http://gov.uk/esfa" target="_blank">
+                                Education &amp; Skills
+                                Funding Agency
+                            </a>
+                        </li>
                     </ul>
                     <div class="open-government-licence">
                         <p class="logo"><a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence</a></p>

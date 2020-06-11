@@ -26,7 +26,8 @@ namespace SFA.DAS.EmployerUsers.Web
                       "~/dist/javascripts/jquery-1.11.0.min.js",
                       "~/dist/javascripts/govuk-template.js",
                       "~/dist/javascripts/selection-buttons.js",
-                      "~/dist/javascripts/app.js"));
+                      "~/dist/javascripts/app.js",
+                      "~/dist/javascripts/cookiebanner.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/password").Include(
                       "~/dist/javascripts/zxcvbn.js",
