@@ -13,7 +13,7 @@ namespace SFA.DAS.EmployerUsers.Api
                {
                    TokenValidationParameters = new System.IdentityModel.Tokens.TokenValidationParameters
                    {
-                       ValidAudiences = CloudConfigurationManager.GetSetting("idaAudience").split(","),
+                       ValidAudiences = CloudConfigurationManager.GetSetting("idaAudience").Split(","),
                        RoleClaimType = "roles"
                    },
                    Tenant = CloudConfigurationManager.GetSetting("idaTenant")
