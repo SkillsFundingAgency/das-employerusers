@@ -60,6 +60,7 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     clean: true
+    vsVersion: 16.0
 
 - task: VSTest@2
   displayName: 'Run NUnit Tests'
