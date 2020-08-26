@@ -13,13 +13,46 @@
             "defaultValue": [
             ]
         },
+        "auditApiBaseUrl": {
+            "type": "string"
+        },
+        "auditApiClientId": {
+            "type": "string"
+        },
+        "auditApiIdentifierUri": {
+            "type": "string"
+        },                
+        "auditApiSecret": {
+            "type": "securestring"
+        },
+        "auditApiTenant": {
+            "type": "string"
+        },
+        "authCodeCacheConnectionString": {
+            "type": "securestring"
+        },                        
+        "baseExternalUrl": {
+            "type": "string"
+        },
         "configurationStorageConnectionString": {
             "type": "securestring"
         },
         "elasticPoolName": {
             "type": "string"
         },
+        "employerPortalUrl": {
+            "type": "string"
+        },
+        "empUserApiCertificateThumbprint": {
+            "type": "string"
+        },
         "environmentName": {
+            "type": "string"
+        },
+        "idaAudience": {
+            "type": "string"
+        },
+        "idaTenant": {
             "type": "string"
         },
         "logAnalyticsSubscriptionId": {
@@ -35,6 +68,15 @@
         "loggingRedisKey": {
             "type": "string"
         },
+        "notificationsApiBaseUrl": {
+            "type": "string"
+        },
+        "notificationsApiClientToken": {
+            "type": "securestring"
+        },
+        "profileConnectionString": {
+            "type": "securestring"
+        },                
         "profilesDatabaseSkuName": {
             "type": "string"
         },
@@ -65,11 +107,20 @@
         "sharedSQLServerName": {
             "type": "string"
         },
+        "storeEmailsOnDisk": {
+            "type": "string"
+        },
         "supportAppCertificateName": {
             "type": "string"
         },
         "supportAppCustomHostName": {
             "type": "string"
+        },
+        "tokenCertificateThumbprint": {
+            "type": "string"
+        },
+        "usersConnectionString": {
+            "type": "securestring"
         },
         "usersDatabaseSkuName": {
             "type": "string"
@@ -77,10 +128,16 @@
         "usersDatabaseTier": {
             "type": "string"
         },
+        "useStaticCodeGenerator": {
+            "type": "string"
+        },
         "webAppCertificateName": {
             "type": "string"
         },
         "webAppCustomHostName": {
+            "type": "string"
+        },
+        "zenDeskHelpCentreUrl": {
             "type": "string"
         }
     },
@@ -165,10 +222,6 @@
                     "appServiceAppSettings": {
                         "value": [
                             {
-                                "name": "ConfigurationStorageConnectionString",
-                                "value": "[parameters('configurationStorageConnectionString')]"
-                            },
-                            {
                                 "name": "EnvironmentName",
                                 "value": "[parameters('environmentName')]"
                             },
@@ -181,9 +234,22 @@
                                 "value": "[parameters('loggingRedisKey')]"
                             },
                             {
-                                "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                                "name": "InstrumentationKey",
                                 "value": "[reference('api-app-insights').outputs.InstrumentationKey.value]"
+                            },
+                            {
+                                "name": "idaAudience",
+                                "value": "[parameters('idaAudience')]"
+                            },
+                            {
+                                "name": "idaTenant",
+                                "value": "[parameters('idaTenant')]"
+                            },
+                            {
+                                "name": "UsersConnectionString",
+                                "value": "[parameters('usersConnectionString')]"
                             }
+
                         ]
                     },
                     "customHostName": {
@@ -202,7 +268,7 @@
                 "api-app-service-certificate"
             ]
         },
-                {
+        {
             "apiVersion": "2019-10-01",
             "name": "support-app-insights",
             "type": "Microsoft.Resources/deployments",
@@ -289,8 +355,12 @@
                                 "value": "[parameters('loggingRedisKey')]"
                             },
                             {
-                                "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                                "name": "InstrumentationKey",
                                 "value": "[reference('support-app-insights').outputs.InstrumentationKey.value]"
+                            },
+                            {
+                                "name": "EmpUserApiCertificateThumbprint",
+                                "value": "[parameters('empUserApiCertificateThumbprint')]"
                             }
                         ]
                     },
@@ -397,8 +467,72 @@
                                 "value": "[parameters('loggingRedisKey')]"
                             },
                             {
-                                "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                                "name": "InstrumentationKey",
                                 "value": "[reference('web-app-insights').outputs.InstrumentationKey.value]"
+                            },
+                            {
+                                "name": "AuditApiBaseUrl",
+                                "value": "[parameters('auditApiBaseUrl')]"
+                            },
+                            {
+                                "name": "AuditApiClientId",
+                                "value": "[parameters('auditApiClientId')]"
+                            },
+                            {
+                                "name": "AuditApiIdentifierUri",
+                                "value": "[parameters('auditApiIdentifierUri')]"
+                            },
+                            {
+                                "name": "AuditApiSecret",
+                                "value": "[parameters('auditApiSecret')]"
+                            },
+                            {
+                                "name": "AuditApiTenant",
+                                "value": "[parameters('auditApiTenant')]"
+                            },
+                            {
+                                "name": "AuthCodeCacheConnectionString",
+                                "value": "[parameters('authCodeCacheConnectionString')]"
+                            },
+                            {
+                                "name": "BaseExternalUrl",
+                                "value": "[parameters('baseExternalUrl')]"
+                            },
+                            {
+                                "name": "EmployerPortalUrl",
+                                "value": "[parameters('employerPortalUrl')]"
+                            },
+                            {
+                                "name": "NotificationsApiBaseUrl",
+                                "value": "[parameters('notificationsApiBaseUrl')]"
+                            },
+                            {
+                                "name": "NotificationsApiClientToken",
+                                "value": "[parameters('notificationsApiClientToken')]"
+                            },
+                            {
+                                "name": "ProfileConnectionString",
+                                "value": "[parameters('profileConnectionString')]"
+                            },
+                            {
+                                "name": "StoreEmailsOnDisk",
+                                "value": "[parameters('storeEmailsOnDisk')]"
+                            },
+                            {
+                                "name": "TokenCertificateThumbprint",
+                                "value": "[parameters('tokenCertificateThumbprint')]"
+                            },
+                            {
+                                "name": "UsersConnectionString",
+                                "value": "[parameters('usersConnectionString')]"
+                            },
+                            {
+                                "name": "UseStaticCodeGenerator",
+                                "value": "[parameters('useStaticCodeGenerator')]"
+                            },
+                            {
+                                "name": "ZenDeskHelpCentreUrl",
+                                "value": "[parameters('zenDeskHelpCentreUrl')]"
                             }
                         ]
                     },
