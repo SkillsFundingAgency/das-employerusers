@@ -72,6 +72,16 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'    
 
+- task: VSBuild@1
+  displayName: 'Publish WebJob'
+  inputs:
+    solution: src/SFA.DAS.EmployerUsers.Host.WebJob/SFA.DAS.EmployerUsers.Host.WebJob.csproj
+    vsVersion: 16.0
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/"'
+    platform: 'anycpu'
+    configuration: '$(buildConfiguration)'
+    clean: true
+
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
   inputs:
