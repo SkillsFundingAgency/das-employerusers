@@ -68,7 +68,6 @@ steps:
     testAssemblyVer2: |
       **/bin/Release/*UnitTests.dll
       **/bin/Release/*/*UnitTests.dll
-      !**/*ClientV2.UnitTests.dll
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'    
 
