@@ -77,7 +77,7 @@ steps:
   inputs:
     solution: src/SFA.DAS.EmployerUsers.Api/SFA.DAS.EmployerUsers.Api.csproj
     vsVersion: '16.0'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/"'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/SFA.DAS.EmployerUsers.Api/"'
     platform: 'anycpu'
     configuration: '$(buildConfiguration)'
     clean: true
@@ -87,7 +87,7 @@ steps:
   inputs:
     solution: src/SFA.DAS.EmployerUsers.Support.Web/SFA.DAS.EmployerUsers.Support.Web.csproj
     vsVersion: '16.0'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/"'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/SFA.DAS.EmployerUsers.Support.Web/"'
     platform: 'anycpu'
     configuration: '$(buildConfiguration)'
     clean: true
@@ -97,7 +97,7 @@ steps:
   inputs:
     solution: src/SFA.DAS.EmployerUsers.Web/SFA.DAS.EmployerUsers.Web.csproj
     vsVersion: '16.0'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/"'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/SFA.DAS.EmployerUsers.Web/"'
     platform: 'anycpu'
     configuration: '$(buildConfiguration)'
     clean: true
@@ -107,7 +107,7 @@ steps:
   inputs:
     solution: src/SFA.DAS.EmployerUsers.Host.WebJob/SFA.DAS.EmployerUsers.Host.WebJob.csproj
     vsVersion: '16.0'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/"'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/SFA.DAS.EmployerUsers.Host.WebJob/"'
     platform: 'anycpu'
     configuration: '$(buildConfiguration)'
     clean: true
