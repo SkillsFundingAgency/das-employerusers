@@ -1,0 +1,522 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "apiAppCustomHostName": {
+            "type": "string"
+        },
+        "apiAppCertificateName": {
+            "type": "string"
+        },
+        "appServiceAllowedIPs": {
+            "type": "array",
+            "defaultValue": [
+            ]
+        },
+        "configurationStorageConnectionString": {
+            "type": "securestring"
+        },
+        "elasticPoolName": {
+            "type": "string"
+        },
+        "environmentName": {
+            "type": "string"
+        },
+        "logAnalyticsSubscriptionId": {
+            "type": "string",
+            "defaultValue": "[subscription().subscriptionId]"
+        },
+        "logAnalyticsWorkspaceName": {
+            "type": "string"
+        },
+        "loggingRedisConnectionString": {
+            "type": "securestring"
+        },
+        "loggingRedisKey": {
+            "type": "string"
+        },
+        "profilesDatabaseSkuName": {
+            "type": "string"
+        },
+        "profilesDatabaseTier": {
+            "type": "string"
+        },
+        "resourceEnvironmentName": {
+            "type": "string"
+        },
+        "serviceName": {
+            "type": "string"
+        },
+        "sharedBackEndAppServicePlanName": {
+            "type": "string"
+        },
+        "sharedFrontEndAppServicePlanName": {
+            "type": "string"
+        },
+        "sharedKeyVaultName": {
+            "type": "string"
+        },
+        "sharedManagementResourceGroup": {
+            "type": "string"
+        },
+        "sharedResourceGroupName": {
+            "type": "string"
+        },
+        "sharedSQLServerName": {
+            "type": "string"
+        },
+        "supportAppCertificateName": {
+            "type": "string"
+        },
+        "supportAppCustomHostName": {
+            "type": "string"
+        },
+        "usersDatabaseSkuName": {
+            "type": "string"
+        },
+        "usersDatabaseTier": {
+            "type": "string"
+        },
+        "webAppCertificateName": {
+            "type": "string"
+        },
+        "webAppCustomHostName": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
+        "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
+        "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
+        "profilesDatabaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-profiles-db'))]",
+        "supportAppServiceName": "[concat(variables('resourceNamePrefix'), 's-as')]",
+        "webAppServiceName": "[concat(variables('resourceNamePrefix'), 'ui-as')]",
+        "usersDatabaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-users-db'))]"
+    },
+    "resources": [
+        {
+            "apiVersion": "2019-10-01",
+            "name": "api-app-insights",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'), 'application-insights.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appInsightsName": {
+                        "value": "[variables('apiAppServiceName')]"
+                    },
+                    "attachedService": {
+                        "value": "[variables('apiAppServiceName')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[greater(length(parameters('apiAppCustomHostName')), 0)]",
+            "apiVersion": "2019-10-01",
+            "name": "api-app-service-certificate",
+            "resourceGroup": "[parameters('sharedResourceGroupName')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-certificate.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "keyVaultCertificateName": {
+                        "value": "[parameters('apiAppCertificateName')]"
+                    },
+                    "keyVaultName": {
+                        "value": "[parameters('sharedKeyVaultName')]"
+                    },
+                    "keyVaultResourceGroup": {
+                        "value": "[parameters('sharedManagementResourceGroup')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2019-10-01",
+            "name": "api-app-service",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'), 'app-service.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServiceName": {
+                        "value": "[variables('apiAppServiceName')]"
+                    },
+                    "appServicePlanName": {
+                        "value": "[parameters('sharedBackEndAppServicePlanName')]"
+                    },
+                    "appServicePlanResourceGroup": {
+                        "value": "[parameters('sharedResourceGroupName')]"
+                    },
+                    "deployStagingSlot": {
+                        "value": true
+                    },
+                    "appServiceAppSettings": {
+                        "value": [
+                            {
+                                "name": "ConfigurationStorageConnectionString",
+                                "value": "[parameters('configurationStorageConnectionString')]"
+                            },
+                            {
+                                "name": "EnvironmentName",
+                                "value": "[parameters('environmentName')]"
+                            },
+                            {
+                                "name": "LoggingRedisConnectionString",
+                                "value": "[parameters('loggingRedisConnectionString')]"
+                            },
+                            {
+                                "name": "LoggingRedisKey",
+                                "value": "[parameters('loggingRedisKey')]"
+                            },
+                            {
+                                "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                                "value": "[reference('api-app-insights').outputs.InstrumentationKey.value]"
+                            }
+                        ]
+                    },
+                    "customHostName": {
+                        "value": "[parameters('apiAppCustomHostName')]"
+                    },
+                    "certificateThumbprint": {
+                        "value": "[if(greater(length(parameters('apiAppCustomHostName')), 0), reference('api-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+                    },
+                    "ipSecurityRestrictions": {
+                        "value": "[parameters('appServiceAllowedIPs')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "api-app-insights",
+                "api-app-service-certificate"
+            ]
+        },
+                {
+            "apiVersion": "2019-10-01",
+            "name": "support-app-insights",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'), 'application-insights.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appInsightsName": {
+                        "value": "[variables('supportAppServiceName')]"
+                    },
+                    "attachedService": {
+                        "value": "[variables('supportAppServiceName')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[greater(length(parameters('supportAppCustomHostName')), 0)]",
+            "apiVersion": "2019-10-01",
+            "name": "support-app-service-certificate",
+            "resourceGroup": "[parameters('sharedResourceGroupName')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-certificate.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "keyVaultCertificateName": {
+                        "value": "[parameters('supportAppCertificateName')]"
+                    },
+                    "keyVaultName": {
+                        "value": "[parameters('sharedKeyVaultName')]"
+                    },
+                    "keyVaultResourceGroup": {
+                        "value": "[parameters('sharedManagementResourceGroup')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2019-10-01",
+            "name": "support-app-service",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'), 'app-service.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServiceName": {
+                        "value": "[variables('supportAppServiceName')]"
+                    },
+                    "appServicePlanName": {
+                        "value": "[parameters('sharedFrontEndAppServicePlanName')]"
+                    },
+                    "appServicePlanResourceGroup": {
+                        "value": "[parameters('sharedResourceGroupName')]"
+                    },
+                    "deployStagingSlot": {
+                        "value": true
+                    },
+                    "appServiceAppSettings": {
+                        "value": [
+                            {
+                                "name": "ConfigurationStorageConnectionString",
+                                "value": "[parameters('configurationStorageConnectionString')]"
+                            },
+                            {
+                                "name": "EnvironmentName",
+                                "value": "[parameters('environmentName')]"
+                            },
+                            {
+                                "name": "LoggingRedisConnectionString",
+                                "value": "[parameters('loggingRedisConnectionString')]"
+                            },
+                            {
+                                "name": "LoggingRedisKey",
+                                "value": "[parameters('loggingRedisKey')]"
+                            },
+                            {
+                                "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                                "value": "[reference('support-app-insights').outputs.InstrumentationKey.value]"
+                            }
+                        ]
+                    },
+                    "customHostName": {
+                        "value": "[parameters('supportAppCustomHostName')]"
+                    },
+                    "certificateThumbprint": {
+                        "value": "[if(greater(length(parameters('supportAppCustomHostName')), 0), reference('support-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+                    },
+                    "ipSecurityRestrictions": {
+                        "value": "[parameters('appServiceAllowedIPs')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "support-app-insights",
+                "support-app-service-certificate"
+            ]
+        },
+        {
+            "apiVersion": "2019-10-01",
+            "name": "web-app-insights",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'), 'application-insights.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appInsightsName": {
+                        "value": "[variables('webAppServiceName')]"
+                    },
+                    "attachedService": {
+                        "value": "[variables('webAppServiceName')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[greater(length(parameters('webAppCustomHostName')), 0)]",
+            "apiVersion": "2019-10-01",
+            "name": "web-app-service-certificate",
+            "resourceGroup": "[parameters('sharedResourceGroupName')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-certificate.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "keyVaultCertificateName": {
+                        "value": "[parameters('webAppCertificateName')]"
+                    },
+                    "keyVaultName": {
+                        "value": "[parameters('sharedKeyVaultName')]"
+                    },
+                    "keyVaultResourceGroup": {
+                        "value": "[parameters('sharedManagementResourceGroup')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2019-10-01",
+            "name": "web-app-service",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'), 'app-service.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServiceName": {
+                        "value": "[variables('webAppServiceName')]"
+                    },
+                    "appServicePlanName": {
+                        "value": "[parameters('sharedFrontEndAppServicePlanName')]"
+                    },
+                    "appServicePlanResourceGroup": {
+                        "value": "[parameters('sharedResourceGroupName')]"
+                    },
+                    "deployStagingSlot": {
+                        "value": true
+                    },
+                    "appServiceAppSettings": {
+                        "value": [
+                            {
+                                "name": "ConfigurationStorageConnectionString",
+                                "value": "[parameters('configurationStorageConnectionString')]"
+                            },
+                            {
+                                "name": "EnvironmentName",
+                                "value": "[parameters('environmentName')]"
+                            },
+                            {
+                                "name": "LoggingRedisConnectionString",
+                                "value": "[parameters('loggingRedisConnectionString')]"
+                            },
+                            {
+                                "name": "LoggingRedisKey",
+                                "value": "[parameters('loggingRedisKey')]"
+                            },
+                            {
+                                "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                                "value": "[reference('web-app-insights').outputs.InstrumentationKey.value]"
+                            }
+                        ]
+                    },
+                    "customHostName": {
+                        "value": "[parameters('webAppCustomHostName')]"
+                    },
+                    "certificateThumbprint": {
+                        "value": "[if(greater(length(parameters('webAppCustomHostName')), 0), reference('web-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+                    },
+                    "ipSecurityRestrictions": {
+                        "value": "[parameters('appServiceAllowedIPs')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "web-app-insights",
+                "web-app-service-certificate"
+            ]
+        },
+        {
+            "apiVersion": "2019-10-01",
+            "name": "profiles-sql-database",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('sharedResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'sql-database.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "databaseName": {
+                        "value": "[variables('profilesDatabaseName')]"
+                    },
+                    "sqlServerName": {
+                        "value": "[parameters('sharedSQLServerName')]"
+                    },
+                    "elasticPoolName": {
+                        "value": "[parameters('elasticPoolName')]"
+                    },
+                    "databaseSkuName": {
+                        "value": "[parameters('profilesDatabaseSkuName')]"
+                    },
+                    "databaseTier": {
+                        "value": "[parameters('profilesDatabaseTier')]"
+                    },
+                    "logAnalyticsSubscriptionId": {
+                        "value": "[parameters('logAnalyticsSubscriptionId')]"
+                    },
+                    "logAnalyticsResourceGroup": {
+                        "value": "[parameters('sharedManagementResourceGroup')]"
+                    },
+                    "logAnalyticsWorkspaceName": {
+                        "value": "[parameters('logAnalyticsWorkspaceName')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2019-10-01",
+            "name": "users-sql-database",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('sharedResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'sql-database.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "databaseName": {
+                        "value": "[variables('usersDatabaseName')]"
+                    },
+                    "sqlServerName": {
+                        "value": "[parameters('sharedSQLServerName')]"
+                    },
+                    "elasticPoolName": {
+                        "value": "[parameters('elasticPoolName')]"
+                    },
+                    "databaseSkuName": {
+                        "value": "[parameters('usersDatabaseSkuName')]"
+                    },
+                    "databaseTier": {
+                        "value": "[parameters('usersDatabaseTier')]"
+                    },
+                    "logAnalyticsSubscriptionId": {
+                        "value": "[parameters('logAnalyticsSubscriptionId')]"
+                    },
+                    "logAnalyticsResourceGroup": {
+                        "value": "[parameters('sharedManagementResourceGroup')]"
+                    },
+                    "logAnalyticsWorkspaceName": {
+                        "value": "[parameters('logAnalyticsWorkspaceName')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "ApiAppServiceName": {
+            "type": "string",
+            "value": "[variables('apiAppServiceName')]"
+        },
+        "SupportAppServiceName": {
+            "type": "string",
+            "value": "[variables('supportAppServiceName')]"
+        },
+        "WebAppServiceName": {
+            "type": "string",
+            "value": "[variables('webAppServiceName')]"
+        },
+        "ProfilesDatabaseName": {
+            "type": "string",
+            "value": "[variables('profilesDatabaseName')]"
+        },
+        "UsersDatabaseName": {
+            "type": "string",
+            "value": "[variables('usersDatabaseName')]"
+        }
+    }
+}
