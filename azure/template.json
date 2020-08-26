@@ -146,7 +146,7 @@
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
         "profilesDatabaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-profiles-db'))]",
-        "supportAppServiceName": "[concat(variables('resourceNamePrefix'), 's-as')]",
+        "supportAppServiceName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-s', parameters('serviceName'), '-as'))]",
         "webAppServiceName": "[concat(variables('resourceNamePrefix'), 'ui-as')]",
         "usersDatabaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-users-db'))]"
     },
