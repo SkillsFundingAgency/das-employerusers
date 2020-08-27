@@ -97,6 +97,9 @@
         "sharedBackEndAppServicePlanName": {
             "type": "string"
         },
+        "sharedEnvResourceGroup": {
+            "type": "string"
+        },
         "sharedFrontEndAppServicePlanName": {
             "type": "string"
         },
@@ -104,9 +107,6 @@
             "type": "string"
         },
         "sharedManagementResourceGroup": {
-            "type": "string"
-        },
-        "sharedResourceGroupName": {
             "type": "string"
         },
         "sharedSQLServerName": {
@@ -186,7 +186,7 @@
             "condition": "[greater(length(parameters('apiAppCustomHostName')), 0)]",
             "apiVersion": "2019-10-01",
             "name": "api-app-service-certificate",
-            "resourceGroup": "[parameters('sharedResourceGroupName')]",
+            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -225,7 +225,7 @@
                         "value": "[parameters('sharedBackEndAppServicePlanName')]"
                     },
                     "appServicePlanResourceGroup": {
-                        "value": "[parameters('sharedResourceGroupName')]"
+                        "value": "[parameters('sharedEnvResourceGroup')]"
                     },
                     "deployStagingSlot": {
                         "value": true
@@ -303,7 +303,7 @@
             "condition": "[greater(length(parameters('supportAppCustomHostName')), 0)]",
             "apiVersion": "2019-10-01",
             "name": "support-app-service-certificate",
-            "resourceGroup": "[parameters('sharedResourceGroupName')]",
+            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -342,7 +342,7 @@
                         "value": "[parameters('sharedFrontEndAppServicePlanName')]"
                     },
                     "appServicePlanResourceGroup": {
-                        "value": "[parameters('sharedResourceGroupName')]"
+                        "value": "[parameters('sharedEnvResourceGroup')]"
                     },
                     "deployStagingSlot": {
                         "value": true
@@ -415,7 +415,7 @@
             "condition": "[greater(length(parameters('webAppCustomHostName')), 0)]",
             "apiVersion": "2019-10-01",
             "name": "web-app-service-certificate",
-            "resourceGroup": "[parameters('sharedResourceGroupName')]",
+            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -454,7 +454,7 @@
                         "value": "[parameters('sharedFrontEndAppServicePlanName')]"
                     },
                     "appServicePlanResourceGroup": {
-                        "value": "[parameters('sharedResourceGroupName')]"
+                        "value": "[parameters('sharedEnvResourceGroup')]"
                     },
                     "deployStagingSlot": {
                         "value": true
@@ -567,7 +567,7 @@
             "apiVersion": "2019-10-01",
             "name": "profiles-sql-database",
             "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[parameters('sharedResourceGroupName')]",
+            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -606,7 +606,7 @@
             "apiVersion": "2019-10-01",
             "name": "users-sql-database",
             "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[parameters('sharedResourceGroupName')]",
+            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {

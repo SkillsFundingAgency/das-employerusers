@@ -95,8 +95,8 @@
   "sharedManagementResourceGroup": {
       "value": "__SharedManagementResourceGroup__"
   },
-  "sharedResourceGroupName": {
-      "value": "__SharedResourceGroupName__"
+  "sharedEnvResourceGroup": {
+      "value": "__SharedEnvResourceGroup__"
   },
   "sharedSQLServerName": {
       "value": "__SharedSQLServerName__"
