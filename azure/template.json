@@ -46,7 +46,8 @@
             "type": "string"
         },
         "empUserApiCertificateThumbprint": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },
         "environmentName": {
             "type": "string"
@@ -80,10 +81,12 @@
             "type": "securestring"
         },                
         "profilesDatabaseSkuName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },
         "profilesDatabaseTier": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },
         "resourceEnvironmentName": {
             "type": "string"
@@ -127,10 +130,12 @@
             "type": "securestring"
         },
         "usersDatabaseSkuName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },
         "usersDatabaseTier": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },
         "useStaticCodeGenerator": {
             "type": "string"
