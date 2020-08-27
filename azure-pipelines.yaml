@@ -117,6 +117,7 @@ steps:
     contents: |
       azure/**
       src/**/*.dacpac
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: Publish'
