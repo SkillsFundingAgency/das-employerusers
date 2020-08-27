@@ -3,10 +3,12 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "apiAppCustomHostName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },
         "apiAppCertificateName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },
         "appServiceAllowedIPs": {
             "type": "array",
@@ -111,10 +113,12 @@
             "type": "string"
         },
         "supportAppCertificateName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },
         "supportAppCustomHostName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },
         "tokenCertificateThumbprint": {
             "type": "string"
@@ -132,10 +136,12 @@
             "type": "string"
         },
         "webAppCertificateName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },
         "webAppCustomHostName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },
         "zenDeskHelpCentreUrl": {
             "type": "string"
