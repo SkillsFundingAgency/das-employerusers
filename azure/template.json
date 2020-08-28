@@ -148,6 +148,18 @@
             "type": "string",
             "defaultValue": ""
         },
+        "workerAppAspSize": {
+            "type": "string",
+            "defaultValue": "1"
+        },
+        "workerAppAspInstances": {
+            "type": "int",
+            "defaultValue": 1
+        },
+        "workerAppAspSku": {
+            "type": "string",
+            "defaultValue": "Basic"
+        },
         "zenDeskHelpCentreUrl": {
             "type": "string"
         }
@@ -159,6 +171,8 @@
         "profilesDatabaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-profiles-db'))]",
         "supportAppServiceName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-s', parameters('serviceName'), '-as'))]",
         "webAppServiceName": "[concat(variables('resourceNamePrefix'), 'ui-as')]",
+        "workerAppServiceName": "[concat(variables('resourceNamePrefix'), '-as')]",
+        "workerAppServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp')]",
         "usersDatabaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-users-db'))]"
     },
     "resources": [
@@ -561,6 +575,106 @@
             "dependsOn": [
                 "web-app-insights",
                 "web-app-service-certificate"
+            ]
+        },
+        {
+            "apiVersion": "2019-10-01",
+            "name": "worker-app-insights",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'), 'application-insights.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appInsightsName": {
+                        "value": "[variables('workerAppServiceName')]"
+                    },
+                    "attachedService": {
+                        "value": "[variables('workerAppServiceName')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "worker-app-service-plan",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-plan.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServicePlanName": {
+                        "value": "[variables('workerAppServicePlanName')]"
+                    },
+                    "aspSize": {
+                        "value": "[parameters('workerAppAspSize')]"
+                    },
+                    "aspInstances": {
+                        "value": "[parameters('workerAppAspInstances')]"
+                    },
+                    "nonASETier": {
+                        "value": "[parameters('workerAppAspSku')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2019-10-01",
+            "name": "worker-app-service",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'), 'app-service.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServiceName": {
+                        "value": "[variables('workerAppServiceName')]"
+                    },
+                    "appServicePlanName": {
+                        "value": "[variables('workerAppServicePlanName')]"
+                    },
+                    "appServicePlanResourceGroup": {
+                        "value": "[resourceGroup().name]"
+                    },
+                    "deployStagingSlot": {
+                        "value": false
+                    },
+                    "appServiceAppSettings": {
+                        "value": [
+                            {
+                                "name": "EnvironmentName",
+                                "value": "[parameters('environmentName')]"
+                            },
+                            {
+                                "name": "LoggingRedisConnectionString",
+                                "value": "[parameters('loggingRedisConnectionString')]"
+                            },
+                            {
+                                "name": "LoggingRedisKey",
+                                "value": "[parameters('loggingRedisKey')]"
+                            },
+                            {
+                                "name": "InstrumentationKey",
+                                "value": "[reference('api-app-insights').outputs.InstrumentationKey.value]"
+                            }
+
+                        ]
+                    },
+                    "ipSecurityRestrictions": {
+                        "value": "[parameters('appServiceAllowedIPs')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "worker-app-insights",
+                "worker-app-service-plan"
             ]
         },
         {
