@@ -112,11 +112,17 @@ steps:
     clean: true
 
 - task: CopyFiles@2
-  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  displayName: 'Copy dacpac Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    contents: |
+      src/**/*.dacpac
+    flattenFolders: true
+    targetFolder: '$(Build.ArtifactStagingDirectory)/dacpacs/'
+- task: CopyFiles@2
+  displayName: 'Copy azure Files to: $(Build.ArtifactStagingDirectory)'
   inputs:
     contents: |
       azure/**
-      src/**/*.dacpac
     targetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
