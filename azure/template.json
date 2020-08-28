@@ -769,6 +769,10 @@
             "type": "string",
             "value": "[variables('webAppServiceName')]"
         },
+        "WebJobAppServiceName": {
+            "type": "string",
+            "value": "[variables('workerAppServiceName')]"
+        },
         "ProfilesDatabaseName": {
             "type": "string",
             "value": "[variables('profilesDatabaseName')]"
