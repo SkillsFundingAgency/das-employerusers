@@ -10,7 +10,7 @@
       <Setting name="EmpUserApiCertificateThumbprint" value="__EmpUserApiCertificateThumbprint__" />
     </ConfigurationSettings>
     <Certificates>
-      <Certificate name="WebSslCert" thumbprint="F3F791B832D80A37A356F4A61F04841A4E784061" thumbprintAlgorithm="sha1" />
+      <Certificate name="WebSslCert" thumbprint="A336ED195BBD6F5DB8F2D9B17F1A81F5BF89C42D" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
   <NetworkConfiguration>
