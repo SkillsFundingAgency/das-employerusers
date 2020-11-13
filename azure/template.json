@@ -228,7 +228,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'), 'app-service.json')]",
+                    "uri": "[concat(variables('deploymentUrlBase'), 'app-service-v2.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -245,37 +245,38 @@
                         "value": true
                     },
                     "appServiceAppSettings": {
-                        "value": [
-                            {
-                                "name": "EnvironmentName",
-                                "value": "[parameters('environmentName')]"
-                            },
-                            {
-                                "name": "LoggingRedisConnectionString",
-                                "value": "[parameters('loggingRedisConnectionString')]"
-                            },
-                            {
-                                "name": "LoggingRedisKey",
-                                "value": "[parameters('loggingRedisKey')]"
-                            },
-                            {
-                                "name": "InstrumentationKey",
-                                "value": "[reference('api-app-insights').outputs.InstrumentationKey.value]"
-                            },
-                            {
-                                "name": "idaAudience",
-                                "value": "[parameters('idaAudience')]"
-                            },
-                            {
-                                "name": "idaTenant",
-                                "value": "[parameters('idaTenant')]"
-                            },
-                            {
-                                "name": "UsersConnectionString",
-                                "value": "[parameters('usersConnectionString')]"
-                            }
-
-                        ]
+                        "value": {
+                            "array": [
+                                {
+                                    "name": "EnvironmentName",
+                                    "value": "[parameters('environmentName')]"
+                                },
+                                {
+                                    "name": "LoggingRedisConnectionString",
+                                    "value": "[parameters('loggingRedisConnectionString')]"
+                                },
+                                {
+                                    "name": "LoggingRedisKey",
+                                    "value": "[parameters('loggingRedisKey')]"
+                                },
+                                {
+                                    "name": "InstrumentationKey",
+                                    "value": "[reference('api-app-insights').outputs.InstrumentationKey.value]"
+                                },
+                                {
+                                    "name": "idaAudience",
+                                    "value": "[parameters('idaAudience')]"
+                                },
+                                {
+                                    "name": "idaTenant",
+                                    "value": "[parameters('idaTenant')]"
+                                },
+                                {
+                                    "name": "UsersConnectionString",
+                                    "value": "[parameters('usersConnectionString')]"
+                                }
+                            ]
+                        }
                     },
                     "customHostName": {
                         "value": "[parameters('apiAppCustomHostName')]"
@@ -345,7 +346,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'), 'app-service.json')]",
+                    "uri": "[concat(variables('deploymentUrlBase'), 'app-service-v2.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -362,32 +363,34 @@
                         "value": true
                     },
                     "appServiceAppSettings": {
-                        "value": [
-                            {
-                                "name": "ConfigurationStorageConnectionString",
-                                "value": "[parameters('configurationStorageConnectionString')]"
-                            },
-                            {
-                                "name": "EnvironmentName",
-                                "value": "[parameters('environmentName')]"
-                            },
-                            {
-                                "name": "LoggingRedisConnectionString",
-                                "value": "[parameters('loggingRedisConnectionString')]"
-                            },
-                            {
-                                "name": "LoggingRedisKey",
-                                "value": "[parameters('loggingRedisKey')]"
-                            },
-                            {
-                                "name": "InstrumentationKey",
-                                "value": "[reference('support-app-insights').outputs.InstrumentationKey.value]"
-                            },
-                            {
-                                "name": "EmpUserApiCertificateThumbprint",
-                                "value": "[parameters('empUserApiCertificateThumbprint')]"
-                            }
-                        ]
+                        "value": {
+                            "array": [
+                                {
+                                    "name": "ConfigurationStorageConnectionString",
+                                    "value": "[parameters('configurationStorageConnectionString')]"
+                                },
+                                {
+                                    "name": "EnvironmentName",
+                                    "value": "[parameters('environmentName')]"
+                                },
+                                {
+                                    "name": "LoggingRedisConnectionString",
+                                    "value": "[parameters('loggingRedisConnectionString')]"
+                                },
+                                {
+                                    "name": "LoggingRedisKey",
+                                    "value": "[parameters('loggingRedisKey')]"
+                                },
+                                {
+                                    "name": "InstrumentationKey",
+                                    "value": "[reference('support-app-insights').outputs.InstrumentationKey.value]"
+                                },
+                                {
+                                    "name": "EmpUserApiCertificateThumbprint",
+                                    "value": "[parameters('empUserApiCertificateThumbprint')]"
+                                }
+                            ]
+                        }
                     },
                     "customHostName": {
                         "value": "[parameters('supportAppCustomHostName')]"
@@ -457,7 +460,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'), 'app-service.json')]",
+                    "uri": "[concat(variables('deploymentUrlBase'), 'app-service-v2.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -474,92 +477,94 @@
                         "value": true
                     },
                     "appServiceAppSettings": {
-                        "value": [
-                            {
-                                "name": "ConfigurationStorageConnectionString",
-                                "value": "[parameters('configurationStorageConnectionString')]"
-                            },
-                            {
-                                "name": "EnvironmentName",
-                                "value": "[parameters('environmentName')]"
-                            },
-                            {
-                                "name": "LoggingRedisConnectionString",
-                                "value": "[parameters('loggingRedisConnectionString')]"
-                            },
-                            {
-                                "name": "LoggingRedisKey",
-                                "value": "[parameters('loggingRedisKey')]"
-                            },
-                            {
-                                "name": "InstrumentationKey",
-                                "value": "[reference('web-app-insights').outputs.InstrumentationKey.value]"
-                            },
-                            {
-                                "name": "AuditApiBaseUrl",
-                                "value": "[parameters('auditApiBaseUrl')]"
-                            },
-                            {
-                                "name": "AuditApiClientId",
-                                "value": "[parameters('auditApiClientId')]"
-                            },
-                            {
-                                "name": "AuditApiIdentifierUri",
-                                "value": "[parameters('auditApiIdentifierUri')]"
-                            },
-                            {
-                                "name": "AuditApiSecret",
-                                "value": "[parameters('auditApiSecret')]"
-                            },
-                            {
-                                "name": "AuditApiTenant",
-                                "value": "[parameters('auditApiTenant')]"
-                            },
-                            {
-                                "name": "AuthCodeCacheConnectionString",
-                                "value": "[parameters('authCodeCacheConnectionString')]"
-                            },
-                            {
-                                "name": "BaseExternalUrl",
-                                "value": "[parameters('baseExternalUrl')]"
-                            },
-                            {
-                                "name": "EmployerPortalUrl",
-                                "value": "[parameters('employerPortalUrl')]"
-                            },
-                            {
-                                "name": "NotificationsApiBaseUrl",
-                                "value": "[parameters('notificationsApiBaseUrl')]"
-                            },
-                            {
-                                "name": "NotificationsApiClientToken",
-                                "value": "[parameters('notificationsApiClientToken')]"
-                            },
-                            {
-                                "name": "ProfileConnectionString",
-                                "value": "[parameters('profileConnectionString')]"
-                            },
-                            {
-                                "name": "StoreEmailsOnDisk",
-                                "value": "[parameters('storeEmailsOnDisk')]"
-                            },
-                            {
-                                "name": "TokenCertificateThumbprint",
-                                "value": "[parameters('tokenCertificateThumbprint')]"
-                            },
-                            {
-                                "name": "UsersConnectionString",
-                                "value": "[parameters('usersConnectionString')]"
-                            },
-                            {
-                                "name": "UseStaticCodeGenerator",
-                                "value": "[parameters('useStaticCodeGenerator')]"
-                            },
-                            {
-                                "name": "ZenDeskHelpCentreUrl",
-                                "value": "[parameters('zenDeskHelpCentreUrl')]"
-                            }
-                        ]
+                        "value": {
+                            "array": [
+                                {
+                                    "name": "ConfigurationStorageConnectionString",
+                                    "value": "[parameters('configurationStorageConnectionString')]"
+                                },
+                                {
+                                    "name": "EnvironmentName",
+                                    "value": "[parameters('environmentName')]"
+                                },
+                                {
+                                    "name": "LoggingRedisConnectionString",
+                                    "value": "[parameters('loggingRedisConnectionString')]"
+                                },
+                                {
+                                    "name": "LoggingRedisKey",
+                                    "value": "[parameters('loggingRedisKey')]"
+                                },
+                                {
+                                    "name": "InstrumentationKey",
+                                    "value": "[reference('web-app-insights').outputs.InstrumentationKey.value]"
+                                },
+                                {
+                                    "name": "AuditApiBaseUrl",
+                                    "value": "[parameters('auditApiBaseUrl')]"
+                                },
+                                {
+                                    "name": "AuditApiClientId",
+                                    "value": "[parameters('auditApiClientId')]"
+                                },
+                                {
+                                    "name": "AuditApiIdentifierUri",
+                                    "value": "[parameters('auditApiIdentifierUri')]"
+                                },
+                                {
+                                    "name": "AuditApiSecret",
+                                    "value": "[parameters('auditApiSecret')]"
+                                },
+                                {
+                                    "name": "AuditApiTenant",
+                                    "value": "[parameters('auditApiTenant')]"
+                                },
+                                {
+                                    "name": "AuthCodeCacheConnectionString",
+                                    "value": "[parameters('authCodeCacheConnectionString')]"
+                                },
+                                {
+                                    "name": "BaseExternalUrl",
+                                    "value": "[parameters('baseExternalUrl')]"
+                                },
+                                {
+                                    "name": "EmployerPortalUrl",
+                                    "value": "[parameters('employerPortalUrl')]"
+                                },
+                                {
+                                    "name": "NotificationsApiBaseUrl",
+                                    "value": "[parameters('notificationsApiBaseUrl')]"
+                                },
+                                {
+                                    "name": "NotificationsApiClientToken",
+                                    "value": "[parameters('notificationsApiClientToken')]"
+                                },
+                                {
+                                    "name": "ProfileConnectionString",
+                                    "value": "[parameters('profileConnectionString')]"
+                                },
+                                {
+                                    "name": "StoreEmailsOnDisk",
+                                    "value": "[parameters('storeEmailsOnDisk')]"
+                                },
+                                {
+                                    "name": "TokenCertificateThumbprint",
+                                    "value": "[parameters('tokenCertificateThumbprint')]"
+                                },
+                                {
+                                    "name": "UsersConnectionString",
+                                    "value": "[parameters('usersConnectionString')]"
+                                },
+                                {
+                                    "name": "UseStaticCodeGenerator",
+                                    "value": "[parameters('useStaticCodeGenerator')]"
+                                },
+                                {
+                                    "name": "ZenDeskHelpCentreUrl",
+                                    "value": "[parameters('zenDeskHelpCentreUrl')]"
+                                }
+                            ]
+                        }
                     },
                     "customHostName": {
                         "value": "[parameters('webAppCustomHostName')]"
@@ -630,7 +635,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'), 'app-service.json')]",
+                    "uri": "[concat(variables('deploymentUrlBase'), 'app-service-v2.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -647,25 +652,26 @@
                         "value": false
                     },
                     "appServiceAppSettings": {
-                        "value": [
-                            {
-                                "name": "EnvironmentName",
-                                "value": "[parameters('environmentName')]"
-                            },
-                            {
-                                "name": "LoggingRedisConnectionString",
-                                "value": "[parameters('loggingRedisConnectionString')]"
-                            },
-                            {
-                                "name": "LoggingRedisKey",
-                                "value": "[parameters('loggingRedisKey')]"
-                            },
-                            {
-                                "name": "InstrumentationKey",
-                                "value": "[reference('api-app-insights').outputs.InstrumentationKey.value]"
-                            }
-
-                        ]
+                        "value": {
+                            "array": [
+                                {
+                                    "name": "EnvironmentName",
+                                    "value": "[parameters('environmentName')]"
+                                },
+                                {
+                                    "name": "LoggingRedisConnectionString",
+                                    "value": "[parameters('loggingRedisConnectionString')]"
+                                },
+                                {
+                                    "name": "LoggingRedisKey",
+                                    "value": "[parameters('loggingRedisKey')]"
+                                },
+                                {
+                                    "name": "InstrumentationKey",
+                                    "value": "[reference('api-app-insights').outputs.InstrumentationKey.value]"
+                                }
+                            ]
+                        }
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('appServiceAllowedIPs')]"
