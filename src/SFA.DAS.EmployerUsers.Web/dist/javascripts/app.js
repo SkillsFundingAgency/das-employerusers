@@ -136,3 +136,25 @@ sfa.navigation.init();
 sfa.forms.init();
 
 var selectionButtons = new GOVUK.SelectionButtons("label input[type='radio'], label input[type='checkbox']");
+
+
+// DataLayer pushes when form validation message is shown 
+
+$(window).load(function () {
+    var errorSummary = $('#content .error-summary');
+    var pageTitle = $('h1.heading-xlarge').text();
+    errorSummary.each(function () {
+      var dataLayerObj
+      var numberOfErrors = $(this).find('ul li').length;
+      var validationMessage = "Form validation";
+      if (numberOfErrors === 1) {
+        validationMessage = $(this).find('a').eq(0).text();
+      }
+      dataLayerObj = {
+        event: 'form submission error',
+        page: pageTitle,
+        message: validationMessage
+      }
+      window.dataLayer.push(dataLayerObj)
+    });
+  });
