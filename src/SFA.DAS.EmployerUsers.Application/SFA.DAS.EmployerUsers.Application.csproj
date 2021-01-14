@@ -88,6 +88,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AccountSuspendedException.cs" />
     <Compile Include="AccountLockedException.cs" />
     <Compile Include="ApplicationExtensions.cs" />
     <Compile Include="Commands\ActivateUser\ActivateUserCommand.cs" />

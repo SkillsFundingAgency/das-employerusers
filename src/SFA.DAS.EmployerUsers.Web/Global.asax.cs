@@ -18,7 +18,6 @@ namespace SFA.DAS.EmployerUsers.Web
     {
         protected void Application_Start()
         {
-
             TelemetryConfiguration.Active.InstrumentationKey = CloudConfigurationManager.GetSetting("InstrumentationKey");
 
             MvcHandler.DisableMvcResponseHeader = true;

@@ -21,8 +21,8 @@ namespace SFA.DAS.EmployerUsers.Web
 
                 try
                 {
-            ConfigureIdentityServer(app, identityServerConfiguration, relyingPartyRepository);
-            ConfigureRelyingParty(app, identityServerConfiguration);
+                    ConfigureIdentityServer(app, identityServerConfiguration, relyingPartyRepository);
+                    ConfigureRelyingParty(app, identityServerConfiguration);
                 }
                 catch (Exception ex)
                 {

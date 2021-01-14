@@ -63,6 +63,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
                 throw new AccountLockedException(user);
             }
 
+            if (user.IsSuspended)
+            {
+                throw new AccountSuspendedException();
+            }
+
             var isPasswordCorrect = await _passwordService.VerifyAsync(message.Password, user.Password, user.Salt, user.PasswordProfileId);
             if (!isPasswordCorrect)
             {
