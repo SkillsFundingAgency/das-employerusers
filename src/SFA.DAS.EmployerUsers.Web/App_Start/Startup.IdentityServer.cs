@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -7,7 +8,6 @@ using IdentityServer3.Core.Configuration;
 using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services;
 using IdentityServer3.Core.Services.Default;
-using Microsoft.Azure;
 using Owin;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
@@ -37,7 +37,7 @@ namespace SFA.DAS.EmployerUsers.Web
                 factory.RedirectUriValidator = new Registration<IRedirectUriValidator>((dr) => new StartsWithRedirectUriValidator());
 
                 factory.ConfigureDefaultViewService<CustomIdsViewService>(new DefaultViewServiceOptions());
-                if (!CloudConfigurationManager.GetSetting("EnvironmentName").Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase))
+                if (!ConfigurationManager.AppSettings["EnvironmentName"].Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase))
                 {
                     factory.AuthorizationCodeStore = new Registration<IAuthorizationCodeStore>(typeof(RedisAuthorizationCodeStore));
                 }
@@ -90,7 +90,7 @@ namespace SFA.DAS.EmployerUsers.Web
             store.Open(OpenFlags.ReadOnly);
             try
             {
-                var thumbprint = CloudConfigurationManager.GetSetting("TokenCertificateThumbprint");
+                var thumbprint = ConfigurationManager.AppSettings["TokenCertificateThumbprint"];
                 var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, false);
 
                 if (certificates.Count < 1)

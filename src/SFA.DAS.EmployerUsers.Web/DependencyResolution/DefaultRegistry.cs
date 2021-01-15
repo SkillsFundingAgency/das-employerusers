@@ -61,8 +61,8 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
 
             For<IdentityServerConfiguration>().Transient().Use(() => new IdentityServerConfiguration
             {
-                ApplicationBaseUrl = CloudConfigurationManager.GetSetting("BaseExternalUrl"),
-                EmployerPortalUrl = CloudConfigurationManager.GetSetting("EmployerPortalUrl")
+                ApplicationBaseUrl = ConfigurationManager.AppSettings["BaseExternalUrl"],
+                EmployerPortalUrl = ConfigurationManager.AppSettings["EmployerPortalUrl"]
             });
 
             For<IAuditMessageFactory>().Use<AuditMessageFactory>().Singleton();
@@ -87,7 +87,7 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             var environment = Environment.GetEnvironmentVariable("DASENV");
             if (string.IsNullOrEmpty(environment))
             {
-                environment = CloudConfigurationManager.GetSetting("EnvironmentName");
+                environment = ConfigurationManager.AppSettings["EnvironmentName"];
             }
 
             return environment;
@@ -103,7 +103,7 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             }
             else
             {
-                configurationRepository = new AzureTableStorageConfigurationRepository(CloudConfigurationManager.GetSetting("ConfigurationStorageConnectionString"));
+                configurationRepository = new AzureTableStorageConfigurationRepository(ConfigurationManager.AppSettings["ConfigurationStorageConnectionString"]);
             }
 
             var configurationService = new ConfigurationService(configurationRepository,
@@ -139,11 +139,11 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             For<IAuditApiClient>().Use<AuditApiClient>();
             For<IAuditApiConfiguration>().Use(() => new AuditApiConfiguration
             {
-                ApiBaseUrl = CloudConfigurationManager.GetSetting("AuditApiBaseUrl"),
-                ClientId = CloudConfigurationManager.GetSetting("AuditApiClientId"),
-                ClientSecret = CloudConfigurationManager.GetSetting("AuditApiSecret"),
-                IdentifierUri = CloudConfigurationManager.GetSetting("AuditApiIdentifierUri"),
-                Tenant = CloudConfigurationManager.GetSetting("AuditApiTenant")
+                ApiBaseUrl = ConfigurationManager.AppSettings["AuditApiBaseUrl"],
+                ClientId = ConfigurationManager.AppSettings["AuditApiClientId"],
+                ClientSecret = ConfigurationManager.AppSettings["AuditApiSecret"],
+                IdentifierUri = ConfigurationManager.AppSettings["AuditApiIdentifierUri"],
+                Tenant = ConfigurationManager.AppSettings["AuditApiTenant"]
             });
         }
 
@@ -156,7 +156,7 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
 
         private void AddConfigSpecifiedRegistrations()
         {
-            var useStaticCodeGenerator = CloudConfigurationManager.GetSetting("UseStaticCodeGenerator").Equals("true", StringComparison.CurrentCultureIgnoreCase);
+            var useStaticCodeGenerator = ConfigurationManager.AppSettings["UseStaticCodeGenerator"].Equals("true", StringComparison.CurrentCultureIgnoreCase);
             if (useStaticCodeGenerator)
             {
                 For<ICodeGenerator>().Use(new StaticCodeGenerator());
@@ -166,7 +166,7 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
                 For<ICodeGenerator>().Use(new RandomCodeGenerator());
             }
 
-            var storeEmailsOnDisk = CloudConfigurationManager.GetSetting("StoreEmailsOnDisk").Equals("true", StringComparison.CurrentCultureIgnoreCase);
+            var storeEmailsOnDisk = ConfigurationManager.AppSettings["StoreEmailsOnDisk"].Equals("true", StringComparison.CurrentCultureIgnoreCase);
             if (storeEmailsOnDisk)
             {
                 For<INotificationsApi>().Use<StubNotificationsApi>();

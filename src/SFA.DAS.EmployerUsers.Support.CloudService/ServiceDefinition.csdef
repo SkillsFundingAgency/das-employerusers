@@ -15,6 +15,7 @@
       <Setting name="EnvironmentName" />
       <Setting name="InstrumentationKey" />
       <Setting name="EmpUserApiCertificateThumbprint" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="SimpleEndpoint" protocol="http" port="80" />

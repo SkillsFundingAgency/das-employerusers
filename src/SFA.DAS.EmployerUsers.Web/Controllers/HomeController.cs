@@ -1,5 +1,5 @@
-﻿using System.Web.Mvc;
-using Microsoft.Azure;
+﻿using System.Configuration;
+using System.Web.Mvc;
 using NLog;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Authentication;
@@ -48,7 +48,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [HttpGet]
         public ActionResult Help()
         {
-            return RedirectPermanent(CloudConfigurationManager.GetSetting("ZenDeskHelpCentreUrl"));
+            return RedirectPermanent(ConfigurationManager.AppSettings["ZenDeskHelpCentreUrl"]);
         }
     }
 }

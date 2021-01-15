@@ -1,16 +1,16 @@
-﻿using System;
+﻿using Microsoft.ApplicationInsights.Extensibility;
+using NLog;
+using SFA.DAS.Audit.Client;
+using SFA.DAS.Audit.Client.Web;
+using SFA.DAS.EmployerUsers.WebClientComponents;
+using System;
+using System.Configuration;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.Azure;
-using NLog;
-using SFA.DAS.Audit.Client;
-using SFA.DAS.Audit.Client.Web;
-using SFA.DAS.EmployerUsers.WebClientComponents;
 
 namespace SFA.DAS.EmployerUsers.Web
 {
@@ -18,7 +18,7 @@ namespace SFA.DAS.EmployerUsers.Web
     {
         protected void Application_Start()
         {
-            TelemetryConfiguration.Active.InstrumentationKey = CloudConfigurationManager.GetSetting("InstrumentationKey");
+            TelemetryConfiguration.Active.InstrumentationKey = ConfigurationManager.AppSettings["InstrumentationKey"];
 
             MvcHandler.DisableMvcResponseHeader = true;
             AntiForgeryConfig.SuppressXFrameOptionsHeader = true;

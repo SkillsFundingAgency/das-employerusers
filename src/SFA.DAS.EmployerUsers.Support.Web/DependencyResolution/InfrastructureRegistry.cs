@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Web;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EmployerUsers.Api.Client;
 using SFA.DAS.EmployerUsers.Support.Application.Handlers;
@@ -15,10 +16,10 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
         public InfrastructureRegistry()
         {
             For<ILoggingPropertyFactory>().Use<LoggingPropertyFactory>();
-
+            
             For<ILog>().Use(x => new NLogLogger(
                 x.ParentType,
-                x.GetInstance<IRequestContext>(),
+                x.GetInstance<ILoggingContext>(),
                 x.GetInstance<ILoggingPropertyFactory>().GetProperties())).AlwaysUnique();
 
 

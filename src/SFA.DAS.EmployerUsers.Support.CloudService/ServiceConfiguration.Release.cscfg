@@ -8,6 +8,7 @@
       <Setting name="EnvironmentName" value="__EnvironmentName__" />
       <Setting name="InstrumentationKey" value="__InstrumentationKey__" />
       <Setting name="EmpUserApiCertificateThumbprint" value="__EmpUserApiCertificateThumbprint__" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="WebSslCert" thumbprint="C94AE94F63D2220196773DC90C9C48A650B9CD08" thumbprintAlgorithm="sha1" />

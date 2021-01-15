@@ -12,6 +12,7 @@ using SFA.DAS.EmployerUsers.Domain.Links;
 using SFA.DAS.HashingService;
 using SFA.DAS.TimeProvider;
 using System;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -87,7 +88,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
 
             return !user.SecurityCodes.Any(sc => sc.CodeType == SecurityCodeType.PasswordResetCode
                                                  && sc.ExpiryTime >= DateTime.UtcNow
-                ) && CloudConfigurationManager.GetSetting("UseStaticCodeGenerator").Equals("false", StringComparison.CurrentCultureIgnoreCase);
+                ) && ConfigurationManager.AppSettings["UseStaticCodeGenerator"].Equals("false", StringComparison.CurrentCultureIgnoreCase);
         }
     }
 }

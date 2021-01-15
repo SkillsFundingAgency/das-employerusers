@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.Azure;
 using NLog;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.Configuration;
@@ -66,7 +66,7 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
             var unlockCode = user.SecurityCodes?.OrderByDescending(sc => sc.ExpiryTime)
                                                 .FirstOrDefault(sc => sc.CodeType == Domain.SecurityCodeType.UnlockCode);
 
-            var useStaticCodeGenerator = CloudConfigurationManager.GetSetting("UseStaticCodeGenerator").Equals("false", StringComparison.CurrentCultureIgnoreCase);
+            var useStaticCodeGenerator = ConfigurationManager.AppSettings["UseStaticCodeGenerator"].Equals("false", StringComparison.CurrentCultureIgnoreCase);
 
 
             if (unlockCode == null)
