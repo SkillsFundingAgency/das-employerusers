@@ -94,7 +94,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.TestC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Certificates", "Certificates", "{DE632FAC-B738-41C4-9EA2-F58DD0EB8A31}"
 	ProjectSection(SolutionItems) = preProject
-		Certificates\localhost.pfx = Certificates\localhost.pfx
+		GenCert.ps1 = GenCert.ps1
+		localhost.pfx = localhost.pfx
 	EndProjectSection
 EndProject
 Global
