@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerUsers.Api.Client
         {
             var authenticationResult = await GetAuthenticationResult(_configuration.ClientId, _configuration.ClientSecret, _configuration.IdentifierUri, _configuration.Tenant);
 
-            using (var store = new ClientCertificateStore(new X509Store(StoreLocation.LocalMachine)))
+            using (var store = new ClientCertificateStore(new X509Store(StoreName.My, StoreLocation.CurrentUser)))
             using (var handler = new WebRequestHandler())
             using (var client = new HttpClient(handler))
             {
