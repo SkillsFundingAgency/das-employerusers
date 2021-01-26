@@ -390,6 +390,10 @@
                                 {
                                     "name": "EmpUserApiCertificateThumbprint",
                                     "value": "[parameters('empUserApiCertificateThumbprint')]"
+                                },
+                                {
+                                    "name": "WEBSITE_LOAD_CERTIFICATES",
+                                    "value": "[parameters('empUserApiCertificateThumbprint')]"
                                 }
                             ]
                         }
