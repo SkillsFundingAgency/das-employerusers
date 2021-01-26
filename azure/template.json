@@ -562,6 +562,10 @@
                                     "value": "[parameters('useStaticCodeGenerator')]"
                                 },
                                 {
+                                    "name": "WEBSITE_LOAD_CERTIFICATES",
+                                    "value": "[parameters('tokenCertificateThumbprint')]"
+                                },
+                                {
                                     "name": "ZenDeskHelpCentreUrl",
                                     "value": "[parameters('zenDeskHelpCentreUrl')]"
                                 }
