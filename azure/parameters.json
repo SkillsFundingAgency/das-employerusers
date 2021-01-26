@@ -68,9 +68,6 @@
   "notificationsApiClientToken": {
       "value": "__NotificationsApiClientToken__"
   },
-  "profileConnectionString": {
-      "value": "__ProfileConnectionString__"
-  },                
   "profilesDatabaseSkuName": {
       "value": "__ProfilesDatabaseSkuName__"
   },
@@ -101,6 +98,12 @@
   "sharedSQLServerName": {
       "value": "__SharedSQLServerName__"
   },
+  "sqlServerServiceAccountUsername": {
+      "value": "__SQLServerServiceAccountUsername__"
+  },
+  "sqlServerServiceAccountPassword": {
+      "value": "__SQLServerServiceAccountPassword__"
+   },
   "storeEmailsOnDisk": {
       "value": "__StoreEmailsOnDisk__"
   },
@@ -112,9 +115,6 @@
   },
   "tokenCertificateThumbprint": {
       "value": "__TokenCertificateThumbprint__"
-  },
-  "usersConnectionString": {
-      "value": "__UsersConnectionString__"
   },
   "usersDatabaseSkuName": {
       "value": "__UsersDatabaseSkuName__"
