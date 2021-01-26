@@ -86,7 +86,7 @@ namespace SFA.DAS.EmployerUsers.Web
 
         private X509Certificate2 LoadCertificate()
         {
-            var store = new X509Store(StoreLocation.LocalMachine);
+            var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
             store.Open(OpenFlags.ReadOnly);
             try
             {
