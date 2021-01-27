@@ -4,9 +4,12 @@ using AutoMapper;
 using MediatR;
 using NLog;
 using SFA.DAS.EmployerUsers.Api.Types;
+using SFA.DAS.EmployerUsers.Application.Commands.ResumeUser;
+using SFA.DAS.EmployerUsers.Application.Commands.SuspendUser;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserByEmailAddress;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUsers;
+using SFA.DAS.EmployerUsers.Domain;
 
 namespace SFA.DAS.EmployerUsers.Api.Orchestrators
 {
@@ -56,6 +59,44 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
             return new OrchestratorResponse<UserViewModel>
             {
                 Data = _mapper.Map<UserViewModel>(user)
+            };
+        }
+
+        public async Task<SuspendUserResponse> Suspend(string id)
+        {
+            var user = await _mediator.SendAsync(new GetUserByIdQuery() { UserId = id } );
+
+            if (user == null)
+            {
+                return new SuspendUserResponse();
+            }
+
+            _logger.Info($"Suspending user account with Id {id}.");
+
+            await _mediator.SendAsync(new SuspendUserCommand() { User = new User() { Id = id } } );
+
+            return new SuspendUserResponse()
+            {
+                Id = id
+            };
+        }
+
+        public async Task<ResumeUserResponse> Resume(string id)
+        {
+            var user = await _mediator.SendAsync(new GetUserByIdQuery() { UserId = id });
+
+            if (user == null)
+            {
+                return new ResumeUserResponse();
+            }
+
+            _logger.Info($"Resuming user account with Id {id}.");
+
+            await _mediator.SendAsync(new ResumeUserCommand() { User = new User() { Id = id } });
+
+            return new ResumeUserResponse()
+            {
+                Id = id
             };
         }
     }
