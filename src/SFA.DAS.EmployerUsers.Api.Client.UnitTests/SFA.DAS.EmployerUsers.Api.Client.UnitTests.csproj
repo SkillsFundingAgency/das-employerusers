@@ -66,6 +66,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EmployerUsersApiClientTests\EmployerUsersApiClientTestsBase.cs" />
+    <Compile Include="EmployerUsersApiClientTests\WhenResumingAUser.cs" />
+    <Compile Include="EmployerUsersApiClientTests\WhenSuspendingAUser.cs" />
     <Compile Include="EmployerUsersApiClientTests\WhenGettingAnEmployerUser.cs" />
     <Compile Include="EmployerUsersApiClientTests\WhenSearchingWithSpecialCharacters.cs" />
     <Compile Include="EmployerUsersApiClientTests\WhenSearchingEmployerUsers.cs" />

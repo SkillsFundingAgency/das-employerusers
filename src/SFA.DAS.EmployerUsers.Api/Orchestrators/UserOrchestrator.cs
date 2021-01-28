@@ -64,7 +64,7 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
 
         public async Task<SuspendUserResponse> Suspend(string id)
         {
-            var user = await _mediator.SendAsync(new GetUserByIdQuery() { UserId = id } );
+            var user = await _mediator.SendAsync(new GetUserByIdQuery() { UserId = id });
 
             if (user == null)
             {

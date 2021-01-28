@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SFA.DAS.EmployerUsers.Api.Types;
@@ -50,6 +51,22 @@ namespace SFA.DAS.EmployerUsers.Api.Client
             uri1 = uri1.TrimEnd('/');
             uri2 = uri2.TrimStart('/');
             return $"{uri1}/{uri2}";
+        }
+
+        public async Task<SuspendUserResponse> SuspendUser(string id)
+        {
+            var absoluteUri = Combine(_configuration.ApiBaseUrl, $"/api/users/{id}/suspend");
+            var response = await _secureHttpClient.PostAsync(absoluteUri, new StringContent(JsonConvert.SerializeObject(new { Id = id })));
+
+            return JsonConvert.DeserializeObject<SuspendUserResponse>(response);
+        }
+
+        public async Task<ResumeUserResponse> ResumeUser(string id)
+        {
+            var absoluteUri = Combine(_configuration.ApiBaseUrl, $"/api/users/{id}/resume");
+            var response = await _secureHttpClient.PostAsync(absoluteUri, new StringContent(JsonConvert.SerializeObject(new { Id = id })));
+
+            return JsonConvert.DeserializeObject<ResumeUserResponse>(response);
         }
     }
 }
