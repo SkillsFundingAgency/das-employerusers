@@ -1,5 +1,5 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "apiAppCustomHostName": {
@@ -88,6 +88,10 @@
         "resourceEnvironmentName": {
             "type": "string"
         },
+        "resourceGroupLocation": {
+            "type": "string",
+            "defaultValue": "westeurope"
+        },
         "serviceName": {
             "type": "string"
         },
@@ -125,6 +129,9 @@
         "supportAppCustomHostName": {
             "type": "string",
             "defaultValue": ""
+        },
+        "tags": {
+            "type": "object"
         },
         "tokenCertificateThumbprint": {
             "type": "string"
@@ -170,6 +177,7 @@
         "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
         "profileConnectionString": "[concat('Server=tcp:',parameters('sharedSQLServerName'),'.database.windows.net,1433;Initial Catalog=',variables('profilesDatabaseName'),';Persist Security Info=False;User ID=',parameters('sqlServerServiceAccountUsername'),';Password=',parameters('sqlServerServiceAccountPassword'),';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]",
         "profilesDatabaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-profiles-db'))]",
+        "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
         "supportAppServiceName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-s', parameters('serviceName'), '-as'))]",
         "webAppServiceName": "[concat(variables('resourceNamePrefix'), 'ui-as')]",
         "workerAppServiceName": "[concat(variables('resourceNamePrefix'), '-as')]",
@@ -179,8 +187,18 @@
     },
     "resources": [
         {
-            "apiVersion": "2019-10-01",
+            "apiVersion": "2020-06-01",
+            "name": "[variables('resourceGroupName')]",
+            "type": "Microsoft.Resources/resourceGroups",
+            "location": "[parameters('resourceGroupLocation')]",
+            "tags": "[parameters('tags')]",
+            "properties": {
+            }
+        },
+        {
+            "apiVersion": "2020-06-01",
             "name": "api-app-insights",
+            "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -200,7 +218,7 @@
         },
         {
             "condition": "[greater(length(parameters('apiAppCustomHostName')), 0)]",
-            "apiVersion": "2019-10-01",
+            "apiVersion": "2020-06-01",
             "name": "api-app-service-certificate",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
@@ -224,8 +242,9 @@
             }
         },
         {
-            "apiVersion": "2019-10-01",
+            "apiVersion": "2020-06-01",
             "name": "api-app-service",
+            "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -297,8 +316,9 @@
             ]
         },
         {
-            "apiVersion": "2019-10-01",
+            "apiVersion": "2020-06-01",
             "name": "support-app-insights",
+            "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -318,7 +338,7 @@
         },
         {
             "condition": "[greater(length(parameters('supportAppCustomHostName')), 0)]",
-            "apiVersion": "2019-10-01",
+            "apiVersion": "2020-06-01",
             "name": "support-app-service-certificate",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
@@ -342,8 +362,9 @@
             }
         },
         {
-            "apiVersion": "2019-10-01",
+            "apiVersion": "2020-06-01",
             "name": "support-app-service",
+            "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -415,8 +436,9 @@
             ]
         },
         {
-            "apiVersion": "2019-10-01",
+            "apiVersion": "2020-06-01",
             "name": "web-app-insights",
+            "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -436,7 +458,7 @@
         },
         {
             "condition": "[greater(length(parameters('webAppCustomHostName')), 0)]",
-            "apiVersion": "2019-10-01",
+            "apiVersion": "2020-06-01",
             "name": "web-app-service-certificate",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
@@ -460,8 +482,9 @@
             }
         },
         {
-            "apiVersion": "2019-10-01",
+            "apiVersion": "2020-06-01",
             "name": "web-app-service",
+            "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -593,8 +616,9 @@
             ]
         },
         {
-            "apiVersion": "2019-10-01",
+            "apiVersion": "2020-06-01",
             "name": "worker-app-insights",
+            "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -613,8 +637,9 @@
             }
         },
         {
-            "apiVersion": "2017-05-10",
+            "apiVersion": "2020-06-01",
             "name": "worker-app-service-plan",
+            "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -639,8 +664,9 @@
             }
         },
         {
-            "apiVersion": "2019-10-01",
+            "apiVersion": "2020-06-01",
             "name": "worker-app-service",
+            "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -656,7 +682,7 @@
                         "value": "[variables('workerAppServicePlanName')]"
                     },
                     "appServicePlanResourceGroup": {
-                        "value": "[resourceGroup().name]"
+                        "value": "[variables('resourceGroupName')]"
                     },
                     "deployStagingSlot": {
                         "value": false
@@ -694,7 +720,7 @@
             ]
         },
         {
-            "apiVersion": "2019-10-01",
+            "apiVersion": "2020-06-01",
             "name": "profiles-sql-database",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
@@ -733,7 +759,7 @@
             }
         },
         {
-            "apiVersion": "2019-10-01",
+            "apiVersion": "2020-06-01",
             "name": "users-sql-database",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",

@@ -113,6 +113,9 @@
   "supportAppCustomHostName": {
       "value": "__SupportAppCustomHostName__"
   },
+  "tags":{
+      "value": __tags__
+  },
   "tokenCertificateThumbprint": {
       "value": "__TokenCertificateThumbprint__"
   },
