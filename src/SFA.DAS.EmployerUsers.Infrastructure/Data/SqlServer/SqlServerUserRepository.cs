@@ -150,6 +150,39 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             return new Users { UserCount = parameters.Get<int>("@totalRecords"), UserList = users };
         }
 
+        public async Task Suspend(User user)
+        {
+            try
+            {
+                using (var unitOfWork = await GetUnitOfWork())
+                {
+                    await unitOfWork.Execute("UpdateUserSuspension @Id, @state", new { user.Id, state = true });
+                    unitOfWork.CommitChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                throw;
+            }
+        }
+        public async Task Resume(User user)
+        {
+            try
+            {
+                using (var unitOfWork = await GetUnitOfWork())
+                {
+                    await unitOfWork.Execute("UpdateUserSuspension @Id, @state", new { user.Id, state = false });
+                    unitOfWork.CommitChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                throw;
+            }
+        }
+
         private async Task<SecurityCode[]> GetUserSecurityCodes(SqlConnection connection, User user)
         {
             return await Query<SecurityCode>(connection, "GetUserSecurityCodes @Id", user);

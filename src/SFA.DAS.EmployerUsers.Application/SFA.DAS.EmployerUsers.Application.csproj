@@ -121,6 +121,10 @@
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandHandler.cs" />
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandResponse.cs" />
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandValidator.cs" />
+    <Compile Include="Commands\ResumeUser\ResumeUserCommand.cs" />
+    <Compile Include="Commands\ResumeUser\ResumeUserCommandHandler.cs" />
+    <Compile Include="Commands\SuspendUser\SuspendUserCommand.cs" />
+    <Compile Include="Commands\SuspendUser\SuspendUserCommandHandler.cs" />
     <Compile Include="Queries\GetRelyingParties\GetRelyingPartiesQuery.cs" />
     <Compile Include="Queries\GetRelyingParties\GetRelyingPartiesQueryHandler.cs" />
     <Compile Include="Queries\GetUnlockCodeLength\GetUnlockCodeQuery.cs" />

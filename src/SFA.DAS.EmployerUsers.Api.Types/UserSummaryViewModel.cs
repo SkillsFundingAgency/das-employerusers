@@ -9,6 +9,7 @@
         public bool IsLocked { get; set; }
         public string Email { get; set; }
         public string Href { get; set; }
+        public bool IsSuspended { get; set; }
 
     }
 }

@@ -99,6 +99,8 @@
     <Compile Include="UserControllerTests\UserControllerTestsBase.cs" />
     <Compile Include="UserControllerTests\WhenIAGetUserByEmailAddress.cs" />
     <Compile Include="UserControllerTests\WhenIAGetUser.cs" />
+    <Compile Include="UserControllerTests\WhenIResumeAUser.cs" />
+    <Compile Include="UserControllerTests\WhenISuspendAUser.cs" />
     <Compile Include="UserControllerTests\WhenIGetUsers.cs" />
   </ItemGroup>
   <ItemGroup>

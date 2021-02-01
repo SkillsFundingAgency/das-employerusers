@@ -109,6 +109,14 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.FileSystem
             return new Users { UserCount = matchedUsers.Count, UserList = matchedUsers.ToArray() };
         }
 
+        public async Task Suspend(User user)
+        {
+        }
+
+        public async Task Resume(User user)
+        {
+        }
+
         private bool UserMatchesSearchCriteria(User user, string criteria)
         {
             if (user.Email.IndexOf(criteria, StringComparison.OrdinalIgnoreCase) != -1)

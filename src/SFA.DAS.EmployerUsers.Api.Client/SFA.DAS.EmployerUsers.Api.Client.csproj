@@ -69,7 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.Api.Types\SFA.DAS.EmployerUsers.Api.Types.csproj">
-      <Project>{97BBCDEC-D1DD-4E93-AE77-B5B0E5F9784D}</Project>
+      <Project>{97bbcdec-d1dd-4e93-ae77-b5b0e5f9784d}</Project>
       <Name>SFA.DAS.EmployerUsers.Api.Types</Name>
     </ProjectReference>
   </ItemGroup>
