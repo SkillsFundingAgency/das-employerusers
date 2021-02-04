@@ -182,7 +182,7 @@
         "webAppServiceName": "[concat(variables('resourceNamePrefix'), 'ui-as')]",
         "workerAppServiceName": "[concat(variables('resourceNamePrefix'), '-as')]",
         "workerAppServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp')]",
-        "usersDatabaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-users-db'))]",
+        "usersDatabaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-users-csmig-db'))]",
         "usersConnectionString": "[concat('Server=tcp:',parameters('sharedSQLServerName'),'.database.windows.net,1433;Initial Catalog=',variables('usersDatabaseName'),';Persist Security Info=False;User ID=',parameters('sqlServerServiceAccountUsername'),';Password=',parameters('sqlServerServiceAccountPassword'),';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
     },
     "resources": [
