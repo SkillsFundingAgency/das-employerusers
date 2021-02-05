@@ -69,7 +69,7 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
             }
             catch (Exception e)
             {
-                return InternalServerError();
+                return InternalServerError(e);
             }
 
             if (response.HasError)
