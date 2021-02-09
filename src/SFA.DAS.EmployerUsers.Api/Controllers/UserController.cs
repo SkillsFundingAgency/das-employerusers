@@ -58,7 +58,7 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
 
         [Route("{id}/suspend")]
         [HttpPost]
-        //[Authorize(Roles = "UpdateEmployerUsers")]
+        [Authorize(Roles = "UpdateEmployerUsers")]
         public async Task<IHttpActionResult> Suspend(string id)
         {
             SuspendUserResponse response = null;
