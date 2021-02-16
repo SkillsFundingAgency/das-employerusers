@@ -82,11 +82,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.Api.Client\SFA.DAS.EmployerUsers.Api.Client.csproj">
-      <Project>{B131C4F5-A178-4693-AD75-3A3B4FC90C95}</Project>
+      <Project>{60f0a1ad-ebf2-4493-8dc6-38618fb072ca}</Project>
       <Name>SFA.DAS.EmployerUsers.Api.Client</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.Api.Types\SFA.DAS.EmployerUsers.Api.Types.csproj">
-      <Project>{97BBCDEC-D1DD-4E93-AE77-B5B0E5F9784D}</Project>
+      <Project>{85d01931-89a3-4ebf-a0a0-6dc51df96554}</Project>
       <Name>SFA.DAS.EmployerUsers.Api.Types</Name>
     </ProjectReference>
   </ItemGroup>

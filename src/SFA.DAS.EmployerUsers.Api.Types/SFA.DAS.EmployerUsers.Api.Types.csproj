@@ -1,19 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
   </PropertyGroup>
-  <PropertyGroup>
-    <PackageId>SFA.DAS.EmployerUsers.Api.Types</PackageId>
-    <Authors>Esfa</Authors>
-    <Title>Types used by the DAS Employer User Api</Title>
-    <Description>Types used by the DAS Employer User Api</Description>
-    <PackageLicense>https://github.com/SkillsFundingAgency/das-employerusers/blob/master/LICENSE</PackageLicense>
-    <PackageProjectUrl>https://github.com/SkillsFundingAgency/das-employerusers/tree/master/src/SFA.DAS.EmployerUsers.Api.Types</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SkillsFundingAgency/das-employerusers</RepositoryUrl>
-    <PackageTags>Esfa;Das;</PackageTags>
-    <PackageReleaseNotes>Added support for .NetStandard2.0</PackageReleaseNotes>
-  </PropertyGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+
 </Project>

@@ -387,7 +387,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.Api.Types\SFA.DAS.EmployerUsers.Api.Types.csproj">
-      <Project>{97BBCDEC-D1DD-4E93-AE77-B5B0E5F9784D}</Project>
+      <Project>{85d01931-89a3-4ebf-a0a0-6dc51df96554}</Project>
       <Name>SFA.DAS.EmployerUsers.Api.Types</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.Application\SFA.DAS.EmployerUsers.Application.csproj">
