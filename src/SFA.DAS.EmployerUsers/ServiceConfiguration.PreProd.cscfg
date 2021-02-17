@@ -27,7 +27,7 @@
       <Setting name="ZenDeskHelpCentreUrl" value="__ZenDeskHelpCentreUrl__" />
     </ConfigurationSettings>
     <Certificates>
-      <Certificate name="WebSslCert" thumbprint="D4B7EBCE1013CBB10A6DD74D1A20E2C9A69107A2" thumbprintAlgorithm="sha1" />
+      <Certificate name="WebSslCert" thumbprint="CECA717BAB9AADCEACA86E311196012D81EB30D2" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
   <NetworkConfiguration>
