@@ -7,7 +7,6 @@ trigger:
 pr: none
 
 variables:
-- group: 'Prod Management Resources'
 - name: buildConfiguration
   value: 'release'
 - name: buildPlatform
