@@ -8,10 +8,14 @@
   workspace:
     clean: all
   steps:
-  - task: UseGitVersion@5
+  - task: gitversion/setup@0
+    displayName: gitversion/setup
     inputs:
-      versionSpec: 5.x
-
+      versionSpec: 5.x.x
+  
+  - task: gitversion/execute@0
+    displayName: gitversion/execute
+  
   - template: azure-pipelines-templates/dependency-check.yml@das-platform-building-blocks
     
   - task: NuGetToolInstaller@0
