@@ -11,7 +11,10 @@
   displayName: 'dotnet pack'
   inputs:
     command: pack
-    packagesToPack: src/SFA.DAS.EmployerUsers.Api.Client/SFA.DAS.EmployerUsers.Api.Client.csproj
+    packagesToPack: |
+      src/SFA.DAS.EmployerUsers.Api.Client/SFA.DAS.EmployerUsers.Api.Client.csproj;
+      src/SFA.DAS.EmployerUsers.Api.Types/SFA.DAS.EmployerUsers.Api.Types.csproj;
+      src/SFA.DAS.EmployerUsers.WebClientComponents/SFA.DAS.EmployerUsers.WebClientComponents.csproj
     versioningScheme: byEnvVar
     versionEnvVar: NuGetPackageVersion
     packDirectory: $(build.artifactstagingdirectory)/NuGetPackages
