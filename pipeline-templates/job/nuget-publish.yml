@@ -1,6 +1,5 @@
 ﻿jobs:
 - job: CleanArtifacts
-  condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
   displayName: Clean artifacts directory
   workspace:
     clean: all
