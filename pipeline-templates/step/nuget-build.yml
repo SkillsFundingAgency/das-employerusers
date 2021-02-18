@@ -14,7 +14,7 @@
     packagesToPack: |
       src/SFA.DAS.EmployerUsers.Api.Client/SFA.DAS.EmployerUsers.Api.Client.csproj;
       src/SFA.DAS.EmployerUsers.Api.Types/SFA.DAS.EmployerUsers.Api.Types.csproj;
-      src/SFA.DAS.EmployerUsers.WebClientComponents/SFA.DAS.EmployerUsers.WebClientComponents.csproj
+      src/SFA.DAS.EmployerUsers.WebClientComponents/SFA.DAS.EmployerUsers.WebClientComponents.nuspec
     versioningScheme: byEnvVar
     versionEnvVar: NuGetPackageVersion
     packDirectory: $(build.artifactstagingdirectory)/NuGetPackages
