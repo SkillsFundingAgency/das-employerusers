@@ -26,4 +26,9 @@ stages:
 - stage: Build
   jobs:
   - template: pipeline-templates/job/code-build.yml
+- stage: NuGetPublish
+  displayName: Publish NuGet Package
+  pool:
+    name: 'DAS - Continuous Deployment'
+  jobs:
   - template: pipeline-templates/job/nuget-publish.yml
