@@ -14,10 +14,16 @@
     packagesToPack: |
       src/SFA.DAS.EmployerUsers.Api.Client/SFA.DAS.EmployerUsers.Api.Client.csproj;
       src/SFA.DAS.EmployerUsers.Api.Types/SFA.DAS.EmployerUsers.Api.Types.csproj;
-      src/SFA.DAS.EmployerUsers.WebClientComponents/SFA.DAS.EmployerUsers.WebClientComponents.nuspec
     versioningScheme: byEnvVar
     versionEnvVar: NuGetPackageVersion
     packDirectory: $(build.artifactstagingdirectory)/NuGetPackages
+- task: NuGetCommand@2
+  inputs:
+    command: pack
+    packagesToPack: src/SFA.DAS.EmployerUsers.WebClientComponents/SFA.DAS.EmployerUsers.WebClientComponents.csproj
+    versioningScheme: byEnvVar
+    versionEnvVar: NuGetPackageVersion
+    packDestination: $(build.artifactstagingdirectory)/NuGetPackages
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: NuGetPackages'
   inputs:
