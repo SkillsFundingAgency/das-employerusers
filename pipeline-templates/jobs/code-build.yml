@@ -5,6 +5,8 @@
     demands: Agent.OS -equals Windows_NT
   variables:
   - group: BUILD Management Resources
+  workspace:
+    clean: all
   steps:
   - task: UseGitVersion@5
     inputs:

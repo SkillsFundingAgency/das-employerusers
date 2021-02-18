@@ -6,9 +6,6 @@ trigger:
 
 pr: none
 
-workspace:
-  clean: all
-
 variables:
 - group: 'Prod Management Resources'
 - name: buildConfiguration
