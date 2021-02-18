@@ -106,22 +106,10 @@
         azure/**
       targetFolder: '$(Build.ArtifactStagingDirectory)/publish'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'dotnet pack'
-    inputs:
-      command: pack
-      packagesToPack: src/SFA.DAS.EmployerUsers.Api.Client/SFA.DAS.EmployerUsers.Api.Client.csproj
-      versioningScheme: byBuildNumber
-      packDirectory: $(build.artifactstagingdirectory)/NuGetPackages
-
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact: Publish'
     inputs:
       ArtifactName: Publish
       pathtoPublish: '$(build.artifactstagingdirectory)/publish'
 
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Artifact: NuGetPackages'
-    inputs:
-      ArtifactName: NuGetPackages
-      pathtoPublish: '$(build.artifactstagingdirectory)/NuGetPackages'
+  - template: ../step/nuget-build.yml

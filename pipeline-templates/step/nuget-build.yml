@@ -1,0 +1,22 @@
+﻿steps:
+- task: PowerShell@2
+  displayName: 'Set NuGet Package Version'
+  inputs:
+    targetType: inline
+    script: |
+      if ("$(GitVersion.PreReleaseLabel)" -ne "") { $NuGetPackageVersion = "$(GitVersion.MajorMinorPatch)-prerelease" } else { $NuGetPackageVersion = "$(GitVersion.MajorMinorPatch)" }
+      Write-Host "NuGetPackageVersion: $NuGetPackageVersion"
+      Write-Host "##vso[task.setvariable variable=NuGetPackageVersion]$NuGetPackageVersion"
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet pack'
+  inputs:
+    command: pack
+    packagesToPack: src/SFA.DAS.EmployerUsers.Api.Client/SFA.DAS.EmployerUsers.Api.Client.csproj
+    versioningScheme: byEnvVar
+    versionEnvVar: NuGetPackageVersion
+    packDirectory: $(build.artifactstagingdirectory)/NuGetPackages
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: NuGetPackages'
+  inputs:
+    ArtifactName: NuGetPackages
+    pathtoPublish: '$(build.artifactstagingdirectory)/NuGetPackages'
