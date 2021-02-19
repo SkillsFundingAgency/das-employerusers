@@ -9,7 +9,7 @@ steps:
   inputs:
     targetType: inline
     script: |
-      if ("$(GitVersion.PreReleaseLabel)" -ne "") { $NuGetPackageVersion = "$(GitVersion.MajorMinorPatch)+$(PreReleaseNumber)-prerelease" } else { $NuGetPackageVersion = "$(GitVersion.MajorMinorPatch)" }
+      if ("$(GitVersion.PreReleaseLabel)" -ne "") { $NuGetPackageVersion = "$(GitVersion.MajorMinorPatch)-prerelease-$(PreReleaseNumber)" } else { $NuGetPackageVersion = "$(GitVersion.MajorMinorPatch)" }
       Write-Host "NuGetPackageVersion: $NuGetPackageVersion"
       Write-Host "##vso[task.setvariable variable=NuGetPackageVersion]$NuGetPackageVersion"
 - task: DotNetCoreCLI@2
