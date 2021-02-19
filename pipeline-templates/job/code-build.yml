@@ -113,3 +113,9 @@
       pathtoPublish: '$(build.artifactstagingdirectory)/publish'
 
   - template: ../step/nuget-build.yml
+    parameters: 
+      DotNetFrameworkPackagesToPack: |
+        src/SFA.DAS.EmployerUsers.WebClientComponents/SFA.DAS.EmployerUsers.WebClientComponents.csproj
+      DotNetStandardPackagesToPack: |
+        src/SFA.DAS.EmployerUsers.Api.Client/SFA.DAS.EmployerUsers.Api.Client.csproj;
+        src/SFA.DAS.EmployerUsers.Api.Types/SFA.DAS.EmployerUsers.Api.Types.csproj;
