@@ -12,7 +12,7 @@ steps:
       Write-Host "NuGetPackageVersion: $NuGetPackageVersion"
       Write-Host "##vso[task.setvariable variable=NuGetPackageVersion]$NuGetPackageVersion"
 - task: DotNetCoreCLI@2
-  condition: ne(${{ parameters.DotNetStandardPackagesToPack }}, '')
+  condition: ne('${{ parameters.DotNetStandardPackagesToPack }}', '')
   displayName: 'dotnet pack'
   inputs:
     command: pack
@@ -21,7 +21,7 @@ steps:
     versionEnvVar: NuGetPackageVersion
     packDirectory: $(build.artifactstagingdirectory)/NuGetPackages
 - task: NuGetCommand@2
-  condition: ne(${{ parameters.DotNetFrameworkPackagesToPack }}, '')
+  condition: ne('${{ parameters.DotNetFrameworkPackagesToPack }}', '')
   displayName: 'NuGet pack'
   inputs:
     command: pack
