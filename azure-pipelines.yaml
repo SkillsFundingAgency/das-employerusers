@@ -26,10 +26,4 @@ stages:
 - stage: Build
   jobs:
   - template: pipeline-templates/job/code-build.yml
-- stage: NuGetPublish
-  condition: and(succeeded(), eq(variables['Build.Reason'], 'Manual'))
-  displayName: Publish NuGet Package
-  pool:
-    name: 'DAS - Continuous Deployment'
-  jobs:
-  - template: pipeline-templates/job/nuget-publish.yml
+- template: pipeline-templates/stage/nuget-publish.yml
