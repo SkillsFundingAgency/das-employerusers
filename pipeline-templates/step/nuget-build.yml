@@ -1,4 +1,5 @@
-﻿parameters:
+﻿# this template depends on GitVersion being implemented earlier in the pipeline
+parameters:
   DotNetFrameworkPackagesToPack: ''
   DotNetStandardPackagesToPack: ''
 
