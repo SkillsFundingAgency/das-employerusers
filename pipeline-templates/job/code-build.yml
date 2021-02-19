@@ -115,7 +115,7 @@
       ArtifactName: Publish
       pathtoPublish: '$(build.artifactstagingdirectory)/publish'
 
-  - template: ../step/nuget-build.yml
+  - template: azure-pipelines-templates/build/step/nuget-pack.yml@das-platform-building-blocks
     parameters: 
       DotNetFrameworkPackagesToPack: |
         src/SFA.DAS.EmployerUsers.WebClientComponents/SFA.DAS.EmployerUsers.WebClientComponents.csproj
