@@ -15,6 +15,9 @@
   
   - task: gitversion/execute@0
     displayName: gitversion/execute
+    inputs:
+      useConfigFile: true
+      configFilePath: GitVersion.yml
   
   - template: azure-pipelines-templates/dependency-check.yml@das-platform-building-blocks
     
