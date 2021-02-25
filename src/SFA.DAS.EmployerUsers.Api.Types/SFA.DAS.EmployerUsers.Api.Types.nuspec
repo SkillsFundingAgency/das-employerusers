@@ -12,11 +12,8 @@
     <summary>Types used by the DAS Employer Users Api</summary>
     <releaseNotes />
     <dependencies>
-      <group targetFramework=".NETFramework4.5">
-      </group>
+		<group targetFramework=".NETFramework4.6.2" />
+		<group targetFramework=".NETStandard2.0" />
     </dependencies>
-  </metadata>
-  <files>
-    <file src="bin\Release\SFA.DAS.EmployerUsers.Api.Types.dll" target="lib\net45\SFA.DAS.EmployerUsers.Api.Types.dll" />
-  </files>
+  </metadata>  
 </package>

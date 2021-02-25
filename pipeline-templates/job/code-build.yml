@@ -1,0 +1,124 @@
+﻿jobs:
+- job: CodeBuild
+  pool:
+    name: DAS - Continuous Integration
+    demands: Agent.OS -equals Windows_NT
+  variables:
+  - group: BUILD Management Resources
+  workspace:
+    clean: all
+  steps:
+  - task: gitversion/setup@0
+    displayName: gitversion/setup
+    inputs:
+      versionSpec: 5.x.x
+  
+  - task: gitversion/execute@0
+    displayName: gitversion/execute
+    inputs:
+      useConfigFile: true
+      configFilePath: GitVersion.yml
+  
+  - template: azure-pipelines-templates/dependency-check.yml@das-platform-building-blocks
+    
+  - task: NuGetToolInstaller@0
+    displayName: 'Use NuGet 4.3.0'
+    inputs:
+      versionSpec: 4.x
+
+  - task: NuGetCommand@2
+    displayName: 'NuGet Restore SFA.DAS.EmployerUsers.sln and SFA.DAS.EmployerUsers.Support.sln'
+    inputs:
+      restoreSolution: 'src/SFA.DAS.EmployerUsers*.sln'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet restore all'
+    inputs:
+      command: restore
+      projects: "src/**/*.csproj"
+
+  - task: VSBuild@1
+    displayName: 'Build SFA.DAS.EmployerUsers.sln and SFA.DAS.EmployerUsers.Support.sln'
+    inputs:
+      solution: 'src/SFA.DAS.EmployerUsers*.sln'
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
+      clean: true
+      vsVersion: '16.0'
+
+  - task: VSTest@2
+    displayName: 'Run NUnit Tests'
+    inputs:
+      testAssemblyVer2: |
+        **/bin/Release/*UnitTests.dll
+        **/bin/Release/*/*UnitTests.dll
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'    
+
+  - task: VSBuild@1
+    displayName: 'Publish API'
+    inputs:
+      solution: src/SFA.DAS.EmployerUsers.Api/SFA.DAS.EmployerUsers.Api.csproj
+      vsVersion: '16.0'
+      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Api/"'
+      platform: 'anycpu'
+      configuration: '$(buildConfiguration)'
+      clean: true
+
+  - task: VSBuild@1
+    displayName: 'Publish Support App'
+    inputs:
+      solution: src/SFA.DAS.EmployerUsers.Support.Web/SFA.DAS.EmployerUsers.Support.Web.csproj
+      vsVersion: '16.0'
+      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Support.Web/"'
+      platform: 'anycpu'
+      configuration: '$(buildConfiguration)'
+      clean: true
+
+  - task: VSBuild@1
+    displayName: 'Publish Web App'
+    inputs:
+      solution: src/SFA.DAS.EmployerUsers.Web/SFA.DAS.EmployerUsers.Web.csproj
+      vsVersion: '16.0'
+      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Web/"'
+      platform: 'anycpu'
+      configuration: '$(buildConfiguration)'
+      clean: true
+
+  - task: VSBuild@1
+    displayName: 'Publish WebJob'
+    inputs:
+      solution: src/SFA.DAS.EmployerUsers.Host.WebJob/SFA.DAS.EmployerUsers.Host.WebJob.csproj
+      vsVersion: '16.0'
+      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Host.WebJob/"'
+      platform: 'anycpu'
+      configuration: '$(buildConfiguration)'
+      clean: true
+
+  - task: CopyFiles@2
+    displayName: 'Copy dacpac Files to: $(Build.ArtifactStagingDirectory)'
+    inputs:
+      contents: |
+        src/**/*.dacpac
+      flattenFolders: true
+      targetFolder: '$(Build.ArtifactStagingDirectory)/publish/dacpacs/'
+  - task: CopyFiles@2
+    displayName: 'Copy azure Files to: $(Build.ArtifactStagingDirectory)'
+    inputs:
+      contents: |
+        azure/**
+      targetFolder: '$(Build.ArtifactStagingDirectory)/publish'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Publish'
+    inputs:
+      ArtifactName: Publish
+      pathtoPublish: '$(build.artifactstagingdirectory)/publish'
+
+  - template: azure-pipelines-templates/build/step/nuget-pack.yml@das-platform-building-blocks
+    parameters: 
+      DotNetFrameworkPackagesToPack: |
+        src/SFA.DAS.EmployerUsers.WebClientComponents/SFA.DAS.EmployerUsers.WebClientComponents.csproj
+      DotNetStandardPackagesToPack: |
+        src/SFA.DAS.EmployerUsers.Api.Client/SFA.DAS.EmployerUsers.Api.Client.csproj;
+        src/SFA.DAS.EmployerUsers.Api.Types/SFA.DAS.EmployerUsers.Api.Types.csproj;

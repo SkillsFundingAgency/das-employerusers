@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerUsers.Api.Client
             var authenticationResult = await GetAuthenticationResult(_configuration.ClientId, _configuration.ClientSecret, _configuration.IdentifierUri, _configuration.Tenant);
 
             using (var store = new ClientCertificateStore(new X509Store(StoreName.My, StoreLocation.CurrentUser)))
-            using (var handler = new WebRequestHandler())
+            using (var handler = new HttpClientHandler())
             using (var client = new HttpClient(handler))
             {
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authenticationResult.AccessToken);
@@ -54,7 +54,7 @@ namespace SFA.DAS.EmployerUsers.Api.Client
             var authenticationResult = await GetAuthenticationResult(_configuration.ClientId, _configuration.ClientSecret, _configuration.IdentifierUri, _configuration.Tenant);
 
             using (var store = new ClientCertificateStore(new X509Store(StoreName.My, StoreLocation.CurrentUser)))
-            using (var handler = new WebRequestHandler())
+            using (var handler = new HttpClientHandler())
             using (var client = new HttpClient(handler))
             {
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authenticationResult.AccessToken);
