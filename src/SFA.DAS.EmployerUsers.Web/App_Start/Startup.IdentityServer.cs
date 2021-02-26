@@ -60,7 +60,7 @@ namespace SFA.DAS.EmployerUsers.Web
                         
                     },
                     Factory = factory,
-
+                    PublicOrigin = configuration.PublicOrigin,
                     AuthenticationOptions = new AuthenticationOptions
                     {
                         EnablePostSignOutAutoRedirect = false,

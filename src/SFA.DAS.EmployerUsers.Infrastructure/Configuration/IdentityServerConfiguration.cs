@@ -4,5 +4,6 @@
     {
         public string ApplicationBaseUrl { get; set; }
         public string EmployerPortalUrl { get; set; }
+        public string PublicOrigin { get; set; }
     }
 }
