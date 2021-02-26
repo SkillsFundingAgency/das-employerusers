@@ -573,6 +573,10 @@
                                     "value": "[variables('profileConnectionString')]"
                                 },
                                 {
+                                    "name": "PublicOrigin",
+                                    "value": "[concat('https://', parameters('webAppCustomHostName'))]"
+                                },
+                                {
                                     "name": "StoreEmailsOnDisk",
                                     "value": "[parameters('storeEmailsOnDisk')]"
                                 },
