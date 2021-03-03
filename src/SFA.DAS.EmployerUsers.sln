@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "SFA.DAS.EmployerUsers.Support.CloudService", "SFA.DAS.EmployerUsers.Support.CloudService\SFA.DAS.EmployerUsers.Support.CloudService.ccproj", "{114C3D2F-1E05-45ED-ACF6-161F534475C6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Support.Web", "SFA.DAS.EmployerUsers.Support.Web\SFA.DAS.EmployerUsers.Support.Web.csproj", "{5B06A69D-8660-4D15-B6B1-6A7DDBAA5CE5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Support.Infrastructure", "SFA.DAS.EmployerUsers.Support.Infrastructure\SFA.DAS.EmployerUsers.Support.Infrastructure.csproj", "{4CC506AE-F6BC-46B2-910A-D6BF29DA8D90}"
@@ -99,10 +97,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{114C3D2F-1E05-45ED-ACF6-161F534475C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{114C3D2F-1E05-45ED-ACF6-161F534475C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{114C3D2F-1E05-45ED-ACF6-161F534475C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{114C3D2F-1E05-45ED-ACF6-161F534475C6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5B06A69D-8660-4D15-B6B1-6A7DDBAA5CE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5B06A69D-8660-4D15-B6B1-6A7DDBAA5CE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B06A69D-8660-4D15-B6B1-6A7DDBAA5CE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
