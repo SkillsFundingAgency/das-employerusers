@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ServiceDefinition name="Sfa.Das.Console.Web.CloudService" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2015-04.2.6">
+  <WebRole name="SFA.DAS.EmployerUsers.Support.Web" vmsize="ExtraSmall">
+    <Sites>
+      <Site name="Web">
+        <Bindings>
+          <Binding name="Binding1" endpointName="SimpleEndpoint" />
+          <Binding name="Endpoint1" endpointName="HttpsEndpoint" />
+        </Bindings>
+      </Site>
+    </Sites>
+    <ConfigurationSettings>
+      <Setting name="ConfigurationStorageConnectionString" />
+      <Setting name="LoggingRedisConnectionString" />
+      <Setting name="EnvironmentName" />
+      <Setting name="InstrumentationKey" />
+      <Setting name="EmpUserApiCertificateThumbprint" />
+    </ConfigurationSettings>
+    <Endpoints>
+      <InputEndpoint name="SimpleEndpoint" protocol="http" port="80" />
+      <InputEndpoint name="HttpsEndpoint" protocol="https" port="44348" certificate="WebSslCert" />
+    </Endpoints>
+    <Certificates>
+      <Certificate name="WebSslCert" storeLocation="LocalMachine" storeName="My" />
+    </Certificates>
+  </WebRole>
+</ServiceDefinition>
