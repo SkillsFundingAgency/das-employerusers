@@ -38,9 +38,9 @@
       projects: "src/**/*.csproj"
 
   - task: VSBuild@1
-    displayName: 'Build SFA.DAS.EmployerUsers.sln and SFA.DAS.EmployerUsers.Support.sln'
+    displayName: 'Build SFA.DAS.EmployerUsers.sln'
     inputs:
-      solution: 'src/SFA.DAS.EmployerUsers*.sln'
+      solution: 'src/SFA.DAS.EmployerUsers.sln'
       platform: '$(buildPlatform)'
       configuration: '$(buildConfiguration)'
       clean: true
