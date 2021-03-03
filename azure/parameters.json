@@ -41,9 +41,6 @@
   "employerPortalUrl": {
       "value": "__EmployerPortalUrl__"
   },
-  "empUserApiCertificateThumbprint": {
-      "value": "__EmpUserApiCertificateThumbprint__"
-  },
   "environmentName": {
       "value": "__EnvironmentName__"
   },
@@ -106,12 +103,6 @@
    },
   "storeEmailsOnDisk": {
       "value": "__StoreEmailsOnDisk__"
-  },
-  "supportAppCertificateName": {
-      "value": "__SupportAppCertificateName__"
-  },
-  "supportAppCustomHostName": {
-      "value": "__SupportAppCustomHostName__"
   },
   "tags":{
       "value": __tags__
