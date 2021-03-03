@@ -494,7 +494,7 @@ Target "Build Projects" (fun _ ->
 
     trace "Building Projects"
 
-    !! (@".\**\*.csproj")
+    !! (@".\**\SFA.DAS.EmployerUsers.Support.*\*.csproj")
       |> myBuildConfig "" "Rebuild"
       |> Log "AppBuild-Output: "
 
