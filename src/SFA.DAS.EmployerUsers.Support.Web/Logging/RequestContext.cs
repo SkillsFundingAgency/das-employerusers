@@ -5,7 +5,7 @@ using SFA.DAS.NLog.Logger;
 namespace SFA.DAS.EmployerUsers.Support.Web.Logging
 {
     [ExcludeFromCodeCoverage]
-    public sealed class RequestContext : IWebLoggingContext
+    public sealed class RequestContext : IRequestContext
     {
         public RequestContext(HttpContextBase context)
         {

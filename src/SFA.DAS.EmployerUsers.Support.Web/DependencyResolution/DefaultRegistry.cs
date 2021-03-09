@@ -17,7 +17,7 @@
 
 namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
 {
-    using System.Configuration;
+    using Microsoft.Azure;
     using SFA.DAS.Configuration;
     using SFA.DAS.Configuration.AzureTableStorage;
     using SFA.DAS.EAS.Account.Api.Client;
@@ -63,9 +63,9 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
 
         private WebConfiguration GetConfiguration()
         {
-            var environment = ConfigurationManager.AppSettings["EnvironmentName"] ?? 
+            var environment = CloudConfigurationManager.GetSetting("EnvironmentName") ?? 
                               "LOCAL";
-            var storageConnectionString = ConfigurationManager.AppSettings["ConfigurationStorageConnectionString"] ??
+            var storageConnectionString = CloudConfigurationManager.GetSetting("ConfigurationStorageConnectionString") ??
                                           "UseDevelopmentStorage=true;";
 
             var configurationRepository = new AzureTableStorageConfigurationRepository(storageConnectionString); ;
