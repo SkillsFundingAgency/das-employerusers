@@ -104,6 +104,9 @@
   "storeEmailsOnDisk": {
       "value": "__StoreEmailsOnDisk__"
   },
+  "supportAppPublicIp": {
+      "value": "__SupportAppPublicIp__"
+  },
   "tags":{
       "value": __tags__
   },
