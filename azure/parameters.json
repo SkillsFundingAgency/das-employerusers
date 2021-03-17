@@ -28,7 +28,10 @@
   },
   "authCodeCacheConnectionString": {
       "value": "__AuthCodeCacheConnectionString__"
-  },                        
+  }, 
+  "backendAccessRestrictions":{
+      "value": __BackendAccessRestrictions__
+  },
   "baseExternalUrl": {
       "value": "__BaseExternalUrl__"
   },

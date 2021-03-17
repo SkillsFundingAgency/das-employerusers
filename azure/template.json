@@ -32,7 +32,11 @@
         },
         "authCodeCacheConnectionString": {
             "type": "securestring"
-        },                        
+        },
+        "backendAccessRestrictions": {
+            "type": "array",
+            "defaultValue": []
+        },
         "baseExternalUrl": {
             "type": "string"
         },
@@ -297,7 +301,7 @@
                         "value": "[if(greater(length(parameters('apiAppCustomHostName')), 0), reference('api-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
                     },
                     "ipSecurityRestrictions": {
-                        "value": "[concat(parameters('appServiceAllowedIPs'), parameters('supportAppPublicIp'))]"
+                        "value": "[concat(parameters('backendAccessRestrictions'), parameters('supportAppPublicIp'))]"
                     }
                 }
             },
