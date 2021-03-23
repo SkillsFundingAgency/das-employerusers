@@ -27,9 +27,9 @@
       versionSpec: 4.x
 
   - task: NuGetCommand@2
-    displayName: 'NuGet Restore SFA.DAS.EmployerUsers.sln and SFA.DAS.EmployerUsers.Support.sln'
+    displayName: 'NuGet Restore SFA.DAS.EmployerUsers.sln'
     inputs:
-      restoreSolution: 'src/SFA.DAS.EmployerUsers*.sln'
+      restoreSolution: 'src/SFA.DAS.EmployerUsers.sln'
 
   - task: DotNetCoreCLI@2
     displayName: 'dotnet restore all'
