@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure;
+﻿using System.Configuration;
+using Microsoft.Azure;
 using Owin;
 using Microsoft.Owin.Security.ActiveDirectory;
 
@@ -13,10 +14,10 @@ namespace SFA.DAS.EmployerUsers.Api
                {
                    TokenValidationParameters = new System.IdentityModel.Tokens.TokenValidationParameters
                    {
-                       ValidAudiences = CloudConfigurationManager.GetSetting("idaAudience").Split(','),
+                       ValidAudiences = ConfigurationManager.AppSettings["idaAudience"].Split(','),
                        RoleClaimType = "roles"
                    },
-                   Tenant = CloudConfigurationManager.GetSetting("idaTenant")
+                   Tenant = ConfigurationManager.AppSettings["idaTenant"]
                });
         }
     }

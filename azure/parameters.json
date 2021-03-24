@@ -1,0 +1,138 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "apiAppCustomHostName": {
+      "value": "__ApiAppCustomHostName__"
+  },
+  "apiAppCertificateName": {
+      "value": "__ApiAppCertificateName__"
+  },
+  "appServiceAllowedIPs": {
+      "value": __AppServiceAllowedIPs__
+  },
+  "auditApiBaseUrl": {
+      "value": "__AuditApiBaseUrl__"
+  },
+  "auditApiClientId": {
+      "value": "__AuditApiClientId__"
+  },
+  "auditApiIdentifierUri": {
+      "value": "__AuditApiIdentifierUri__"
+  },                
+  "auditApiSecret": {
+      "value": "__AuditApiSecret__"
+  },
+  "auditApiTenant": {
+      "value": "__AuditApiTenant__"
+  },
+  "authCodeCacheConnectionString": {
+      "value": "__AuthCodeCacheConnectionString__"
+  }, 
+  "backendAccessRestrictions":{
+      "value": __BackendAccessRestrictions__
+  },
+  "baseExternalUrl": {
+      "value": "__BaseExternalUrl__"
+  },
+  "configurationStorageConnectionString": {
+      "value": "__ConfigurationStorageConnectionString__"
+  },
+  "elasticPoolName": {
+      "value": "__ElasticPoolName__"
+  },
+  "employerPortalUrl": {
+      "value": "__EmployerPortalUrl__"
+  },
+  "environmentName": {
+      "value": "__EnvironmentName__"
+  },
+  "idaAudience": {
+      "value": "__IdaAudience__"
+  },
+  "idaTenant": {
+      "value": "__IdaTenant__"
+  },
+  "logAnalyticsWorkspaceName": {
+      "value": "__logAnalyticsWorkspaceName__"
+  },
+  "loggingRedisConnectionString": {
+      "value": "__loggingRedisConnectionString__"
+  },
+  "loggingRedisKey": {
+      "value": "__LoggingRedisKey__"
+  },
+  "notificationsApiBaseUrl": {
+      "value": "__NotificationsApiBaseUrl__"
+  },
+  "notificationsApiClientToken": {
+      "value": "__NotificationsApiClientToken__"
+  },
+  "profilesDatabaseSkuName": {
+      "value": "__ProfilesDatabaseSkuName__"
+  },
+  "profilesDatabaseTier": {
+      "value": "__ProfilesDatabaseTier__"
+  },
+  "resourceEnvironmentName": {
+      "value": "__ResourceEnvironmentName__"
+  },
+  "serviceName": {
+      "value": "__ServiceName__"
+  },
+  "sharedBackEndAppServicePlanName": {
+      "value": "__SharedBackEndAppServicePlanName__"
+  },
+  "sharedFrontEndAppServicePlanName": {
+      "value": "__SharedFrontEndAppServicePlanName__"
+  },
+  "sharedKeyVaultName": {
+      "value": "__SharedKeyVaultName__"
+  },
+  "sharedManagementResourceGroup": {
+      "value": "__SharedManagementResourceGroup__"
+  },
+  "sharedEnvResourceGroup": {
+      "value": "__SharedEnvResourceGroup__"
+  },
+  "sharedSQLServerName": {
+      "value": "__SharedSQLServerName__"
+  },
+  "sqlServerServiceAccountUsername": {
+      "value": "__SQLServerServiceAccountUsername__"
+  },
+  "sqlServerServiceAccountPassword": {
+      "value": "__SQLServerServiceAccountPassword__"
+   },
+  "storeEmailsOnDisk": {
+      "value": "__StoreEmailsOnDisk__"
+  },
+  "supportAppPublicIp": {
+      "value": __SupportAppPublicIp__
+  },
+  "tags":{
+      "value": __tags__
+  },
+  "tokenCertificateThumbprint": {
+      "value": "__TokenCertificateThumbprint__"
+  },
+  "usersDatabaseSkuName": {
+      "value": "__UsersDatabaseSkuName__"
+  },
+  "usersDatabaseTier": {
+      "value": "__UsersDatabaseTier__"
+  },
+  "useStaticCodeGenerator": {
+      "value": "__UseStaticCodeGenerator__"
+  },
+  "webAppCertificateName": {
+      "value": "__WebAppCertificateName__"
+  },
+  "webAppCustomHostName": {
+      "value": "__WebAppCustomHostName__"
+  },
+  "zenDeskHelpCentreUrl": {
+      "value": "__ZenDeskHelpCentreUrl__"
+  }
+  }
+}

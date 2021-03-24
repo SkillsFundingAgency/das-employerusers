@@ -27,8 +27,8 @@ namespace SFA.DAS.EmployerUsers.Api.Client
         {
             var authenticationResult = await GetAuthenticationResult(_configuration.ClientId, _configuration.ClientSecret, _configuration.IdentifierUri, _configuration.Tenant);
 
-            using (var store = new ClientCertificateStore(new X509Store(StoreLocation.LocalMachine)))
-            using (var handler = new WebRequestHandler())
+            using (var store = new ClientCertificateStore(new X509Store(StoreName.My, StoreLocation.CurrentUser)))
+            using (var handler = new HttpClientHandler())
             using (var client = new HttpClient(handler))
             {
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authenticationResult.AccessToken);
@@ -43,6 +43,32 @@ namespace SFA.DAS.EmployerUsers.Api.Client
                 }
 
                 var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+                return await response.Content.ReadAsStringAsync();
+            }
+        }
+
+        public virtual async Task<string> PostAsync(string url, HttpContent content)
+        {
+            var authenticationResult = await GetAuthenticationResult(_configuration.ClientId, _configuration.ClientSecret, _configuration.IdentifierUri, _configuration.Tenant);
+
+            using (var store = new ClientCertificateStore(new X509Store(StoreName.My, StoreLocation.CurrentUser)))
+            using (var handler = new HttpClientHandler())
+            using (var client = new HttpClient(handler))
+            {
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authenticationResult.AccessToken);
+
+                if (!string.IsNullOrWhiteSpace(_configuration.ClientCertificateThumbprint))
+                {
+                    var certificate = store.FindCertificateByThumbprint(_configuration.ClientCertificateThumbprint);
+                    if (certificate != null)
+                    {
+                        handler.ClientCertificates.Add(certificate);
+                    }
+                }
+
+                var response = await client.PostAsync(url, content);
                 response.EnsureSuccessStatusCode();
 
                 return await response.Content.ReadAsStringAsync();

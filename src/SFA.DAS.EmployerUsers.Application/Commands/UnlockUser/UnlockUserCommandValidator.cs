@@ -1,7 +1,7 @@
 using System;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Azure;
 using SFA.DAS.EmployerUsers.Application.Validation;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
@@ -43,7 +43,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UnlockUser
             {
                 result.AddError(nameof(item.UnlockCode), "Unlock code is not correct");
             }
-            else if (matchingUnlockCode.ExpiryTime < DateTime.UtcNow && CloudConfigurationManager.GetSetting("UseStaticCodeGenerator").Equals("false", StringComparison.CurrentCultureIgnoreCase))
+            else if (matchingUnlockCode.ExpiryTime < DateTime.UtcNow && ConfigurationManager.AppSettings["UseStaticCodeGenerator"].Equals("false", StringComparison.CurrentCultureIgnoreCase))
             {
                 result.AddError(nameof(item.UnlockCode), "Unlock code has expired");
                 return Task.FromResult(result);

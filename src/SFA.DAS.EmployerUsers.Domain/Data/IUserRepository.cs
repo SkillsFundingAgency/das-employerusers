@@ -14,5 +14,8 @@ namespace SFA.DAS.EmployerUsers.Domain.Data
         Task Delete(User user);
         Task<int> GetUserCount();
         Task<Users> SearchUsers(string criteria, int pageSize, int pageNumber);
+
+        Task Suspend(User user);
+        Task Resume(User user);
     }
 }

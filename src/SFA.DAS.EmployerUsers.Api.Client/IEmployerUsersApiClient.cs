@@ -10,5 +10,9 @@ namespace SFA.DAS.EmployerUsers.Api.Client
         Task<PagedApiResponseViewModel<UserSummaryViewModel>> GetPageOfEmployerUsers(int pageNumber = 1, int pageSize = 1000);
 
         Task<PagedApiResponseViewModel<UserSummaryViewModel>> SearchEmployerUsers(string criteria, int pageNumber = 1, int pageSize = 1000);
+
+        Task<SuspendUserResponse> SuspendUser(string id);
+
+        Task<ResumeUserResponse> ResumeUser(string id);
     }
 }

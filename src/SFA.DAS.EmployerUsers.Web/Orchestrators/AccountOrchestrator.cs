@@ -71,15 +71,17 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                         Status = HttpStatusCode.BadRequest,
                         FlashMessage = new FlashMessageViewModel
                         {
-                            ErrorMessages = new Dictionary<string, string> {
+                            ErrorMessages = new Dictionary<string, string>
+                            {
                                 {
                                     "", "Invalid credentials"
-                                } },
+                                }
+                            },
                             Severity = FlashMessageSeverityLevel.Error,
                             Headline = "Errors to fix",
                             Message = "Check the following details:"
                         },
-                        Data = new LoginResultModel { Success = false }
+                        Data = new LoginResultModel {Success = false}
                     };
                 }
 
@@ -87,7 +89,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
                 return new OrchestratorResponse<LoginResultModel>
                 {
-                    Data = new LoginResultModel { Success = true, RequiresActivation = !user.IsActive }
+                    Data = new LoginResultModel {Success = true, RequiresActivation = !user.IsActive}
                 };
             }
             catch (InvalidRequestException ex)
@@ -102,19 +104,42 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                         Headline = "Errors to fix",
                         Message = "Check the following details:"
                     },
-                    Data = new LoginResultModel { Success = false }
+                    Data = new LoginResultModel {Success = false}
                 };
             }
             catch (AccountLockedException ex)
             {
                 _logger.Info(ex.Message);
 
-                return new OrchestratorResponse<LoginResultModel> { Data = new LoginResultModel { AccountIsLocked = true } };
+                return new OrchestratorResponse<LoginResultModel>
+                {
+                    Data = new LoginResultModel { AccountIsLocked = true }
+                };
+            }
+            catch (AccountSuspendedException ex)
+            {
+                _logger.Info(ex.Message);
+
+                return new OrchestratorResponse<LoginResultModel>
+                {
+                    Status = HttpStatusCode.Forbidden,
+                    FlashMessage = new FlashMessageViewModel
+                    {
+                        ErrorMessages = new Dictionary<string,string> {{string.Empty, "There was a problem logging into your account" }},
+                        Severity = FlashMessageSeverityLevel.Error,
+                        Headline = "Errors to fix",
+                        Message = "Check the following details:"
+                    },
+                    Data = new LoginResultModel { AccountIsSuspended = true }
+                };
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, ex.Message);
-                return new OrchestratorResponse<LoginResultModel> { Data = new LoginResultModel { Success = false } };
+                return new OrchestratorResponse<LoginResultModel>
+                {
+                    Data = new LoginResultModel { Success = false }
+                };
             }
         }
 

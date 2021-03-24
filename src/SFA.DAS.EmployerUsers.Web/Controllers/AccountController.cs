@@ -118,7 +118,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
             if (result.Data.AccountIsLocked)
             {
-
                 return RedirectToAction("Unlock");
             }
 

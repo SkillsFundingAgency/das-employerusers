@@ -16,8 +16,11 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
+using System;
+using System.Configuration;
 using AutoMapper;
 using MediatR;
+using Microsoft.Azure;
 using SFA.DAS.Audit.Client;
 using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Data;
@@ -42,8 +45,35 @@ namespace SFA.DAS.EmployerUsers.Api.DependencyResolution {
 
             For<IUserRepository>().Use<SqlServerUserRepository>();
 
+            For<IAuditMessageFactory>().Use<AuditMessageFactory>().Singleton();
+            For<IAuditService>().Use<AuditService>();
+
             AddAutoMapperRegistrations();
             AddMediatrRegistrations();
+
+            var environment = Environment.GetEnvironmentVariable("DASENV");
+            if (string.IsNullOrEmpty(environment))
+            {
+                environment = ConfigurationManager.AppSettings["EnvironmentName"];
+            }
+
+            if (environment.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase))
+            {
+                For<IAuditApiClient>().Use<StubAuditApiClient>().Ctor<string>().Is(string.Format(@"{0}\App_Data\Audit\", AppDomain.CurrentDomain.BaseDirectory));
+            }
+            else
+            {
+                For<IAuditApiClient>().Use<AuditApiClient>();
+                For<IAuditMessageFactory>().Use<AuditMessageFactory>().Singleton();
+                For<IAuditApiConfiguration>().Use(() => new AuditApiConfiguration
+                {
+                    ApiBaseUrl = ConfigurationManager.AppSettings["AuditApiBaseUrl"],
+                    ClientId = ConfigurationManager.AppSettings["AuditApiClientId"],
+                    ClientSecret = ConfigurationManager.AppSettings["AuditApiSecret"],
+                    IdentifierUri = ConfigurationManager.AppSettings["AuditApiIdentifierUri"],
+                    Tenant = ConfigurationManager.AppSettings["AuditApiTenant"]
+                });
+            }
         }
 
         private void AddAutoMapperRegistrations()

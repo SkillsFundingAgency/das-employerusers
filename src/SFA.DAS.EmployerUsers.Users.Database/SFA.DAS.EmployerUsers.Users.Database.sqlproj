@@ -86,6 +86,7 @@
     <Build Include="StoredProcedures\GetUsers.sql" />
     <Build Include="StoredProcedures\UserCount.sql" />
     <Build Include="StoredProcedures\SearchUsers.sql" />
+    <Build Include="StoredProcedures\UpdateUserSuspension.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="SeedData\SeedData.sql" />

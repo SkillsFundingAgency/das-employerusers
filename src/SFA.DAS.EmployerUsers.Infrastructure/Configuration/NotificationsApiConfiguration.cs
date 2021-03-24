@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure;
+﻿using System.Configuration;
 using SFA.DAS.Notifications.Api.Client.Configuration;
 
 namespace SFA.DAS.EmployerUsers.Infrastructure.Configuration
@@ -7,8 +7,8 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Configuration
     {
         public NotificationsApiConfiguration()
         {
-            BaseUrl = CloudConfigurationManager.GetSetting("NotificationsApiBaseUrl");
-            ClientToken = CloudConfigurationManager.GetSetting("NotificationsApiClientToken");
+            BaseUrl = ConfigurationManager.AppSettings["NotificationsApiBaseUrl"];
+            ClientToken = ConfigurationManager.AppSettings["NotificationsApiClientToken"];
         }
         public string BaseUrl { get; set; }
         public string ClientToken { get; set; }

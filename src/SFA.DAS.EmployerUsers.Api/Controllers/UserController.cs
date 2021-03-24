@@ -1,6 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.ModelBinding;
 using SFA.DAS.EmployerUsers.Api.Orchestrators;
+using SFA.DAS.EmployerUsers.Api.Types;
 
 namespace SFA.DAS.EmployerUsers.Api.Controllers
 {
@@ -49,6 +54,68 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
             }
 
             return Ok(user.Data);
+        }
+
+        [Route("{id}/suspend")]
+        [HttpPost]
+        [Authorize(Roles = "UpdateEmployerUsers")]
+        public async Task<IHttpActionResult> Suspend(string id)
+        {
+            SuspendUserResponse response = null;
+
+            try
+            {
+                response = await _orchestrator.Suspend(id);
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e);
+            }
+
+            if (response.HasError)
+            {
+                var modelState = new ModelStateDictionary();
+                response.Errors.ToList().ForEach(error => modelState.AddModelError(error.Key, error.Value));
+                return BadRequest(modelState);
+            }
+
+            if(string.IsNullOrEmpty(response.Id))
+            {
+                return NotFound();
+            }
+
+            return Ok(response);
+        }
+
+        [Route("{id}/resume")]
+        [HttpPost]
+        [Authorize(Roles = "UpdateEmployerUsers")]
+        public async Task<IHttpActionResult> Resume(string id)
+        {
+            ResumeUserResponse response = null;
+
+            try
+            {
+                response = await _orchestrator.Resume(id);
+            }
+            catch (Exception e)
+            {
+                return InternalServerError();
+            }
+
+            if (response.HasError)
+            {
+                var modelState = new ModelStateDictionary();
+                response.Errors.ToList().ForEach(error => modelState.AddModelError(error.Key, error.Value));
+                return BadRequest(modelState);
+            }
+
+            if (string.IsNullOrEmpty(response.Id))
+            {
+                return NotFound();
+            }
+
+            return Ok(response);
         }
     }
 }

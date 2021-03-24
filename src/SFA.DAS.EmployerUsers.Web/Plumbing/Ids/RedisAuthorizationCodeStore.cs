@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Configuration;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services;
-using Microsoft.Azure;
 using Newtonsoft.Json;
 using NLog;
 using SFA.DAS.EmployerUsers.Web.Plumbing.Serialization;
@@ -124,7 +124,7 @@ namespace SFA.DAS.EmployerUsers.Web.Plumbing.Ids
         }
         private static string GetConnectionString()
         {
-            return CloudConfigurationManager.GetSetting("AuthCodeCacheConnectionString");
+            return ConfigurationManager.AppSettings["AuthCodeCacheConnectionString"];
         }
 
         public void Dispose()

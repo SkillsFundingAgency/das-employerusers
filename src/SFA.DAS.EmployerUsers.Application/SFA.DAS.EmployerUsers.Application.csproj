@@ -48,8 +48,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.3.7\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\NLog.4.5.11\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.CodeGenerator, Version=1.0.0.4198, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.CodeGenerator.1.0.0.4198\lib\net45\SFA.DAS.CodeGenerator.dll</HintPath>
@@ -76,7 +75,12 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -88,6 +92,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AccountSuspendedException.cs" />
     <Compile Include="AccountLockedException.cs" />
     <Compile Include="ApplicationExtensions.cs" />
     <Compile Include="Commands\ActivateUser\ActivateUserCommand.cs" />
@@ -116,6 +121,10 @@
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandHandler.cs" />
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandResponse.cs" />
     <Compile Include="Commands\RequestChangeEmail\RequestChangeEmailCommandValidator.cs" />
+    <Compile Include="Commands\ResumeUser\ResumeUserCommand.cs" />
+    <Compile Include="Commands\ResumeUser\ResumeUserCommandHandler.cs" />
+    <Compile Include="Commands\SuspendUser\SuspendUserCommand.cs" />
+    <Compile Include="Commands\SuspendUser\SuspendUserCommandHandler.cs" />
     <Compile Include="Queries\GetRelyingParties\GetRelyingPartiesQuery.cs" />
     <Compile Include="Queries\GetRelyingParties\GetRelyingPartiesQueryHandler.cs" />
     <Compile Include="Queries\GetUnlockCodeLength\GetUnlockCodeQuery.cs" />

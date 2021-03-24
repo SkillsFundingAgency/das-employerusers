@@ -1,9 +1,9 @@
-﻿using System.Data;
+﻿using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using Microsoft.Azure;
 
 namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
 {
@@ -18,7 +18,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
 
         protected async Task<SqlConnection> CreateOpenConnection()
         {
-            var connectionString = CloudConfigurationManager.GetSetting(ConnectionStringName);
+            var connectionString = ConfigurationManager.AppSettings[ConnectionStringName];
             var connection = new SqlConnection(connectionString);
             try
             {
