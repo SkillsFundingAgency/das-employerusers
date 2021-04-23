@@ -23,7 +23,7 @@
         },
         "auditApiIdentifierUri": {
             "type": "string"
-        },                
+        },
         "auditApiSecret": {
             "type": "securestring"
         },
@@ -580,6 +580,30 @@
                                 {
                                     "name": "InstrumentationKey",
                                     "value": "[reference('api-app-insights').outputs.InstrumentationKey.value]"
+                                },
+                                {
+                                    "name": "UsersConnectionString",
+                                    "value": "[variables('usersConnectionString')]"
+                                },
+                                {
+                                    "name": "AuditApiBaseUrl",
+                                    "value": "[parameters('auditApiBaseUrl')]"
+                                },
+                                {
+                                    "name": "AuditApiClientId",
+                                    "value": "[parameters('auditApiClientId')]"
+                                },
+                                {
+                                    "name": "AuditApiIdentifierUri",
+                                    "value": "[parameters('auditApiIdentifierUri')]"
+                                },
+                                {
+                                    "name": "AuditApiSecret",
+                                    "value": "[parameters('auditApiSecret')]"
+                                },
+                                {
+                                    "name": "AuditApiTenant",
+                                    "value": "[parameters('auditApiTenant')]"
                                 }
                             ]
                         }
