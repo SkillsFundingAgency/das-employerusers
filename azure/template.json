@@ -167,7 +167,7 @@
         },
         "workerAppAspSku": {
             "type": "string",
-            "defaultValue": "Basic"
+            "defaultValue": "Standard"
         },
         "sharedEnvVirtualNetworkName": {
             "type": "string"
