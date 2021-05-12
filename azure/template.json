@@ -10,10 +10,14 @@
             "type": "string",
             "defaultValue": ""
         },
-        "appServiceAllowedIPs": {
-            "type": "array",
-            "defaultValue": [
-            ]
+        "backEndAccessRestrictions": {
+            "type": "array"
+        },
+        "frontEndAccessRestrictions": {
+            "type": "array"
+        },
+        "workerAccessRestrictions": {
+            "type": "array"
         },
         "auditApiBaseUrl": {
             "type": "string"
@@ -32,10 +36,6 @@
         },
         "authCodeCacheConnectionString": {
             "type": "securestring"
-        },
-        "backendAccessRestrictions": {
-            "type": "array",
-            "defaultValue": []
         },
         "baseExternalUrl": {
             "type": "string"
@@ -98,16 +98,22 @@
         "sharedBackEndAppServicePlanName": {
             "type": "string"
         },
-        "sharedEnvResourceGroup": {
+        "sharedBackEndSubnetResourceId": {
             "type": "string"
         },
         "sharedFrontEndAppServicePlanName": {
+            "type": "string"
+        },
+        "sharedFrontEndSubnetResourceId": {
             "type": "string"
         },
         "sharedKeyVaultName": {
             "type": "string"
         },
         "sharedManagementResourceGroup": {
+            "type": "string"
+        },
+        "sharedEnvResourceGroup": {
             "type": "string"
         },
         "sharedSQLServerName": {
@@ -161,7 +167,19 @@
         },
         "workerAppAspSku": {
             "type": "string",
-            "defaultValue": "Basic"
+            "defaultValue": "Standard"
+        },
+        "sharedEnvVirtualNetworkName": {
+            "type": "string"
+        },
+        "workerSubnetObject": {
+            "type": "object"
+        },
+        "subnetServiceEndpointList": {
+            "type": "array"
+        },
+        "subnetDelegations": {
+            "type": "array"
         },
         "zenDeskHelpCentreUrl": {
             "type": "string"
@@ -182,7 +200,7 @@
     },
     "resources": [
         {
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "name": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/resourceGroups",
             "location": "[parameters('resourceGroupLocation')]",
@@ -191,7 +209,7 @@
             }
         },
         {
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "name": "api-app-insights",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
@@ -213,7 +231,7 @@
         },
         {
             "condition": "[greater(length(parameters('apiAppCustomHostName')), 0)]",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "name": "api-app-service-certificate",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
@@ -237,7 +255,7 @@
             }
         },
         {
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "name": "api-app-service",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
@@ -257,8 +275,8 @@
                     "appServicePlanResourceGroup": {
                         "value": "[parameters('sharedEnvResourceGroup')]"
                     },
-                    "deployStagingSlot": {
-                        "value": true
+                    "subnetResourceId": {
+                        "value": "[parameters('sharedBackEndSubnetResourceId')]"
                     },
                     "appServiceAppSettings": {
                         "value": {
@@ -301,7 +319,7 @@
                         "value": "[if(greater(length(parameters('apiAppCustomHostName')), 0), reference('api-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
                     },
                     "ipSecurityRestrictions": {
-                        "value": "[concat(parameters('backendAccessRestrictions'), parameters('supportAppPublicIp'))]"
+                        "value": "[concat(parameters('backEndAccessRestrictions'), parameters('supportAppPublicIp'))]"
                     }
                 }
             },
@@ -311,7 +329,7 @@
             ]
         },
         {
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "name": "web-app-insights",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
@@ -333,7 +351,7 @@
         },
         {
             "condition": "[greater(length(parameters('webAppCustomHostName')), 0)]",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "name": "web-app-service-certificate",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
@@ -357,7 +375,7 @@
             }
         },
         {
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "name": "web-app-service",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
@@ -377,8 +395,8 @@
                     "appServicePlanResourceGroup": {
                         "value": "[parameters('sharedEnvResourceGroup')]"
                     },
-                    "deployStagingSlot": {
-                        "value": true
+                    "subnetResourceId": {
+                        "value": "[parameters('sharedFrontEndSubnetResourceId')]"
                     },
                     "appServiceAppSettings": {
                         "value": {
@@ -481,7 +499,7 @@
                         "value": "[if(greater(length(parameters('webAppCustomHostName')), 0), reference('web-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
                     },
                     "ipSecurityRestrictions": {
-                        "value": "[parameters('appServiceAllowedIPs')]"
+                        "value": "[parameters('frontEndAccessRestrictions')]"
                     }
                 }
             },
@@ -491,7 +509,7 @@
             ]
         },
         {
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "name": "worker-app-insights",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
@@ -512,7 +530,37 @@
             }
         },
         {
-            "apiVersion": "2020-06-01",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "name": "worker-app-service-subnet",
+            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'subnet.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualNetworkName": {
+                        "value": "[parameters('sharedEnvVirtualNetworkName')]"
+                    },
+                    "subnetName": {
+                        "value": "[parameters('workerSubnetObject').name]"
+                    },
+                    "subnetAddressPrefix": {
+                        "value": "[parameters('workerSubnetObject').addressSpace]"
+                    },
+                    "serviceEndpointList": {
+                        "value": "[parameters('subnetServiceEndpointList')]"
+                    },
+                    "delegations": {
+                        "value": "[parameters('subnetDelegations')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2020-10-01",
             "name": "worker-app-service-plan",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
@@ -539,7 +587,7 @@
             }
         },
         {
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "name": "worker-app-service",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
@@ -558,6 +606,9 @@
                     },
                     "appServicePlanResourceGroup": {
                         "value": "[variables('resourceGroupName')]"
+                    },
+                    "subnetResourceId": {
+                        "value": "[reference('worker-app-service-subnet').outputs.subnetResourceId.value]"
                     },
                     "deployStagingSlot": {
                         "value": false
@@ -609,7 +660,7 @@
                         }
                     },
                     "ipSecurityRestrictions": {
-                        "value": "[parameters('appServiceAllowedIPs')]"
+                        "value": "[parameters('workerAccessRestrictions')]"
                     }
                 }
             },
@@ -619,7 +670,7 @@
             ]
         },
         {
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "name": "profiles-sql-database",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
@@ -658,7 +709,7 @@
             }
         },
         {
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2020-10-01",
             "name": "users-sql-database",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
@@ -698,6 +749,10 @@
         }
     ],
     "outputs": {
+        "ResourceGroupName": {
+            "type": "string",
+            "value": "[variables('resourceGroupName')]"
+        },
         "ApiAppServiceName": {
             "type": "string",
             "value": "[variables('apiAppServiceName')]"
