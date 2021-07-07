@@ -61,6 +61,12 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
                 return;
             }
 
+            if (existingUser.IsSuspended)
+            {
+                _logger.Info($"Request to reset password for suspended user email address : '{message.Email}'");
+                return;
+            }
+
             if (RequiresPasswordResetCode(existingUser))
             {
                 existingUser.AddSecurityCode(new SecurityCode

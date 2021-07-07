@@ -161,8 +161,30 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
                                                                                                                            && sc.ExpiryTime == DateTimeProvider.Current.UtcNow.AddDays(1))
                 ), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
-        
 
+        [Test]
+        public async Task ThenItShouldNotSendAnEmailIfUserSuspended()
+        {
+            //Arrange
+            var command = GetRequestPasswordResetCodeCommand();
+            _userRepository.Setup(x => x.GetByEmailAddress(command.Email)).ReturnsAsync(new User
+            {
+                Email = "test@test.com",
+                FirstName = "Test",
+                LastName = "User",
+                IsSuspended = true,
+                IsActive = true,
+                IsLocked = false,
+                Id = "1"
+            });
+
+            //Act
+            await _commandHandler.Handle(command);
+
+            //Assert
+            _communicationSerivce.Verify(x => x.SendPasswordResetCodeMessage(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            _userRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
+        }
         private RequestPasswordResetCodeCommand GetRequestPasswordResetCodeCommand()
         {
             return new RequestPasswordResetCodeCommand
