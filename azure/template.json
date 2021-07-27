@@ -607,9 +607,6 @@
                     "appServicePlanResourceGroup": {
                         "value": "[variables('resourceGroupName')]"
                     },
-                    "subnetResourceId": {
-                        "value": "[reference('worker-app-service-subnet').outputs.subnetResourceId.value]"
-                    },
                     "deployStagingSlot": {
                         "value": false
                     },
