@@ -8,6 +8,7 @@ using SFA.DAS.HashingService;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
+using SFA.DAS.EmployerUsers.Application.Exceptions;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.QueriesTests.GetUserByHashedIdTests
 {

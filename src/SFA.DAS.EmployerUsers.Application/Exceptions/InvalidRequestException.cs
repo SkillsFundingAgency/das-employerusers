@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SFA.DAS.EmployerUsers.Application
+namespace SFA.DAS.EmployerUsers.Application.Exceptions
 {
     public class InvalidRequestException : Exception
     {

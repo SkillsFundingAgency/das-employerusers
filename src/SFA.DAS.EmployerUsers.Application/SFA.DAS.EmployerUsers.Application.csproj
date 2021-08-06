@@ -92,8 +92,8 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AccountSuspendedException.cs" />
-    <Compile Include="AccountLockedException.cs" />
+    <Compile Include="Exceptions\AccountSuspendedException.cs" />
+    <Compile Include="Exceptions\AccountLockedException.cs" />
     <Compile Include="ApplicationExtensions.cs" />
     <Compile Include="Commands\ActivateUser\ActivateUserCommand.cs" />
     <Compile Include="Commands\ActivateUser\ActivateUserCommandHandler.cs" />
@@ -125,6 +125,8 @@
     <Compile Include="Commands\ResumeUser\ResumeUserCommandHandler.cs" />
     <Compile Include="Commands\SuspendUser\SuspendUserCommand.cs" />
     <Compile Include="Commands\SuspendUser\SuspendUserCommandHandler.cs" />
+    <Compile Include="Exceptions\PasswordResetMaxAttemptsException.cs" />
+    <Compile Include="Extensions\SecurityCodeExtensions.cs" />
     <Compile Include="Queries\GetRelyingParties\GetRelyingPartiesQuery.cs" />
     <Compile Include="Queries\GetRelyingParties\GetRelyingPartiesQueryHandler.cs" />
     <Compile Include="Queries\GetUnlockCodeLength\GetUnlockCodeQuery.cs" />
@@ -158,7 +160,7 @@
     <Compile Include="DomainObjectExtensions.cs" />
     <Compile Include="Events\AccountLocked\AccountLockedEvent.cs" />
     <Compile Include="Events\AccountLocked\GenerateAndEmailAccountLockedEmailHandler.cs" />
-    <Compile Include="InvalidRequestException.cs" />
+    <Compile Include="Exceptions\InvalidRequestException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\GetRelyingParty\GetRelyingPartyQuery.cs" />
     <Compile Include="Queries\GetRelyingParty\GetRelyingPartyQueryHandler.cs" />

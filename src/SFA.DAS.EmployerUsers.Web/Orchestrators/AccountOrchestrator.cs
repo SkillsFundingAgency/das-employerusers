@@ -17,6 +17,7 @@ using SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode;
 using SFA.DAS.EmployerUsers.Application.Commands.UnlockUser;
+using SFA.DAS.EmployerUsers.Application.Exceptions;
 using SFA.DAS.EmployerUsers.Application.Queries.GetRelyingParties;
 using SFA.DAS.EmployerUsers.Application.Queries.GetRelyingParty;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUnlockCodeLength;

@@ -17,6 +17,7 @@ using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Domain.Links;
 using SFA.DAS.TimeProvider;
+using SFA.DAS.EmployerUsers.Application.Exceptions;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPasswordResetCodeTests.RequestPasswordResetCodeCommandTests
 {

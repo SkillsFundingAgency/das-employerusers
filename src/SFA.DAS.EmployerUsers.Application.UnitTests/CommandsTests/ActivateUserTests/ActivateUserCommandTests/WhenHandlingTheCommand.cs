@@ -6,6 +6,7 @@ using Moq;
 using NLog;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
+using SFA.DAS.EmployerUsers.Application.Exceptions;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Auditing;
