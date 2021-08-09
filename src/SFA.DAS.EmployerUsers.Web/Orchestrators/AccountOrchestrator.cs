@@ -471,24 +471,6 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 };
                 response.Exception = ex;
             }
-            catch(PasswordResetMaxAttemptsException ex)
-            {
-                model.Password = string.Empty;
-                model.ConfirmPassword = string.Empty;
-                model.ErrorDictionary.Add(nameof(model.PasswordResetCode), "Too many password reset code attempts, return to login and try reset password again");
-                response.Data = model;
-                response.FlashMessage = new FlashMessageViewModel
-                {
-                    Headline = "Too many password reset code attempts",
-                    Message = "You have exceeded the maximum (3) attempts to input password reset code.",
-                    SubMessage = "Return to forgotten password and request a new code.",
-                    Severity = FlashMessageSeverityLevel.Error,
-                    ErrorMessages = model.ErrorDictionary
-
-                };
-
-                response.Exception = ex;
-            }
 
             return response;
         }

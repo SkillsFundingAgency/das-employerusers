@@ -125,7 +125,6 @@
     <Compile Include="Commands\ResumeUser\ResumeUserCommandHandler.cs" />
     <Compile Include="Commands\SuspendUser\SuspendUserCommand.cs" />
     <Compile Include="Commands\SuspendUser\SuspendUserCommandHandler.cs" />
-    <Compile Include="Exceptions\PasswordResetMaxAttemptsException.cs" />
     <Compile Include="Extensions\SecurityCodeExtensions.cs" />
     <Compile Include="Queries\GetRelyingParties\GetRelyingPartiesQuery.cs" />
     <Compile Include="Queries\GetRelyingParties\GetRelyingPartiesQueryHandler.cs" />
