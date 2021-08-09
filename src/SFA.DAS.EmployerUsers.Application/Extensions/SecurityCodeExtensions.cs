@@ -19,7 +19,7 @@ namespace SFA.DAS.EmployerUsers.Application.Extensions
             return securityCodes
                 .OrderByDescending(sc => sc.ExpiryTime)
                 .Where(sc => sc.ExpiryTime >= DateTime.UtcNow)
-                .FirstOrDefault(sc => sc.CodeType == Domain.SecurityCodeType.PasswordResetCode);
+                .FirstOrDefault(sc => sc.CodeType == SecurityCodeType.PasswordResetCode);
         }
     }
 }

@@ -89,6 +89,33 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         }
 
         [Test]
+        public async Task ThenFalseIsReturnedIfThePasscodeMatchesButHasHadTooManyFailedAttempts()
+        {
+            //Act
+            var actual = await _validator.ValidateAsync(new PasswordResetCommand
+            {
+                PasswordResetCode = "123456",
+                User = new User
+                {
+                    SecurityCodes = new[]
+                    {
+                        new SecurityCode
+                        {
+                            Code = "123456",
+                            CodeType = SecurityCodeType.PasswordResetCode,
+                            ExpiryTime = DateTime.MaxValue,
+                            FailedAttempts = 3
+                        }
+                    }
+                }
+            });
+
+            //Assert
+            Assert.IsFalse(actual.IsValid());
+            Assert.Contains(new KeyValuePair<string, string>("PasswordResetCode", "Too many failed attempts, reset code has expired"), actual.ValidationDictionary);
+        }
+
+        [Test]
         public async Task ThenFalseIsReturnedfIfThePasswordsDoNotMatch()
         {
             //Act

@@ -80,11 +80,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             {
                 latestSecurityCode.FailedAttempts += 1;
                 await _userRepository.Update(user);
-
-                if (latestSecurityCode.FailedAttempts>= 3)
-                {
-                    throw new PasswordResetMaxAttemptsException();
-                }
             }
         }
     }

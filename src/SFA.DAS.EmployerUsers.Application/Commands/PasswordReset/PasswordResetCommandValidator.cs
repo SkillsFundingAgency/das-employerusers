@@ -30,6 +30,10 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             {
                 validationResult.AddError(nameof(item.PasswordResetCode), "Reset code has expired");
             }
+            else if (resetCode.FailedAttempts >= 3)
+            {
+                validationResult.AddError(nameof(item.PasswordResetCode), "Too many failed attempts, reset code has expired");
+            }
 
             if (string.IsNullOrEmpty(item.Password))
             {
