@@ -86,9 +86,9 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
                 return true;
             }
 
-            return !user.SecurityCodes.Any(sc => sc.CodeType == SecurityCodeType.PasswordResetCode
-                                                 && sc.ExpiryTime >= DateTime.UtcNow
-                ) && ConfigurationManager.AppSettings["UseStaticCodeGenerator"].Equals("false", StringComparison.CurrentCultureIgnoreCase);
+            return user.SecurityCodes
+                .Where(sc => sc.CodeType == SecurityCodeType.PasswordResetCode)
+                .All(sc => sc.ExpiryTime <= DateTime.UtcNow || sc.FailedAttempts >= 3) && ConfigurationManager.AppSettings["UseStaticCodeGenerator"].Equals("false", StringComparison.CurrentCultureIgnoreCase);
         }
     }
 }
