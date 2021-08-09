@@ -240,5 +240,69 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
             //Assert
             _userRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
         }
+
+        [Test]
+        public void ThenTheFailedAttemptsAreIncrementedIfTheResetCodeIsInvalid()
+        {
+            //Arrange
+            var userEmail = "someotheremail@local";
+            _userRepository.Setup(x => x.GetByEmailAddress(It.Is<string>(s => s == userEmail))).ReturnsAsync(new User
+            {
+                Id = "USER1",
+                Email = ActualEmailAddress,
+                IsActive = true,
+                SecurityCodes = new[]
+                {
+                    new SecurityCode
+                    {
+                        Code = "143XYZ",
+                        CodeType = SecurityCodeType.PasswordResetCode,
+                        ExpiryTime = DateTime.MaxValue,
+                        FailedAttempts = 0
+                    },
+                }
+            });
+
+            _validator.Setup(x => x.ValidateAsync(It.IsAny<PasswordResetCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
+
+            //Act
+            Assert.ThrowsAsync<InvalidRequestException>(async () => await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = userEmail }));
+
+            //Assert
+            _userRepository.Verify(x => x.Update(It.Is<User>(u => u.SecurityCodes[0].FailedAttempts == 1)), Times.Once);
+        }
+
+        [Test]
+        [TestCase(2, Description = "Incrementing to 3")]
+        [TestCase(10, Description = "Incrementing to anything above 3")]
+        public void ThenExceptionRaisedUpon3OrMoreFailedAttemptsAtSameResetCode(int initialFailedAttempts)
+        {
+            //Arrange
+            var userEmail = "someotheremail@local";
+            _userRepository.Setup(x => x.GetByEmailAddress(It.Is<string>(s => s == userEmail))).ReturnsAsync(new User
+            {
+                Id = "USER1",
+                Email = ActualEmailAddress,
+                IsActive = true,
+                SecurityCodes = new[]
+                {
+                    new SecurityCode
+                    {
+                        Code = "143XYZ",
+                        CodeType = SecurityCodeType.PasswordResetCode,
+                        ExpiryTime = DateTime.MaxValue,
+                        FailedAttempts = initialFailedAttempts
+                    },
+                }
+            });
+
+            _validator.Setup(x => x.ValidateAsync(It.IsAny<PasswordResetCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
+
+            //Act
+            Assert.ThrowsAsync<PasswordResetMaxAttemptsException>(async () => await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = userEmail }));
+
+            //Assert
+            Assert.Pass("Max attempts exception thrown rather than InvalidRequest");
+        }
     }
 }
