@@ -475,7 +475,6 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             {
                 model.Password = string.Empty;
                 model.ConfirmPassword = string.Empty;
-                model.TooManyAttempts = true;
                 model.ErrorDictionary.Add(nameof(model.PasswordResetCode), "Too many password reset code attempts, return to login and try reset password again");
                 response.Data = model;
                 response.FlashMessage = new FlashMessageViewModel
