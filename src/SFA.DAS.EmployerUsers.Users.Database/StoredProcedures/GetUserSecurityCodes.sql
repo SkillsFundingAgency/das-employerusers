@@ -6,7 +6,8 @@ AS
 		CodeType,
 		ExpiryTime,
 		ReturnUrl,
-		PendingValue
+		PendingValue,
+		FailedAttempts
 	FROM UserSecurityCode
 	WHERE UserId = @UserId
 GO

@@ -9,6 +9,7 @@ namespace SFA.DAS.EmployerUsers.Domain
         public DateTime ExpiryTime { get; set; }
         public string ReturnUrl { get; set; }
         public string PendingValue { get; set; }
+        public int FailedAttempts { get; set; }
 
         public override bool Equals(object obj)
         {

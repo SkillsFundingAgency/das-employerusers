@@ -193,8 +193,8 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             await unitOfWork.Execute("DeleteAllUserSecurityCodes @UserId", new { UserId = user.Id });
             foreach (var code in user.SecurityCodes)
             {
-                await unitOfWork.Execute("CreateUserSecurityCode @Code, @UserId, @CodeType, @ExpiryTime, @ReturnUrl, @PendingValue",
-                    new { code.Code, UserId = user.Id, code.CodeType, code.ExpiryTime, code.ReturnUrl, code.PendingValue });
+                await unitOfWork.Execute("CreateUserSecurityCode @Code, @UserId, @CodeType, @ExpiryTime, @ReturnUrl, @PendingValue, @FailedAttempts",
+                    new { code.Code, UserId = user.Id, code.CodeType, code.ExpiryTime, code.ReturnUrl, code.PendingValue, code.FailedAttempts });
             }
         }
 
