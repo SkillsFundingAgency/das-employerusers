@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Configuration;
-using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerUsers.Application.Extensions;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 
@@ -20,9 +20,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
         {
             var validationResult = new ValidationResult();
 
-            var resetCode = item.User?.SecurityCodes?.OrderByDescending(sc => sc.ExpiryTime)
-                                                     .FirstOrDefault(sc => sc.Code.Equals(item.PasswordResetCode, StringComparison.InvariantCultureIgnoreCase)
-                                                                        && sc.CodeType == Domain.SecurityCodeType.PasswordResetCode);
+            var resetCode = item.User?.SecurityCodes?.MatchSecurityCode(item.PasswordResetCode);
 
             if (resetCode == null)
             {
