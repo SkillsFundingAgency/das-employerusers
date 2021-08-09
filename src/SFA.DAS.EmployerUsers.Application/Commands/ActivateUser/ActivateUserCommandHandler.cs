@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using NLog;
+using SFA.DAS.EmployerUsers.Application.Exceptions;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Auditing.Registration;

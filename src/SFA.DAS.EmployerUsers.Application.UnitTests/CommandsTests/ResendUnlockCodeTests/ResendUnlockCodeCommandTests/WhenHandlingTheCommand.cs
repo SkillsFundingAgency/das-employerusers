@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode;
 using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
+using SFA.DAS.EmployerUsers.Application.Exceptions;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain.Auditing;
 

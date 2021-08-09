@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using NLog;
 using SFA.DAS.CodeGenerator;
+using SFA.DAS.EmployerUsers.Application.Exceptions;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;

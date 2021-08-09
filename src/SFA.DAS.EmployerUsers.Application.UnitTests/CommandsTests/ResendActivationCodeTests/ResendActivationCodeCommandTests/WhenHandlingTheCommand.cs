@@ -7,6 +7,7 @@ using NLog;
 using NUnit.Framework;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendActivationCode;
+using SFA.DAS.EmployerUsers.Application.Exceptions;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;

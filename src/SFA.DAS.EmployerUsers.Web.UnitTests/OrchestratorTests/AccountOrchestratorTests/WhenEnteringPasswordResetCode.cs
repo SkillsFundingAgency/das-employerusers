@@ -1,13 +1,12 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Moq;
 using NLog;
-using SFA.DAS.EmployerUsers.Application;
+using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.PasswordReset;
+using SFA.DAS.EmployerUsers.Application.Exceptions;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUnlockCodeLength;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserByEmailAddress;
 using SFA.DAS.EmployerUsers.Domain;

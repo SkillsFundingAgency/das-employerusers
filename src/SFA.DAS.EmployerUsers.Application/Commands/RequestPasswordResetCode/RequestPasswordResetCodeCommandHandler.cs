@@ -1,7 +1,11 @@
-﻿using MediatR;
-using Microsoft.Azure;
+﻿using System;
+using System.Configuration;
+using System.Linq;
+using System.Threading.Tasks;
+using MediatR;
 using NLog;
 using SFA.DAS.CodeGenerator;
+using SFA.DAS.EmployerUsers.Application.Exceptions;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;
@@ -11,10 +15,6 @@ using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Domain.Links;
 using SFA.DAS.HashingService;
 using SFA.DAS.TimeProvider;
-using System;
-using System.Configuration;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
 {
@@ -86,9 +86,9 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
                 return true;
             }
 
-            return !user.SecurityCodes.Any(sc => sc.CodeType == SecurityCodeType.PasswordResetCode
-                                                 && sc.ExpiryTime >= DateTime.UtcNow
-                ) && ConfigurationManager.AppSettings["UseStaticCodeGenerator"].Equals("false", StringComparison.CurrentCultureIgnoreCase);
+            return user.SecurityCodes
+                .Where(sc => sc.CodeType == SecurityCodeType.PasswordResetCode)
+                .All(sc => sc.ExpiryTime <= DateTime.UtcNow || sc.FailedAttempts >= 3) && ConfigurationManager.AppSettings["UseStaticCodeGenerator"].Equals("false", StringComparison.CurrentCultureIgnoreCase);
         }
     }
 }

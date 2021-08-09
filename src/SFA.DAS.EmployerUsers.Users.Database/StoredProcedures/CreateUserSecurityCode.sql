@@ -4,10 +4,11 @@ CREATE PROCEDURE CreateUserSecurityCode
 	@CodeType int,
 	@ExpiryTime datetime,
 	@ReturnUrl varchar(max),
-	@PendingValue nvarchar(255)
+	@PendingValue nvarchar(255),
+	@FailedAttempts int = 0
 AS
 	INSERT INTO UserSecurityCode
-	(Code, UserId, CodeType, ExpiryTime, ReturnUrl, PendingValue)
+	(Code, UserId, CodeType, ExpiryTime, ReturnUrl, PendingValue, FailedAttempts)
 	VALUES
-	(@Code, @UserId, @CodeType, @ExpiryTime, @ReturnUrl, @PendingValue)
+	(@Code, @UserId, @CodeType, @ExpiryTime, @ReturnUrl, @PendingValue, @FailedAttempts)
 GO

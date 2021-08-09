@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.ChangePassword;
+using SFA.DAS.EmployerUsers.Application.Exceptions;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Domain;

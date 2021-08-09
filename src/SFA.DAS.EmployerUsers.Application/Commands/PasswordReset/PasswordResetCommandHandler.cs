@@ -1,5 +1,8 @@
-﻿using MediatR;
+﻿using System.Threading.Tasks;
+using MediatR;
 using NLog;
+using SFA.DAS.EmployerUsers.Application.Exceptions;
+using SFA.DAS.EmployerUsers.Application.Extensions;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
@@ -7,9 +10,6 @@ using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Auditing.Login;
 using SFA.DAS.EmployerUsers.Domain.Data;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 {
@@ -49,12 +49,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 
             if (!validationResult.IsValid())
             {
+                await ProcessFailedAttempt(user);
                 throw new InvalidRequestException(validationResult.ValidationDictionary);
             }
 
-            var resetCode = message.User?.SecurityCodes?.OrderByDescending(sc => sc.ExpiryTime)
-                                                    .FirstOrDefault(sc => sc.Code.Equals(message.PasswordResetCode, StringComparison.InvariantCultureIgnoreCase)
-                                                                       && sc.CodeType == Domain.SecurityCodeType.PasswordResetCode);
+            var resetCode = message.User?.SecurityCodes?.MatchSecurityCode(message.PasswordResetCode);
 
             var securedPassword = await _passwordService.GenerateAsync(message.Password);
 
@@ -71,6 +70,17 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             _logger.Info($"Password changed for user id '{message.User.Id}'");
 
             return new PasswordResetResponse { ResetCode = resetCode };
+        }
+
+        private async Task ProcessFailedAttempt(User user)
+        {
+            var latestSecurityCode = user?.SecurityCodes?.LatestValidSecurityCode();
+            
+            if (latestSecurityCode != null)
+            {
+                latestSecurityCode.FailedAttempts += 1;
+                await _userRepository.Update(user);
+            }
         }
     }
 

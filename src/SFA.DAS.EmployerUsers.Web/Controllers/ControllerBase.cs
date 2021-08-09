@@ -2,7 +2,7 @@
 using System.Net;
 using System.Web.Mvc;
 using NLog;
-using SFA.DAS.EmployerUsers.Application;
+using SFA.DAS.EmployerUsers.Application.Exceptions;
 using SFA.DAS.EmployerUsers.Web.Models;
 
 namespace SFA.DAS.EmployerUsers.Web.Controllers

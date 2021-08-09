@@ -17,6 +17,7 @@ using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Domain.Links;
 using SFA.DAS.TimeProvider;
+using SFA.DAS.EmployerUsers.Application.Exceptions;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPasswordResetCodeTests.RequestPasswordResetCodeCommandTests
 {
@@ -161,7 +162,50 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RequestPassw
                                                                                                                            && sc.ExpiryTime == DateTimeProvider.Current.UtcNow.AddDays(1))
                 ), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
-        
+
+        [Test]
+        [TestCase(2, false, Description = "Less than 3 failed attempts")]
+        [TestCase(3, true, Description = "Exactly 3 failed attempts")]
+        [TestCase(5, true, Description = "More than 3 failed attempts")]
+        public async Task KnownUserWithNonExpiredCode_WithFailedAttemptSendsNewCode(int failedAttempts, bool shouldSendNewCode)
+        {
+            // Arrange
+            DateTimeProvider.Current = new FakeTimeProvider(DateTime.UtcNow);
+            const string newCode = "FEDCBA";
+
+            var command = GetRequestPasswordResetCodeCommand();
+
+            var existingUser = new User
+            {
+                Id = _userId.ToString(),
+                Email = command.Email,
+                SecurityCodes = new[]
+                {
+                    new SecurityCode
+                    {
+                        Code = "ABCDEF",
+                        CodeType = SecurityCodeType.PasswordResetCode,
+                        ExpiryTime = DateTimeProvider.Current.UtcNow.AddHours(24),
+                        FailedAttempts = failedAttempts
+                    }
+                }
+            };
+
+            _codeGenerator.Setup(x => x.GenerateAlphaNumeric(6)).Returns(newCode);
+            _userRepository.Setup(x => x.GetByEmailAddress(command.Email)).ReturnsAsync(existingUser);
+
+            // Act 
+            await _commandHandler.Handle(command);
+
+            // Assert
+            var timesCalled = shouldSendNewCode ? 1 : 0;
+            _communicationSerivce.Verify(x => x.SendPasswordResetCodeMessage(It.Is<User>(u => u.Email == existingUser.Email
+                                                                                              && u.SecurityCodes.Any(sc => sc.Code == newCode
+                                                                                                                           && sc.CodeType == SecurityCodeType.PasswordResetCode
+                                                                                                                           && sc.ExpiryTime == DateTimeProvider.Current.UtcNow.AddDays(1))
+                ), It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(timesCalled));
+        }
+
 
         private RequestPasswordResetCodeCommand GetRequestPasswordResetCodeCommand()
         {
