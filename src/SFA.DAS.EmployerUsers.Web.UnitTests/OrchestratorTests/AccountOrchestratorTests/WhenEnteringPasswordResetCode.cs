@@ -153,5 +153,19 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             //Assert
             _owinWrapper.Verify(x => x.IssueLoginCookie(user.Id, $"{user.FirstName} {user.LastName}"), Times.Once);
         }
+
+        [Test]
+        public async Task WhenMaxResetCodeAttemptsExceeded_ThenTheErrorDictionaryContainsTheFieldErrors()
+        {
+            //Arrange
+            _mediator.Setup(x => x.SendAsync(It.IsAny<PasswordResetCommand>())).ThrowsAsync(new PasswordResetMaxAttemptsException());
+
+
+            //Act
+            var actual = await _accountOrchestrator.ResetPassword(new PasswordResetViewModel());
+
+            //Assert
+            Assert.AreEqual("Too many password reset code attempts, return to login and try reset password again", actual.Data.PasswordResetCodeError);
+        }
     }
 }
