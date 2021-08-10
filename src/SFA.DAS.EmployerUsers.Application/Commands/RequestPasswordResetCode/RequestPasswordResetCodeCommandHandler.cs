@@ -63,13 +63,24 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
 
             if (RequiresPasswordResetCode(existingUser))
             {
-                existingUser.AddSecurityCode(new SecurityCode
+                if (ConfigurationManager.AppSettings["UseStaticCodeGenerator"].Equals("false", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    Code = _codeGenerator.GenerateAlphaNumeric(),
-                    CodeType = SecurityCodeType.PasswordResetCode,
-                    ExpiryTime = DateTimeProvider.Current.UtcNow.AddDays(1),
-                    ReturnUrl = message.ReturnUrl
-                });
+                    existingUser.AddSecurityCode(new SecurityCode
+                    {
+                        Code = _codeGenerator.GenerateAlphaNumeric(),
+                        CodeType = SecurityCodeType.PasswordResetCode,
+                        ExpiryTime = DateTimeProvider.Current.UtcNow.AddDays(1),
+                        ReturnUrl = message.ReturnUrl
+                    });
+                }
+                else
+                {
+                    existingUser
+                        .SecurityCodes
+                        .OrderByDescending(sc => sc.ExpiryTime)
+                        .FirstOrDefault()
+                        .FailedAttempts = 0;
+                }
 
                 await _userRepository.Update(existingUser);
             }
@@ -88,7 +99,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
 
             return user.SecurityCodes
                 .Where(sc => sc.CodeType == SecurityCodeType.PasswordResetCode)
-                .All(sc => sc.ExpiryTime <= DateTime.UtcNow || sc.FailedAttempts >= 3) && ConfigurationManager.AppSettings["UseStaticCodeGenerator"].Equals("false", StringComparison.CurrentCultureIgnoreCase);
+                .All(sc => sc.ExpiryTime <= DateTime.UtcNow || sc.FailedAttempts >= 3);
         }
     }
 }
