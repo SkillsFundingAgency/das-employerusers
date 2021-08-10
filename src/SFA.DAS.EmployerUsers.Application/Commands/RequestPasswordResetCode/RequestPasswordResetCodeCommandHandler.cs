@@ -75,6 +75,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
                 }
                 else
                 {
+                    // for static code generator simply set failed attempts back to zero as creating another same security code breaks the unique constraint
                     existingUser
                         .SecurityCodes
                         .OrderByDescending(sc => sc.ExpiryTime)
