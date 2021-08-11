@@ -63,13 +63,28 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
 
             if (RequiresPasswordResetCode(existingUser))
             {
-                existingUser.AddSecurityCode(new SecurityCode
+                if (ConfigurationManager.AppSettings["UseStaticCodeGenerator"].Equals("false", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    Code = _codeGenerator.GenerateAlphaNumeric(),
-                    CodeType = SecurityCodeType.PasswordResetCode,
-                    ExpiryTime = DateTimeProvider.Current.UtcNow.AddDays(1),
-                    ReturnUrl = message.ReturnUrl
-                });
+                    AddUserSecurityCode(existingUser, message.ReturnUrl);
+                }
+                else
+                {
+                    // for static code generator simply set failed attempts back to zero as creating another same security code breaks the unique constraint
+                    var firstSecurityCode = existingUser
+                        .SecurityCodes
+                        .Where(sc => sc.CodeType == SecurityCodeType.PasswordResetCode)
+                        .OrderByDescending(sc => sc.ExpiryTime)
+                        .FirstOrDefault();
+
+                    if(firstSecurityCode == null)
+                    {
+                        AddUserSecurityCode(existingUser, message.ReturnUrl);
+                    }
+                    else
+                    {
+                        firstSecurityCode.FailedAttempts = 0;
+                    }
+                }
 
                 await _userRepository.Update(existingUser);
             }
@@ -88,7 +103,18 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
 
             return user.SecurityCodes
                 .Where(sc => sc.CodeType == SecurityCodeType.PasswordResetCode)
-                .All(sc => sc.ExpiryTime <= DateTime.UtcNow || sc.FailedAttempts >= 3) && ConfigurationManager.AppSettings["UseStaticCodeGenerator"].Equals("false", StringComparison.CurrentCultureIgnoreCase);
+                .All(sc => sc.ExpiryTime <= DateTime.UtcNow || sc.FailedAttempts >= 3);
+        }
+
+        private void AddUserSecurityCode(User existingUser, string returnUrl)
+        {
+            existingUser.AddSecurityCode(new SecurityCode
+            {
+                Code = _codeGenerator.GenerateAlphaNumeric(),
+                CodeType = SecurityCodeType.PasswordResetCode,
+                ExpiryTime = DateTimeProvider.Current.UtcNow.AddDays(1),
+                ReturnUrl = returnUrl
+            });
         }
     }
 }
