@@ -241,7 +241,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
             _userRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
         }
 
-        [Test]
+        /*[Test]
         public void ThenTheFailedAttemptsAreIncrementedIfTheResetCodeIsInvalid()
         {
             //Arrange
@@ -270,6 +270,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
 
             //Assert
             _userRepository.Verify(x => x.Update(It.Is<User>(u => u.SecurityCodes[0].FailedAttempts == 1)), Times.Once);
-        }
+        }*/
     }
 }

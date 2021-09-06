@@ -40,7 +40,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 
         public async Task<PasswordResetResponse> Handle(PasswordResetCommand message)
         {
-            _logger.Info($"Received PasswordResetCommand for user id '{message.User?.Id}'");
+            _logger.Info($"Received PasswordResetCommand for email '{message.Email}'");
 
             var user = await _userRepository.GetByEmailAddress(message.Email);
             message.User = user;
@@ -48,8 +48,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             var validationResult = await _validator.ValidateAsync(message);
 
             if (!validationResult.IsValid())
-            {
-                await ProcessFailedAttempt(user);
+            {   
                 throw new InvalidRequestException(validationResult.ValidationDictionary);
             }
 
@@ -70,17 +69,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             _logger.Info($"Password changed for user id '{message.User.Id}'");
 
             return new PasswordResetResponse { ResetCode = resetCode };
-        }
-
-        private async Task ProcessFailedAttempt(User user)
-        {
-            var latestSecurityCode = user?.SecurityCodes?.LatestValidSecurityCode();
-            
-            if (latestSecurityCode != null)
-            {
-                latestSecurityCode.FailedAttempts += 1;
-                await _userRepository.Update(user);
-            }
         }
     }
 

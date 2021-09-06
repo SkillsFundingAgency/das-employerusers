@@ -1,0 +1,35 @@
+﻿@model SFA.DAS.EmployerUsers.Web.Models.OrchestratorResponse<SFA.DAS.EmployerUsers.Web.Models.EnterResetCodeViewModel>
+@{
+    ViewBag.PageID = "page-enter-reset-code";
+    ViewBag.Title = "Enter your reset code";
+    ViewBag.HideSigninLink = true;
+    ViewBag.HideCookieMessage = true;
+}
+
+<h1 class="heading-xlarge">@ViewBag.Title</h1>
+<form method="post" action="@Url.Action("EnterResetCode")" novalidate autocomplete="off">
+    @Html.AntiForgeryToken()
+    <input type="hidden" value="@Model.Data.Email" name="Email" />
+    <input type="hidden" value="@Model.Data.ClientId" name="ClientId" />
+    <fieldset>
+        <div class="form-group @(!string.IsNullOrEmpty(Model.Data.PasswordResetCodeError) ? "error" : "") ">
+            <label for="PasswordResetCode">
+                @if (!string.IsNullOrEmpty(Model.Data.PasswordResetCodeError))
+                {
+                <span class="error-message" id="error-code">@Model.Data.PasswordResetCodeError</span>
+                }
+            </label>
+            <input class="form-control" id="PasswordResetCode" name="PasswordResetCode" value="@Model.Data.PasswordResetCode"
+                   aria-required="true" @(!string.IsNullOrEmpty(Model.Data.PasswordResetCodeError) ? "aria-invalid=true aria-describedby=error-code" : "" )>
+        </div>
+    </fieldset>
+    <div class="form-group">
+        <button type="submit" class="button">Continue</button>
+    </div>
+</form>
+<p>
+    <a class="govuk-link" href="@Url.Action("ForgottenCredentials","Account", new { ClientId = Model.Data.ClientId, ReturnUrl = Model.Data.ReturnUrl })">Request a new reset code</a>
+</p>
+@section breadcrumb {
+    <a href="@Url.Action("ResetFlow","Account")" class="link-back">Back</a>
+}

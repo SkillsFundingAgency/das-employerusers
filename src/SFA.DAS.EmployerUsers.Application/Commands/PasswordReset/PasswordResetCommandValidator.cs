@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerUsers.Application.Exceptions;
 using SFA.DAS.EmployerUsers.Application.Extensions;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
@@ -24,15 +25,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 
             if (resetCode == null)
             {
-                validationResult.AddError(nameof(item.PasswordResetCode), "Reset code is invalid");
+                throw new InvalidPasswordResetCodeException("Reset code is invalid");
             }
             else if (resetCode.ExpiryTime < DateTime.UtcNow && ConfigurationManager.AppSettings["UseStaticCodeGenerator"].Equals("false", StringComparison.CurrentCultureIgnoreCase))
             {
-                validationResult.AddError(nameof(item.PasswordResetCode), "Reset code has expired");
-            }
-            else if (resetCode.FailedAttempts >= 3)
-            {
-                validationResult.AddError(nameof(item.PasswordResetCode), "Too many failed attempts, reset code has expired");
+                throw new InvalidPasswordResetCodeException("Reset code has expired");
             }
 
             if (string.IsNullOrEmpty(item.Password))
@@ -52,7 +49,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             {
                 validationResult.AddError(nameof(item.ConfirmPassword), "Passwords don’t match");
             }
-
 
             return Task.FromResult(validationResult);
         }

@@ -427,6 +427,54 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             return model;
         }
 
+        public virtual async Task<OrchestratorResponse<EnterResetCodeViewModel>> ValidateResetCode(EnterResetCodeViewModel model)
+        {
+            var response = new OrchestratorResponse<EnterResetCodeViewModel>();
+            try
+            {
+                var resetResponse = await _mediator.SendAsync(new ValidatePasswordResetCodeCommand
+                {
+                    Email = model.Email,
+                    PasswordResetCode = model.PasswordResetCode ?? null
+                });
+
+                var user = await _mediator.SendAsync(new GetUserByEmailAddressQuery
+                {
+                    EmailAddress = model.Email
+                });
+
+                if (resetResponse?.ResetCode != null)
+                {
+                    model.ReturnUrl = resetResponse.ResetCode.ReturnUrl;
+                }
+
+                response.Data = model;
+                response.Data.UnlockCodeLength = await GetUnlockCodeLength();
+
+                return response;
+            }
+            catch(ExceededLimitPasswordResetCodeException ex)
+            {
+                _logger.Error(ex, ex.Message);
+                response.Exception = ex;
+            }
+            catch (InvalidRequestException ex)
+            {
+                model.ErrorDictionary = ex.ErrorMessages;
+                response.Data = model;
+                response.FlashMessage = new FlashMessageViewModel
+                {
+                    Headline = "Errors to fix",
+                    Message = "Check the following details:",
+                    ErrorMessages = ex.ErrorMessages,
+                    Severity = FlashMessageSeverityLevel.Error
+                };
+                response.Exception = ex;
+            }
+
+            return response;
+        }
+
         public virtual async Task<OrchestratorResponse<PasswordResetViewModel>> ResetPassword(PasswordResetViewModel model)
         {
             var response = new OrchestratorResponse<PasswordResetViewModel>();
@@ -440,12 +488,6 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     ConfirmPassword = model.ConfirmPassword
                 });
 
-                var user = await _mediator.SendAsync(new GetUserByEmailAddressQuery
-                {
-                    EmailAddress = model.Email
-                });
-
-                LoginUser(user.Id, user.FirstName, user.LastName);
                 if (resetResponse?.ResetCode != null)
                 {
                     model.ReturnUrl = resetResponse.ResetCode.ReturnUrl;
@@ -455,6 +497,11 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 response.Data.UnlockCodeLength = await GetUnlockCodeLength();
 
                 return response;
+            }
+            catch(InvalidPasswordResetCodeException ex)
+            {
+                _logger.Error(ex, ex.Message);
+                response.Exception = ex;
             }
             catch (InvalidRequestException ex)
             {
@@ -648,9 +695,12 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
         public async Task<RequestPasswordResetViewModel> StartForgottenPassword(string clientId, string returnUrl)
         {
-            var model = new RequestPasswordResetViewModel();
+            var model = new RequestPasswordResetViewModel()
+            {
+                ClientId = clientId
+            };
             
-            var relyingParty = await _mediator.SendAsync(new GetRelyingPartyQuery { Id = clientId });
+            var relyingParty = await _mediator.SendAsync(new GetRelyingPartyQuery { Id = model.ClientId });
 
             if (relyingParty == null)
             {
@@ -725,9 +775,9 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             return relyingParty != null ? relyingParty.LoginCallbackUrl : string.Empty;
         }
 
-        public async Task<OrchestratorResponse<PasswordResetViewModel>>  ForgottenPasswordFromEmail(string hashedUserId)
+        public async Task<OrchestratorResponse<EnterResetCodeViewModel>> ForgottenPasswordFromEmail(string hashedUserId)
         {
-            var response = new OrchestratorResponse<PasswordResetViewModel>();
+            var response = new OrchestratorResponse<EnterResetCodeViewModel>();
 
             try
             {
@@ -738,7 +788,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     response.Status = HttpStatusCode.BadRequest;
                     return response;
                 }
-                response.Data = new PasswordResetViewModel {Email = user.Email, UnlockCodeLength = await GetUnlockCodeLength() };
+
+                response.Data = new EnterResetCodeViewModel { Email = user.Email, UnlockCodeLength = await GetUnlockCodeLength() };
             }
             catch (InvalidRequestException ex)
             {

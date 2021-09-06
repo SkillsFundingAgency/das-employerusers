@@ -64,13 +64,13 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             _accountOrchestrator.Setup(x => x.RequestPasswordResetCode(It.Is<RequestPasswordResetViewModel>(m => m.Email == _requestPasswordResetViewModel.Email)))
                 .ReturnsAsync(response);
 
-            var actual = await _accountController.ForgottenCredentials(_requestPasswordResetViewModel, "");
+            var actual = await _accountController.ForgottenCredentials(_requestPasswordResetViewModel);
 
             var viewResult = (ViewResult) actual;
-            var viewModel = (OrchestratorResponse<PasswordResetViewModel>) viewResult.Model;
+            var viewModel = (OrchestratorResponse<EnterResetCodeViewModel>) viewResult.Model;
             Assert.IsNotNull(viewModel);
             Assert.AreEqual(response.Email,viewModel.Data.Email);
-            Assert.AreEqual("ResetPassword", viewResult.ViewName);
+            Assert.AreEqual("EnterResetCode", viewResult.ViewName);
             
         }
 
@@ -78,7 +78,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         public async Task ThenTheResetCodeIsNotSentWhenAnErrorOccurs()
         {
            
-            var xyz = await _accountController.ForgottenCredentials(_requestPasswordResetViewModel, "");
+            var xyz = await _accountController.ForgottenCredentials(_requestPasswordResetViewModel);
 
             var viewResult = (ViewResult)xyz;
             var viewModel = (RequestPasswordResetViewModel)viewResult.Model;
@@ -97,7 +97,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             _accountOrchestrator.Setup(x => x.RequestPasswordResetCode(It.IsAny<RequestPasswordResetViewModel>())).ReturnsAsync(_errorResponse);
 
             //Act
-            var actual = await _accountController.ForgottenCredentials(_requestPasswordResetViewModel, "");
+            var actual = await _accountController.ForgottenCredentials(_requestPasswordResetViewModel);
 
             Assert.IsNotNull(actual);
             var actualViewResult = actual as ViewResult;
