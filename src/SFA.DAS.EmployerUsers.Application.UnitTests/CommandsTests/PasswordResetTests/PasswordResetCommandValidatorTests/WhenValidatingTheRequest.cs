@@ -7,6 +7,7 @@ using SFA.DAS.EmployerUsers.Application.Commands.PasswordReset;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Domain;
 using System.Configuration;
+using SFA.DAS.EmployerUsers.Application.Exceptions;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordResetTests.PasswordResetCommandValidatorTests
 {
@@ -26,21 +27,11 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
             _validator = new PasswordResetCommandValidator(_passwordService.Object);
         }
 
-        /*[Test]
-        public async Task ThenFalseIsReturnedWhenTheMessageHasNoUser()
+        [Test]
+        public void ThenAnInvalidPasswordResetCodeExceptionIsThrownIfThePasscodeDoesNotMatch()
         {
-            //Act
-            var actual = await _validator.ValidateAsync(new PasswordResetCommand());
-
-            //Assert
-            Assert.IsFalse(actual.IsValid());
-        }*/
-
-        /*[Test]
-        public async Task ThenFalseIsReturnedIfThePasscodeDoesNotMatch()
-        {
-            //Act
-            var actual = await _validator.ValidateAsync(new PasswordResetCommand
+            // Act & Assert
+            Assert.ThrowsAsync<InvalidPasswordResetCodeException>(async () => await _validator.ValidateAsync(new PasswordResetCommand
             {
                 PasswordResetCode = "123456",
                 User = new User
@@ -55,65 +46,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
                         }
                     }
                 }
-            });
-
-            //Assert
-            Assert.IsFalse(actual.IsValid());
-            Assert.Contains(new KeyValuePair<string, string>("PasswordResetCode", "Reset code is invalid"), actual.ValidationDictionary);
-        }*/
-
-        /*[Test]
-        public async Task ThenFalseIsReturnedIfThePasscodeMatchesButHasExpired()
-        {
-            //Act
-            var actual = await _validator.ValidateAsync(new PasswordResetCommand
-            {
-                PasswordResetCode = "123456",
-                User = new User
-                {
-                    SecurityCodes = new[]
-                    {
-                        new SecurityCode
-                        {
-                            Code = "123456",
-                            CodeType = SecurityCodeType.PasswordResetCode,
-                            ExpiryTime = DateTime.MinValue
-                        }
-                    }
-                }
-            });
-
-            //Assert
-            Assert.IsFalse(actual.IsValid());
-            Assert.Contains(new KeyValuePair<string, string>("PasswordResetCode", "Reset code has expired"), actual.ValidationDictionary);
-        }*/
-
-        /*[Test]
-        public async Task ThenFalseIsReturnedIfThePasscodeMatchesButHasHadTooManyFailedAttempts()
-        {
-            //Act
-            var actual = await _validator.ValidateAsync(new PasswordResetCommand
-            {
-                PasswordResetCode = "123456",
-                User = new User
-                {
-                    SecurityCodes = new[]
-                    {
-                        new SecurityCode
-                        {
-                            Code = "123456",
-                            CodeType = SecurityCodeType.PasswordResetCode,
-                            ExpiryTime = DateTime.MaxValue,
-                            FailedAttempts = 3
-                        }
-                    }
-                }
-            });
-
-            //Assert
-            Assert.IsFalse(actual.IsValid());
-            Assert.Contains(new KeyValuePair<string, string>("PasswordResetCode", "Too many failed attempts, reset code has expired"), actual.ValidationDictionary);
-        }*/
+            }));
+        }
 
         [Test]
         public async Task ThenFalseIsReturnedfIfThePasswordsDoNotMatch()

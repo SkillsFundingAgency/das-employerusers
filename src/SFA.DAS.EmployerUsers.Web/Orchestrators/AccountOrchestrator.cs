@@ -33,12 +33,9 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 {
     public class AccountOrchestrator
     {
-
-
         private readonly IMediator _mediator;
         private readonly IOwinWrapper _owinWrapper;
         private readonly ILogger _logger;
-
 
         //Needed for testing
         protected AccountOrchestrator()

@@ -24,7 +24,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         private readonly IOwinWrapper _owinWrapper;
         private readonly IdentityServerConfiguration _identityServerConfiguration;
         private readonly ILogger _logger;
-        private readonly IConfigurationService _configurationService;
 
         public AccountController(AccountOrchestrator accountOrchestrator, IOwinWrapper owinWrapper, IdentityServerConfiguration identityServerConfiguration, ILogger logger)
         {

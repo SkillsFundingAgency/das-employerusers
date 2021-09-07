@@ -73,10 +73,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         [Test]
         public async Task ThenTheUserIsReturnedFromTheRespository()
         {
-            //Act
+            // Act
             await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = ActualEmailAddress });
 
-            //Assert
+            // Assert
             _userRepository.Verify(x => x.GetByEmailAddress(ActualEmailAddress));
 
         }
@@ -84,10 +84,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         [Test]
         public async Task ThenTheValidatorIsCalled()
         {
-            //Act
+            // Act
             await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = ActualEmailAddress });
 
-            //Assert
+            // Assert
             _validator.Verify(x => x.ValidateAsync(It.IsAny<PasswordResetCommand>()), Times.Once);
         }
 
@@ -104,13 +104,13 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         [Test]
         public async Task ThenTheUserIsUpdatedIfTheValidatorIsValid()
         {
-            //Arrange
+            // Arrange
             _passwordService.Setup(x => x.GenerateAsync("somePassword")).ReturnsAsync(new SecuredPassword { HashedPassword = "hashedPassword", ProfileId = "theprofile", Salt = "salt" });
 
-            //Act
+            // Act
             await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = ActualEmailAddress, Password = "somePassword", ConfirmPassword = "someConfirmPassword" });
 
-            //Assert
+            // Assert
             _passwordService.Verify(x => x.GenerateAsync("somePassword"), Times.Once);
             _userRepository.Verify(x => x.Update(It.Is<User>(c => c.Email == ActualEmailAddress
                                                                && c.Password == "hashedPassword"
@@ -122,7 +122,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         [Test]
         public async Task ThenTheUsersAccessCodesAreExpiredIfTheValidatorIsValid()
         {
-            //Arrange
+            // Arrange
             _passwordService.Setup(x => x.GenerateAsync("somePassword")).ReturnsAsync(new SecuredPassword { HashedPassword = "hashedPassword", ProfileId = "theprofile", Salt = "salt" });
             _userRepository.Setup(x => x.GetByEmailAddress(It.IsAny<string>())).ReturnsAsync(new User
             {
@@ -158,10 +158,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
                 }
             });
 
-            //Act
+            // Act
             await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = ActualEmailAddress, Password = "somePassword", ConfirmPassword = "someConfirmPassword" });
 
-            //Assert
+            // Assert
             _userRepository.Verify(r => r.Update(It.Is<User>(u => u.Id == "USER1"
                                                                && !u.SecurityCodes.Any(sc => sc.CodeType == SecurityCodeType.AccessCode))),
                 Times.Once);
@@ -170,7 +170,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         [Test]
         public async Task ThenTheUsersPasswordResetCodesAreExpiredIfTheValidatorIsValid()
         {
-            //Arrange
+            // Arrange
             _passwordService.Setup(x => x.GenerateAsync("somePassword")).ReturnsAsync(new SecuredPassword { HashedPassword = "hashedPassword", ProfileId = "theprofile", Salt = "salt" });
             _userRepository.Setup(x => x.GetByEmailAddress(ActualEmailAddress)).ReturnsAsync(new User
             {
@@ -206,10 +206,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
                 }
             });
 
-            //Act
+            // Act
             await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = ActualEmailAddress, Password = "somePassword", ConfirmPassword = "someConfirmPassword" });
 
-            //Assert
+            // Assert
             _userRepository.Verify(r => r.Update(It.Is<User>(u => u.Id == "USER1"
                                                                && !u.SecurityCodes.Any(sc => sc.CodeType == SecurityCodeType.PasswordResetCode))),
                 Times.Once);
@@ -218,58 +218,27 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         [Test]
         public void ThenAInvliadRequestExceptionIsThrownIfTheMessageIsNotValid()
         {
-            //Arrange
+            // Arrange
             _validator.Setup(x => x.ValidateAsync(It.IsAny<PasswordResetCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
 
-            //Act
+            // Act
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _passwordResetCommandHandler.Handle(new PasswordResetCommand()));
 
-            //Assert
+            // Assert
             _userRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
         }
 
         [Test]
         public void ThenTheUserIsNotUpdatedIfTheValidatorIsInValid()
         {
-            //Arrange
+            // Arrange
             _validator.Setup(x => x.ValidateAsync(It.IsAny<PasswordResetCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
 
-            //Act
+            // Act
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = "someotheremail@local" }));
 
-            //Assert
+            // Assert
             _userRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
         }
-
-        /*[Test]
-        public void ThenTheFailedAttemptsAreIncrementedIfTheResetCodeIsInvalid()
-        {
-            //Arrange
-            var userEmail = "someotheremail@local";
-            _userRepository.Setup(x => x.GetByEmailAddress(It.Is<string>(s => s == userEmail))).ReturnsAsync(new User
-            {
-                Id = "USER1",
-                Email = ActualEmailAddress,
-                IsActive = true,
-                SecurityCodes = new[]
-                {
-                    new SecurityCode
-                    {
-                        Code = "143XYZ",
-                        CodeType = SecurityCodeType.PasswordResetCode,
-                        ExpiryTime = DateTime.MaxValue,
-                        FailedAttempts = 0
-                    },
-                }
-            });
-
-            _validator.Setup(x => x.ValidateAsync(It.IsAny<PasswordResetCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
-
-            //Act
-            Assert.ThrowsAsync<InvalidRequestException>(async () => await _passwordResetCommandHandler.Handle(new PasswordResetCommand { Email = userEmail }));
-
-            //Assert
-            _userRepository.Verify(x => x.Update(It.Is<User>(u => u.SecurityCodes[0].FailedAttempts == 1)), Times.Once);
-        }*/
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Moq;
 using NLog;
 using NUnit.Framework;
@@ -13,6 +10,8 @@ using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestratorTests
 {
@@ -39,83 +38,45 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         [Test]
         public async Task ThenTheCommandIsCalledByTheMediator()
         {
-            //Arrange
-            
+            // Arrange
             var actualResetCode = "123456";
-            var model = new PasswordResetViewModel {  Email = ValidEmail, PasswordResetCode = actualResetCode, Password = "password", ConfirmPassword = "passwordconfirm" };
+            var model = new EnterResetCodeViewModel {  Email = ValidEmail, PasswordResetCode = actualResetCode };
 
-            //Act
-            await _accountOrchestrator.ResetPassword(model);
+            // Act
+            await _accountOrchestrator.ValidateResetCode(model);
 
-            //Assert
-            _mediator.Verify(x => x.SendAsync(It.Is<PasswordResetCommand>(c => c.Email == ValidEmail && c.Password=="password" && c.ConfirmPassword=="passwordconfirm" && c.PasswordResetCode == actualResetCode)), Times.Once);
-
+            // Assert
+            _mediator.Verify(x => x.SendAsync(It.Is<ValidatePasswordResetCodeCommand>(c => c.Email == ValidEmail && c.PasswordResetCode == actualResetCode)), Times.Once);
         }
-        
+
         [Test]
-        public async Task ThenTheErrorDictionaryIsPopulatedIfAnExceptionIsThrown()
+        public async Task ThenTheErrorDictionaryIsPopulatedIfAnInvalidRequestExceptionIsThrown()
         {
-            //Arrange
-            _mediator.Setup(x => x.SendAsync(It.IsAny<PasswordResetCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { { "ConfrimPassword", "Some Error" } }));
+            // Arrange
+            _mediator.Setup(x => x.SendAsync(It.IsAny<ValidatePasswordResetCodeCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string> { { "ConfrimPassword", "Some Error" } }));
 
-            //Act
-            var actual = await _accountOrchestrator.ResetPassword(new PasswordResetViewModel());
+            // Act
+            var actual = await _accountOrchestrator.ValidateResetCode(new EnterResetCodeViewModel());
 
-            //Assert
+            // Assert
             Assert.IsNotEmpty(actual.FlashMessage.ErrorMessages);
         }
 
         [Test]
         public async Task ThenTheErrorDictionaryContainsTheFieldErrors()
         {
-            //Arrange
-            _mediator.Setup(x => x.SendAsync(It.IsAny<PasswordResetCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string>
+            // Arrange
+            _mediator.Setup(x => x.SendAsync(It.IsAny<ValidatePasswordResetCodeCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string>
             {
-                { "ConfirmPassword", "Some Confirm Error" }
+                { "PasswordResetCode", "Some Reset Code Error" }
             }));
 
 
-            //Act
-            var actual = await _accountOrchestrator.ResetPassword(new PasswordResetViewModel());
+            // Act
+            var actual = await _accountOrchestrator.ValidateResetCode(new EnterResetCodeViewModel());
 
-            //Assert
-            Assert.AreEqual("Some Confirm Error", actual.Data.ConfirmPasswordError);
-        }
-
-        [Test]
-        public async Task ThenThePasswordFieldsAreEmptiedIfThereAreErrors()
-        {
-            //Arrange
-            _mediator.Setup(x => x.SendAsync(It.IsAny<PasswordResetCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string>
-            {
-                { "ConfirmPassword", "Some Confirm Error" },
-                { "PasswordResetCode", "Some Password Reset Error" }
-            }));
-
-            //Act
-            var actual = await _accountOrchestrator.ResetPassword(new PasswordResetViewModel());
-
-            //Assert
-            Assert.AreEqual(string.Empty, actual.Data.Password);
-            Assert.AreEqual(string.Empty, actual.Data.ConfirmPassword);
-        }
-
-        [Test]
-        public async Task ThenTheUserIsNotLoggedInIfThereAreErrors()
-        {
-            //Arrange
-            _mediator.Setup(x => x.SendAsync(It.IsAny<PasswordResetCommand>())).ThrowsAsync(new InvalidRequestException(new Dictionary<string, string>
-            {
-                { "ConfirmPassword", "Some Confirm Error" },
-                { "PasswordResetCode", "Some Password Reset Error" }
-            }));
-
-            //Act
-            await _accountOrchestrator.ResetPassword(new PasswordResetViewModel());
-
-            //Assert
-            _mediator.Verify(x => x.SendAsync(It.IsAny<GetUserByEmailAddressQuery>()), Times.Never);
-            _owinWrapper.Verify(x => x.IssueLoginCookie(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            // Assert
+            Assert.AreEqual("Some Reset Code Error", actual.Data.PasswordResetCodeError);
         }
     }
 }
