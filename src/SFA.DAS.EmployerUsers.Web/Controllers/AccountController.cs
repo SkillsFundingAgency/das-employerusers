@@ -1,6 +1,5 @@
 ﻿using IdentityServer3.Core;
 using NLog;
-using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Exceptions;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Web.Authentication;
@@ -476,7 +475,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
             if(returnModel.Exception is ExceededLimitPasswordResetCodeException)
             {
-                return RedirectToAction(nameof(ExceededLimitResetCode));
+                return View("InvalidResetCode", returnModel.Data );
             }
 
             if (returnModel?.FlashMessage?.ErrorMessages == null || !returnModel.FlashMessage.ErrorMessages.Any())
@@ -487,13 +486,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View("EnterResetCode", returnModel);
         }
         
-        [HttpGet]
-        [Route("identity/employer/exceedlimitresetcode")]
-        public ActionResult ExceededLimitResetCode(EnterResetCodeViewModel enterResetCodeViewModel)
-        {
-            return View("InvalidResetCode", new EnterResetCodeViewModel { ClientId = enterResetCodeViewModel.ClientId, Email = enterResetCodeViewModel.Email, UnlockCodeLength = enterResetCodeViewModel.UnlockCodeLength });
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("identity/employer/resetpassword")]

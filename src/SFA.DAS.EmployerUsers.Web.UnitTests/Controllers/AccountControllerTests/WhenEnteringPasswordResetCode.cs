@@ -102,7 +102,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         }
 
         [Test]
-        public async Task ThenTheUserIsRedirectedToTheExceededLimitResetCodeIfAnExceededLimitPasswordResetCodeExceptionIsReturned()
+        public async Task ThenTheUserIsShownTheInvalidResetCodeViewIfAnExceededLimitPasswordResetCodeExceptionIsReturned()
         {
             // Arrange
             _orchestrator.Setup(x => x.ValidateResetCode(It.IsAny<EnterResetCodeViewModel>())).ReturnsAsync(new OrchestratorResponse<EnterResetCodeViewModel>
@@ -115,9 +115,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 
             // Assert
             Assert.IsNotNull(actual);
-            var actualRedirectToRouteResult = actual as RedirectToRouteResult;
-            Assert.IsNotNull(actualRedirectToRouteResult);
-            Assert.Contains(nameof(AccountController.ExceededLimitResetCode), actualRedirectToRouteResult.RouteValues.Values);
+            var actualViewResult = actual as ViewResult;
+            Assert.IsNotNull(actualViewResult);
+            Assert.AreEqual(actualViewResult.ViewName, "InvalidResetCode");
         }
     }
 }

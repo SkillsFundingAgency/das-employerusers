@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using NLog;
-using SFA.DAS.EmployerUsers.Application;
 using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser;
 using SFA.DAS.EmployerUsers.Application.Commands.ChangeEmail;
@@ -28,6 +22,11 @@ using SFA.DAS.EmployerUsers.Application.Queries.IsUserActive;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Models.SFA.DAS.EAS.Web.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 {
@@ -453,6 +452,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             catch(ExceededLimitPasswordResetCodeException ex)
             {
                 _logger.Error(ex, ex.Message);
+                response.Data = model;
                 response.Exception = ex;
             }
             catch (InvalidRequestException ex)
