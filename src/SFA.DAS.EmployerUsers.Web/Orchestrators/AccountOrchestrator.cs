@@ -36,10 +36,11 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         private readonly IOwinWrapper _owinWrapper;
         private readonly ILogger _logger;
 
-        //Needed for testing
+        private const string ProblemHeadline = "There is a problem";
+
         protected AccountOrchestrator()
         {
-
+            // Needed for testing
         }
 
         public AccountOrchestrator(IMediator mediator, IOwinWrapper owinWrapper, ILogger logger)
@@ -59,6 +60,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     Password = loginViewModel.Password,
                     ReturnUrl = loginViewModel.ReturnUrl
                 });
+                
                 if (user == null)
                 {
                     _logger.Info(
@@ -68,15 +70,14 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                         Status = HttpStatusCode.BadRequest,
                         FlashMessage = new FlashMessageViewModel
                         {
+                            Headline = ProblemHeadline,
                             ErrorMessages = new Dictionary<string, string>
                             {
                                 {
                                     "", "Invalid credentials"
                                 }
                             },
-                            Severity = FlashMessageSeverityLevel.Error,
-                            Headline = "Errors to fix",
-                            Message = "Check the following details:"
+                            Severity = FlashMessageSeverityLevel.Error
                         },
                         Data = new LoginResultModel {Success = false}
                     };
@@ -96,10 +97,9 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     Status = HttpStatusCode.BadRequest,
                     FlashMessage = new FlashMessageViewModel
                     {
+                        Headline = ProblemHeadline,
                         ErrorMessages = ex.ErrorMessages,
-                        Severity = FlashMessageSeverityLevel.Error,
-                        Headline = "Errors to fix",
-                        Message = "Check the following details:"
+                        Severity = FlashMessageSeverityLevel.Error
                     },
                     Data = new LoginResultModel {Success = false}
                 };
@@ -122,10 +122,9 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     Status = HttpStatusCode.Forbidden,
                     FlashMessage = new FlashMessageViewModel
                     {
+                        Headline = ProblemHeadline,
                         ErrorMessages = new Dictionary<string,string> {{string.Empty, "There was a problem logging into your account" }},
-                        Severity = FlashMessageSeverityLevel.Error,
-                        Headline = "Errors to fix",
-                        Message = "Check the following details:"
+                        Severity = FlashMessageSeverityLevel.Error
                     },
                     Data = new LoginResultModel { AccountIsSuspended = true }
                 };
@@ -156,42 +155,37 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             return model;
         }
 
-        public virtual async Task<OrchestratorResponse<RegisterViewModel>> Register(RegisterViewModel registerUserViewModel, string returnUrl)
+        public virtual async Task<OrchestratorResponse<RegisterViewModel>> Register(RegisterViewModel model, string returnUrl)
         {
-            var returnModel = new OrchestratorResponse<RegisterViewModel>
-            {
-                Data = registerUserViewModel
-            };
+            var response = new OrchestratorResponse<RegisterViewModel>{ Data = model };
+
             try
             {
                 await _mediator.SendAsync(new RegisterUserCommand
                 {
                     Id = Guid.NewGuid().ToString(),
-                    FirstName = registerUserViewModel.FirstName,
-                    LastName = registerUserViewModel.LastName,
-                    Email = registerUserViewModel.Email,
-                    Password = registerUserViewModel.Password,
-                    ConfirmPassword = registerUserViewModel.ConfirmPassword,
-                    HasAcceptedTermsAndConditions = registerUserViewModel.HasAcceptedTermsAndConditions,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Email = model.Email,
+                    Password = model.Password,
+                    ConfirmPassword = model.ConfirmPassword,
+                    HasAcceptedTermsAndConditions = model.HasAcceptedTermsAndConditions,
                     ReturnUrl = returnUrl
                 });
 
                 var user = await _mediator.SendAsync(new GetUserByEmailAddressQuery
                 {
-                    EmailAddress = registerUserViewModel.Email
+                    EmailAddress = model.Email
                 });
 
                 LoginUser(user.Id, user.FirstName, user.LastName);
             }
             catch (InvalidRequestException ex)
             {
-                _logger.Info(ex, ex.Message);
-                returnModel.Data.ErrorDictionary = ex.ErrorMessages;
-
-                returnModel.FlashMessage = new FlashMessageViewModel
+                response.Data.ErrorDictionary = ex.ErrorMessages;
+                response.FlashMessage = new FlashMessageViewModel
                 {
-                    Headline = "Errors to fix",
-                    Message = "Check the following details:",
+                    Headline = ProblemHeadline,
                     Severity = FlashMessageSeverityLevel.Error,
                     ErrorMessages = ex.ErrorMessages
                 };
@@ -199,22 +193,23 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             catch (Exception ex)
             {
                 _logger.Error(ex, ex.Message);
-                returnModel.FlashMessage = new FlashMessageViewModel
+                model.ErrorDictionary.Add("", ex.Message);
+                response.FlashMessage = new FlashMessageViewModel
                 {
-                    Headline = "Errors to fix",
-                    Message = "Check the following details:",
+                    Headline = ProblemHeadline,
+                    ErrorMessages = new Dictionary<string, string> { { "", "Unexpected error occured" } },
                     Severity = FlashMessageSeverityLevel.Error,
-                    ErrorMessages = new Dictionary<string, string> { { "", "Unexpected error occured" } }
                 };
+                response.Exception = ex;
             }
 
-            returnModel.Data = registerUserViewModel;
-
-            return returnModel;
+            return response;
         }
 
-        public virtual async Task<ActivateUserViewModel> ActivateUser(ActivateUserViewModel model)
+        public virtual async Task<OrchestratorResponse<ActivateUserViewModel>> ActivateUser(ActivateUserViewModel model)
         {
+            var response = new OrchestratorResponse<ActivateUserViewModel> { Data = model };
+
             try
             {
                 var result = await _mediator.SendAsync(new ActivateUserCommand
@@ -223,18 +218,32 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     UserId = model.UserId
                 });
 
-
-                model.ReturnUrl = result.ReturnUrl;
-                return model;
+                response.Data.ReturnUrl = result.ReturnUrl;
             }
             catch (InvalidRequestException ex)
             {
-                _logger.Info(ex, ex.Message);
-
-
-                model.ErrorDictionary = ex.ErrorMessages;
-                return model;
+                response.Data.ErrorDictionary = ex.ErrorMessages;
+                response.FlashMessage = new FlashMessageViewModel
+                {
+                    Headline = ProblemHeadline,
+                    Severity = FlashMessageSeverityLevel.Error,
+                    ErrorMessages = ex.ErrorMessages
+                };
             }
+            catch(Exception ex)
+            {
+                _logger.Error(ex, ex.Message);
+                model.ErrorDictionary.Add("", ex.Message);
+                response.FlashMessage = new FlashMessageViewModel
+                {
+                    Headline = ProblemHeadline,
+                    ErrorMessages = new Dictionary<string, string> { { "", "Unexpected error occured" } },
+                    Severity = FlashMessageSeverityLevel.Error,
+                };
+                response.Exception = ex;
+            }
+
+            return response;
         }
         public virtual async Task<bool> ResendLastConfirmationCode(ConfirmChangeEmailViewModel model)
         {
@@ -301,70 +310,63 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             return false;
         }
 
-        public virtual async Task<OrchestratorResponse<UnlockUserViewModel>> UnlockUser(UnlockUserViewModel unlockUserViewModel)
+        public virtual async Task<OrchestratorResponse<UnlockUserViewModel>> UnlockUser(UnlockUserViewModel model)
         {
+            var response = new OrchestratorResponse<UnlockUserViewModel> { Data = model };
+
             try
             {
-
                 var unlockResponse = await _mediator.SendAsync(new UnlockUserCommand
                 {
-                    Email = unlockUserViewModel.Email,
-                    UnlockCode = unlockUserViewModel.UnlockCode,
-                    ReturnUrl = unlockUserViewModel.ReturnUrl
+                    Email = model.Email,
+                    UnlockCode = model.UnlockCode,
+                    ReturnUrl = model.ReturnUrl
                 });
 
                 await _mediator.SendAsync(new ActivateUserCommand
                 {
-                    Email = unlockUserViewModel.Email
+                    Email = model.Email
                 });
+
                 if (unlockResponse != null)
                 {
-                    unlockUserViewModel.ReturnUrl = unlockResponse.UnlockCode.ReturnUrl;
+                    model.ReturnUrl = unlockResponse.UnlockCode.ReturnUrl;
                 }
-                return new OrchestratorResponse<UnlockUserViewModel> { Data = unlockUserViewModel };
             }
             catch (InvalidRequestException ex)
             {
-                _logger.Info(ex, ex.Message);
-
-                if (ex.ErrorMessages.ContainsKey(nameof(unlockUserViewModel.UnlockCodeExpired)))
+                if (ex.ErrorMessages.ContainsKey(nameof(model.UnlockCodeExpired)))
                 {
-                    unlockUserViewModel.UnlockCodeExpired = true;
+                    model.UnlockCodeExpired = true;
                 }
-                unlockUserViewModel.ErrorDictionary = ex.ErrorMessages;
-
-
-                var flashMessage = new FlashMessageViewModel
+                
+                model.ErrorDictionary = ex.ErrorMessages;
+                response.FlashMessage = new FlashMessageViewModel
                 {
                     ErrorMessages = ex.ErrorMessages,
-                    Headline = "Errors to fix",
-                    Message = "Check the following details:",
+                    Headline = ProblemHeadline,
                     Severity = FlashMessageSeverityLevel.Error
                 };
-
-
-                return new OrchestratorResponse<UnlockUserViewModel> { Data = unlockUserViewModel, FlashMessage = flashMessage };
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, ex.Message);
-                unlockUserViewModel.ErrorDictionary = new Dictionary<string, string>
+                model.ErrorDictionary.Add("", ex.Message);
+                response.FlashMessage = new FlashMessageViewModel
                 {
-                    {"", "Unexpected error occured"}
+                    Headline = ProblemHeadline,
+                    ErrorMessages = new Dictionary<string, string> { { "", "Unexpected error occured" } },
+                    Severity = FlashMessageSeverityLevel.Error,
                 };
-                var flashMessage = new FlashMessageViewModel
-                {
-                    ErrorMessages = unlockUserViewModel.ErrorDictionary,
-                    Headline = "Errors to fix",
-                    Message = "Check the following details:",
-                    Severity = FlashMessageSeverityLevel.Error
-                };
-                return new OrchestratorResponse<UnlockUserViewModel> { Data = unlockUserViewModel, FlashMessage = flashMessage };
+                response.Exception = ex;
             }
+
+            return response;
         }
 
         public virtual async Task<OrchestratorResponse<UnlockUserViewModel>> ResendUnlockCode(UnlockUserViewModel model)
         {
+            var response = new OrchestratorResponse<UnlockUserViewModel> { Data = model };
 
             try
             {
@@ -376,35 +378,31 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
                 model.UnlockCodeSent = true;
 
-                var flashMessage = new FlashMessageViewModel
+                response.FlashMessage = new FlashMessageViewModel
                 {
                     Severity = FlashMessageSeverityLevel.Success,
                     Headline = "Unlock your account",
                     SubMessage = "We've resent an email with a code to unlock your account"
                 };
-
-                return new OrchestratorResponse<UnlockUserViewModel> { Data = model, FlashMessage = flashMessage };
             }
             catch (InvalidRequestException ex)
             {
-                _logger.Info(ex, ex.Message);
                 model.ErrorDictionary = ex.ErrorMessages;
-
-                var flashMessage = new FlashMessageViewModel
+                response.FlashMessage = new FlashMessageViewModel
                 {
+                    Headline = ProblemHeadline,
                     ErrorMessages = ex.ErrorMessages,
-                    Headline = "Errors to fix",
-                    Message = "Check the following details:",
                     Severity = FlashMessageSeverityLevel.Error
                 };
-
-                return new OrchestratorResponse<UnlockUserViewModel> { Data = model, FlashMessage = flashMessage }; ;
             }
 
+            return response;
         }
 
-        public virtual async Task<RequestPasswordResetViewModel> RequestPasswordResetCode(RequestPasswordResetViewModel model)
+        public virtual async Task<OrchestratorResponse<RequestPasswordResetViewModel>> RequestPasswordResetCode(RequestPasswordResetViewModel model)
         {
+            var response = new OrchestratorResponse<RequestPasswordResetViewModel> { Data = model };
+
             try
             {
                 await _mediator.SendAsync(new RequestPasswordResetCodeCommand
@@ -417,15 +415,22 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             catch (InvalidRequestException ex)
             {
-                _logger.Info(ex, ex.Message);
                 model.ErrorDictionary = ex.ErrorMessages;
+                response.FlashMessage = new FlashMessageViewModel
+                {
+                    ErrorMessages = ex.ErrorMessages,
+                    Headline = ProblemHeadline,
+                    Severity = FlashMessageSeverityLevel.Error
+                };
             }
-            return model;
+
+            return response;
         }
 
         public virtual async Task<OrchestratorResponse<EnterResetCodeViewModel>> ValidateResetCode(EnterResetCodeViewModel model)
         {
-            var response = new OrchestratorResponse<EnterResetCodeViewModel>();
+            var response = new OrchestratorResponse<EnterResetCodeViewModel> { Data = model };
+
             try
             {
                 var resetResponse = await _mediator.SendAsync(new ValidatePasswordResetCodeCommand
@@ -444,29 +449,28 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     model.ReturnUrl = resetResponse.ResetCode.ReturnUrl;
                 }
 
-                response.Data = model;
                 response.Data.UnlockCodeLength = await GetUnlockCodeLength();
-
-                return response;
             }
             catch(ExceededLimitPasswordResetCodeException ex)
             {
                 _logger.Error(ex, ex.Message);
-                response.Data = model;
                 response.Exception = ex;
             }
             catch (InvalidRequestException ex)
             {
                 model.ErrorDictionary = ex.ErrorMessages;
-                response.Data = model;
                 response.FlashMessage = new FlashMessageViewModel
                 {
-                    Headline = "Errors to fix",
-                    Message = "Check the following details:",
+                    Headline = ProblemHeadline,
                     ErrorMessages = ex.ErrorMessages,
                     Severity = FlashMessageSeverityLevel.Error
                 };
                 response.Exception = ex;
+            }
+
+            if (!response.Data.Valid)
+            {
+                response.Data.PasswordResetCode = string.Empty;
             }
 
             return response;
@@ -474,7 +478,8 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
         public virtual async Task<OrchestratorResponse<PasswordResetViewModel>> ResetPassword(PasswordResetViewModel model)
         {
-            var response = new OrchestratorResponse<PasswordResetViewModel>();
+            var response = new OrchestratorResponse<PasswordResetViewModel> { Data = model };
+
             try
             {
                 var resetResponse = await _mediator.SendAsync(new PasswordResetCommand
@@ -490,10 +495,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     model.ReturnUrl = resetResponse.ResetCode.ReturnUrl;
                 }
 
-                response.Data = model;
                 response.Data.UnlockCodeLength = await GetUnlockCodeLength();
-
-                return response;
             }
             catch(InvalidPasswordResetCodeException ex)
             {
@@ -503,17 +505,19 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             catch (InvalidRequestException ex)
             {
                 model.ErrorDictionary = ex.ErrorMessages;
-                model.Password = string.Empty;
-                model.ConfirmPassword = string.Empty;
-                response.Data = model;
                 response.FlashMessage = new FlashMessageViewModel
                 {
-                    Headline = "Errors to fix",
-                    Message = "Check the following details:",
+                    Headline = ProblemHeadline,
                     ErrorMessages = ex.ErrorMessages,
                     Severity = FlashMessageSeverityLevel.Error
                 };
                 response.Exception = ex;
+            }
+
+            if (!response.Data.Valid)
+            {
+                model.Password = string.Empty;
+                model.ConfirmPassword = string.Empty;
             }
 
             return response;
@@ -521,31 +525,30 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
         public virtual async Task<OrchestratorResponse<ChangeEmailViewModel>> StartRequestChangeEmail(string clientId, string returnUrl)
         {
-            var response = new OrchestratorResponse<ChangeEmailViewModel>();
-            var model = new ChangeEmailViewModel
+            var response = new OrchestratorResponse<ChangeEmailViewModel>
             {
-                ReturnUrl = returnUrl + "?userCancelled=true",
-                ClientId = clientId
+                Data = new ChangeEmailViewModel
+                {
+                    ReturnUrl = returnUrl + "?userCancelled=true",
+                    ClientId = clientId
+                }
             };
+
             try
             {
-                await ValidateClientIdReturnUrlCombo(clientId, returnUrl, model);
-
-                response.Data = model;
+                await ValidateClientIdReturnUrlCombo(clientId, returnUrl, response.Data);
                 if (!response.Data.Valid)
                 {
                     response.Status = HttpStatusCode.BadRequest;
                 }
-                return response;
             }
             catch (InvalidRequestException ex)
             {
-                model.ErrorDictionary = ex.ErrorMessages;
+                response.Data.ErrorDictionary = ex.ErrorMessages;
                 response.Status = HttpStatusCode.BadRequest;
                 response.FlashMessage = new FlashMessageViewModel
                 {
-                    Headline = "Errors to fix",
-                    Message = "Check the following details:",
+                    Headline = ProblemHeadline,
                     ErrorMessages = ex.ErrorMessages,
                     Severity = FlashMessageSeverityLevel.Error
                 };
@@ -554,23 +557,29 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             catch (Exception ex)
             {
                 _logger.Error(ex, ex.Message);
+                response.Data.ErrorDictionary.Add("", ex.Message);
                 response.Status = HttpStatusCode.InternalServerError;
+                response.FlashMessage = new FlashMessageViewModel
+                {
+                    Headline = ProblemHeadline,
+                    ErrorMessages = new Dictionary<string, string> { { "", "Unexpected error occured" } },
+                    Severity = FlashMessageSeverityLevel.Error,
+                };
+                response.Exception = ex;
 
             }
-            response.Data = model;
-
+           
             return response;
         }
         public virtual async Task<OrchestratorResponse<ChangeEmailViewModel>> RequestChangeEmail(ChangeEmailViewModel model)
         {
-            var response = new OrchestratorResponse<ChangeEmailViewModel>() { Data = new ChangeEmailViewModel() };
+            var response = new OrchestratorResponse<ChangeEmailViewModel>() { Data = model };
 
             try
             {
                 var isClientValid = await ValidateClientIdReturnUrlCombo(model.ClientId, model.ReturnUrl, model);
                 if (!isClientValid)
                 {
-                    response.Data = model;
                     return response;
                 }
 
@@ -581,7 +590,6 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     ConfirmEmailAddress = model.ConfirmEmailAddress,
                     ReturnUrl = model.ReturnUrl
                 });
-
             }
             catch (InvalidRequestException ex)
             {
@@ -589,8 +597,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 response.Status = HttpStatusCode.BadRequest;
                 response.FlashMessage = new FlashMessageViewModel
                 {
-                    Headline = "Errors to fix",
-                    Message = "Check the following details:",
+                    Headline = ProblemHeadline,
                     ErrorMessages = ex.ErrorMessages,
                     Severity = FlashMessageSeverityLevel.Error
                 };
@@ -598,11 +605,17 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             }
             catch (Exception ex)
             {
+                _logger.Error(ex, ex.Message);
                 model.ErrorDictionary.Add("", ex.Message);
                 response.Status = HttpStatusCode.InternalServerError;
-
+                response.FlashMessage = new FlashMessageViewModel
+                {
+                    Headline = ProblemHeadline,
+                    ErrorMessages = new Dictionary<string, string> { { "", "Unexpected error occured" } },
+                    Severity = FlashMessageSeverityLevel.Error,
+                };
+                response.Exception = ex;
             }
-            response.Data = model;
 
             return response;
         }
@@ -622,6 +635,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                     SecurityCode = model.SecurityCode,
                     Password = model.Password
                 });
+
                 model.ReturnUrl = changeEmailResult.ReturnUrl;
             }
             catch (InvalidRequestException ex)
@@ -632,6 +646,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             {
                 model.ErrorDictionary.Add("", ex.Message);
             }
+
             return model;
         }
 
@@ -654,14 +669,16 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             return response;
         }
 
-        public virtual async Task<ChangePasswordViewModel> ChangePassword(ChangePasswordViewModel model)
+        public virtual async Task<OrchestratorResponse<ChangePasswordViewModel>> ChangePassword(ChangePasswordViewModel model)
         {
+            var response = new OrchestratorResponse<ChangePasswordViewModel>() { Data = model };
+
             try
             {
                 var isClientValid = await ValidateClientIdReturnUrlCombo(model.ClientId, model.ReturnUrl, model);
                 if (!isClientValid)
                 {
-                    return model;
+                    return response;
                 }
 
                 var user = await _mediator.SendAsync(new GetUserByIdQuery
@@ -681,19 +698,42 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
             catch (InvalidRequestException ex)
             {
                 model.ErrorDictionary = ex.ErrorMessages;
+                response.FlashMessage = new FlashMessageViewModel
+                {
+                    Headline = ProblemHeadline,
+                    ErrorMessages = ex.ErrorMessages,
+                    Severity = FlashMessageSeverityLevel.Error
+                };
+                response.Exception = ex;
             }
             catch (Exception ex)
             {
+                _logger.Error(ex, ex.Message);
                 model.ErrorDictionary.Add("", ex.Message);
+                response.FlashMessage = new FlashMessageViewModel
+                {
+                    Headline = ProblemHeadline,
+                    ErrorMessages = new Dictionary<string, string> { { "", "Unexpected error occured" } },
+                    Severity = FlashMessageSeverityLevel.Error,
+                };
+                response.Exception = ex;
             }
 
-            return model;
+            if(!response.Data.Valid)
+            {
+                response.Data.CurrentPassword = string.Empty;
+                response.Data.NewPassword = string.Empty;
+                response.Data.ConfirmPassword = string.Empty;
+            }
+
+            return response;
         }
 
-        public async Task<RequestPasswordResetViewModel> StartForgottenPassword(string clientId, string returnUrl)
+        public async Task<RequestPasswordResetViewModel> StartForgottenPassword(string id, string clientId, string returnUrl)
         {
             var model = new RequestPasswordResetViewModel()
             {
+                SignInId = id,
                 ClientId = clientId
             };
             
@@ -713,7 +753,6 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
 
         public async Task<string> LogoutUrlForClientId(string clientId)
         {
-
             var relyingParty = await _mediator.SendAsync(new GetRelyingPartyQuery { Id = clientId });
 
             if (relyingParty == null)
@@ -735,7 +774,6 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
         private void LoginUser(string id, string firstName, string lastName)
         {
             _owinWrapper.IssueLoginCookie(id, $"{firstName} {lastName}");
-
             _owinWrapper.RemovePartialLoginCookie();
         }
 
@@ -793,8 +831,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 response.Status = HttpStatusCode.BadRequest;
                 response.FlashMessage = new FlashMessageViewModel
                 {
-                    Headline = "Errors to fix",
-                    Message = "Check the following details:",
+                    Headline = ProblemHeadline,
                     ErrorMessages = ex.ErrorMessages,
                     Severity = FlashMessageSeverityLevel.Error
                 };

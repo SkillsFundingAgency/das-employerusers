@@ -10,13 +10,15 @@
 <form method="post" action="@Url.Action("EnterResetCode")" novalidate autocomplete="off">
     @Html.AntiForgeryToken()
     <input type="hidden" value="@Model.Data.Email" name="Email" />
+    <input type="hidden" value="@Model.Data.SignInId" name="SignInId" />
     <input type="hidden" value="@Model.Data.ClientId" name="ClientId" />
+    <input type="hidden" value="@Model.Data.ReturnUrl" name="ReturnUrl" />
     <fieldset>
         <div class="form-group @(!string.IsNullOrEmpty(Model.Data.PasswordResetCodeError) ? "error" : "") ">
             <label for="PasswordResetCode">
                 @if (!string.IsNullOrEmpty(Model.Data.PasswordResetCodeError))
                 {
-                <span class="error-message" id="error-code">@Model.Data.PasswordResetCodeError</span>
+                    <span class="error-message" id="error-code">@Model.Data.PasswordResetCodeError</span>
                 }
             </label>
             <input class="form-control" id="PasswordResetCode" name="PasswordResetCode" value="@Model.Data.PasswordResetCode"
@@ -28,7 +30,7 @@
     </div>
 </form>
 <p>
-    <a class="govuk-link" href="@Url.Action("ForgottenCredentials","Account", new { ClientId = Model.Data.ClientId, ReturnUrl = Model.Data.ReturnUrl })">Request a new reset code</a>
+    <a class="govuk-link" href="@Url.Action("ForgottenCredentials","Account", new { Id = Model.Data.SignInId, ClientId = Model.Data.ClientId, ReturnUrl = Model.Data.ReturnUrl })">Request a new reset code</a>
 </p>
 @section breadcrumb {
     <a href="@Url.Action("ResetFlow","Account")" class="link-back">Back</a>

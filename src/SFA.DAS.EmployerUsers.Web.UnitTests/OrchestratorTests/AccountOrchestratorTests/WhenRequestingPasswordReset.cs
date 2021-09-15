@@ -41,9 +41,9 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         {
             var response = await _accountOrchestrator.RequestPasswordResetCode(_requestPasswordResetViewModel);
 
-            Assert.That(response.Email, Is.EqualTo(_requestPasswordResetViewModel.Email));
-            Assert.That(response.ResetCodeSent, Is.True);
-            Assert.That(response.ErrorDictionary.Count, Is.EqualTo(0));
+            Assert.That(response.Data.Email, Is.EqualTo(_requestPasswordResetViewModel.Email));
+            Assert.That(response.Data.ResetCodeSent, Is.True);
+            Assert.That(response.Data.ErrorDictionary.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -58,10 +58,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             var response = await _accountOrchestrator.RequestPasswordResetCode(_requestPasswordResetViewModel);
 
-            Assert.That(response.Email, Is.EqualTo(_requestPasswordResetViewModel.Email));
-            Assert.That(response.ResetCodeSent, Is.False);
-            Assert.That(response.ErrorDictionary.Count, Is.EqualTo(1));
-            Assert.That(response.ErrorDictionary.ContainsKey("Email"), Is.True);
+            Assert.That(response.Data.Email, Is.EqualTo(_requestPasswordResetViewModel.Email));
+            Assert.That(response.Data.ResetCodeSent, Is.False);
+            Assert.That(response.Data.ErrorDictionary.Count, Is.EqualTo(1));
+            Assert.That(response.Data.ErrorDictionary.ContainsKey("Email"), Is.True);
         }
     }
 }

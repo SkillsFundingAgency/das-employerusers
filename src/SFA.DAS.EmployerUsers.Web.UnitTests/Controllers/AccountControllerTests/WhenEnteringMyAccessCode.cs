@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
 
             _accountOrchestrator = new Mock<AccountOrchestrator>();
             _accountOrchestrator.Setup(x => x.ActivateUser(It.IsAny<ActivateUserViewModel>()))
-                .ReturnsAsync(new ActivateUserViewModel { ReturnUrl = ReturnUrl });
+                .ReturnsAsync(new OrchestratorResponse<ActivateUserViewModel> { Data = new ActivateUserViewModel { ReturnUrl = ReturnUrl } });
 
             _configurationService = new Mock<IConfigurationService>();
 
@@ -41,20 +41,20 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         [Test]
         public async Task ThenTheAccountOrchestratorAccessCodeIsCalled()
         {
-            //Act
+            // Act
             await _accountController.Confirm(new ActivateUserViewModel());
 
-            //Assert
+            // Assert
             _accountOrchestrator.Verify(x=>x.ActivateUser(It.IsAny<ActivateUserViewModel>()),Times.Once);
         }
 
         [Test]
         public async Task ThenRedirectsToOriginWhenActivationSuccessful()
         {
-            //Act
+            // Act
             var actual = await _accountController.Confirm(new ActivateUserViewModel());
 
-            //Assert
+            // Assert
             Assert.IsNotNull(actual);
             var redirectResult = actual as RedirectResult;
             Assert.IsNotNull(redirectResult);
@@ -64,18 +64,20 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         [Test]
         public async Task ThenTheConfirmViewIsReturnedWhenTheOrchestratorReturnsFalse()
         {
-            //Arrange
+            // Arrange
             _accountOrchestrator.Setup(x => x.ActivateUser(It.IsAny<ActivateUserViewModel>()))
-                .ReturnsAsync(new ActivateUserViewModel
+                .ReturnsAsync(new OrchestratorResponse<ActivateUserViewModel>
                 {
-                    ErrorDictionary = new Dictionary<string, string>
-                    { { "Error", "Error Message"}}
+                    Data = new ActivateUserViewModel
+                    {
+                        ErrorDictionary = new Dictionary<string, string> { { "Error", "Error Message"}}
+                    }
                 });
 
-            //Act
+            // Act
             var actual = await _accountController.Confirm(new ActivateUserViewModel());
 
-            //Assert
+            // Assert
             Assert.IsNotNull(actual);
             var viewResult = actual as ViewResult;
             Assert.IsNotNull(viewResult);
@@ -88,13 +90,13 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         [Test]
         public async Task ThenTheViewModelValuesArePassedToTheOrchestrator()
         {
-            //Act
+            // Act
             var accessCode = "myCode";
             var userId = "myid";
             var accessCodeViewModel = new ActivateUserViewModel {AccessCode = accessCode, UserId = userId};
             await _accountController.Confirm(accessCodeViewModel);
 
-            //Assert
+            // Assert
             _accountOrchestrator.Verify(x => x.ActivateUser(It.Is<ActivateUserViewModel>(p=>p.AccessCode.Equals(accessCode) && p.UserId.Equals(userId))), Times.Once);
         }
     }

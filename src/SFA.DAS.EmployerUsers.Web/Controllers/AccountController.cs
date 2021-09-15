@@ -36,7 +36,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("identity/employer/login")]
         public ActionResult Login(string id, string clientId)
         {
-
             var signinMessage = _owinWrapper.GetSignInMessage(id);
             var returnUrl = "";
             if (signinMessage != null)
@@ -57,7 +56,8 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 Data = new LoginViewModel
                 {
                     ReturnUrl = returnUrl,
-                    ClientId = clientId
+                    ClientId = clientId,
+                    SignInId = id
                 }
             };
             if (TempData["AccountUnlocked"] != null)
@@ -73,7 +73,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             }
             return View(model);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -124,15 +123,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 response.Data = new LoginViewModel
                 {
                     ReturnUrl = model.ReturnUrl,
-                    ClientId = model.ClientId
+                    ClientId = model.ClientId,
+                    SignInId = id
                 };
                 response.FlashMessage = result.FlashMessage;
                 response.Status = result.Status;
                 response.Data.ErrorDictionary = result.FlashMessage.ErrorMessages;
                 response.Status = HttpStatusCode.OK;
-
-
-                return View(response);
             }
 
             return View(response);
@@ -223,7 +220,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                     .Replace("__loginurl__", Url.Action("RedirectToRelyingPartyLogin","Account",new {clientId=model.ClientId, returnUrl = model.ReturnUrl}));
             }
             
-            
             return View("Register", registerResult);
         }
 
@@ -274,37 +270,20 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         [Route("account/confirm")]
         public async Task<ActionResult> Confirm(ActivateUserViewModel activateUserViewModel)
         {
+            var returnModel = await
+                _accountOrchestrator.ActivateUser(new ActivateUserViewModel
+                {
+                    AccessCode = activateUserViewModel.AccessCode,
+                    UserId = GetLoggedInUserId()
+                });
 
-            var id = GetLoggedInUserId();
-
-            activateUserViewModel =
-                await
-                    _accountOrchestrator.ActivateUser(new ActivateUserViewModel
-                    {
-                        AccessCode = activateUserViewModel.AccessCode,
-                        UserId = id
-                    });
-
-            if (activateUserViewModel.Valid)
+            if (returnModel.Data.Valid)
             {
-                return Redirect(activateUserViewModel.ReturnUrl);
+                return Redirect(returnModel.Data.ReturnUrl);
             }
 
-            var response = new OrchestratorResponse<ActivateUserViewModel>
-            {
-                Data = activateUserViewModel,
-                FlashMessage = new FlashMessageViewModel
-                {
-                    ErrorMessages = activateUserViewModel.ErrorDictionary,
-                    Severity = FlashMessageSeverityLevel.Error,
-                    Headline = "Errors to fix",
-                    Message = "Check the following details:"
-                }
-            };
-            return View("Confirm", response);
-
+            return View("Confirm", returnModel);
         }
-
 
         [HttpGet]
         [AttemptAuthorise]
@@ -382,14 +361,14 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
         [HttpGet]
         [Route("account/forgottencredentialsintro")]
-        public async Task<ActionResult> ForgottenCredentialsIntro(string clientId, string returnUrl)
+        public async Task<ActionResult> ForgottenCredentialsIntro(string id, string clientId, string returnUrl)
         {
             if (string.IsNullOrEmpty(clientId))
             {
                 clientId = _owinWrapper.GetIdsClientId();
             }
             
-            var model = await _accountOrchestrator.StartForgottenPassword(clientId, returnUrl);
+            var model = await _accountOrchestrator.StartForgottenPassword(id, clientId, returnUrl);
 
             if (!model.Valid)
             {
@@ -404,14 +383,14 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
         [HttpGet]
         [Route("account/forgottencredentials")]
-        public async Task<ActionResult> ForgottenCredentials(string clientId, string returnUrl)
+        public async Task<ActionResult> ForgottenCredentials(string id, string clientId, string returnUrl)
         {
             if (string.IsNullOrEmpty(clientId))
             {
                 clientId = _owinWrapper.GetIdsClientId();
             }
             
-            var model = await _accountOrchestrator.StartForgottenPassword(clientId, returnUrl);
+            var model = await _accountOrchestrator.StartForgottenPassword(id, clientId, returnUrl);
 
             if (!model.Valid)
             {
@@ -421,7 +400,33 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             _owinWrapper.RemovePartialLoginCookie();
             _owinWrapper.SignoutUser();
 
-            return View("ForgottenCredentials", model);
+            return View("ForgottenCredentials", new OrchestratorResponse<RequestPasswordResetViewModel> { Data = model });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("account/forgottencredentials")]
+        public async Task<ActionResult> ForgottenCredentials(RequestPasswordResetViewModel model)
+        {
+            var returnModel = await _accountOrchestrator.RequestPasswordResetCode(model);
+
+            if (returnModel?.FlashMessage?.ErrorMessages == null || !returnModel.FlashMessage.ErrorMessages.Any())
+            {
+                var unlockCodeLength = await GetUnlockCodeLength();
+                return View("EnterResetCode", new OrchestratorResponse<EnterResetCodeViewModel> 
+                { 
+                    Data = new EnterResetCodeViewModel 
+                    { 
+                        SignInId = model.SignInId, 
+                        ClientId = model.ClientId, 
+                        ReturnUrl = model.ReturnUrl, 
+                        Email = model.Email, 
+                        UnlockCodeLength = unlockCodeLength 
+                    } 
+                });
+            }
+
+            return View("ForgottenCredentials", returnModel);
         }
 
         [HttpGet]
@@ -448,22 +453,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             }
 
             return await RedirectToEmployerPortal();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Route("account/forgottencredentials")]
-        public async Task<ActionResult> ForgottenCredentials(RequestPasswordResetViewModel requestPasswordResetViewModel)
-        {
-            requestPasswordResetViewModel = await _accountOrchestrator.RequestPasswordResetCode(requestPasswordResetViewModel);
-
-            if (string.IsNullOrEmpty(requestPasswordResetViewModel.Email) || !requestPasswordResetViewModel.Valid)
-            {
-                return View("ForgottenCredentials", requestPasswordResetViewModel);
-            }
-            
-            var unlockCodeLength = await GetUnlockCodeLength();
-            return View("EnterResetCode", new OrchestratorResponse<EnterResetCodeViewModel> {Data = new EnterResetCodeViewModel { ClientId = requestPasswordResetViewModel.ClientId, Email = requestPasswordResetViewModel.Email, UnlockCodeLength = unlockCodeLength } });
         }
         
         [HttpPost]
@@ -528,11 +517,8 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
                 clientId = _owinWrapper.GetIdsClientId();
                 returnUrl = _owinWrapper.GetIdsReturnUrl();
             }
+            
             var model = await _accountOrchestrator.StartRequestChangeEmail(clientId, returnUrl);
-            //if (!model.Data.Valid)
-            //{
-            //    return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
-            //}
             return View(model);
         }
 
@@ -601,13 +587,11 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
 
             model.Data.UserId = GetLoggedInUserId();
 
-
             TempData["EmailChangeRequested"] = true;
             TempData["EmailChangeNewEmail"] = TempData["EmailChangeNewEmail"] as string;
 
             TempData["EmailChangeReturnUrl"] = TempData["EmailChangeReturnUrl"];
             TempData["EmailChangeClientId"] = TempData["EmailChangeClientId"];
-
 
             return View(model);
         }
@@ -631,7 +615,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             return View(new OrchestratorResponse<ConfirmChangeEmailViewModel>() { Data = model });
         }
 
-
         [HttpGet]
         [Authorize]
         [Route("account/changepassword")]
@@ -644,10 +627,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             }
             var model = await _accountOrchestrator.StartChangePassword(clientId, returnUrl);
 
-            //if (!model.Valid)
-            //{
-            //    return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
-            //}
             return View(model);
         }
 
@@ -659,16 +638,13 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         {
             model.UserId = GetLoggedInUserId();
 
-            model = await _accountOrchestrator.ChangePassword(model);
-            if (model.Valid)
+            var returnModel = await _accountOrchestrator.ChangePassword(model);
+            if (returnModel.Data.Valid)
             {
                 return Redirect(returnUrl);
             }
 
-            model.CurrentPassword = string.Empty;
-            model.NewPassword = string.Empty;
-            model.ConfirmPassword = string.Empty;
-            return View(new OrchestratorResponse<ChangePasswordViewModel>() { Data = model });
+            return View("ChangePassword", returnModel);
         }
 
 
@@ -712,7 +688,6 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
             var id = idClaim?.Value;
             return id;
         }
-
 
         private Task<ActionResult> RedirectToEmployerPortal()
         {

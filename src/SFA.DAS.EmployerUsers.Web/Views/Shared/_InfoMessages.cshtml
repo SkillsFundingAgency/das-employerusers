@@ -7,7 +7,9 @@
     var viewModel = Model as OrchestratorResponse;
 }
 
-@if (!string.IsNullOrEmpty(viewModel?.FlashMessage?.Message) || !string.IsNullOrEmpty(viewModel?.FlashMessage?.SubMessage))
+@if (!string.IsNullOrEmpty(viewModel?.FlashMessage?.Headline) || 
+    !string.IsNullOrEmpty(viewModel?.FlashMessage?.Message) || 
+    !string.IsNullOrEmpty(viewModel?.FlashMessage?.SubMessage))
 {
     <div class="grid-row">
         <div class="column-two-thirds">
@@ -27,20 +29,21 @@
                 }
                 @if (viewModel.FlashMessage.ErrorMessages.Any())
                 {
-                    <ul class="error-summary-list">
-                        @foreach (var errorMessage in viewModel.FlashMessage.ErrorMessages)
-                        {
-                            <li>
-                                @{
-                                    var message = errorMessage.Value.Split('|')[0];
-                                }
-                                <a class="danger" href="#@errorMessage.Key">@message</a>
-                            </li>
-                        }
-                    </ul>
+                    <p>
+                        <ul class="error-summary-list">
+                            @foreach (var errorMessage in viewModel.FlashMessage.ErrorMessages)
+                            {
+                                <li>
+                                    @{
+                                        var message = errorMessage.Value.Split('|')[0];
+                                    }
+                                    <a class="danger" href="#@errorMessage.Key">@message</a>
+                                </li>
+                            }
+                        </ul>
+                    </p>
                 }
             </div>
-
         </div>
     </div>
 }
