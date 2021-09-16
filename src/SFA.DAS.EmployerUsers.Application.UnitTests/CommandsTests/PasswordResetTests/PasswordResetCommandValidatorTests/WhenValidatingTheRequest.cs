@@ -74,7 +74,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
 
             //Assert
             Assert.IsFalse(actual.IsValid());
-            Assert.Contains(new KeyValuePair<string, string>("ConfirmPassword", "Passwords don’t match"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("ConfirmPassword", "Passwords do not match"), actual.ValidationDictionary);
         }
 
         [Test]
@@ -132,7 +132,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
 
             //Assert
             Assert.IsFalse(actual.IsValid());
-            Assert.Contains(new KeyValuePair<string, string>("Password", "Password requires upper and lowercase letters, a number and at least 8 characters"), actual.ValidationDictionary);
+            Assert.Contains(new KeyValuePair<string, string>("Password", "Your password must contain upper and lowercase letters, a number and at least 8 characters"), actual.ValidationDictionary);
         }
 
     }

@@ -42,25 +42,27 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ChangePassword
             if (string.IsNullOrEmpty(command.CurrentPassword))
             {
                 isValid = false;
-                result.AddError("CurrentPassword", "Current password is required");
+                result.AddError(nameof(command.CurrentPassword), "Current password is required");
             }
             if (string.IsNullOrEmpty(command.NewPassword))
             {
                 isValid = false;
-                result.AddError("NewPassword", "New password is required");
+                result.AddError(nameof(command.NewPassword), "New password is required");
             }
 
             return isValid;
         }
+
         private async Task ValidateCurrentPasswordMatchesUser(ChangePasswordCommand command, ValidationResult result)
         {
             var passwordsMatch = await _passwordService.VerifyAsync(command.CurrentPassword, command.User.Password,
                 command.User.Salt, command.User.PasswordProfileId);
             if (!passwordsMatch)
             {
-                result.AddError("CurrentPassword", "Invalid password");
+                result.AddError(nameof(command.CurrentPassword), "Invalid password");
             }
         }
+
         private async Task ValidateNewPasswordNotInRecentHistory(ChangePasswordCommand command, ValidationResult result)
         {
             var config = await _configurationService.GetAsync<EmployerUsersConfiguration>();
@@ -70,25 +72,25 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ChangePassword
             {
                 if (await _passwordService.VerifyAsync(command.NewPassword, historicPassword.Password, historicPassword.Salt, historicPassword.PasswordProfileId))
                 {
-                    result.AddError("NewPassword", $"Password has been used too recently. You cannot use your last {config.Account.NumberOfPasswordsInHistory} passwords");
+                    result.AddError(nameof(command.NewPassword), $"Password has been used too recently. You cannot use your last {config.Account.NumberOfPasswordsInHistory} passwords");
                     return;
                 }
             }
         }
+
         private void ValidateNewPasswordMeetsSecurityRequirements(ChangePasswordCommand command, ValidationResult result)
         {
-            if (command.NewPassword.Length < 8 || command.NewPassword.Length > 16
-                || !command.NewPassword.HasLowerCharacters() || !command.NewPassword.HasUpperCharacters()
-                || !command.NewPassword.HasNumericCharacters())
+            if (!_passwordService.CheckPasswordMatchesRequiredComplexity(command.NewPassword))
             {
-                result.AddError("NewPassword", "Password does not meet requirements");
+                result.AddError(nameof(command.NewPassword), "Your password must contain upper and lowercase letters, a number and at least 8 characters");
             }
         }
+
         private void ValidateConfirmPasswordMatchesNewPassword(ChangePasswordCommand command, ValidationResult result)
         {
             if (command.NewPassword != command.ConfirmPassword)
             {
-                result.AddError("ConfirmPassword", "Passwords do not match");
+                result.AddError(nameof(command.ConfirmPassword), "Passwords do not match");
             }
         }
     }

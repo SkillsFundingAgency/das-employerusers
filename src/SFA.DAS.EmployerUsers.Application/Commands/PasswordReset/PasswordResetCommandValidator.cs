@@ -38,7 +38,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             }
             else if (!_passwordService.CheckPasswordMatchesRequiredComplexity(item.Password))
             {
-                validationResult.AddError(nameof(item.Password), "Password requires upper and lowercase letters, a number and at least 8 characters");
+                validationResult.AddError(nameof(item.Password), "Your password must contain upper and lowercase letters, a number and at least 8 characters");
             }
 
             if (string.IsNullOrEmpty(item.ConfirmPassword))
@@ -47,7 +47,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             }
             else if (!string.IsNullOrEmpty(item.Password) && !item.ConfirmPassword.Equals(item.Password))
             {
-                validationResult.AddError(nameof(item.ConfirmPassword), "Passwords don’t match");
+                validationResult.AddError(nameof(item.ConfirmPassword), "Passwords do not match");
             }
 
             return Task.FromResult(validationResult);
