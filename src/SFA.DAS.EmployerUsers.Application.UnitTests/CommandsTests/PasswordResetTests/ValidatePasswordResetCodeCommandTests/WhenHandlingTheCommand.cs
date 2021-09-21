@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         private const string ActualEmailAddress = "someuser@local";
         public string PasswordResetCode = "123456ABC";
         private Mock<ILogger> _logger;
-        
+
 
         [SetUp]
         public void Arrange()
@@ -50,8 +50,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
             _logger = new Mock<ILogger>();
 
             _sut = new ValidatePasswordResetCodeCommandHandler(
-                _userRepository.Object, 
-                _validator.Object, 
+                _userRepository.Object,
+                _validator.Object,
                 _logger.Object);
         }
 
@@ -90,7 +90,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         public void ThenAInvalidRequestExceptionIsThrownIfTheMessageIsNotValid()
         {
             // Arrange
-            _validator.Setup(x => x.ValidateAsync(It.IsAny<ValidatePasswordResetCodeCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
+            _validator.Setup(x => x.ValidateAsync(It.IsAny<ValidatePasswordResetCodeCommand>()))
+                .ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
 
             // Act
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _sut.Handle(new ValidatePasswordResetCodeCommand()));
@@ -121,7 +122,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
                 }
             });
 
-            _validator.Setup(x => x.ValidateAsync(It.IsAny<ValidatePasswordResetCodeCommand>())).ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
+            _validator.Setup(x => x.ValidateAsync(It.IsAny<ValidatePasswordResetCodeCommand>()))
+                .ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
 
             // Act
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _sut.Handle(new ValidatePasswordResetCodeCommand { Email = userEmail }));
@@ -131,7 +133,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
         }
 
         [Test]
-        public void ThenAnExceededLimitPasswordResetCodeExceptionIsThrownIfTooManyInvalidAttemptHaveBeenMade()
+        public void ThenAnExceededLimitPasswordResetCodeExceptionIsThrownIfTooManyInvalidAttemptsHaveBeenMadeForNonExpiredResetCode()
         {
             // Arrange
             _validator.Setup(x => x.ValidateAsync(It.IsAny<ValidatePasswordResetCodeCommand>()))
@@ -155,7 +157,41 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.PasswordRese
             });
 
             // Act
-            Assert.ThrowsAsync<ExceededLimitPasswordResetCodeException>(async () => await _sut.Handle(new ValidatePasswordResetCodeCommand()));
+            Assert.ThrowsAsync<ExceededLimitPasswordResetCodeException>(async () =>
+                await _sut.Handle(new ValidatePasswordResetCodeCommand() { Email = ActualEmailAddress, PasswordResetCode = "456123" }));
+
+            // Assert
+            _userRepository.Verify(x => x.Update(It.Is<User>(u => u.SecurityCodes[0].FailedAttempts == 3)), Times.Once);
+        }
+
+        [Test]
+        public void ThenAnExceededLimitPasswordResetCodeExceptionIsThrownIfTooManyInvalidAttemptsHaveBeenMadeForExpiredResetCode()
+        {
+            // Arrange
+            _validator.Setup(x => x.ValidateAsync(It.IsAny<ValidatePasswordResetCodeCommand>()))
+                .ReturnsAsync(new ValidationResult { ValidationDictionary = new Dictionary<string, string> { { "", "" } } });
+
+            _userRepository.Setup(x => x.GetByEmailAddress(It.IsAny<string>())).ReturnsAsync(
+                new User
+                {
+                    Id = "USER1",
+                    Email = ActualEmailAddress,
+                    IsActive = true,
+                    SecurityCodes = new[]
+                    {
+                        new SecurityCode
+                        {
+                            Code = "123456",
+                            CodeType = SecurityCodeType.PasswordResetCode,
+                            ExpiryTime = DateTime.UtcNow.AddDays(-1),
+                            FailedAttempts = 2
+                        },
+                    }
+                });
+
+            // Act
+            Assert.ThrowsAsync<ExceededLimitPasswordResetCodeException>(async () =>
+                await _sut.Handle(new ValidatePasswordResetCodeCommand() { Email = ActualEmailAddress, PasswordResetCode = "456123" }));
 
             // Assert
             _userRepository.Verify(x => x.Update(It.Is<User>(u => u.SecurityCodes[0].FailedAttempts == 3)), Times.Once);

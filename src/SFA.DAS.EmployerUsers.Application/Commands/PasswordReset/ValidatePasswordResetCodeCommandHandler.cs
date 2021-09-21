@@ -49,7 +49,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 
         private async Task ProcessFailedAttempt(User user)
         {
-            var latestSecurityCode = user?.SecurityCodes?.LatestValidSecurityCode();
+            var latestSecurityCode = user?.SecurityCodes?.LatestSecurityCode();
             
             if (latestSecurityCode != null)
             {

@@ -14,11 +14,10 @@ namespace SFA.DAS.EmployerUsers.Application.Extensions
                 .FirstOrDefault(sc => sc.Code.Equals(passwordResetCode, StringComparison.InvariantCultureIgnoreCase) && sc.CodeType == SecurityCodeType.PasswordResetCode);
         }
 
-        public static SecurityCode LatestValidSecurityCode(this IEnumerable<SecurityCode> securityCodes)
+        public static SecurityCode LatestSecurityCode(this IEnumerable<SecurityCode> securityCodes)
         {
             return securityCodes
                 .OrderByDescending(sc => sc.ExpiryTime)
-                .Where(sc => sc.ExpiryTime >= DateTime.UtcNow)
                 .FirstOrDefault(sc => sc.CodeType == SecurityCodeType.PasswordResetCode);
         }
     }
