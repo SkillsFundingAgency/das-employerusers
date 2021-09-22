@@ -1,0 +1,19 @@
+﻿@model SFA.DAS.EmployerUsers.Web.Models.EnterResetCodeViewModel
+@{
+    ViewBag.PageID = "page-invalid-reset-code";
+    ViewBag.Title = "You have entered the reset code incorrectly 3 times";
+    ViewBag.HideSigninLink = true;
+    ViewBag.HideCookieMessage = true;
+}
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-xlarge">@ViewBag.Title</h1>
+        <h2 class="govuk-heading-m">What happens next</h2>
+        <p class="govuk-text">You will need to request a new reset code.</p>
+        <p>
+            <a class="govuk-button" href="@Url.Action("ForgottenCredentialsIntro","Account", new { Id = Model.SignInId, ClientId = Model.ClientId, ReturnUrl = Model.ReturnUrl })">Request a new reset code</a>
+        </p>
+        <a href="https://esfa1567428279.zendesk.com/hc/en-gb" target="_blank" rel="noopener noreferrer">Get help with the apprenticeship service</a>
+    </div>
+</div>

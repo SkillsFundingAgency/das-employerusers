@@ -271,7 +271,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
         }
 
         [Test]
-        public async Task ThenTheEmailAddressIsAlreadyInUse()
+        public void ThenTheEmailAddressIsAlreadyInUse()
         {
             // Arrange
             var userId = Guid.NewGuid().ToString();
@@ -288,9 +288,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.RegisterUser
                 IsActive = true
             });
 
-            //Act
+            // Act
             Assert.ThrowsAsync<InvalidRequestException>(async () => await _registerUserCommandHandler.Handle(registerUserCommand));
-
         }
     }
 }

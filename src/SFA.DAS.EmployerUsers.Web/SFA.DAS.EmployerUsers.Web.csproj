@@ -370,6 +370,7 @@
     <Compile Include="Authentication\IdsContext.cs" />
     <Compile Include="Extensions\UrlHelperExtensions.cs" />
     <Compile Include="Helpers\HtmlHelperExtensions.cs" />
+    <Compile Include="Models\EnterResetCodeViewModel.cs" />
     <Compile Include="Models\HomePageViewModel.cs" />
     <Compile Include="Models\RelyingPartyLoginUrlModel.cs" />
     <Compile Include="Plumbing\Ids\RedisAuthorizationCodeStore.cs" />
@@ -877,6 +878,9 @@
     <Content Include="src\sass\_notifications.scss" />
     <Content Include="Views\Shared\_CookieBanner.cshtml" />
     <Content Include="src\sass\_cookiebanner.scss" />
+    <Content Include="Views\Account\EnterResetCode.cshtml" />
+    <Content Include="Views\Account\ForgottenCredentialsIntro.cshtml" />
+    <Content Include="Views\Account\InvalidResetCode.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

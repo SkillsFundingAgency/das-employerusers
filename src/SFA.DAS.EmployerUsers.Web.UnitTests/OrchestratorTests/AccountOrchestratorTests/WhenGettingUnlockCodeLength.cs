@@ -17,7 +17,6 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         private AccountOrchestrator _accountOrchestrator;
         private Mock<IMediator> _mediator;
         private Mock<IOwinWrapper> _owinWrapper;
-        private ActivateUserViewModel _model;
         private Mock<ILogger> _logger;
 
         [SetUp]

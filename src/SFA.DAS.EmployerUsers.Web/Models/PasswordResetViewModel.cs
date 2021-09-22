@@ -11,7 +11,6 @@ namespace SFA.DAS.EmployerUsers.Web.Models
         [AllowHtml]
         public string ConfirmPassword { get; set; }
         public string ConfirmPasswordError => GetErrorMessage(nameof(ConfirmPassword));
-        public string PasswordResetCodeError => GetErrorMessage(nameof(PasswordResetCode));
         public string PasswordError => GetErrorMessage(nameof(Password));
         public string ReturnUrl { get; set; }
         public int UnlockCodeLength { get; set; }

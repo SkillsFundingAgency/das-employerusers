@@ -64,6 +64,10 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
         [Test]
         public async Task ThenItShouldReturnAValidResultIfNoProblems()
         {
+            // Arrange
+            _passwordService.Setup(s => s.CheckPasswordMatchesRequiredComplexity(_command.NewPassword))
+                .Returns(true);
+
             // Act
             var actual = await _validator.ValidateAsync(_command);
 
@@ -108,7 +112,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
             var actual = await _validator.ValidateAsync(_command);
 
             // Assert
-            AssertExpectedValidationErrorExists(actual, "NewPassword", "Password does not meet requirements");
+            AssertExpectedValidationErrorExists(actual, "NewPassword", "Your password must contain upper and lowercase letters, a number and at least 8 characters");
         }
 
         [TestCase("abcdefghijk1")]
@@ -122,7 +126,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
             var actual = await _validator.ValidateAsync(_command);
 
             // Assert
-            AssertExpectedValidationErrorExists(actual, "NewPassword", "Password does not meet requirements");
+            AssertExpectedValidationErrorExists(actual, "NewPassword", "Your password must contain upper and lowercase letters, a number and at least 8 characters");
         }
 
         [Test]
@@ -135,7 +139,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
             var actual = await _validator.ValidateAsync(_command);
 
             // Assert
-            AssertExpectedValidationErrorExists(actual, "NewPassword", "Password does not meet requirements");
+            AssertExpectedValidationErrorExists(actual, "NewPassword", "Your password must contain upper and lowercase letters, a number and at least 8 characters");
         }
 
         [Test]
@@ -146,8 +150,11 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
             {
                 new Domain.HistoricalPassword { Password = "HistoricalPassword1", Salt = "Salt1", PasswordProfileId = PasswordProfileId, DateSet = new DateTime(2016, 1, 1) }
             };
+            
             _passwordService.Setup(s => s.VerifyAsync(NewPassword, "HistoricalPassword1", "Salt1", PasswordProfileId))
                 .Returns(Task.FromResult(true));
+            _passwordService.Setup(s => s.CheckPasswordMatchesRequiredComplexity(NewPassword))
+                .Returns(true);
 
             // Act
             var actual = await _validator.ValidateAsync(_command);
@@ -167,8 +174,11 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
                 new Domain.HistoricalPassword { Password = "HistoricalPassword3", Salt = "Salt3", PasswordProfileId = PasswordProfileId, DateSet = new DateTime(2016, 3, 1) },
                 new Domain.HistoricalPassword { Password = "HistoricalPassword4", Salt = "Salt4", PasswordProfileId = PasswordProfileId, DateSet = new DateTime(2016, 4, 1) },
             };
+            
             _passwordService.Setup(s => s.VerifyAsync(NewPassword, "HistoricalPassword1", "Salt1", PasswordProfileId))
                 .Returns(Task.FromResult(true));
+            _passwordService.Setup(s => s.CheckPasswordMatchesRequiredComplexity(NewPassword))
+                .Returns(true);
 
             // Act
             var actual = await _validator.ValidateAsync(_command);

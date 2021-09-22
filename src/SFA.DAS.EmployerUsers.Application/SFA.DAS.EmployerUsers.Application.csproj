@@ -92,6 +92,9 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Commands\PasswordReset\ValidatePasswordResetCodeCommand.cs" />
+    <Compile Include="Commands\PasswordReset\ValidatePasswordResetCodeCommandHandler.cs" />
+    <Compile Include="Commands\PasswordReset\ValidatePasswordResetCodeCommandValidator.cs" />
     <Compile Include="Exceptions\AccountSuspendedException.cs" />
     <Compile Include="Exceptions\AccountLockedException.cs" />
     <Compile Include="ApplicationExtensions.cs" />
@@ -125,6 +128,8 @@
     <Compile Include="Commands\ResumeUser\ResumeUserCommandHandler.cs" />
     <Compile Include="Commands\SuspendUser\SuspendUserCommand.cs" />
     <Compile Include="Commands\SuspendUser\SuspendUserCommandHandler.cs" />
+    <Compile Include="Exceptions\ExceededLimitPasswordResetCodeException.cs" />
+    <Compile Include="Exceptions\InvalidPasswordResetCodeException.cs" />
     <Compile Include="Extensions\SecurityCodeExtensions.cs" />
     <Compile Include="Queries\GetRelyingParties\GetRelyingPartiesQuery.cs" />
     <Compile Include="Queries\GetRelyingParties\GetRelyingPartiesQueryHandler.cs" />

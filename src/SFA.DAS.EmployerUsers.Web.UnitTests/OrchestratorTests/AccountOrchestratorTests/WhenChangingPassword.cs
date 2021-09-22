@@ -68,7 +68,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.IsTrue(actual.Valid);
+            Assert.IsTrue(actual.Data.Valid);
         }
 
         [Test]
@@ -85,10 +85,10 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.Valid);
-            Assert.IsNotNull(actual.ErrorDictionary);
-            Assert.IsTrue(actual.ErrorDictionary.ContainsKey(""));
-            Assert.AreEqual("Not valid", actual.ErrorDictionary[""]);
+            Assert.IsFalse(actual.Data.Valid);
+            Assert.IsNotNull(actual.Data.ErrorDictionary);
+            Assert.IsTrue(actual.Data.ErrorDictionary.ContainsKey(""));
+            Assert.AreEqual("Not valid", actual.Data.ErrorDictionary[""]);
         }
 
         [Test]
@@ -103,15 +103,28 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.Valid);
-            Assert.IsNotNull(actual.ErrorDictionary);
-            Assert.IsTrue(actual.ErrorDictionary.ContainsKey(""));
-            Assert.AreEqual("A problem has occured", actual.ErrorDictionary[""]);
+            Assert.IsFalse(actual.Data.Valid);
+            Assert.IsNotNull(actual.Data.ErrorDictionary);
+            Assert.IsTrue(actual.Data.ErrorDictionary.ContainsKey(""));
+            Assert.AreEqual("A problem has occured", actual.Data.ErrorDictionary[""]);
         }
 
+        [Test]
+        public async Task ThenItShouldReturnModelWithPasswordsBlankedIfRequestNotValid()
+        {
+            // Arrange
+            _mediator.Setup(m => m.SendAsync(It.IsAny<ChangePasswordCommand>()))
+                .ThrowsAsync(new Exception("A problem has occured"));
 
+            // Act
+            var actual = await _orchestrator.ChangePassword(_model);
 
-
+            // Assert
+            Assert.IsNotNull(actual.Data);
+            Assert.IsEmpty(actual.Data.CurrentPassword);
+            Assert.IsEmpty(actual.Data.NewPassword);
+            Assert.IsEmpty(actual.Data.ConfirmPassword);
+        }
 
         [TestCase("MyClient", "http://unit.test")]
         [TestCase("MyClient", "http://unit.test/")]
@@ -127,7 +140,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.IsTrue(actual.Valid);
+            Assert.IsTrue(actual.Data.Valid);
         }
 
         [Test]
@@ -142,7 +155,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.Valid);
+            Assert.IsFalse(actual.Data.Valid);
         }
 
         [TestCase("http://sub.unit.test")]
@@ -159,7 +172,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.Valid);
+            Assert.IsFalse(actual.Data.Valid);
         }
     }
 }

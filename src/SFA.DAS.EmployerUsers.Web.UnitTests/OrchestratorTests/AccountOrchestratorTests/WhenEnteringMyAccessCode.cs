@@ -55,7 +55,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
 
             //Assert
             _mediator.Verify(x => x.SendAsync(It.Is<ActivateUserCommand>(p => p.AccessCode.Equals(AccessCode) && p.UserId.Equals(UserId))), Times.Once);
-            Assert.IsTrue(actual.Valid);
+            Assert.IsTrue(actual.Data.Valid);
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _accountOrchestrator.ActivateUser(_model);
 
             //Assert
-            Assert.IsFalse(actual.Valid);
+            Assert.IsFalse(actual.Data.Valid);
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
             var actual = await _accountOrchestrator.ActivateUser(_model);
 
             // Assert
-            Assert.AreEqual(ReturnUrl, actual.ReturnUrl);
+            Assert.AreEqual(ReturnUrl, actual.Data.ReturnUrl);
         }
     }
 }

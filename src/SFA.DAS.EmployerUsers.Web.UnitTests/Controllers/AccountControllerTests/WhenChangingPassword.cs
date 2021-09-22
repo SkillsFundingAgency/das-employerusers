@@ -36,12 +36,15 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             _accountOrchestrator.Setup(o => o.ChangePassword(It.IsAny<ChangePasswordViewModel>()))
                 .Throws(new System.Exception("Called AccountOrchestrator.ChangePassword with incorrect model"));
             _accountOrchestrator.Setup(o => o.ChangePassword(It.Is<ChangePasswordViewModel>(m => m.UserId == UserId)))
-                .Returns((ChangePasswordViewModel model) => Task.FromResult(new ChangePasswordViewModel
+                .Returns((ChangePasswordViewModel model) => Task.FromResult(new OrchestratorResponse<ChangePasswordViewModel>
                 {
-                    UserId = model.CurrentPassword,
-                    CurrentPassword = model.CurrentPassword,
-                    NewPassword = model.NewPassword,
-                    ConfirmPassword = model.ConfirmPassword
+                    Data = new ChangePasswordViewModel
+                    {
+                        UserId = model.CurrentPassword,
+                        CurrentPassword = model.CurrentPassword,
+                        NewPassword = model.NewPassword,
+                        ConfirmPassword = model.ConfirmPassword
+                    }
                 }));
 
             _owinWrapper = new Mock<IOwinWrapper>();
@@ -76,13 +79,16 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
         {
             // Arrange
             _accountOrchestrator.Setup(o => o.ChangePassword(It.Is<ChangePasswordViewModel>(m => m.UserId == UserId)))
-                   .Returns((ChangePasswordViewModel model) => Task.FromResult(new ChangePasswordViewModel
+                   .Returns((ChangePasswordViewModel model) => Task.FromResult(new OrchestratorResponse<ChangePasswordViewModel>
                    {
-                       UserId = model.CurrentPassword,
-                       CurrentPassword = model.CurrentPassword,
-                       NewPassword = model.NewPassword,
-                       ConfirmPassword = model.ConfirmPassword,
-                       ErrorDictionary = new System.Collections.Generic.Dictionary<string, string> { { "", "Error" } }
+                       Data = new ChangePasswordViewModel
+                       {
+                           UserId = model.CurrentPassword,
+                           CurrentPassword = model.CurrentPassword,
+                           NewPassword = model.NewPassword,
+                           ConfirmPassword = model.ConfirmPassword,
+                           ErrorDictionary = new System.Collections.Generic.Dictionary<string, string> { { "", "Error" } }
+                       }
                    }));
 
             // Act
@@ -91,33 +97,6 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.Controllers.AccountControllerTests
             // Assert
             Assert.IsNotNull(actual);
             Assert.IsInstanceOf<ViewResult>(actual);
-        }
-
-        [Test]
-        public async Task ThenItShouldReturnModelWithPasswordsBlankedIfRequestNotValid()
-        {
-            // Arrange
-            _accountOrchestrator.Setup(o => o.ChangePassword(It.Is<ChangePasswordViewModel>(m => m.UserId == UserId)))
-                   .Returns((ChangePasswordViewModel model) => Task.FromResult(new ChangePasswordViewModel
-                   {
-                       UserId = model.CurrentPassword,
-                       CurrentPassword = model.CurrentPassword,
-                       NewPassword = model.NewPassword,
-                       ConfirmPassword = model.ConfirmPassword,
-                       ErrorDictionary = new System.Collections.Generic.Dictionary<string, string> { { "", "Error" } }
-                   }));
-
-            // Act
-            var actual = (ViewResult)await _controller.ChangePassword(_model, ClientId, ReturnUrl);
-
-            // Assert
-            Assert.IsNotNull(actual.Model);
-            Assert.IsInstanceOf<OrchestratorResponse<ChangePasswordViewModel>>(actual.Model);
-
-            var actualModel = (OrchestratorResponse<ChangePasswordViewModel>)actual.Model;
-            Assert.IsEmpty(actualModel.Data.CurrentPassword);
-            Assert.IsEmpty(actualModel.Data.NewPassword);
-            Assert.IsEmpty(actualModel.Data.ConfirmPassword);
         }
     }
 }

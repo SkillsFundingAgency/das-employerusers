@@ -129,6 +129,8 @@
     <Compile Include="CommandsTests\DeleteUserTests\DeleteUserCommandHandlerTests\WhenHandlingCommand.cs" />
     <Compile Include="CommandsTests\PasswordResetTests\PasswordResetCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="CommandsTests\PasswordResetTests\PasswordResetCommandValidatorTests\WhenValidatingTheRequest.cs" />
+    <Compile Include="CommandsTests\PasswordResetTests\ValidatePasswordResetCodeCommandTests\WhenHandlingTheCommand.cs" />
+    <Compile Include="CommandsTests\PasswordResetTests\ValidatePasswordResetCodeCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="CommandsTests\RegisterUserTests\RegisterUserCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="CommandsTests\RegisterUserTests\RegisterUserCommandValidatorTests\WhenValidatingTheRequest.cs" />
     <Compile Include="CommandsTests\RequestChangeEmailTests\RequestChangeEmailCommandHandlerTests\WhenHandling.cs" />

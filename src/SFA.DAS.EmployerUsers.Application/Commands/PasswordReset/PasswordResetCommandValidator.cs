@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerUsers.Application.Exceptions;
 using SFA.DAS.EmployerUsers.Application.Extensions;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
@@ -24,15 +25,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
 
             if (resetCode == null)
             {
-                validationResult.AddError(nameof(item.PasswordResetCode), "Reset code is invalid");
+                throw new InvalidPasswordResetCodeException("Reset code is invalid");
             }
             else if (resetCode.ExpiryTime < DateTime.UtcNow && ConfigurationManager.AppSettings["UseStaticCodeGenerator"].Equals("false", StringComparison.CurrentCultureIgnoreCase))
             {
-                validationResult.AddError(nameof(item.PasswordResetCode), "Reset code has expired");
-            }
-            else if (resetCode.FailedAttempts >= 3)
-            {
-                validationResult.AddError(nameof(item.PasswordResetCode), "Too many failed attempts, reset code has expired");
+                throw new InvalidPasswordResetCodeException("Reset code has expired");
             }
 
             if (string.IsNullOrEmpty(item.Password))
@@ -41,7 +38,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             }
             else if (!_passwordService.CheckPasswordMatchesRequiredComplexity(item.Password))
             {
-                validationResult.AddError(nameof(item.Password), "Password requires upper and lowercase letters, a number and at least 8 characters");
+                validationResult.AddError(nameof(item.Password), "Your password must contain upper and lowercase letters, a number and at least 8 characters");
             }
 
             if (string.IsNullOrEmpty(item.ConfirmPassword))
@@ -50,9 +47,8 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.PasswordReset
             }
             else if (!string.IsNullOrEmpty(item.Password) && !item.ConfirmPassword.Equals(item.Password))
             {
-                validationResult.AddError(nameof(item.ConfirmPassword), "Passwords don’t match");
+                validationResult.AddError(nameof(item.ConfirmPassword), "Passwords do not match");
             }
-
 
             return Task.FromResult(validationResult);
         }

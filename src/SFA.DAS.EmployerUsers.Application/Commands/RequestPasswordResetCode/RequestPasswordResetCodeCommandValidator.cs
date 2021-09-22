@@ -15,10 +15,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.RequestPasswordResetCode
                 validationResult.AddError(nameof(item.Email), "Enter a valid email address");
             }
 
-
-           
-       
-
             return Task.FromResult(validationResult);
         }
     }
