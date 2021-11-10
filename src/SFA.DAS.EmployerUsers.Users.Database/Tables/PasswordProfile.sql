@@ -1,4 +1,4 @@
-CREATE TABLE PasswordProfile (
+CREATE TABLE dbo.PasswordProfile (
 	[Id]			varchar(50)		NOT NULL,
 	[Key]			varchar(255)	NOT NULL,
 	[WorkFactor]	int				NOT NULL,

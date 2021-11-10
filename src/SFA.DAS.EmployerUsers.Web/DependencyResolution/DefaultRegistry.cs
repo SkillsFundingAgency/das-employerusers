@@ -14,13 +14,8 @@
 // limitations under the License.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-
-using System;
-using System.Configuration;
-using System.Web;
-using System.Web.WebPages;
 using MediatR;
-using Microsoft.Azure;
+using Microsoft.Azure.Services.AppAuthentication;
 using SFA.DAS.Audit.Client;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.Configuration;
@@ -34,19 +29,24 @@ using SFA.DAS.EmployerUsers.Infrastructure.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer;
 using SFA.DAS.EmployerUsers.Infrastructure.Notification;
 using SFA.DAS.EmployerUsers.Web.Authentication;
+using SFA.DAS.HashingService;
 using SFA.DAS.Notifications.Api.Client;
 using SFA.DAS.Notifications.Api.Client.Configuration;
 using StructureMap;
+using StructureMap.Graph;
 using StructureMap.Web.Pipeline;
+using System;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Web;
 
 namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
 {
-    using SFA.DAS.HashingService;
-    using StructureMap.Graph;
-    using System.Threading.Tasks;
-
     public class DefaultRegistry : Registry
     {
+        private const string AzureResource = "https://database.windows.net/";
+
         public DefaultRegistry()
         {
             Scan(
@@ -71,12 +71,14 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             AddConfigSpecifiedRegistrations();
 
             var environment = GetEnvironment();
-            var configService = GetconfigService(environment);
-            var employerUserConfig = EmployerUserConfig(configService);
+            var configService = GetConfigService(environment);
+            var employerUsersConfig = EmployerUsersConfig(configService);
 
-            For<EmployerUsersConfiguration>().Use(employerUserConfig);
+            For<EmployerUsersConfiguration>().Use(employerUsersConfig);
             For<IConfigurationService>().Use(configService);
-            ConfigureHashingService(employerUserConfig);
+            ConfigureHashingService(employerUsersConfig);
+
+            AddDatabaseRegistrations(environment, employerUsersConfig.SqlConnectionString);
             
             AddEnvironmentSpecificRegistrations(environment);
             AddMediatrRegistrations();
@@ -93,11 +95,11 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             return environment;
         }
 
-        private ConfigurationService GetconfigService(string environment)
+        private ConfigurationService GetConfigService(string environment)
         {
             IConfigurationRepository configurationRepository;
 
-            if (ConfigurationManager.AppSettings["LocalConfig"].AsBool())
+            if (ConfigurationManager.AppSettings["LocalConfig"] == bool.TrueString)
             {
                 configurationRepository = new FileStorageConfigurationRepository();
             }
@@ -128,9 +130,10 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
         {
             For<IUserRepository>().Use<SqlServerUserRepository>();
             For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
-            For<IPasswordProfileRepository>().Use<SqlServerPasswordProfileRepository>();
+            For<IPasswordProfileRepository>().Use<InMemoryPasswordProfileRepository>();
             For<IAuditApiClient>().Use<StubAuditApiClient>().Ctor<string>().Is(string.Format(@"{0}\App_Data\Audit\", AppDomain.CurrentDomain.BaseDirectory));
         }
+        
         private void AddProductionRegistrations()
         {
             For<IUserRepository>().Use<SqlServerUserRepository>();
@@ -145,6 +148,22 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
                 IdentifierUri = ConfigurationManager.AppSettings["AuditApiIdentifierUri"],
                 Tenant = ConfigurationManager.AppSettings["AuditApiTenant"]
             });
+        }
+
+        private void AddDatabaseRegistrations(string environment, string sqlConnectionString)
+        {
+            For<IDbConnection>().Use($"Build IDbConnection", c => {
+                var azureServiceTokenProvider = new AzureServiceTokenProvider();
+                return environment.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase)
+                    ? new SqlConnection(sqlConnectionString)
+                    : new SqlConnection
+                    {
+                        ConnectionString = sqlConnectionString,
+                        AccessToken = azureServiceTokenProvider.GetAccessTokenAsync(AzureResource).Result
+                    };
+            });
+
+            For<IUnitOfWork>().Use<UnitOfWork>();
         }
 
         private void AddMediatrRegistrations()
@@ -178,14 +197,14 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             }
         }
 
-        private EmployerUsersConfiguration EmployerUserConfig(ConfigurationService configurationService)
+        private EmployerUsersConfiguration EmployerUsersConfig(ConfigurationService configurationService)
         {
             return configurationService.Get<EmployerUsersConfiguration>();
         }
 
         private void ConfigureHashingService(EmployerUsersConfiguration config)
         {
-            For<IHashingService>().Use(x => new HashingService(config.AllowedHashstringCharacters, config.Hashstring));
+            For<IHashingService>().Use(x => new HashingService.HashingService(config.AllowedHashstringCharacters, config.Hashstring));
         }
 
     }

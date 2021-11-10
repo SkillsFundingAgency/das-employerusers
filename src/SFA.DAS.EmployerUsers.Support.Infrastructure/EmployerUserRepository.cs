@@ -18,7 +18,6 @@ namespace SFA.DAS.EmployerUsers.Support.Infrastructure
         private readonly IAccountApiClient _employerAccountsApiClient;
         private readonly IEmployerUsersApiClient _employerUsersApiClient;
         private readonly ILog _logger;
-        private int _usersPerPage = 1000;
 
         public EmployerUserRepository(ILog logger, IEmployerUsersApiClient employerUsersApiClient,
             IAccountApiClient employerAccountsApiClient)

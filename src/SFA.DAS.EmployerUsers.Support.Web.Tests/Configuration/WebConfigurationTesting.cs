@@ -14,7 +14,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Tests.Configuration
         [SetUp]
         public void Setup()
         {
-            _unit = new WebConfiguration
+            _unit = new SupportConfiguration
             {
                 EmployerUsersApi = new EmployerUsersApiConfiguration
                 {
@@ -44,14 +44,14 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Tests.Configuration
 
         private const string SiteConfigFileName = "SFA.DAS.Support.EmployerUsers";
 
-        private WebConfiguration _unit;
+        private SupportConfiguration _unit;
 
         [Test]
         public void ItShouldDeserialiseFaithfuly()
         {
             var json = JsonConvert.SerializeObject(_unit);
             Assert.IsNotNull(json);
-            var actual = JsonConvert.DeserializeObject<WebConfiguration>(json);
+            var actual = JsonConvert.DeserializeObject<SupportConfiguration>(json);
             Assert.AreEqual(json, JsonConvert.SerializeObject(actual));
         }
 
@@ -60,7 +60,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Tests.Configuration
         {
             var json = JsonConvert.SerializeObject(_unit);
             Assert.IsNotNull(json);
-            var actual = JsonConvert.DeserializeObject<WebConfiguration>(json);
+            var actual = JsonConvert.DeserializeObject<SupportConfiguration>(json);
             Assert.IsNotNull(actual);
         }
 
@@ -72,7 +72,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Tests.Configuration
             var jSchemaGenerator = new JSchemaGenerator();
             jSchemaGenerator.GenerationProviders.Clear();
             jSchemaGenerator.GenerationProviders.Add(provider);
-            var actual = jSchemaGenerator.Generate(typeof(WebConfiguration));
+            var actual = jSchemaGenerator.Generate(typeof(SupportConfiguration));
 
 
             Assert.IsNotNull(actual);

@@ -51,17 +51,15 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
                 }
             );
 
+            SupportConfiguration configuration = GetConfiguration();
 
-            WebConfiguration configuration = GetConfiguration();
-
-            For<IWebConfiguration>().Use(configuration);
-            For<IEmployerUsersApiConfiguration>().Use( configuration.EmployerUsersApi);
+            For<ISupportConfiguration>().Use(configuration);
+            For<IEmployerUsersApiConfiguration>().Use(configuration.EmployerUsersApi);
             For<IAccountApiConfiguration>().Use(configuration.AccountApi);
             For<ISiteValidatorSettings>().Use( configuration.SiteValidator);
-
         }
 
-        private WebConfiguration GetConfiguration()
+        private SupportConfiguration GetConfiguration()
         {
             var environment = CloudConfigurationManager.GetSetting("EnvironmentName") ?? 
                               "LOCAL";
@@ -74,7 +72,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
 
             var configurationService = new ConfigurationService(configurationRepository, configurationOptions);
 
-            var webConfiguration = configurationService.Get<WebConfiguration>();    
+            var webConfiguration = configurationService.Get<SupportConfiguration>();    
 
             return webConfiguration;
         }

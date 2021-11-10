@@ -119,12 +119,6 @@
         "sharedSQLServerName": {
             "type": "string"
         },
-        "sqlServerServiceAccountUsername": {
-            "type": "string"
-        },
-        "sqlServerServiceAccountPassword": {
-            "type": "securestring"
-        },
         "storeEmailsOnDisk": {
             "type": "string"
         },
@@ -185,19 +179,17 @@
             "type": "string"
         }
     },
-    "variables": {
-        "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
-        "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
-        "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
-        "profileConnectionString": "[concat('Server=tcp:',parameters('sharedSQLServerName'),'.database.windows.net,1433;Initial Catalog=',variables('profilesDatabaseName'),';Persist Security Info=False;User ID=',parameters('sqlServerServiceAccountUsername'),';Password=',parameters('sqlServerServiceAccountPassword'),';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]",
-        "profilesDatabaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-profiles-db'))]",
-        "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
-        "webAppServiceName": "[concat(variables('resourceNamePrefix'), 'ui-as')]",
-        "workerAppServiceName": "[concat(variables('resourceNamePrefix'), 'wkr-as')]",
-        "workerAppServicePlanName": "[concat(variables('resourceNamePrefix'), 'wkr-asp')]",
-        "usersDatabaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-users-db'))]",
-        "usersConnectionString": "[concat('Server=tcp:',parameters('sharedSQLServerName'),'.database.windows.net,1433;Initial Catalog=',variables('usersDatabaseName'),';Persist Security Info=False;User ID=',parameters('sqlServerServiceAccountUsername'),';Password=',parameters('sqlServerServiceAccountPassword'),';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
-    },
+  "variables": {
+    "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
+    "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
+    "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
+    "profilesDatabaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-profiles-db'))]",
+    "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
+    "webAppServiceName": "[concat(variables('resourceNamePrefix'), 'ui-as')]",
+    "workerAppServiceName": "[concat(variables('resourceNamePrefix'), 'wkr-as')]",
+    "workerAppServicePlanName": "[concat(variables('resourceNamePrefix'), 'wkr-asp')]",
+    "usersDatabaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-users-db'))]"
+  },
     "resources": [
         {
             "apiVersion": "2020-10-01",
@@ -282,6 +274,10 @@
                         "value": {
                             "array": [
                                 {
+                                    "name": "ConfigurationStorageConnectionString",
+                                    "value": "[parameters('configurationStorageConnectionString')]"
+                                },
+                                {
                                     "name": "EnvironmentName",
                                     "value": "[parameters('environmentName')]"
                                 },
@@ -304,10 +300,6 @@
                                 {
                                     "name": "idaTenant",
                                     "value": "[parameters('idaTenant')]"
-                                },
-                                {
-                                    "name": "UsersConnectionString",
-                                    "value": "[variables('usersConnectionString')]"
                                 }
                             ]
                         }
@@ -462,20 +454,12 @@
                                     "value": "[parameters('notificationsApiClientToken')]"
                                 },
                                 {
-                                    "name": "ProfileConnectionString",
-                                    "value": "[variables('profileConnectionString')]"
-                                },
-                                {
                                     "name": "StoreEmailsOnDisk",
                                     "value": "[parameters('storeEmailsOnDisk')]"
                                 },
                                 {
                                     "name": "TokenCertificateThumbprint",
                                     "value": "[parameters('tokenCertificateThumbprint')]"
-                                },
-                                {
-                                    "name": "UsersConnectionString",
-                                    "value": "[variables('usersConnectionString')]"
                                 },
                                 {
                                     "name": "UseStaticCodeGenerator",
@@ -616,6 +600,10 @@
                     "appServiceAppSettings": {
                         "value": {
                             "array": [
+                                {
+                                    "name": "ConfigurationStorageConnectionString",
+                                    "value": "[parameters('configurationStorageConnectionString')]"
+                                },
                                 {
                                     "name": "EnvironmentName",
                                     "value": "[parameters('environmentName')]"

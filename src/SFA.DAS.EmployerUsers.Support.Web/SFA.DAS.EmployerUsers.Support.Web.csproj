@@ -35,7 +35,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\SharedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -300,8 +300,8 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Configuration\AccountApiConfiguration.cs" />
     <Compile Include="Configuration\EmployerUsersApiConfiguration.cs" />
-    <Compile Include="Configuration\IWebConfiguration.cs" />
-    <Compile Include="Configuration\WebConfiguration.cs" />
+    <Compile Include="Configuration\ISupportConfiguration.cs" />
+    <Compile Include="Configuration\SupportConfiguration.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\StatusController.cs" />
     <Compile Include="Controllers\SearchController.cs" />

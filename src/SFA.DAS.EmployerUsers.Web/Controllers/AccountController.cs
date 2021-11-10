@@ -136,7 +136,7 @@ namespace SFA.DAS.EmployerUsers.Web.Controllers
         }
 
         [Route("account/logout")]
-        public async Task<ActionResult> Logout()
+        public ActionResult Logout()
         {
             var authenticationManager = HttpContext.GetOwinContext().Authentication;
             var idToken = authenticationManager.User.FindFirst("id_token")?.Value;

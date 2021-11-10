@@ -3,7 +3,7 @@ using SFA.DAS.Support.Shared.SiteConnection;
 
 namespace SFA.DAS.EmployerUsers.Support.Web.Configuration
 {
-    public class WebConfiguration : IWebConfiguration
+    public class SupportConfiguration : ISupportConfiguration
     {
         [JsonRequired]
         public EmployerUsersApiConfiguration EmployerUsersApi { get; set; }
@@ -11,7 +11,6 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Configuration
         [JsonRequired]
         public AccountApiConfiguration AccountApi { get; set; }
 
-        
         [JsonRequired]
         public SiteValidatorSettings SiteValidator { get; set; }
     }
