@@ -627,10 +627,6 @@
                                     "value": "[reference('api-app-insights').outputs.InstrumentationKey.value]"
                                 },
                                 {
-                                    "name": "UsersConnectionString",
-                                    "value": "[variables('usersConnectionString')]"
-                                },
-                                {
                                     "name": "AuditApiBaseUrl",
                                     "value": "[parameters('auditApiBaseUrl')]"
                                 },
