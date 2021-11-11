@@ -117,7 +117,13 @@
             "type": "string"
         },
         "sharedSQLServerName": {
+             "type": "string"
+        },
+        "sqlServerServiceAccountUsername": {
             "type": "string"
+        },
+        "sqlServerServiceAccountPassword": {
+            "type": "securestring"
         },
         "storeEmailsOnDisk": {
             "type": "string"
