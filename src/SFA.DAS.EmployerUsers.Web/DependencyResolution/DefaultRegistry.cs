@@ -16,6 +16,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 using MediatR;
 using Microsoft.Azure.Services.AppAuthentication;
+using NLog;
 using SFA.DAS.Audit.Client;
 using SFA.DAS.CodeGenerator;
 using SFA.DAS.Configuration;
@@ -46,42 +47,51 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
     public class DefaultRegistry : Registry
     {
         private const string AzureResource = "https://database.windows.net/";
-
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+        
         public DefaultRegistry()
         {
-            Scan(
-                scan =>
+            try
+            {
+                Scan(
+                    scan =>
+                    {
+                        scan.AssembliesFromApplicationBaseDirectory(a => a.GetName().Name.StartsWith("SFA.DAS.EmployerUsers")
+                            && !a.GetName().Name.Equals("SFA.DAS.EmployerUsers.Infrastructure"));
+                        scan.RegisterConcreteTypesAgainstTheFirstInterface();
+                    });
+
+                For<IOwinWrapper>().Transient().Use(() => new OwinWrapper(HttpContext.Current.GetOwinContext())).SetLifecycleTo(new HttpContextLifecycle());
+
+                For<IdentityServerConfiguration>().Transient().Use(() => new IdentityServerConfiguration
                 {
-                    scan.AssembliesFromApplicationBaseDirectory(a => a.GetName().Name.StartsWith("SFA.DAS.EmployerUsers")
-                        && !a.GetName().Name.Equals("SFA.DAS.EmployerUsers.Infrastructure"));
-                    scan.RegisterConcreteTypesAgainstTheFirstInterface();
+                    ApplicationBaseUrl = ConfigurationManager.AppSettings["BaseExternalUrl"],
+                    EmployerPortalUrl = ConfigurationManager.AppSettings["EmployerPortalUrl"]
                 });
 
-            For<IOwinWrapper>().Transient().Use(() => new OwinWrapper(HttpContext.Current.GetOwinContext())).SetLifecycleTo(new HttpContextLifecycle());
+                For<IAuditMessageFactory>().Use<AuditMessageFactory>().Singleton();
+                For<IAuditService>().Use<AuditService>();
 
-            For<IdentityServerConfiguration>().Transient().Use(() => new IdentityServerConfiguration
+                AddConfigSpecifiedRegistrations();
+
+                var environment = GetEnvironment();
+                var configService = GetConfigService(environment);
+                var employerUsersConfig = EmployerUsersConfig(configService);
+
+                For<EmployerUsersConfiguration>().Use(employerUsersConfig);
+                For<IConfigurationService>().Use(configService);
+                ConfigureHashingService(employerUsersConfig);
+
+                AddDatabaseRegistrations(environment, employerUsersConfig.SqlConnectionString);
+                
+                AddEnvironmentSpecificRegistrations(environment);
+                AddMediatrRegistrations();
+            }
+            catch(Exception ex)
             {
-                ApplicationBaseUrl = ConfigurationManager.AppSettings["BaseExternalUrl"],
-                EmployerPortalUrl = ConfigurationManager.AppSettings["EmployerPortalUrl"]
-            });
-
-            For<IAuditMessageFactory>().Use<AuditMessageFactory>().Singleton();
-            For<IAuditService>().Use<AuditService>();
-
-            AddConfigSpecifiedRegistrations();
-
-            var environment = GetEnvironment();
-            var configService = GetConfigService(environment);
-            var employerUsersConfig = EmployerUsersConfig(configService);
-
-            For<EmployerUsersConfiguration>().Use(employerUsersConfig);
-            For<IConfigurationService>().Use(configService);
-            ConfigureHashingService(employerUsersConfig);
-
-            AddDatabaseRegistrations(environment, employerUsersConfig.SqlConnectionString);
-            
-            AddEnvironmentSpecificRegistrations(environment);
-            AddMediatrRegistrations();
+                Logger.Error(ex, "Unable to configure the StructureMap container.");
+                throw;
+            }
         }
 
         private string GetEnvironment()
