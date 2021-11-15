@@ -17,10 +17,11 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             _connection = connection as SqlConnection;
         }
 
-        public void BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
+        public async Task BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
         {
             if (_connection != null)
             {
+                await OpenConnection();
                 _transaction = _connection.BeginTransaction(isolationLevel);
                 _pending = true;
             }
@@ -69,12 +70,22 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
 
         private async Task<T[]> Query<T>(SqlConnection connection, string command, object param = null)
         {
+            await OpenConnection();
             return (await connection.QueryAsync<T>(command, param)).ToArray();
         }
 
         private async Task Execute(SqlConnection connection, string command, object param = null)
         {
+            await OpenConnection();
             await connection.ExecuteAsync(command, param, _transaction);
+        }
+
+        private async Task OpenConnection()
+        {
+            if (!_connection.State.HasFlag(ConnectionState.Open))
+            {
+                await _connection.OpenAsync();
+            }
         }
     }
 }

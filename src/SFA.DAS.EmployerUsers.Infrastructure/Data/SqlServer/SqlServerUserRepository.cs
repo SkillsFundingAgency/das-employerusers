@@ -68,7 +68,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
         {
             try
             {
-                _unitOfWork.BeginTransaction();
+                await _unitOfWork.BeginTransaction();
                 
                 await _unitOfWork.Execute("CreateUser @Id, @FirstName, @LastName, @Email, @Password, @Salt, @PasswordProfileId, @IsActive, @FailedLoginAttempts, @IsLocked", registerUser);
                 await UpdateUserSecurityCodes(registerUser);
@@ -87,7 +87,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
         {
             try
             {
-                _unitOfWork.BeginTransaction();
+                await _unitOfWork.BeginTransaction();
                 
                 await _unitOfWork.Execute("UpdateUser @Id, @FirstName, @LastName, @Email, @Password, @Salt, @PasswordProfileId, @IsActive, @FailedLoginAttempts, @IsLocked", user);
                 await UpdateUserSecurityCodes(user);
@@ -106,7 +106,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
         {
             try
             {
-                _unitOfWork.BeginTransaction();
+                await _unitOfWork.BeginTransaction();
                 
                 await _unitOfWork.Execute("DeleteUser @Id", user);
                 
@@ -149,7 +149,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
         {
             try
             {
-                _unitOfWork.BeginTransaction();
+                await _unitOfWork.BeginTransaction();
                 
                 await _unitOfWork.Execute("UpdateUserSuspension @Id, @state", new { user.Id, state = true });
                 
@@ -166,7 +166,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
         {
             try
             {
-                _unitOfWork.BeginTransaction();
+                await _unitOfWork.BeginTransaction();
                 
                 await _unitOfWork.Execute("UpdateUserSuspension @Id, @state", new { user.Id, state = false });
                 
