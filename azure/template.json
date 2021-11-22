@@ -77,14 +77,6 @@
         "notificationsApiClientToken": {
             "type": "securestring"
         },
-        "profilesDatabaseSkuName": {
-            "type": "string",
-            "defaultValue": ""
-        },
-        "profilesDatabaseTier": {
-            "type": "string",
-            "defaultValue": ""
-        },
         "resourceEnvironmentName": {
             "type": "string"
         },
@@ -118,12 +110,6 @@
         },
         "sharedSQLServerName": {
              "type": "string"
-        },
-        "sqlServerServiceAccountUsername": {
-            "type": "string"
-        },
-        "sqlServerServiceAccountPassword": {
-            "type": "securestring"
         },
         "storeEmailsOnDisk": {
             "type": "string"
@@ -189,12 +175,11 @@
     "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
     "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
     "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
-    "profilesDatabaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-profiles-db'))]",
     "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
     "webAppServiceName": "[concat(variables('resourceNamePrefix'), 'ui-as')]",
     "workerAppServiceName": "[concat(variables('resourceNamePrefix'), 'wkr-as')]",
     "workerAppServicePlanName": "[concat(variables('resourceNamePrefix'), 'wkr-asp')]",
-    "usersDatabaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-users-db'))]"
+    "databaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-users-db'))]"
   },
     "resources": [
         {
@@ -230,7 +215,7 @@
         {
             "condition": "[greater(length(parameters('apiAppCustomHostName')), 0)]",
             "apiVersion": "2020-10-01",
-            "name": "api-app-service-certificate",
+            "name": "users-api-app-service-certificate",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -314,17 +299,14 @@
                         "value": "[parameters('apiAppCustomHostName')]"
                     },
                     "certificateThumbprint": {
-                        "value": "[if(greater(length(parameters('apiAppCustomHostName')), 0), reference('api-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+                        "value": "[if(greater(length(parameters('apiAppCustomHostName')), 0), reference('users-api-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[concat(parameters('backEndAccessRestrictions'), parameters('supportAppPublicIp'))]"
                     }
                 }
             },
-            "dependsOn": [
-                "api-app-insights",
-                "api-app-service-certificate"
-            ]
+            "dependsOn": []
         },
         {
             "apiVersion": "2020-10-01",
@@ -350,7 +332,7 @@
         {
             "condition": "[greater(length(parameters('webAppCustomHostName')), 0)]",
             "apiVersion": "2020-10-01",
-            "name": "web-app-service-certificate",
+            "name": "users-web-app-service-certificate",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -486,17 +468,14 @@
                         "value": "[parameters('webAppCustomHostName')]"
                     },
                     "certificateThumbprint": {
-                        "value": "[if(greater(length(parameters('webAppCustomHostName')), 0), reference('web-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+                        "value": "[if(greater(length(parameters('webAppCustomHostName')), 0), reference('users-web-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('frontEndAccessRestrictions')]"
                     }
                 }
             },
-            "dependsOn": [
-                "web-app-insights",
-                "web-app-service-certificate"
-            ]
+            "dependsOn": []
         },
         {
             "apiVersion": "2020-10-01",
@@ -522,7 +501,7 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
-            "name": "worker-app-service-subnet",
+            "name": "users-worker-app-service-subnet",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
                 "mode": "Incremental",
@@ -598,7 +577,7 @@
                         "value": "[variables('resourceGroupName')]"
                     },
                     "subnetResourceId": {
-                        "value": "[reference('worker-app-service-subnet').outputs.subnetResourceId.value]"
+                        "value": "[reference('users-worker-app-service-subnet').outputs.subnetResourceId.value]"
                     },
                     "deployStagingSlot": {
                         "value": false
@@ -624,7 +603,7 @@
                                 },
                                 {
                                     "name": "InstrumentationKey",
-                                    "value": "[reference('api-app-insights').outputs.InstrumentationKey.value]"
+                                    "value": "[reference('worker-app-insights').outputs.InstrumentationKey.value]"
                                 },
                                 {
                                     "name": "AuditApiBaseUrl",
@@ -655,48 +634,8 @@
                 }
             },
             "dependsOn": [
-                "worker-app-insights",
                 "worker-app-service-plan"
             ]
-        },
-        {
-            "apiVersion": "2020-10-01",
-            "name": "profiles-sql-database",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'sql-database.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "databaseName": {
-                        "value": "[variables('profilesDatabaseName')]"
-                    },
-                    "sqlServerName": {
-                        "value": "[parameters('sharedSQLServerName')]"
-                    },
-                    "elasticPoolName": {
-                        "value": "[parameters('elasticPoolName')]"
-                    },
-                    "databaseSkuName": {
-                        "value": "[parameters('profilesDatabaseSkuName')]"
-                    },
-                    "databaseTier": {
-                        "value": "[parameters('profilesDatabaseTier')]"
-                    },
-                    "logAnalyticsSubscriptionId": {
-                        "value": "[parameters('logAnalyticsSubscriptionId')]"
-                    },
-                    "logAnalyticsResourceGroup": {
-                        "value": "[parameters('sharedManagementResourceGroup')]"
-                    },
-                    "logAnalyticsWorkspaceName": {
-                        "value": "[parameters('logAnalyticsWorkspaceName')]"
-                    }
-                }
-            }
         },
         {
             "apiVersion": "2020-10-01",
@@ -711,7 +650,7 @@
                 },
                 "parameters": {
                     "databaseName": {
-                        "value": "[variables('usersDatabaseName')]"
+                        "value": "[variables('databaseName')]"
                     },
                     "sqlServerName": {
                         "value": "[parameters('sharedSQLServerName')]"
@@ -755,13 +694,9 @@
             "type": "string",
             "value": "[variables('workerAppServiceName')]"
         },
-        "ProfilesDatabaseName": {
+        "DatabaseName": {
             "type": "string",
-            "value": "[variables('profilesDatabaseName')]"
-        },
-        "UsersDatabaseName": {
-            "type": "string",
-            "value": "[variables('usersDatabaseName')]"
+            "value": "[variables('databaseName')]"
         }
     }
 }
