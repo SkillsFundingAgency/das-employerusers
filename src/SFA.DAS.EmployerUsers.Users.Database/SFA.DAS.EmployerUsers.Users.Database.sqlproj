@@ -61,7 +61,6 @@
     <Folder Include="Properties" />
     <Folder Include="StoredProcedures" />
     <Folder Include="Tables" />
-    <Folder Include="SeedData" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\RelyingParty.sql" />
@@ -87,13 +86,13 @@
     <Build Include="StoredProcedures\UserCount.sql" />
     <Build Include="StoredProcedures\SearchUsers.sql" />
     <Build Include="StoredProcedures\UpdateUserSuspension.sql" />
+    <Build Include="StoredProcedures\GetAllPasswordProfiles.sql" />
+    <Build Include="Tables\PasswordProfile.sql" />
   </ItemGroup>
   <ItemGroup>
-    <PostDeploy Include="SeedData\SeedData.sql" />
     <None Include="Script.PostDeployment1.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.Publish.xml" />
-    <None Include="SeedData\SeedDataDev.sql" />
   </ItemGroup>
 </Project>

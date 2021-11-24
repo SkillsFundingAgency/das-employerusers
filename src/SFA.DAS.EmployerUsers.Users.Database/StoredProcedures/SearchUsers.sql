@@ -26,7 +26,7 @@ AS
 	SELECT @totalRecords = COUNT(1) FROM #resultSet
 	
 	SELECT * FROM #resultSet
-	ORDER BY ID
+	ORDER BY Id
 	OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY
 
 GO

@@ -10,3 +10,4 @@ AS
 		Flow,
 		ClientSecret
 	FROM dbo.RelyingParty
+GO

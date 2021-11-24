@@ -111,10 +111,12 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.FileSystem
 
         public async Task Suspend(User user)
         {
+            await Task.FromResult(0);
         }
 
         public async Task Resume(User user)
         {
+            await Task.FromResult(0);
         }
 
         private bool UserMatchesSearchCriteria(User user, string criteria)

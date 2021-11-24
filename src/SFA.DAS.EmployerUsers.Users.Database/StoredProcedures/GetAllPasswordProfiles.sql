@@ -1,4 +1,4 @@
-CREATE PROCEDURE GetAllPasswordProfiles
+CREATE PROCEDURE dbo.GetAllPasswordProfiles
 AS
 	SELECT
 		Id,

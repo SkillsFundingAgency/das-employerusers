@@ -1,8 +1,31 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="DefaultRegistry.cs" company="Web Advanced">
+// Copyright 2012 Web Advanced (www.webadvanced.com)
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+using System;
+using System.Data;
+using System.Data.SqlClient;
 using MediatR;
 using Microsoft.Azure;
+using Microsoft.Azure.Services.AppAuthentication;
 using SFA.DAS.Audit.Client;
+using SFA.DAS.Configuration;
+using SFA.DAS.Configuration.AzureTableStorage;
+using SFA.DAS.Configuration.FileStorage;
 using SFA.DAS.EmployerUsers.Domain.Data;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer;
 using StructureMap;
 using StructureMap.Graph;
@@ -11,6 +34,8 @@ namespace SFA.DAS.EmployerUsers.RegistrationTidyUpJob.DependencyResolution
 {
     public class DefaultRegistry : Registry
     {
+        private const string AzureResource = "https://database.windows.net/";
+
         public DefaultRegistry()
         {
             Scan(
@@ -20,17 +45,20 @@ namespace SFA.DAS.EmployerUsers.RegistrationTidyUpJob.DependencyResolution
                     scan.RegisterConcreteTypesAgainstTheFirstInterface();
                 });
 
-            For<IUserRepository>().Use<SqlServerUserRepository>();
-            RegisterEnvironmentSpecificInstances();
+            var environment = GetEnvironment();
+            var configService = GetConfigService(environment);
+            var employerUsersConfig = EmployerUsersConfig(configService);
 
-            For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => ctx.GetInstance(t));
-            For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => ctx.GetAllInstances(t));
-            For<IMediator>().Use<Mediator>();
+            For<EmployerUsersConfiguration>().Use(employerUsersConfig);
+            For<IConfigurationService>().Use(configService);
 
+            AddDatabaseRegistrations(environment, employerUsersConfig.SqlConnectionString);
 
+            AddEnvironmentSpecificRegistrations(environment);
+            AddMediatrRegistrations();
         }
 
-        private void RegisterEnvironmentSpecificInstances()
+        private string GetEnvironment()
         {
             var environment = Environment.GetEnvironmentVariable("DASENV");
             if (string.IsNullOrEmpty(environment))
@@ -38,23 +66,87 @@ namespace SFA.DAS.EmployerUsers.RegistrationTidyUpJob.DependencyResolution
                 environment = CloudConfigurationManager.GetSetting("EnvironmentName");
             }
 
-            if (environment.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase))
+            return environment;
+        }
+
+        private ConfigurationService GetConfigService(string environment)
+        {
+            IConfigurationRepository configurationRepository;
+
+            if (CloudConfigurationManager.GetSetting("LocalConfig") == bool.TrueString)
             {
-                For<IAuditApiClient>().Use<StubAuditApiClient>().Ctor<string>().Is(string.Format(@"{0}\App_Data\Audit\", AppDomain.CurrentDomain.BaseDirectory));
+                configurationRepository = new FileStorageConfigurationRepository();
             }
             else
             {
-                For<IAuditApiClient>().Use<AuditApiClient>();
-                For<IAuditMessageFactory>().Use<AuditMessageFactory>().Singleton();
-                For<IAuditApiConfiguration>().Use(() => new AuditApiConfiguration
-                {
-                    ApiBaseUrl = CloudConfigurationManager.GetSetting("AuditApiBaseUrl"),
-                    ClientId = CloudConfigurationManager.GetSetting("AuditApiClientId"),
-                    ClientSecret = CloudConfigurationManager.GetSetting("AuditApiSecret"),
-                    IdentifierUri = CloudConfigurationManager.GetSetting("AuditApiIdentifierUri"),
-                    Tenant = CloudConfigurationManager.GetSetting("AuditApiTenant")
-                });
+                configurationRepository = new AzureTableStorageConfigurationRepository(CloudConfigurationManager.GetSetting("ConfigurationStorageConnectionString"));
             }
+
+            var configurationService = new ConfigurationService(configurationRepository,
+                new ConfigurationOptions("SFA.DAS.EmployerUsers.Web", environment, "1.0"));
+
+            return configurationService;
+        }
+
+        private void AddEnvironmentSpecificRegistrations(string environment)
+        {
+            if (environment == "LOCAL")
+            {
+                AddDevelopmentRegistrations();
+            }
+            else
+            {
+                AddProductionRegistrations();
+            }
+        }
+
+        private void AddDevelopmentRegistrations()
+        {
+            For<IUserRepository>().Use<SqlServerUserRepository>();
+            For<IAuditApiClient>().Use<StubAuditApiClient>().Ctor<string>().Is(string.Format(@"{0}\App_Data\Audit\", AppDomain.CurrentDomain.BaseDirectory));
+        }
+
+        private void AddProductionRegistrations()
+        {
+            For<IUserRepository>().Use<SqlServerUserRepository>();
+            For<IAuditApiClient>().Use<AuditApiClient>();
+            For<IAuditMessageFactory>().Use<AuditMessageFactory>().Singleton();
+            For<IAuditApiConfiguration>().Use(() => new AuditApiConfiguration
+            {
+                ApiBaseUrl = CloudConfigurationManager.GetSetting("AuditApiBaseUrl"),
+                ClientId = CloudConfigurationManager.GetSetting("AuditApiClientId"),
+                ClientSecret = CloudConfigurationManager.GetSetting("AuditApiSecret"),
+                IdentifierUri = CloudConfigurationManager.GetSetting("AuditApiIdentifierUri"),
+                Tenant = CloudConfigurationManager.GetSetting("AuditApiTenant")
+            });
+        }
+
+        private void AddDatabaseRegistrations(string environment, string sqlConnectionString)
+        {
+            For<IDbConnection>().Use($"Build IDbConnection", c => {
+                var azureServiceTokenProvider = new AzureServiceTokenProvider();
+                return environment.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase)
+                    ? new SqlConnection(sqlConnectionString)
+                    : new SqlConnection
+                    {
+                        ConnectionString = sqlConnectionString,
+                        AccessToken = azureServiceTokenProvider.GetAccessTokenAsync(AzureResource).Result
+                    };
+            });
+
+            For<IUnitOfWork>().Use<UnitOfWork>();
+        }
+
+        private void AddMediatrRegistrations()
+        {
+            For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => ctx.GetInstance(t));
+            For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => ctx.GetAllInstances(t));
+            For<IMediator>().Use<Mediator>();
+        }
+
+        private EmployerUsersConfiguration EmployerUsersConfig(ConfigurationService configurationService)
+        {
+            return configurationService.Get<EmployerUsersConfiguration>();
         }
     }
 }

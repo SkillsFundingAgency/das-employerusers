@@ -98,7 +98,7 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
             {
                 response = await _orchestrator.Resume(id);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return InternalServerError();
             }
