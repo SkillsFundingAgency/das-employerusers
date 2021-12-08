@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
@@ -30,10 +29,12 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
         private AccountLockedEvent _event;
         private Mock<ILogger> _logger;
         private Mock<IAuditService> _auditService;
+        private string _employerAccountsBaseUrl;
 
         [SetUp]
         public void Arrange()
-        {            
+        {
+            _employerAccountsBaseUrl = "https://localhost:44344";
             _configurationService = new Mock<IConfigurationService>();
             _configurationService.Setup(c => c.GetAsync<EmployerUsersConfiguration>())
                 .Returns(Task.FromResult(new EmployerUsersConfiguration
@@ -41,8 +42,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
                     Account = new AccountConfiguration
                     {
                         UnlockCodeLength = 10
-                    }
-                }));
+                    },
+                    EmployerAccountsBaseUrl = _employerAccountsBaseUrl
+                }));            
 
             _user = new User
             {
@@ -284,7 +286,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
 
             //Assert
             _communicationService.Verify(
-                s => s.SendAccountLockedMessage(It.Is<User>(c => c.Email == _user.Email), It.IsAny<string>()), Times.Once);
+                s => s.SendAccountLockedMessage(It.Is<User>(c => c.Email == _user.Email 
+                && c.SecurityCodes.Any(sc => sc.ReturnUrl == _employerAccountsBaseUrl)), It.IsAny<string>()), Times.Once);
         }
 
         [Test]

@@ -92,7 +92,7 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
                     Code = await GenerateCode(),
                     CodeType = Domain.SecurityCodeType.UnlockCode,
                     ExpiryTime = DateTime.UtcNow.AddDays(1),
-                    ReturnUrl = notification?.ReturnUrl ?? unlockCode?.ReturnUrl ?? string.Empty
+                    ReturnUrl = notification?.ReturnUrl ?? unlockCode?.ReturnUrl ?? await GetEmployerAccountsBaseUrl()
                 };
                 user.AddSecurityCode(unlockCode);
                 await _userRepository.Update(user);
@@ -109,14 +109,20 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
             }
         }
 
+        private async Task<string> GetEmployerAccountsBaseUrl()
+        {
+            return (await GetConfig())?.EmployerAccountsBaseUrl;
+        }
+
         private async Task<string> GenerateCode()
         {
-            var codeLength = (await GetConfig())?.UnlockCodeLength ?? 6;
+            var codeLength = (await GetConfig())?.Account?.UnlockCodeLength ?? 6;
             return _codeGenerator.GenerateAlphaNumeric(codeLength);
-        }
-        private async Task<AccountConfiguration> GetConfig()
+        }      
+
+        private async Task<EmployerUsersConfiguration> GetConfig()
         {
-            return (await _configurationService.GetAsync<EmployerUsersConfiguration>())?.Account;
+            return await _configurationService.GetAsync<EmployerUsersConfiguration>();
         }
     }
 }
