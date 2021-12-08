@@ -274,7 +274,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
         }
 
         [Test]
-        public async Task ThenItShouldNotThrowExceptionIfTheRequestIfTheUnlockCodeIsNull()
+        public async Task ThenItShouldNotThrowExceptionIfTheUnlockCodeReturnUrlIsNull()
         {
             //Arrange
             _user.SecurityCodes = null;
