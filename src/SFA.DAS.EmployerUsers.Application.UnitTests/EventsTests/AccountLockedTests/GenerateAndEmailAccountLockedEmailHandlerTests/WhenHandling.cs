@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
@@ -32,7 +33,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
 
         [SetUp]
         public void Arrange()
-        {
+        {            
             _configurationService = new Mock<IConfigurationService>();
             _configurationService.Setup(c => c.GetAsync<EmployerUsersConfiguration>())
                 .Returns(Task.FromResult(new EmployerUsersConfiguration
@@ -270,6 +271,20 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
             //Assert
             _communicationService.Verify(
                 s => s.SendAccountLockedMessage(It.Is<User>(c => c.SecurityCodes.Any(sc => sc.ReturnUrl == _event.ReturnUrl)), It.IsAny<string>()), Times.Once);
+        }
+
+        [Test]
+        public async Task ThenItShouldNotThrowExceptionIfTheRequestIfTheUnlockCodeIsNull()
+        {
+            //Arrange
+            _user.SecurityCodes = null;
+
+            //Act
+            await _handler.Handle(_event);
+
+            //Assert
+            _communicationService.Verify(
+                s => s.SendAccountLockedMessage(It.Is<User>(c => c.Email == _user.Email), It.IsAny<string>()), Times.Once);
         }
 
         [Test]

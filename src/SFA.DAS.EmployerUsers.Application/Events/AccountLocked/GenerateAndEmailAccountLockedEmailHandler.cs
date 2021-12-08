@@ -84,16 +84,16 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
                 _logger.Warn($"Could not generate new unlock code: UseStaticCodeGenerator not equal to False");
             }
 
-            if (unlockCode == null || unlockCode.ExpiryTime < DateTime.UtcNow
+            if (unlockCode == null || (unlockCode != null && unlockCode.ExpiryTime < DateTime.UtcNow)
                 && useStaticCodeGenerator)
                 {
                     unlockCode = new Domain.SecurityCode
-                {
-                    Code = await GenerateCode(),
-                    CodeType = Domain.SecurityCodeType.UnlockCode,
-                    ExpiryTime = DateTime.UtcNow.AddDays(1),
-                    ReturnUrl = notification.ReturnUrl ?? unlockCode.ReturnUrl
-                };
+                    {
+                        Code = await GenerateCode(),
+                        CodeType = Domain.SecurityCodeType.UnlockCode,
+                        ExpiryTime = DateTime.UtcNow.AddDays(1),
+                        ReturnUrl = notification.ReturnUrl ?? (unlockCode != null ? unlockCode.ReturnUrl : string.Empty)
+                    };
                 user.AddSecurityCode(unlockCode);
                 await _userRepository.Update(user);
 
