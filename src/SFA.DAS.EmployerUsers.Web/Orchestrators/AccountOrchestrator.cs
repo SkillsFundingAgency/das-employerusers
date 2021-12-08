@@ -377,6 +377,7 @@ namespace SFA.DAS.EmployerUsers.Web.Orchestrators
                 });
 
                 model.UnlockCodeSent = true;
+                model.UnlockCodeLength = await GetUnlockCodeLength();
 
                 response.FlashMessage = new FlashMessageViewModel
                 {
