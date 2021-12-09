@@ -5,7 +5,6 @@ using Moq;
 using NLog;
 using NUnit.Framework;
 using SFA.DAS.CodeGenerator;
-using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Domain;
@@ -19,8 +18,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
     {
         private const string UnlockCode = "ABC123";
         private const string UserEmail = "unit.tests@testing.local";
-
-        private Mock<IConfigurationService> _configurationService;
+        
         private User _user;
         private Mock<IUserRepository> _userRepository;
         private Mock<ICodeGenerator> _codeGenerator;
@@ -29,22 +27,18 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
         private AccountLockedEvent _event;
         private Mock<ILogger> _logger;
         private Mock<IAuditService> _auditService;
+        private EmployerUsersConfiguration _employerUsersConfiguration;
         private string _employerAccountsBaseUrl;
 
         [SetUp]
         public void Arrange()
         {
-            _employerAccountsBaseUrl = "https://localhost:44344";
-            _configurationService = new Mock<IConfigurationService>();
-            _configurationService.Setup(c => c.GetAsync<EmployerUsersConfiguration>())
-                .Returns(Task.FromResult(new EmployerUsersConfiguration
-                {
-                    Account = new AccountConfiguration
-                    {
-                        UnlockCodeLength = 10
-                    },
-                    EmployerAccountsBaseUrl = _employerAccountsBaseUrl
-                }));            
+            _employerAccountsBaseUrl = "https://localhost:44344";          
+            _employerUsersConfiguration = new EmployerUsersConfiguration
+            {
+                Account = new AccountConfiguration { UnlockCodeLength = 10 },
+                EmployerAccountsBaseUrl = _employerAccountsBaseUrl
+            };
 
             _user = new User
             {
@@ -66,12 +60,12 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.EventsTests.AccountLockedT
 
             _auditService = new Mock<IAuditService>();
 
-            _handler = new GenerateAndEmailAccountLockedEmailHandler(
-                _configurationService.Object,
+            _handler = new GenerateAndEmailAccountLockedEmailHandler(                
                 _userRepository.Object,
                 _codeGenerator.Object,
                 _communicationService.Object,
                 _auditService.Object,
+                _employerUsersConfiguration,
                 _logger.Object);
 
             _event = new AccountLockedEvent
