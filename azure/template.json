@@ -822,6 +822,10 @@
             "type": "string",
             "value": "[variables('workerAppServiceName')]"
         },
+        "SupportAppServiceName": {
+            "type": "string",
+            "value": "[variables('supportAppServiceName')]"
+        },
         "DatabaseName": {
             "type": "string",
             "value": "[variables('databaseName')]"
