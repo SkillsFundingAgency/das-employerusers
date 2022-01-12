@@ -23,7 +23,7 @@ namespace SFA.DAS.EmployerUsers.RegistrationTidyUpJob.RegistrationManagement
         {
             _logger.Info("Starting deletion of expired registrations");
 
-            _logger.Info($"AuditApiBaseUrl: {CloudConfigurationManager.GetSetting("AuditApiBaseUrl")}");
+            _logger.Info($"AuditApiBaseUrl: {ConfigurationManager.AppSettings["AuditApiBaseUrl"]}");
 
             try
             {

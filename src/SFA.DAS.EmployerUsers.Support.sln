@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "SFA.DAS.EmployerUsers.Support.CloudService", "SFA.DAS.EmployerUsers.Support.CloudService\SFA.DAS.EmployerUsers.Support.CloudService.ccproj", "{114C3D2F-1E05-45ED-ACF6-161F534475C6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Support.Web", "SFA.DAS.EmployerUsers.Support.Web\SFA.DAS.EmployerUsers.Support.Web.csproj", "{5B06A69D-8660-4D15-B6B1-6A7DDBAA5CE5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Support.Infrastructure", "SFA.DAS.EmployerUsers.Support.Infrastructure\SFA.DAS.EmployerUsers.Support.Infrastructure.csproj", "{4CC506AE-F6BC-46B2-910A-D6BF29DA8D90}"
@@ -20,14 +18,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Support.Web.Tests", "SFA.DAS.EmployerUsers.Support.Web.Tests\SFA.DAS.EmployerUsers.Support.Web.Tests.csproj", "{FF8C0B64-2DD4-4646-BB05-2EE31E7635F4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Support.Infrastructure.Tests", "SFA.DAS.EmployerUsers.Support.Infrastructure.Tests\SFA.DAS.EmployerUsers.Support.Infrastructure.Tests.csproj", "{893B0424-7E0F-49B2-BC72-997B91E7E206}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{731EE910-F4EF-45BD-9E45-6404651EA33E}"
-	ProjectSection(SolutionItems) = preProject
-		Build.fsx = Build.fsx
-		CustomTargets.fsx = CustomTargets.fsx
-		DefaultTargets.fsx = DefaultTargets.fsx
-		RunBuild.bat = RunBuild.bat
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

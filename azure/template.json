@@ -19,6 +19,9 @@
         "workerAccessRestrictions": {
             "type": "array"
         },
+        "supportAppAccessRestrictions": {
+            "type": "array"
+        },
         "auditApiBaseUrl": {
             "type": "string"
         },
@@ -143,6 +146,14 @@
             "type": "string",
             "defaultValue": ""
         },
+        "supportAppCertificateName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "supportAppCustomHostName": {
+            "type": "string",
+            "defaultValue": ""
+        },
         "workerAppAspSize": {
             "type": "string",
             "defaultValue": "1"
@@ -169,21 +180,27 @@
         },
         "zenDeskHelpCentreUrl": {
             "type": "string"
+        },
+        "utcValue": {
+            "type": "string",
+            "defaultValue": "[utcNow()]"
         }
     },
   "variables": {
     "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
     "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
-    "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
+    "supportResourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-s', parameters('serviceName')))]",
     "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
+    "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
     "webAppServiceName": "[concat(variables('resourceNamePrefix'), 'ui-as')]",
     "workerAppServiceName": "[concat(variables('resourceNamePrefix'), 'wkr-as')]",
     "workerAppServicePlanName": "[concat(variables('resourceNamePrefix'), 'wkr-asp')]",
+    "supportAppServiceName": "[concat(variables('supportResourceNamePrefix'), '-as')]",
     "databaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-users-db'))]"
   },
     "resources": [
         {
-            "apiVersion": "2020-10-01",
+            "apiVersion": "2021-04-01",
             "name": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/resourceGroups",
             "location": "[parameters('resourceGroupLocation')]",
@@ -192,8 +209,8 @@
             }
         },
         {
-            "apiVersion": "2020-10-01",
-            "name": "api-app-insights",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('apiAppServiceName'), '-application-insights-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -214,8 +231,8 @@
         },
         {
             "condition": "[greater(length(parameters('apiAppCustomHostName')), 0)]",
-            "apiVersion": "2020-10-01",
-            "name": "users-api-app-service-certificate",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('apiAppServiceName'), '-app-service-certificate-', parameters('utcValue'))]",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -238,8 +255,8 @@
             }
         },
         {
-            "apiVersion": "2020-10-01",
-            "name": "api-app-service",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('apiAppServiceName'), '-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -282,7 +299,7 @@
                                 },
                                 {
                                     "name": "InstrumentationKey",
-                                    "value": "[reference('api-app-insights').outputs.InstrumentationKey.value]"
+                                    "value": "[reference(concat(variables('apiAppServiceName'), '-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                                 },
                                 {
                                     "name": "idaAudience",
@@ -299,18 +316,17 @@
                         "value": "[parameters('apiAppCustomHostName')]"
                     },
                     "certificateThumbprint": {
-                        "value": "[if(greater(length(parameters('apiAppCustomHostName')), 0), reference('users-api-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+                        "value": "[if(greater(length(parameters('apiAppCustomHostName')), 0), reference(concat(variables('apiAppServiceName'), '-app-service-certificate-', parameters('utcValue')), '2018-11-01').outputs.certificateThumbprint.value, '')]"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[concat(parameters('backEndAccessRestrictions'), parameters('supportAppPublicIp'))]"
                     }
                 }
-            },
-            "dependsOn": []
+            }
         },
         {
-            "apiVersion": "2020-10-01",
-            "name": "web-app-insights",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('webAppServiceName'), '-application-insights-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -331,8 +347,8 @@
         },
         {
             "condition": "[greater(length(parameters('webAppCustomHostName')), 0)]",
-            "apiVersion": "2020-10-01",
-            "name": "users-web-app-service-certificate",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('webAppServiceName'), '-app-service-certificate-', parameters('utcValue'))]",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -355,8 +371,8 @@
             }
         },
         {
-            "apiVersion": "2020-10-01",
-            "name": "web-app-service",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('webAppServiceName'), '-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -399,7 +415,7 @@
                                 },
                                 {
                                     "name": "InstrumentationKey",
-                                    "value": "[reference('web-app-insights').outputs.InstrumentationKey.value]"
+                                    "value": "[reference(concat(variables('webAppServiceName'), '-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                                 },
                                 {
                                     "name": "AuditApiBaseUrl",
@@ -468,18 +484,17 @@
                         "value": "[parameters('webAppCustomHostName')]"
                     },
                     "certificateThumbprint": {
-                        "value": "[if(greater(length(parameters('webAppCustomHostName')), 0), reference('users-web-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+                        "value": "[if(greater(length(parameters('webAppCustomHostName')), 0), reference(concat(variables('webAppServiceName'), '-app-service-certificate-', parameters('utcValue')), '2018-11-01').outputs.certificateThumbprint.value, '')]"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('frontEndAccessRestrictions')]"
                     }
                 }
-            },
-            "dependsOn": []
+            }
         },
         {
-            "apiVersion": "2020-10-01",
-            "name": "worker-app-insights",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('workerAppServiceName'), '-application-insights-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -500,8 +515,8 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-10-01",
-            "name": "users-worker-app-service-subnet",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(parameters('workerSubnetObject').name, '-', parameters('utcValue'))]",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
                 "mode": "Incremental",
@@ -529,8 +544,8 @@
             }
         },
         {
-            "apiVersion": "2020-10-01",
-            "name": "worker-app-service-plan",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('workerAppServicePlanName'), '-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -556,8 +571,8 @@
             }
         },
         {
-            "apiVersion": "2020-10-01",
-            "name": "worker-app-service",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('workerAppServiceName'), '-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -577,7 +592,7 @@
                         "value": "[variables('resourceGroupName')]"
                     },
                     "subnetResourceId": {
-                        "value": "[reference('users-worker-app-service-subnet').outputs.subnetResourceId.value]"
+                        "value": "[reference(concat(parameters('workerSubnetObject').name, '-', parameters('utcValue'))).outputs.subnetResourceId.value]"
                     },
                     "deployStagingSlot": {
                         "value": false
@@ -603,7 +618,7 @@
                                 },
                                 {
                                     "name": "InstrumentationKey",
-                                    "value": "[reference('worker-app-insights').outputs.InstrumentationKey.value]"
+                                    "value": "[reference(concat(variables('workerAppServiceName'), '-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                                 },
                                 {
                                     "name": "AuditApiBaseUrl",
@@ -634,12 +649,125 @@
                 }
             },
             "dependsOn": [
-                "worker-app-service-plan"
+                "[concat(variables('workerAppServicePlanName'), '-', parameters('utcValue'))]"
             ]
         },
         {
-            "apiVersion": "2020-10-01",
-            "name": "users-sql-database",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('supportAppServiceName'), '-application-insights-', parameters('utcValue'))]",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'), 'application-insights.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appInsightsName": {
+                        "value": "[variables('supportAppServiceName')]"
+                    },
+                    "attachedService": {
+                        "value": "[variables('supportAppServiceName')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[greater(length(parameters('apiAppCustomHostName')), 0)]",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('supportAppServiceName'), '-app-service-certificate-', parameters('utcValue'))]",
+            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-certificate.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "keyVaultCertificateName": {
+                        "value": "[parameters('supportAppCertificateName')]"
+                    },
+                    "keyVaultName": {
+                        "value": "[parameters('sharedKeyVaultName')]"
+                    },
+                    "keyVaultResourceGroup": {
+                        "value": "[parameters('sharedManagementResourceGroup')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('supportAppServiceName'), '-', parameters('utcValue'))]",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'), 'app-service-v2.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServiceName": {
+                        "value": "[variables('supportAppServiceName')]"
+                    },
+                    "appServicePlanName": {
+                        "value": "[parameters('sharedBackEndAppServicePlanName')]"
+                    },
+                    "appServicePlanResourceGroup": {
+                        "value": "[parameters('sharedEnvResourceGroup')]"
+                    },
+                    "subnetResourceId": {
+                        "value": "[parameters('sharedBackEndSubnetResourceId')]"
+                    },
+                    "appServiceAppSettings": {
+                        "value": {
+                            "array": [
+                                {
+                                    "name": "ConfigurationStorageConnectionString",
+                                    "value": "[parameters('configurationStorageConnectionString')]"
+                                },
+                                {
+                                    "name": "EnvironmentName",
+                                    "value": "[parameters('environmentName')]"
+                                },
+                                {
+                                    "name": "LoggingRedisConnectionString",
+                                    "value": "[parameters('loggingRedisConnectionString')]"
+                                },
+                                {
+                                    "name": "LoggingRedisKey",
+                                    "value": "[parameters('loggingRedisKey')]"
+                                },
+                                {
+                                    "name": "InstrumentationKey",
+                                    "value": "[reference(concat(variables('supportAppServiceName'), '-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
+                                },
+                                {
+                                    "name": "EmpUserApiCertificateThumbprint",
+                                    "value": "[parameters('auditApiBaseUrl')]"
+                                }
+                            ]
+                        }
+                    },
+                    "customHostName": {
+                        "value": "[parameters('supportAppCustomHostName')]"
+                    },
+                    "certificateThumbprint": {
+                        "value": "[if(greater(length(parameters('webAppCustomHostName')), 0), reference(concat(variables('supportAppServiceName'), '-app-service-certificate-', parameters('utcValue')), '2018-11-01').outputs.certificateThumbprint.value, '')]"
+                    },
+                    "ipSecurityRestrictions": {
+                        "value": "[parameters('supportAppAccessRestrictions')]"
+                    }
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('databaseName'), '-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
