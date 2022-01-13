@@ -744,10 +744,6 @@
                                 {
                                     "name": "InstrumentationKey",
                                     "value": "[reference(concat(variables('supportAppServiceName'), '-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
-                                },
-                                {
-                                    "name": "EmpUserApiCertificateThumbprint",
-                                    "value": "[parameters('auditApiBaseUrl')]"
                                 }
                             ]
                         }
@@ -762,8 +758,7 @@
                         "value": "[parameters('supportAppAccessRestrictions')]"
                     }
                 }
-            },
-            "dependsOn": []
+            }
         },
         {
             "apiVersion": "2021-04-01",
