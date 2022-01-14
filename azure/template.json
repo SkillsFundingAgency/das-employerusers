@@ -146,6 +146,9 @@
             "type": "string",
             "defaultValue": ""
         },
+        "deploySupportApp": {
+            "type": "bool"
+        },
         "supportAppCertificateName": {
             "type": "string",
             "defaultValue": ""
@@ -653,6 +656,7 @@
             ]
         },
         {
+            "condition": "[parameters('deploySupportApp')]",
             "apiVersion": "2021-04-01",
             "name": "[concat(variables('supportAppServiceName'), '-application-insights-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
@@ -674,7 +678,7 @@
             }
         },
         {
-            "condition": "[greater(length(parameters('apiAppCustomHostName')), 0)]",
+            "condition": "[and(greater(length(parameters('apiAppCustomHostName')), 0), parameters('deploySupportApp'))]",
             "apiVersion": "2021-04-01",
             "name": "[concat(variables('supportAppServiceName'), '-app-service-certificate-', parameters('utcValue'))]",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
@@ -699,6 +703,7 @@
             }
         },
         {
+            "condition": "[parameters('deploySupportApp')]",
             "apiVersion": "2021-04-01",
             "name": "[concat(variables('supportAppServiceName'), '-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
