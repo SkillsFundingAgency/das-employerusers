@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using MediatR;
 using NLog;
 using SFA.DAS.CodeGenerator;
-using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Services.Notification;
 using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Auditing.Registration;
@@ -17,25 +16,25 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
     public class GenerateAndEmailAccountLockedEmailHandler : IAsyncNotificationHandler<AccountLockedEvent>
     {
         private readonly ILogger _logger;
-
-        private readonly IConfigurationService _configurationService;
         private readonly IUserRepository _userRepository;
         private readonly ICodeGenerator _codeGenerator;
         private readonly ICommunicationService _communicationService;
         private readonly IAuditService _auditService;
+        private readonly EmployerUsersConfiguration _employerUsersConfiguration;
 
-        public GenerateAndEmailAccountLockedEmailHandler(IConfigurationService configurationService, 
+        public GenerateAndEmailAccountLockedEmailHandler(
             IUserRepository userRepository, 
             ICodeGenerator codeGenerator, 
             ICommunicationService communicationService, 
-            IAuditService auditService, 
+            IAuditService auditService,
+            EmployerUsersConfiguration employerUsersConfiguration,
             ILogger logger)
         {
-            _configurationService = configurationService;
             _userRepository = userRepository;
             _codeGenerator = codeGenerator;
             _communicationService = communicationService;
             _auditService = auditService;
+            _employerUsersConfiguration = employerUsersConfiguration;
             _logger = logger;
         }
 
@@ -84,15 +83,15 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
                 _logger.Warn($"Could not generate new unlock code: UseStaticCodeGenerator not equal to False");
             }
 
-            if (unlockCode == null || unlockCode.ExpiryTime < DateTime.UtcNow
+            if (unlockCode == null || (unlockCode.ExpiryTime < DateTime.UtcNow)
                 && useStaticCodeGenerator)
                 {
-                    unlockCode = new Domain.SecurityCode
+                unlockCode = new Domain.SecurityCode
                 {
-                    Code = await GenerateCode(),
+                    Code = GenerateCode(),
                     CodeType = Domain.SecurityCodeType.UnlockCode,
                     ExpiryTime = DateTime.UtcNow.AddDays(1),
-                    ReturnUrl = notification.ReturnUrl ?? unlockCode.ReturnUrl
+                    ReturnUrl = notification?.ReturnUrl ?? unlockCode?.ReturnUrl ?? _employerUsersConfiguration?.EmployerAccountsBaseUrl
                 };
                 user.AddSecurityCode(unlockCode);
                 await _userRepository.Update(user);
@@ -107,16 +106,12 @@ namespace SFA.DAS.EmployerUsers.Application.Events.AccountLocked
 
                 await _auditService.WriteAudit(new SendUnlockCodeAuditMessage(user, unlockCode));
             }
-        }
+        }      
 
-        private async Task<string> GenerateCode()
+        private string GenerateCode()
         {
-            var codeLength = (await GetConfig())?.UnlockCodeLength ?? 6;
+            var codeLength = _employerUsersConfiguration?.Account?.UnlockCodeLength ?? 6;
             return _codeGenerator.GenerateAlphaNumeric(codeLength);
-        }
-        private async Task<AccountConfiguration> GetConfig()
-        {
-            return (await _configurationService.GetAsync<EmployerUsersConfiguration>())?.Account;
-        }
+        }      
     }
 }

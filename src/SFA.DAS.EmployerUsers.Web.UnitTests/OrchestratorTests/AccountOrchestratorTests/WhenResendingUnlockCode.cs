@@ -6,6 +6,7 @@ using NLog;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Application.Commands.ResendUnlockCode;
 using SFA.DAS.EmployerUsers.Application.Exceptions;
+using SFA.DAS.EmployerUsers.Application.Queries.GetUnlockCodeLength;
 using SFA.DAS.EmployerUsers.Web.Authentication;
 using SFA.DAS.EmployerUsers.Web.Models;
 using SFA.DAS.EmployerUsers.Web.Orchestrators;
@@ -22,10 +23,11 @@ namespace SFA.DAS.EmployerUsers.Web.UnitTests.OrchestratorTests.AccountOrchestra
         [SetUp]
         public void Arrange()
         {
-
             _mediator = new Mock<IMediator>();
             _owinWrapper = new Mock<IOwinWrapper>();
-            _logger = new Mock<ILogger>();
+            _logger = new Mock<ILogger>();            
+            
+            _mediator.Setup(x => x.SendAsync(It.IsAny<GetUnlockCodeQuery>())).ReturnsAsync(new GetUnlockCodeResponse { UnlockCodeLength = 99 });
 
             _accountOrchestrator = new AccountOrchestrator(_mediator.Object, _owinWrapper.Object, _logger.Object);
         }
