@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using NLog;
-using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Events.AccountLocked;
 using SFA.DAS.EmployerUsers.Application.Exceptions;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
@@ -21,12 +20,12 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
         private readonly IAuditService _auditService;
         private readonly IUserRepository _userRepository;
         private readonly IPasswordService _passwordService;
-        private readonly IConfigurationService _configurationService;
+        private readonly EmployerUsersConfiguration _configuration;
         private readonly IMediator _mediator;
 
         public AuthenticateUserCommandHandler(IUserRepository userRepository,
                                               IPasswordService passwordService,
-                                              IConfigurationService configurationService,
+                                              EmployerUsersConfiguration configuration,
                                               IMediator mediator,
                                               ILogger logger,
                                               IValidator<AuthenticateUserCommand> validator,
@@ -34,7 +33,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
         {
             _userRepository = userRepository;
             _passwordService = passwordService;
-            _configurationService = configurationService;
+            _configuration = configuration;
             _mediator = mediator;
             _logger = logger;
             _validator = validator;
@@ -88,7 +87,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
 
         private async Task ProcessFailedLogin(User user, string returnUrl)
         {
-            var config = await GetAccountConfiguration();
+            var config = _configuration.Account;
 
             user.FailedLoginAttempts++;
             await _auditService.WriteAudit(new FailedLoginAuditMessage(user.Email, user));
@@ -107,10 +106,6 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.AuthenticateUser
                 await _mediator.PublishAsync(new AccountLockedEvent { ReturnUrl = returnUrl, User = user });
                 throw new AccountLockedException(user);
             }
-        }
-        private async Task<AccountConfiguration> GetAccountConfiguration()
-        {
-            return (await _configurationService.GetAsync<EmployerUsersConfiguration>())?.Account;
         }
     }
 }

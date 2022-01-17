@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
@@ -10,12 +9,12 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ChangePassword
     public class ChangePasswordCommandValidator : IValidator<ChangePasswordCommand>
     {
         private readonly IPasswordService _passwordService;
-        private readonly IConfigurationService _configurationService;
+        private readonly EmployerUsersConfiguration _configuration;
 
-        public ChangePasswordCommandValidator(IPasswordService passwordService, IConfigurationService configurationService)
+        public ChangePasswordCommandValidator(IPasswordService passwordService, EmployerUsersConfiguration configuration)
         {
             _passwordService = passwordService;
-            _configurationService = configurationService;
+            _configuration = configuration;
         }
 
         public async Task<ValidationResult> ValidateAsync(ChangePasswordCommand item)
@@ -65,14 +64,13 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ChangePassword
 
         private async Task ValidateNewPasswordNotInRecentHistory(ChangePasswordCommand command, ValidationResult result)
         {
-            var config = await _configurationService.GetAsync<EmployerUsersConfiguration>();
-            var recentPasswords = command.User.PasswordHistory.OrderByDescending(p => p.DateSet).Take(config.Account.NumberOfPasswordsInHistory);
+            var recentPasswords = command.User.PasswordHistory.OrderByDescending(p => p.DateSet).Take(_configuration.Account.NumberOfPasswordsInHistory);
 
             foreach (var historicPassword in recentPasswords)
             {
                 if (await _passwordService.VerifyAsync(command.NewPassword, historicPassword.Password, historicPassword.Salt, historicPassword.PasswordProfileId))
                 {
-                    result.AddError(nameof(command.NewPassword), $"Password has been used too recently. You cannot use your last {config.Account.NumberOfPasswordsInHistory} passwords");
+                    result.AddError(nameof(command.NewPassword), $"Password has been used too recently. You cannot use your last {_configuration.Account.NumberOfPasswordsInHistory} passwords");
                     return;
                 }
             }

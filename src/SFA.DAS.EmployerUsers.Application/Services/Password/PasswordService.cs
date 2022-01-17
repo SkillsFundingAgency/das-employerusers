@@ -4,7 +4,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
@@ -13,12 +12,12 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Password
 {
     public class PasswordService : IPasswordService
     {
-        private readonly IConfigurationService _configurationService;
+        private readonly EmployerUsersConfiguration _configuration;
         private readonly IPasswordProfileRepository _passwordProfileRepo;
 
-        public PasswordService(IConfigurationService configurationService, IPasswordProfileRepository passwordProfileRepo)
+        public PasswordService(EmployerUsersConfiguration configuration, IPasswordProfileRepository passwordProfileRepo)
         {
-            _configurationService = configurationService;
+            _configuration = configuration;
             _passwordProfileRepo = passwordProfileRepo;
         }
 
@@ -74,8 +73,7 @@ namespace SFA.DAS.EmployerUsers.Application.Services.Password
 
         private async Task<PasswordProfile> GetActivePasswordProfile()
         {
-            var configuration = await _configurationService.GetAsync<EmployerUsersConfiguration>();
-            return await GetPasswordProfile(configuration.Account.ActivePasswordProfileId);
+            return await GetPasswordProfile(_configuration.Account.ActivePasswordProfileId);
         }
         private async Task<PasswordProfile> GetPasswordProfile(string id)
         {
