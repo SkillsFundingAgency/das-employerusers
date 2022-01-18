@@ -29,7 +29,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.Authenticate
         private Mock<IUserRepository> _userRepository;
         private Mock<IPasswordService> _passwordService;
         private EmployerUsersConfiguration _configuration;
-        private Mock<IConfigurationService> _configurationService;
         private Mock<IMediator> _mediator;
         private AuthenticateUserCommandHandler _commandHandler;
         private AuthenticateUserCommand _command;
@@ -65,8 +64,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.Authenticate
                     AllowedFailedLoginAttempts = 2
                 }
             };
-            _configurationService = new Mock<IConfigurationService>();
-            _configurationService.Setup(s => s.GetAsync<EmployerUsersConfiguration>()).Returns(Task.FromResult(_configuration));
 
             _mediator = new Mock<IMediator>();
             _mediator.Setup(m => m.PublishAsync(It.IsAny<IAsyncNotification>())).Returns(Task.FromResult<object>(null));
@@ -81,7 +78,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.Authenticate
             _commandHandler = new AuthenticateUserCommandHandler(
                 _userRepository.Object, 
                 _passwordService.Object, 
-                _configurationService.Object,
+                _configuration,
                 _mediator.Object,
                 _logger.Object,
                 _validator.Object,

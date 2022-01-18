@@ -1,24 +1,23 @@
 ﻿using Moq;
 using NUnit.Framework;
-using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Domain.Data;
+using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 
 namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.PasswordTests.PasswordServiceTests
 {
     public class WhenCheckingThePasswordComplexity
     {
         private PasswordService _passwordService;
-        private Mock<IConfigurationService> _configurationService;
         private Mock<IPasswordProfileRepository> _passwordProfileRepo;
 
         [SetUp]
         public void Arrange()
         {
-            _configurationService = new Mock<IConfigurationService>();
+            var configuration = new EmployerUsersConfiguration();
             _passwordProfileRepo = new Mock<IPasswordProfileRepository>();
 
-            _passwordService = new PasswordService(_configurationService.Object, _passwordProfileRepo.Object);
+            _passwordService = new PasswordService(configuration, _passwordProfileRepo.Object);
         }
 
         [TestCase("Passw0r")]

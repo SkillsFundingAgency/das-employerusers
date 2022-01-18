@@ -4,7 +4,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
@@ -16,20 +15,17 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.PasswordTest
     {
         private Mock<IPasswordProfileRepository> _passwordProfileRepo;
         private PasswordService _passwordService;
-        private Mock<IConfigurationService> _configurationService;
 
         [SetUp]
         public void Arrange()
         {
-            _configurationService = new Mock<IConfigurationService>();
-            _configurationService.Setup(s => s.GetAsync<EmployerUsersConfiguration>())
-                .Returns(Task.FromResult(new EmployerUsersConfiguration
+            var configuration = new EmployerUsersConfiguration
+            {
+                Account = new AccountConfiguration
                 {
-                    Account = new AccountConfiguration
-                    {
-                        ActivePasswordProfileId = "XYZ"
-                    }
-                }));
+                    ActivePasswordProfileId = "XYZ"
+                }
+            };
 
             _passwordProfileRepo = new Mock<IPasswordProfileRepository>();
             _passwordProfileRepo.Setup(r => r.GetAllAsync()).Returns(Task.FromResult<IEnumerable<PasswordProfile>>(new[]
@@ -44,7 +40,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.ServicesTests.PasswordTest
                 }
             }));
 
-            _passwordService = new PasswordService(_configurationService.Object, _passwordProfileRepo.Object);
+            _passwordService = new PasswordService(configuration, _passwordProfileRepo.Object);
         }
 
         [Test]
