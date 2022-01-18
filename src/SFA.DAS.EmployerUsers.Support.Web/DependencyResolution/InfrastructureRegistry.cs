@@ -5,7 +5,7 @@ using SFA.DAS.EmployerUsers.Support.Application.Handlers;
 using SFA.DAS.EmployerUsers.Support.Infrastructure;
 using SFA.DAS.EmployerUsers.Support.Infrastructure.DependencyResolution;
 using SFA.DAS.NLog.Logger;
-using StructureMap.Configuration.DSL;
+using StructureMap;
 
 namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
 {
