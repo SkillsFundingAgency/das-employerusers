@@ -311,7 +311,6 @@
     <Compile Include="Configuration\ISupportConfiguration.cs" />
     <Compile Include="Configuration\SupportConfiguration.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
-    <Compile Include="Controllers\HealthCheckController.cs" />
     <Compile Include="Controllers\StatusController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\UserController.cs" />
