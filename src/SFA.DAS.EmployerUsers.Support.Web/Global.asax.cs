@@ -28,6 +28,8 @@ namespace SFA.DAS.EmployerUsers.Support.Web
 
             var siteValidatorSettings = ioc.GetService<ISiteValidatorSettings>();
 
+            GlobalConfiguration.Configuration.MessageHandlers.Add(
+                new TokenValidationHandler(siteValidatorSettings, logger));
             GlobalFilters.Filters.Add(new TokenValidationFilter(siteValidatorSettings, logger));
 
             logger.Info("Web role started");
