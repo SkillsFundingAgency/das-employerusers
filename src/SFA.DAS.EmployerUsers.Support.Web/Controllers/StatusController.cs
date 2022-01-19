@@ -13,6 +13,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
     {
         // GET: Status
         [AllowAnonymous]
+        [OverrideAuthorization]
         public IHttpActionResult Get()
         {
             return Ok(new
