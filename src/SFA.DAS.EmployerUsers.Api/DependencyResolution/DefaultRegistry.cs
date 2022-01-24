@@ -14,24 +14,22 @@
 // limitations under the License.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
+using System;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using AutoMapper;
 using MediatR;
 using Microsoft.Azure.Services.AppAuthentication;
 using SFA.DAS.Audit.Client;
-using SFA.DAS.Configuration;
-using SFA.DAS.Configuration.AzureTableStorage;
-using SFA.DAS.Configuration.FileStorage;
+using SFA.DAS.AutoConfiguration;
+using SFA.DAS.AutoConfiguration.DependencyResolution;
 using SFA.DAS.EmployerUsers.Domain.Auditing;
 using SFA.DAS.EmployerUsers.Domain.Data;
 using SFA.DAS.EmployerUsers.Infrastructure.Auditing;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer;
 using StructureMap;
-using StructureMap.Graph;
-using System;
-using System.Configuration;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace SFA.DAS.EmployerUsers.Api.DependencyResolution
 {
@@ -52,13 +50,11 @@ namespace SFA.DAS.EmployerUsers.Api.DependencyResolution
             For<IAuditService>().Use<AuditService>();
 
             var environment = GetEnvironment();
-            var configService = GetConfigService(environment);
-            var employerUsersConfig = EmployerUsersConfig(configService);
 
-            For<EmployerUsersConfiguration>().Use(employerUsersConfig);
-            For<IConfigurationService>().Use(configService);
-          
-            AddDatabaseRegistrations(environment, employerUsersConfig.SqlConnectionString);
+            IncludeRegistry<AutoConfigurationRegistry>();
+            For<EmployerUsersConfiguration>().Use(c => c.GetInstance<IAutoConfigurationService>().Get<EmployerUsersConfiguration>("SFA.DAS.EmployerUsers.Web")).Singleton();
+
+            AddDatabaseRegistrations(environment);
 
             AddEnvironmentSpecificRegistrations(environment);
             AddAutoMapperRegistrations();
@@ -74,25 +70,6 @@ namespace SFA.DAS.EmployerUsers.Api.DependencyResolution
             }
 
             return environment;
-        }
-
-        private ConfigurationService GetConfigService(string environment)
-        {
-            IConfigurationRepository configurationRepository;
-
-            if (ConfigurationManager.AppSettings["LocalConfig"] == bool.TrueString)
-            {
-                configurationRepository = new FileStorageConfigurationRepository();
-            }
-            else
-            {
-                configurationRepository = new AzureTableStorageConfigurationRepository(ConfigurationManager.AppSettings["ConfigurationStorageConnectionString"]);
-            }
-
-            var configurationService = new ConfigurationService(configurationRepository,
-                new ConfigurationOptions("SFA.DAS.EmployerUsers.Web", environment, "1.0"));
-
-            return configurationService;
         }
 
         private void AddEnvironmentSpecificRegistrations(string environment)
@@ -128,15 +105,17 @@ namespace SFA.DAS.EmployerUsers.Api.DependencyResolution
             });
         }
 
-        private void AddDatabaseRegistrations(string environment, string sqlConnectionString)
+        private void AddDatabaseRegistrations(string environment)
         {
-            For<IDbConnection>().Use($"Build IDbConnection", c => {
+            For<IDbConnection>().Use($"Build IDbConnection", c =>
+            {
                 var azureServiceTokenProvider = new AzureServiceTokenProvider();
+                var employerUsersConfig = c.GetInstance<EmployerUsersConfiguration>();
                 return environment.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase)
-                    ? new SqlConnection(sqlConnectionString)
+                    ? new SqlConnection(employerUsersConfig.SqlConnectionString)
                     : new SqlConnection
                     {
-                        ConnectionString = sqlConnectionString,
+                        ConnectionString = employerUsersConfig.SqlConnectionString,
                         AccessToken = azureServiceTokenProvider.GetAccessTokenAsync(AzureResource).Result
                     };
             });
@@ -161,11 +140,6 @@ namespace SFA.DAS.EmployerUsers.Api.DependencyResolution
             For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => ctx.GetInstance(t));
             For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => ctx.GetAllInstances(t));
             For<IMediator>().Use<Mediator>();
-        }
-
-        private EmployerUsersConfiguration EmployerUsersConfig(ConfigurationService configurationService)
-        {
-            return configurationService.Get<EmployerUsersConfiguration>();
         }
     }
 }

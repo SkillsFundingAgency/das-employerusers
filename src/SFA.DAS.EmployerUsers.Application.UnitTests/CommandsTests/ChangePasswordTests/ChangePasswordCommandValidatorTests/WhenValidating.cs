@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Commands.ChangePassword;
 using SFA.DAS.EmployerUsers.Application.Services.Password;
 using SFA.DAS.EmployerUsers.Application.Validation;
@@ -20,7 +19,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
         private const string NewPassword = "Password1";
 
         private Mock<IPasswordService> _passwordService;
-        private Mock<IConfigurationService> _configurationService;
         private ChangePasswordCommandValidator _validator;
         private ChangePasswordCommand _command;
 
@@ -33,17 +31,15 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ChangePasswo
             _passwordService.Setup(s => s.VerifyAsync(CurrentPassword, CurrentPasswordHash, Salt, PasswordProfileId))
                 .Returns(Task.FromResult(true));
 
-            _configurationService = new Mock<IConfigurationService>();
-            _configurationService.Setup(s => s.GetAsync<EmployerUsersConfiguration>())
-                .ReturnsAsync(new EmployerUsersConfiguration
+            var configuration = new EmployerUsersConfiguration
+            {
+                Account = new AccountConfiguration
                 {
-                    Account = new AccountConfiguration
-                    {
-                        NumberOfPasswordsInHistory = 3
-                    }
-                });
+                    NumberOfPasswordsInHistory = 3
+                }
+            };
 
-            _validator = new ChangePasswordCommandValidator(_passwordService.Object, _configurationService.Object);
+            _validator = new ChangePasswordCommandValidator(_passwordService.Object, configuration);
 
             _command = new ChangePasswordCommand
             {

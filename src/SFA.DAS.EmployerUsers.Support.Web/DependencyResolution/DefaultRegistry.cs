@@ -17,24 +17,20 @@
 
 namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
 {
-    using Microsoft.Azure;
-    using SFA.DAS.Configuration;
-    using SFA.DAS.Configuration.AzureTableStorage;
+    using System.Diagnostics.CodeAnalysis;
+    using SFA.DAS.AutoConfiguration;
+    using SFA.DAS.AutoConfiguration.DependencyResolution;
     using SFA.DAS.EAS.Account.Api.Client;
     using SFA.DAS.EmployerUsers.Api.Client;
     using SFA.DAS.EmployerUsers.Support.Web.Configuration;
     using SFA.DAS.Support.Shared.Discovery;
     using SFA.DAS.Support.Shared.SiteConnection;
-    using StructureMap.Configuration.DSL;
-    using StructureMap.Graph;
-    using System.Diagnostics.CodeAnalysis;
+    using StructureMap;
 
     [ExcludeFromCodeCoverage]
     public class DefaultRegistry : Registry {
         private const string ServiceName = "SFA.DAS.Support.EmployerUsers";
         private const string Version = "1.0";
-      
-        #region Constructors and Destructors
 
         public DefaultRegistry() {
             Scan(
@@ -51,32 +47,13 @@ namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
                 }
             );
 
-            SupportConfiguration configuration = GetConfiguration();
-
-            For<ISupportConfiguration>().Use(configuration);
-            For<IEmployerUsersApiConfiguration>().Use(configuration.EmployerUsersApi);
-            For<IAccountApiConfiguration>().Use(configuration.AccountApi);
-            For<ISiteValidatorSettings>().Use( configuration.SiteValidator);
+            IncludeRegistry<AutoConfigurationRegistry>();
+            For<SupportConfiguration>().Use(c => c.GetInstance<IAutoConfigurationService>().Get<SupportConfiguration>(ServiceName)).Singleton();
+            For<ISupportConfiguration>().Use<SupportConfiguration>();
+            
+            For<IEmployerUsersApiConfiguration>().Use(x => x.GetInstance<SupportConfiguration>().EmployerUsersApi);
+            For<IAccountApiConfiguration>().Use(x => x.GetInstance<SupportConfiguration>().AccountApi);
+            For<ISiteValidatorSettings>().Use(x => x.GetInstance<SupportConfiguration>().SiteValidator);
         }
-
-        private SupportConfiguration GetConfiguration()
-        {
-            var environment = CloudConfigurationManager.GetSetting("EnvironmentName") ?? 
-                              "LOCAL";
-            var storageConnectionString = CloudConfigurationManager.GetSetting("ConfigurationStorageConnectionString") ??
-                                          "UseDevelopmentStorage=true;";
-
-            var configurationRepository = new AzureTableStorageConfigurationRepository(storageConnectionString); ;
-
-            var configurationOptions = new ConfigurationOptions(ServiceName, environment, Version);
-
-            var configurationService = new ConfigurationService(configurationRepository, configurationOptions);
-
-            var webConfiguration = configurationService.Get<SupportConfiguration>();    
-
-            return webConfiguration;
-        }
-
-        #endregion
     }
 }

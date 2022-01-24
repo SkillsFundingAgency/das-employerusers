@@ -1,29 +1,32 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 
 namespace SFA.DAS.EmployerUsers.Application.Queries.GetUnlockCodeLength
 {
     public class GetUnlockCodeDetailsQueryHandler : IAsyncRequestHandler<GetUnlockCodeQuery, GetUnlockCodeResponse>
     {
-        private readonly IConfigurationService _configurationService;
+        private readonly EmployerUsersConfiguration _configuration;
 
-        public GetUnlockCodeDetailsQueryHandler(IConfigurationService configurationService)
+        public GetUnlockCodeDetailsQueryHandler(EmployerUsersConfiguration configuration)
         {
-            _configurationService = configurationService;
+            _configuration = configuration;
         }
         public async Task<GetUnlockCodeResponse> Handle(GetUnlockCodeQuery message)
         {
-            var config = (await _configurationService.GetAsync<EmployerUsersConfiguration>())?.Account;
-
-            if (config == null)
+            return await Task.Run(() =>
             {
-                throw new ArgumentException("Cannot find config to get unlock code length");
-            }
+                var config = _configuration?.Account;
 
-            return new GetUnlockCodeResponse { UnlockCodeLength = config.UnlockCodeLength };
+                if (config == null)
+                {
+                    throw new ArgumentException("Cannot find config to get unlock code length");
+                }
+
+                return new GetUnlockCodeResponse { UnlockCodeLength = config.UnlockCodeLength };
+            });
+            
         }
     }
 }

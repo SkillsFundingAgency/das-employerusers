@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using StructureMap.Configuration.DSL;
+using StructureMap;
 
 namespace SFA.DAS.EmployerUsers.Support.Web.DependencyResolution
 {

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
-using MediatR;
-using Moq;
 using NUnit.Framework;
-using SFA.DAS.Configuration;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUnlockCodeLength;
 using SFA.DAS.EmployerUsers.Infrastructure.Configuration;
 
@@ -14,11 +10,9 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.QueriesTests.GetUnlockCode
         [Test]
         public void ThenIShouldThrowArgumentExceptionIfNoConfig()
         {
-            var configurationService = new Mock<IConfigurationService>();
-            configurationService.Setup(c => c.GetAsync<EmployerUsersConfiguration>())
-                .ReturnsAsync((EmployerUsersConfiguration) null);
+            EmployerUsersConfiguration configuration = null;
 
-            var queryHandler = new GetUnlockCodeDetailsQueryHandler(configurationService.Object);
+            var queryHandler = new GetUnlockCodeDetailsQueryHandler(configuration);
 
             Assert.ThrowsAsync<ArgumentException>(() => queryHandler.Handle(new GetUnlockCodeQuery()));
         }
@@ -27,17 +21,15 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.QueriesTests.GetUnlockCode
         public void ThenIShouldGetTheCorrectUnlockCodeLentgh()
         {
             const int unlockCodeLength = 99;
-            var configurationService = new Mock<IConfigurationService>();
-            configurationService.Setup(c => c.GetAsync<EmployerUsersConfiguration>())
-                .ReturnsAsync(new EmployerUsersConfiguration
+            var configuration = new EmployerUsersConfiguration
+            {
+                Account = new AccountConfiguration
                 {
-                    Account = new AccountConfiguration
-                    {
-                        UnlockCodeLength = unlockCodeLength
-                    }
-                });
+                    UnlockCodeLength = unlockCodeLength
+                }
+            };
 
-            var queryHandler = new GetUnlockCodeDetailsQueryHandler(configurationService.Object);
+            var queryHandler = new GetUnlockCodeDetailsQueryHandler(configuration);
             var result = queryHandler.Handle(new GetUnlockCodeQuery());
 
             Assert.AreEqual(unlockCodeLength, result.Result.UnlockCodeLength);
