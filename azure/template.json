@@ -117,10 +117,6 @@
         "storeEmailsOnDisk": {
             "type": "string"
         },
-        "supportAppPublicIp": {
-            "type": "array",
-            "defaultValue": []
-        },
         "tags": {
             "type": "object"
         },
@@ -322,7 +318,7 @@
                         "value": "[if(greater(length(parameters('apiAppCustomHostName')), 0), reference(concat(variables('apiAppServiceName'), '-app-service-certificate-', parameters('utcValue')), '2018-11-01').outputs.certificateThumbprint.value, '')]"
                     },
                     "ipSecurityRestrictions": {
-                        "value": "[concat(parameters('backEndAccessRestrictions'), parameters('supportAppPublicIp'))]"
+                        "value": "[parameters('backEndAccessRestrictions')]"
                     }
                 }
             }
