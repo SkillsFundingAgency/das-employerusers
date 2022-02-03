@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerUsers.Support.Infrastructure.Settings
 
         public string GetNullableSetting(string settingKey)
         {
-            var setting = CloudConfigurationManager.GetSetting(settingKey);
+            var setting = ConfigurationManager.AppSettings[settingKey];
 
             if (string.IsNullOrWhiteSpace(setting))
             {

@@ -46,6 +46,15 @@
       clean: true
       vsVersion: '16.0'
 
+  - task: VSBuild@1
+    displayName: 'Build SFA.DAS.EmployerUsers.Support.sln'
+    inputs:
+      solution: 'src/SFA.DAS.EmployerUsers.Support.sln'
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
+      clean: true
+      vsVersion: '16.0'
+
   - task: VSTest@2
     displayName: 'Run NUnit Tests'
     inputs:
@@ -81,6 +90,16 @@
       solution: src/SFA.DAS.EmployerUsers.Host.WebJob/SFA.DAS.EmployerUsers.Host.WebJob.csproj
       vsVersion: '16.0'
       msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Host.WebJob/"'
+      platform: 'anycpu'
+      configuration: '$(buildConfiguration)'
+      clean: true
+    
+  - task: VSBuild@1
+    displayName: 'Publish Support App'
+    inputs:
+      solution: src/SFA.DAS.EmployerUsers.Support.Web/SFA.DAS.EmployerUsers.Support.Web.csproj
+      vsVersion: '16.0'
+      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Support.Web/"'
       platform: 'anycpu'
       configuration: '$(buildConfiguration)'
       clean: true

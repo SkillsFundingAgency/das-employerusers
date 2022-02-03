@@ -15,10 +15,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using MediatR;
-using Microsoft.Azure;
 using Microsoft.Azure.Services.AppAuthentication;
 using SFA.DAS.Audit.Client;
 using SFA.DAS.AutoConfiguration;
@@ -59,7 +59,7 @@ namespace SFA.DAS.EmployerUsers.RegistrationTidyUpJob.DependencyResolution
             var environment = Environment.GetEnvironmentVariable("DASENV");
             if (string.IsNullOrEmpty(environment))
             {
-                environment = CloudConfigurationManager.GetSetting("EnvironmentName");
+                environment = ConfigurationManager.AppSettings["EnvironmentName"];
             }
 
             return environment;
@@ -90,11 +90,11 @@ namespace SFA.DAS.EmployerUsers.RegistrationTidyUpJob.DependencyResolution
             For<IAuditMessageFactory>().Use<AuditMessageFactory>().Singleton();
             For<IAuditApiConfiguration>().Use(() => new AuditApiConfiguration
             {
-                ApiBaseUrl = CloudConfigurationManager.GetSetting("AuditApiBaseUrl"),
-                ClientId = CloudConfigurationManager.GetSetting("AuditApiClientId"),
-                ClientSecret = CloudConfigurationManager.GetSetting("AuditApiSecret"),
-                IdentifierUri = CloudConfigurationManager.GetSetting("AuditApiIdentifierUri"),
-                Tenant = CloudConfigurationManager.GetSetting("AuditApiTenant")
+                ApiBaseUrl = ConfigurationManager.AppSettings["AuditApiBaseUrl"],
+                ClientId = ConfigurationManager.AppSettings["AuditApiClientId"],
+                ClientSecret = ConfigurationManager.AppSettings["AuditApiSecret"],
+                IdentifierUri = ConfigurationManager.AppSettings["AuditApiIdentifierUri"],
+                Tenant = ConfigurationManager.AppSettings["AuditApiTenant"]
             });
         }
 
