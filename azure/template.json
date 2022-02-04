@@ -744,7 +744,7 @@
                                 },
                                 {
                                     "name": "InstrumentationKey",
-                                    "value": "[reference(concat(variables('supportAppServiceName'), '-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
+                                    "value": "[if(parameters('deploySupportApp'), reference(concat(variables('supportAppServiceName'), '-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value, '')]"
                                 }
                             ]
                         }
