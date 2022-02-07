@@ -753,7 +753,7 @@
                         "value": "[parameters('supportAppCustomHostName')]"
                     },
                     "certificateThumbprint": {
-                        "value": "[if(greater(length(parameters('supportAppCustomHostName')), 0), reference(concat(variables('supportAppServiceName'), '-app-service-certificate-', parameters('utcValue')), '2018-11-01').outputs.certificateThumbprint.value, '')]"
+                        "value": "[if(and(greater(length(parameters('supportAppCustomHostName')), 0), parameters('deploySupportApp')), reference(concat(variables('supportAppServiceName'), '-app-service-certificate-', parameters('utcValue')), '2018-11-01').outputs.certificateThumbprint.value, '')]"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('supportAppAccessRestrictions')]"
