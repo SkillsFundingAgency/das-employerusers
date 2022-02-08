@@ -19,6 +19,18 @@
       useConfigFile: true
       configFilePath: GitVersion.yml
   
+  - task: SonarCloudPrepare@1
+    displayName: Prepare SonarCloud analysis configuration
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest')))
+    inputs:
+      SonarCloud: ESFA - SonarCloud
+      organization: $(SonarCloudOrganisationKey)
+      scannerMode: MSBuild
+      projectName: "$(Build.DefinitionName)"
+      projectKey: SkillsFundingAgency_das-employerusers
+      extraProperties: |
+        sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/CoverageResults/coverage.opencover.xml
+  
   - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
     
   - task: NuGetToolInstaller@0
@@ -63,6 +75,15 @@
         **/bin/Release/*/*UnitTests.dll
       platform: '$(buildPlatform)'
       configuration: '$(buildConfiguration)'    
+
+  - task: SonarCloudAnalyze@1
+    displayName: 'Run SonarCloud analysis'
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest')))
+
+  - task: SonarCloudPublish@1
+    displayName: 'Publish results on build summary'
+    inputs:
+      pollingTimeoutSec: '300'
 
   - task: VSBuild@1
     displayName: 'Publish API'
