@@ -112,7 +112,7 @@
             "type": "string"
         },
         "sharedSQLServerName": {
-             "type": "string"
+            "type": "string"
         },
         "storeEmailsOnDisk": {
             "type": "string"
@@ -185,18 +185,18 @@
             "defaultValue": "[utcNow()]"
         }
     },
-  "variables": {
-    "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
-    "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
-    "supportResourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-s', parameters('serviceName')))]",
-    "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
-    "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
-    "webAppServiceName": "[concat(variables('resourceNamePrefix'), 'ui-as')]",
-    "workerAppServiceName": "[concat(variables('resourceNamePrefix'), 'wkr-as')]",
-    "workerAppServicePlanName": "[concat(variables('resourceNamePrefix'), 'wkr-asp')]",
-    "supportAppServiceName": "[concat(variables('supportResourceNamePrefix'), '-as')]",
-    "databaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-users-db'))]"
-  },
+    "variables": {
+        "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
+        "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
+        "supportResourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-s', parameters('serviceName')))]",
+        "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
+        "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
+        "webAppServiceName": "[concat(variables('resourceNamePrefix'), 'ui-as')]",
+        "workerAppServiceName": "[concat(variables('resourceNamePrefix'), 'wkr-as')]",
+        "workerAppServicePlanName": "[concat(variables('resourceNamePrefix'), 'wkr-asp')]",
+        "supportAppServiceName": "[concat(variables('supportResourceNamePrefix'), '-as')]",
+        "databaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-users-db'))]"
+    },
     "resources": [
         {
             "apiVersion": "2021-04-01",
@@ -538,6 +538,27 @@
                     },
                     "delegations": {
                         "value": "[parameters('subnetDelegations')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2021-04-01",
+            "name": "[concat(parameters('workerSubnetObject').name, '-sql-firewall-rule', parameters('utcValue'))]",
+            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'), 'sql-server-firewall-rules.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "serverName": {
+                        "value": "[parameters('sharedSQLServerName')]"
+                    },
+                    "subnetResourceIdList": {
+                        "value": "[createArray(reference(concat(parameters('workerSubnetObject').name, '-', parameters('utcValue'))).outputs.SubnetResourceId.value)]"
                     }
                 }
             }
