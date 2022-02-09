@@ -82,6 +82,7 @@
 
   - task: SonarCloudPublish@1
     displayName: 'Publish results on build summary'
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest')))
     inputs:
       pollingTimeoutSec: '300'
 
