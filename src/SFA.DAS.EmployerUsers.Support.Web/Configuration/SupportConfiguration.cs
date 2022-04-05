@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.Support.Shared.SiteConnection;
 
 namespace SFA.DAS.EmployerUsers.Support.Web.Configuration
