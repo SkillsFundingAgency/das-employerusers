@@ -16,8 +16,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web
         protected void Application_Start()
         {
             MvcHandler.DisableMvcResponseHeader = true;
-            var ioc = DependencyResolver.Current;
-            var logger = ioc.GetService<ILog>();
+            var logger = DependencyResolver.Current.GetService<ILog>();
             logger.Info("Starting Web Role");
 
             AreaRegistration.RegisterAllAreas();
