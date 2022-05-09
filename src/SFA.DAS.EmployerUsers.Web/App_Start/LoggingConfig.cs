@@ -1,6 +1,6 @@
-﻿using System.Configuration;
+﻿using NLog;
+using System.Configuration;
 using System.Linq;
-using NLog;
 
 namespace SFA.DAS.EmployerUsers.Web
 {

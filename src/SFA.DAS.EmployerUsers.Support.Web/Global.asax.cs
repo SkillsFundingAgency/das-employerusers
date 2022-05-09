@@ -20,6 +20,8 @@ namespace SFA.DAS.EmployerUsers.Support.Web
             TelemetryConfiguration.Active.InstrumentationKey = ConfigurationManager.AppSettings["InstrumentationKey"];
 
             MvcHandler.DisableMvcResponseHeader = true;
+            LoggingConfig.ConfigureLogging();
+
             var logger = DependencyResolver.Current.GetService<ILog>();
             logger.Info("Starting Web Role");
 
