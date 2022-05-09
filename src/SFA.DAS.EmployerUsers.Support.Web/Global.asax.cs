@@ -1,7 +1,9 @@
-﻿using SFA.DAS.NLog.Logger;
+﻿using Microsoft.ApplicationInsights.Extensibility;
+using SFA.DAS.NLog.Logger;
 using SFA.DAS.Web.Policy;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using System.Web;
 using System.Web.Http;
@@ -15,6 +17,8 @@ namespace SFA.DAS.EmployerUsers.Support.Web
     {
         protected void Application_Start()
         {
+            TelemetryConfiguration.Active.InstrumentationKey = ConfigurationManager.AppSettings["InstrumentationKey"];
+
             MvcHandler.DisableMvcResponseHeader = true;
             var logger = DependencyResolver.Current.GetService<ILog>();
             logger.Info("Starting Web Role");
