@@ -2,7 +2,7 @@
 using System.Configuration;
 using System.Linq;
 
-namespace SFA.DAS.EmployerUsers.Api
+namespace SFA.DAS.EmployerUsers.Support.Web
 {
     public class LoggingConfig
     {

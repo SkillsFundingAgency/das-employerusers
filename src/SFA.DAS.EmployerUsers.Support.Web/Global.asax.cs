@@ -1,14 +1,14 @@
-﻿using System;
+﻿using Microsoft.ApplicationInsights.Extensibility;
+using SFA.DAS.NLog.Logger;
+using SFA.DAS.Web.Policy;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
-using SFA.DAS.NLog.Logger;
-using SFA.DAS.Support.Shared.Authentication;
-using SFA.DAS.Support.Shared.SiteConnection;
-using SFA.DAS.Web.Policy;
 
 namespace SFA.DAS.EmployerUsers.Support.Web
 {
@@ -17,20 +17,17 @@ namespace SFA.DAS.EmployerUsers.Support.Web
     {
         protected void Application_Start()
         {
+            TelemetryConfiguration.Active.InstrumentationKey = ConfigurationManager.AppSettings["InstrumentationKey"];
+
             MvcHandler.DisableMvcResponseHeader = true;
-            var ioc = DependencyResolver.Current;
-            var logger = ioc.GetService<ILog>();
+            LoggingConfig.ConfigureLogging();
+
+            var logger = DependencyResolver.Current.GetService<ILog>();
             logger.Info("Starting Web Role");
 
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-
-            var siteValidatorSettings = ioc.GetService<ISiteValidatorSettings>();
-
-            GlobalConfiguration.Configuration.MessageHandlers.Add(
-                new TokenValidationHandler(siteValidatorSettings, logger));
-            GlobalFilters.Filters.Add(new TokenValidationFilter(siteValidatorSettings, logger));
 
             logger.Info("Web role started");
         }
