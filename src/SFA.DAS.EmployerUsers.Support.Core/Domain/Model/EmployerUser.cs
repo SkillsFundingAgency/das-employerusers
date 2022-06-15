@@ -21,6 +21,8 @@ namespace SFA.DAS.EmployerUsers.Support.Core.Domain.Model
         public string AccountsUri { get; set; }
         private UserStatus DetermineStatus()
         {
+            if (IsSuspended)
+                return UserStatus.Suspended;
             if (IsActive && IsLocked)
                 return UserStatus.Locked;
             if (IsActive && IsLocked == false)

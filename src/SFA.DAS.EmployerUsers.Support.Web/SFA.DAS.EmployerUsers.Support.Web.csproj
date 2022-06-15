@@ -179,8 +179,8 @@
     <Reference Include="SFA.DAS.EmployerUsers.Api.Client, Version=1.0.0.52781, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.EmployerUsers.Api.Client.1.0.0.52781\lib\net45\SFA.DAS.EmployerUsers.Api.Client.dll</HintPath>
     </Reference>
-    <Reference Include="SFA.DAS.EmployerUsers.Api.Types, Version=1.0.0.52781, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.EmployerUsers.Api.Types.1.0.0.52781\lib\net45\SFA.DAS.EmployerUsers.Api.Types.dll</HintPath>
+    <Reference Include="SFA.DAS.EmployerUsers.Api.Types, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.EmployerUsers.Api.Types.1.1.338\lib\net462\SFA.DAS.EmployerUsers.Api.Types.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.NLog.Logger, Version=1.0.0.26805, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.NLog.Logger.1.0.0.26805\lib\net45\SFA.DAS.NLog.Logger.dll</HintPath>
@@ -188,8 +188,8 @@
     <Reference Include="SFA.DAS.NLog.Targets.Redis, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.NLog.Targets.Redis.1.0.0.56514\lib\net45\SFA.DAS.NLog.Targets.Redis.dll</HintPath>
     </Reference>
-    <Reference Include="SFA.DAS.Support.Shared, Version=2.1.180.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Support.Shared.2.1.180\lib\net462\SFA.DAS.Support.Shared.dll</HintPath>
+    <Reference Include="SFA.DAS.Support.Shared, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Support.Shared.2.1.180-prerelease-2\lib\net462\SFA.DAS.Support.Shared.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.Web.Policy, Version=1.1.0.44309, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.Web.Policy.1.1.0.44309\lib\net45\SFA.DAS.Web.Policy.dll</HintPath>

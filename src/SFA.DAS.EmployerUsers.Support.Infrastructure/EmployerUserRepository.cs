@@ -134,7 +134,8 @@ namespace SFA.DAS.EmployerUsers.Support.Infrastructure
                 LastName = data.LastName,
                 Email = data.Email,
                 IsActive = data.IsActive,
-                IsLocked = data.IsLocked
+                IsLocked = data.IsLocked,
+                IsSuspended = data.IsSuspended
             };
         }
     }
