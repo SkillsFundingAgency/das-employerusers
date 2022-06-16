@@ -1,4 +1,4 @@
-﻿jobs:
+jobs:
 - job: CodeBuild
   pool:
     name: DAS - Continuous Integration
@@ -30,8 +30,6 @@
       projectKey: SkillsFundingAgency_das-employerusers
       extraProperties: |
         sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/CoverageResults/coverage.opencover.xml
-  
-  - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
     
   - task: NuGetToolInstaller@0
     displayName: 'Use NuGet 4.3.0'
