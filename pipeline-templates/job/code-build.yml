@@ -91,40 +91,68 @@
     inputs:
       solution: src/SFA.DAS.EmployerUsers.Api/SFA.DAS.EmployerUsers.Api.csproj
       vsVersion: '16.0'
-      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Api/"'
+      msbuildArgs: '/p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:SkipInvalidConfigurations=true /p:publishUrl="$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Api/"'
       platform: 'anycpu'
       configuration: '$(buildConfiguration)'
       clean: true
+
+  - task: ArchiveFiles@2
+    displayName: 'Archive API'
+    inputs:
+      includeRootFolder: false
+      rootFolderOrFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Api'
+      archiveFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Api/SFA.DAS.EmployerUsers.Api.zip'
 
   - task: VSBuild@1
     displayName: 'Publish Web App'
     inputs:
       solution: src/SFA.DAS.EmployerUsers.Web/SFA.DAS.EmployerUsers.Web.csproj
       vsVersion: '16.0'
-      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Web/"'
+      msbuildArgs: '/p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:SkipInvalidConfigurations=true /p:publishUrl="$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Web/"'
       platform: 'anycpu'
       configuration: '$(buildConfiguration)'
       clean: true
+
+  - task: ArchiveFiles@2
+    displayName: 'Archive Web App'
+    inputs:
+      includeRootFolder: false
+      rootFolderOrFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Web'
+      archiveFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Web/SFA.DAS.EmployerUsers.Web.zip'
 
   - task: VSBuild@1
     displayName: 'Publish WebJob'
     inputs:
       solution: src/SFA.DAS.EmployerUsers.Host.WebJob/SFA.DAS.EmployerUsers.Host.WebJob.csproj
       vsVersion: '16.0'
-      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Host.WebJob/"'
+      msbuildArgs: '/p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:SkipInvalidConfigurations=true /p:publishUrl="$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Host.WebJob/"'
       platform: 'anycpu'
       configuration: '$(buildConfiguration)'
       clean: true
     
+  - task: ArchiveFiles@2
+    displayName: 'Archive WebJob'
+    inputs:
+      includeRootFolder: false
+      rootFolderOrFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Host.WebJob'
+      archiveFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Host.WebJob/SFA.DAS.EmployerUsers.Host.WebJob.zip'
+  
   - task: VSBuild@1
     displayName: 'Publish Support App'
     inputs:
       solution: src/SFA.DAS.EmployerUsers.Support.Web/SFA.DAS.EmployerUsers.Support.Web.csproj
       vsVersion: '16.0'
-      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Support.Web/"'
+      msbuildArgs: '/p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:SkipInvalidConfigurations=true /p:publishUrl="$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Support.Web/"'
       platform: 'anycpu'
       configuration: '$(buildConfiguration)'
       clean: true
+
+  - task: ArchiveFiles@2
+    displayName: 'Archive Support App'
+    inputs:
+      includeRootFolder: false
+      rootFolderOrFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Support.Web'
+      archiveFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Support.Web/SFA.DAS.EmployerUsers.Support.Web.zip'
 
   - task: CopyFiles@2
     displayName: 'Copy dacpac Files to: $(Build.ArtifactStagingDirectory)'
