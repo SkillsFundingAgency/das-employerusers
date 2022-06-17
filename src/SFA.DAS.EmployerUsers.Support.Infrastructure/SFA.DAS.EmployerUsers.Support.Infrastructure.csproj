@@ -75,7 +75,7 @@
       <HintPath>..\packages\SFA.DAS.EmployerUsers.Api.Client.1.0.0.52781\lib\net45\SFA.DAS.EmployerUsers.Api.Client.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.EmployerUsers.Api.Types, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.EmployerUsers.Api.Types.1.1.338\lib\net462\SFA.DAS.EmployerUsers.Api.Types.dll</HintPath>
+      <HintPath>..\packages\SFA.DAS.EmployerUsers.Api.Types.1.1.341-prerelease-4\lib\net462\SFA.DAS.EmployerUsers.Api.Types.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.NLog.Logger, Version=1.0.0.26805, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.NLog.Logger.1.0.0.26805\lib\net45\SFA.DAS.NLog.Logger.dll</HintPath>

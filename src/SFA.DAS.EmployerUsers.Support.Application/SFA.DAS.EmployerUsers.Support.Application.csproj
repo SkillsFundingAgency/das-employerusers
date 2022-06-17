@@ -53,7 +53,7 @@
       <HintPath>..\packages\NLog.4.3.7\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.EmployerUsers.Api.Types, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.EmployerUsers.Api.Types.1.1.338\lib\net462\SFA.DAS.EmployerUsers.Api.Types.dll</HintPath>
+      <HintPath>..\packages\SFA.DAS.EmployerUsers.Api.Types.1.1.341-prerelease-4\lib\net462\SFA.DAS.EmployerUsers.Api.Types.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.NLog.Logger, Version=1.0.0.47445, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.NLog.Logger.1.0.0.47445\lib\net45\SFA.DAS.NLog.Logger.dll</HintPath>
