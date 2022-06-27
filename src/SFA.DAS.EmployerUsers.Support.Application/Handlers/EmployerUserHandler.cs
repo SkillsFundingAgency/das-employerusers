@@ -51,7 +51,8 @@ namespace SFA.DAS.EmployerUsers.Support.Application.Handlers
                 FirstName = employerUser.FirstName,
                 LastName = employerUser.LastName,
                 Status = Enum.GetName(typeof(UserStatus), employerUser.Status),
-                SearchType = SearchCategory.User
+                SearchType = SearchCategory.User,
+                IsSuspended = employerUser.IsSuspended
             };
         }
 

@@ -121,7 +121,8 @@ namespace SFA.DAS.EmployerUsers.Support.Infrastructure
                 Email = data.Email,
                 IsActive = data.IsActive,
                 FailedLoginAttempts = data.FailedLoginAttempts,
-                IsLocked = data.IsLocked
+                IsLocked = data.IsLocked,
+                IsSuspended = data.IsSuspended
             };
         }
 
@@ -134,7 +135,8 @@ namespace SFA.DAS.EmployerUsers.Support.Infrastructure
                 LastName = data.LastName,
                 Email = data.Email,
                 IsActive = data.IsActive,
-                IsLocked = data.IsLocked
+                IsLocked = data.IsLocked,
+                IsSuspended = data.IsSuspended
             };
         }
     }
