@@ -24,13 +24,6 @@ namespace SFA.DAS.EmployerUsers.Api.Client
             _secureHttpClient = secureHttpClient;
         }
 
-        public async Task<T> GetResource<T>(string resourceUri) where T : IEmployerUsersResource
-        {
-            var absoluteUri = Combine(_configuration.ApiBaseUrl, resourceUri);
-            var json = await _secureHttpClient.GetAsync(absoluteUri);
-            return JsonConvert.DeserializeObject<T>(json);
-        }
-
         public async Task<PagedApiResponseViewModel<UserSummaryViewModel>> GetPageOfEmployerUsers(int pageNumber = 1, int pageSize = 1000)
         {
             return await GetResource<PagedApiResponseViewModel<UserSummaryViewModel>>($"/api/users?pageNumber={pageNumber}&pageSize={pageSize}");
@@ -67,6 +60,18 @@ namespace SFA.DAS.EmployerUsers.Api.Client
             var response = await _secureHttpClient.PostAsync(absoluteUri, new StringContent(JsonConvert.SerializeObject(new { Id = id })));
 
             return JsonConvert.DeserializeObject<ResumeUserResponse>(response);
+        }
+
+        public async Task<UserViewModel> GetUserById(string id)
+        {
+            return await GetResource<UserViewModel>($"/api/users/{id}");
+        }
+
+        public async Task<T> GetResource<T>(string resourceUri) where T : IEmployerUsersResource
+        {
+            var absoluteUri = Combine(_configuration.ApiBaseUrl, resourceUri);
+            var json = await _secureHttpClient.GetAsync(absoluteUri);
+            return JsonConvert.DeserializeObject<T>(json);
         }
     }
 }

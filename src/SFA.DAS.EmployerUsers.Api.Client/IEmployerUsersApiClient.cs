@@ -14,5 +14,7 @@ namespace SFA.DAS.EmployerUsers.Api.Client
         Task<SuspendUserResponse> SuspendUser(string id);
 
         Task<ResumeUserResponse> ResumeUser(string id);
+
+        Task<UserViewModel> GetUserById(string id);
     }
 }
