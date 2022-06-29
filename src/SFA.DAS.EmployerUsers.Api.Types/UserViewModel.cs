@@ -9,5 +9,6 @@
         public bool IsActive { get; set; }
         public int FailedLoginAttempts { get; set; }
         public bool IsLocked { get; set; }
+        public bool IsSuspended { get; set; }
     }
 }
