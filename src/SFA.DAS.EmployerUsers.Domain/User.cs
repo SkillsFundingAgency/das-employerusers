@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.EmployerUsers.Domain
+﻿using System;
+
+namespace SFA.DAS.EmployerUsers.Domain
 {
     public class User
     {
@@ -13,6 +15,7 @@
         public int FailedLoginAttempts { get; set; }
         public bool IsLocked { get; set; }
         public bool IsSuspended { get; set; }
+        public DateTime LastSuspendedDate { get; set; }
         public SecurityCode[] SecurityCodes { get; set; }
         public HistoricalPassword[] PasswordHistory { get; set; }
     }
