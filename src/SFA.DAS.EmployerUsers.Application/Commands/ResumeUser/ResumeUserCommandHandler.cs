@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.ResumeUser
         {
             await _userRepository.Resume(message.User);
 
-            await _auditService.WriteAudit(new ResumeUserAuditMessage(message.User));
+            await _auditService.WriteAudit(new ResumeUserAuditMessage(message.User, message.ChangedByUserInfo));
 
             return Unit.Value;
         }

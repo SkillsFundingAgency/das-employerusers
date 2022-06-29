@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResumeUserTe
         [Test, AutoData]
         public async Task ThenTheUserRepositoryIsCalledIfTheCommandIsValid(User user, ChangedByUserInfo changedByUserInfo)
         {
-            _auditService.Setup(a => a.WriteAudit(It.Is<ResumeUserAuditMessage>(m => m.Category == "UPDATE" && m.Description == $"User {user.Email} (id: {user.Id}) has been re-activated after suspension")))
+            _auditService.Setup(a => a.WriteAudit(It.Is<ResumeUserAuditMessage>(m => m.Category == "UPDATE" && m.Description == $"User {user.Email} (id: {user.Id}) has been re-activated after suspension by {changedByUserInfo.Email} (id: {changedByUserInfo.UserId})")))
                 .Returns(Task.CompletedTask);
 
             _userRepository.Setup(x => x.Resume(It.Is<User>(u => u.Id == user.Id))).Returns(Task.CompletedTask);
@@ -41,7 +41,7 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.ResumeUserTe
 
             //Assert
             _userRepository.Verify(x => x.Resume(It.Is<User>(u => u.Id == user.Id)), Times.Once);
-            _auditService.Verify(x => x.WriteAudit(It.Is<ResumeUserAuditMessage>(m => m.Category == "UPDATE" && m.Description == $"User {user.Email} (id: {user.Id}) has been re-activated after suspension")), Times.Once);
+            _auditService.Verify(x => x.WriteAudit(It.Is<ResumeUserAuditMessage>(m => m.Category == "UPDATE" && m.Description == $"User {user.Email} (id: {user.Id}) has been re-activated after suspension by {changedByUserInfo.Email} (id: {changedByUserInfo.UserId})")), Times.Once);
 
         }
       
