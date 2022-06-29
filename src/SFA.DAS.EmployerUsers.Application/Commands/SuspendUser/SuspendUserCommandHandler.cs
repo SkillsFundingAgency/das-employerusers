@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.SuspendUser
         {
             await _userRepository.Suspend(message.User);
 
-            await _auditService.WriteAudit(new SuspendUserAuditMessage(message.User));
+            await _auditService.WriteAudit(new SuspendUserAuditMessage(message.User, message.ChangedByUserInfo));
 
             return Unit.Value;
         }

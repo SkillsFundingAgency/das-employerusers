@@ -62,9 +62,9 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
             };
         }
 
-        public async Task<SuspendUserResponse> Suspend(string id)
+        public async Task<SuspendUserResponse> Suspend(string id, ChangedByUserInfo changedByUserInfo)
         {
-            var user = await _mediator.SendAsync(new GetUserByIdQuery() { UserId = id });
+            var user = await _mediator.SendAsync(new GetUserByIdQuery { UserId = id });
 
             if (user == null)
             {
@@ -73,17 +73,17 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
 
             _logger.Info($"Suspending user account with Id {id}.");
 
-            await _mediator.SendAsync(new SuspendUserCommand() { User = new User() { Id = id } } );
+            await _mediator.SendAsync(new SuspendUserCommand(new User { Id = id }, changedByUserInfo));
 
-            return new SuspendUserResponse()
+            return new SuspendUserResponse
             {
                 Id = id
             };
         }
 
-        public async Task<ResumeUserResponse> Resume(string id)
+        public async Task<ResumeUserResponse> Resume(string id, ChangedByUserInfo changedByUserInfo)
         {
-            var user = await _mediator.SendAsync(new GetUserByIdQuery() { UserId = id });
+            var user = await _mediator.SendAsync(new GetUserByIdQuery { UserId = id });
 
             if (user == null)
             {
@@ -92,9 +92,9 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
 
             _logger.Info($"Resuming user account with Id {id}.");
 
-            await _mediator.SendAsync(new ResumeUserCommand() { User = new User() { Id = id } });
+            await _mediator.SendAsync(new ResumeUserCommand(new User { Id = id }, changedByUserInfo));
 
-            return new ResumeUserResponse()
+            return new ResumeUserResponse
             {
                 Id = id
             };

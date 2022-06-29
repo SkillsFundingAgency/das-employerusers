@@ -1,7 +1,6 @@
 ﻿using System.Configuration;
-using Microsoft.Azure;
-using Owin;
 using Microsoft.Owin.Security.ActiveDirectory;
+using Owin;
 
 namespace SFA.DAS.EmployerUsers.Api
 {

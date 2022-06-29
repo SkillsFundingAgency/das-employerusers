@@ -1,25 +1,22 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web.Http.Results;
+using AutoFixture.NUnit3;
 using FluentAssertions;
-using FluentAssertions.Common;
 using MediatR;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerUsers.Api.Types;
 using SFA.DAS.EmployerUsers.Application.Commands.SuspendUser;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
-using SFA.DAS.EmployerUsers.Application.Queries.GetUsers;
 using SFA.DAS.EmployerUsers.Domain;
-using SFA.DAS.EmployerUsers.TestCommon.Extensions;
 
 namespace SFA.DAS.EmployerUsers.Api.UnitTests.UserControllerTests
 {
     [TestFixture]
     public class WhenISuspendAUser : UserControllerTestsBase
     {
-        [Test]
-        public async Task ThenNoErrorIsReturned_WhenTheRequestIsValid()
+        [Test, AutoData]
+        public async Task ThenNoErrorIsReturned_WhenTheRequestIsValid(ChangedByUserInfo changedByUserInfo)
         {
             var userId = "ABC123";
             var userResponse = new User()
@@ -36,7 +33,7 @@ namespace SFA.DAS.EmployerUsers.Api.UnitTests.UserControllerTests
             Mediator.Setup(x => x.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == userId))).ReturnsAsync(userResponse);
             Mediator.Setup(x => x.SendAsync(It.Is<SuspendUserCommand>(c => c.User != null && c.User.Id == userId))).ReturnsAsync(new Unit());
 
-            var response = await Controller.Suspend(userId);
+            var response = await Controller.Suspend(userId, changedByUserInfo);
 
             Assert.IsNotNull(response);
             Assert.IsInstanceOf<OkNegotiatedContentResult<SuspendUserResponse>>(response);
@@ -49,8 +46,8 @@ namespace SFA.DAS.EmployerUsers.Api.UnitTests.UserControllerTests
             Mediator.Verify(x => x.SendAsync(It.Is<SuspendUserCommand>(c => c.User != null && c.User.Id == userId)), Times.Once);
         }
 
-        [Test]
-        public async Task AndTheUserDoesNotExist_ThenANotFoundResultIsReturned()
+        [Test, AutoData]
+        public async Task AndTheUserDoesNotExist_ThenANotFoundResultIsReturned(ChangedByUserInfo changedByUserInfo)
         {
             var userId = "ABC123";
 
@@ -59,7 +56,7 @@ namespace SFA.DAS.EmployerUsers.Api.UnitTests.UserControllerTests
             Mediator.Setup(x => x.SendAsync(It.Is<SuspendUserCommand>(c => c.User != null && c.User.Id == userId)))
                 .ReturnsAsync(new Unit());
 
-            var response = await Controller.Suspend(userId);
+            var response = await Controller.Suspend(userId, changedByUserInfo);
 
             Assert.IsNotNull(response);
             response.Should().BeOfType<NotFoundResult>();

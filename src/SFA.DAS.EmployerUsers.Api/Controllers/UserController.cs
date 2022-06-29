@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -59,13 +58,13 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
         [Route("{id}/suspend")]
         [HttpPost]
         [Authorize(Roles = "UpdateEmployerUsers")]
-        public async Task<IHttpActionResult> Suspend(string id)
+        public async Task<IHttpActionResult> Suspend(string id, [FromBody]ChangedByUserInfo userInfo)
         {
             SuspendUserResponse response = null;
 
             try
             {
-                response = await _orchestrator.Suspend(id);
+                response = await _orchestrator.Suspend(id, userInfo);
             }
             catch (Exception e)
             {
@@ -90,13 +89,13 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
         [Route("{id}/resume")]
         [HttpPost]
         [Authorize(Roles = "UpdateEmployerUsers")]
-        public async Task<IHttpActionResult> Resume(string id)
+        public async Task<IHttpActionResult> Resume(string id, [FromBody] ChangedByUserInfo userInfo)
         {
             ResumeUserResponse response = null;
 
             try
             {
-                response = await _orchestrator.Resume(id);
+                response = await _orchestrator.Resume(id, userInfo);
             }
             catch (Exception)
             {
