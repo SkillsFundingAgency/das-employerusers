@@ -12,7 +12,8 @@ AS
 		IsActive,
 		FailedLoginAttempts,
 		IsLocked,
-		IsSuspended
+		IsSuspended,
+		LastSuspendedDate
 	FROM dbo.[User]
 	WHERE Email = @Email
 GO

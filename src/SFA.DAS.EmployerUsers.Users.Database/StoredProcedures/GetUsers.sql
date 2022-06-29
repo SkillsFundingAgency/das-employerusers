@@ -7,12 +7,12 @@ AS
 		FirstName,
 		LastName,
 		Email,
-
 		PasswordProfileId,
 		IsActive,
 		FailedLoginAttempts,
 		IsLocked,
-		IsSuspended
+		IsSuspended,
+		LastSuspendedDate
 	FROM dbo.[User]
 	ORDER BY ID
 	OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY
