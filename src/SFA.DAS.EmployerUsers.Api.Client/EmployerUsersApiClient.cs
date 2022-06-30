@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SFA.DAS.EmployerUsers.Api.Types;
@@ -49,7 +50,7 @@ namespace SFA.DAS.EmployerUsers.Api.Client
         public async Task<SuspendUserResponse> SuspendUser(string id, ChangedByUserInfo changedByUserInfo)
         {
             var absoluteUri = Combine(_configuration.ApiBaseUrl, $"/api/users/{id}/suspend");
-            var response = await _secureHttpClient.PostAsync(absoluteUri, new StringContent(JsonConvert.SerializeObject(changedByUserInfo)));
+            var response = await _secureHttpClient.PostAsync(absoluteUri, new StringContent(JsonConvert.SerializeObject(changedByUserInfo), Encoding.UTF8, "application/json"));
 
             return JsonConvert.DeserializeObject<SuspendUserResponse>(response);
         }
@@ -57,7 +58,7 @@ namespace SFA.DAS.EmployerUsers.Api.Client
         public async Task<ResumeUserResponse> ResumeUser(string id, ChangedByUserInfo changedByUserInfo)
         {
             var absoluteUri = Combine(_configuration.ApiBaseUrl, $"/api/users/{id}/resume");
-            var response = await _secureHttpClient.PostAsync(absoluteUri, new StringContent(JsonConvert.SerializeObject(changedByUserInfo)));
+            var response = await _secureHttpClient.PostAsync(absoluteUri, new StringContent(JsonConvert.SerializeObject(changedByUserInfo), Encoding.UTF8, "application/json"));
 
             return JsonConvert.DeserializeObject<ResumeUserResponse>(response);
         }
