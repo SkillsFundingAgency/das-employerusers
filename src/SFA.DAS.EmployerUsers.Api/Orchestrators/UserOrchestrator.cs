@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
@@ -71,6 +72,14 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
                 return new SuspendUserResponse();
             }
 
+            if(user.IsSuspended)
+            {
+                return new SuspendUserResponse
+                {
+                    Errors = new Dictionary<string, string> { { $"Suspended {user.LastSuspendedDate} only active user accounts can be suspended", "" } }
+                };
+            }
+
             _logger.Info($"Suspending user account with Id {id}.");
 
             await _mediator.SendAsync(new SuspendUserCommand(new User { Id = id, Email = user.Email }, changedByUserInfo));
@@ -88,6 +97,14 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
             if (user == null)
             {
                 return new ResumeUserResponse();
+            }
+
+            if (!user.IsActive)
+            {
+                return new ResumeUserResponse
+                {
+                    Errors = new Dictionary<string, string> { { $"Active - only suspended accounts can be reinstated", "" } }
+                };
             }
 
             _logger.Info($"Resuming user account with Id {id}.");
