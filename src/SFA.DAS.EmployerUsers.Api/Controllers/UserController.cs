@@ -71,13 +71,6 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
                 return InternalServerError(e);
             }
 
-            if (response.HasError)
-            {
-                var modelState = new ModelStateDictionary();
-                response.Errors.ToList().ForEach(error => modelState.AddModelError(error.Key, error.Value));
-                return BadRequest(modelState);
-            }
-
             if(string.IsNullOrEmpty(response.Id))
             {
                 return NotFound();
@@ -100,13 +93,6 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
             catch (Exception)
             {
                 return InternalServerError();
-            }
-
-            if (response.HasError)
-            {
-                var modelState = new ModelStateDictionary();
-                response.Errors.ToList().ForEach(error => modelState.AddModelError(error.Key, error.Value));
-                return BadRequest(modelState);
             }
 
             if (string.IsNullOrEmpty(response.Id))
