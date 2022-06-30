@@ -73,7 +73,7 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
 
             _logger.Info($"Suspending user account with Id {id}.");
 
-            await _mediator.SendAsync(new SuspendUserCommand(new User { Id = id }, changedByUserInfo));
+            await _mediator.SendAsync(new SuspendUserCommand(new User { Id = id, Email = user.Email }, changedByUserInfo));
 
             return new SuspendUserResponse
             {
@@ -92,7 +92,7 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
 
             _logger.Info($"Resuming user account with Id {id}.");
 
-            await _mediator.SendAsync(new ResumeUserCommand(new User { Id = id }, changedByUserInfo));
+            await _mediator.SendAsync(new ResumeUserCommand(new User { Id = id, Email = user.Email }, changedByUserInfo));
 
             return new ResumeUserResponse
             {
