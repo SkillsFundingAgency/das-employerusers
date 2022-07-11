@@ -77,7 +77,7 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
                 return new SuspendUserResponse
                 {
                     Id = id,
-                    Errors = new Dictionary<string, string> { { $"Suspended {user.LastSuspendedDate} only active user accounts can be suspended", "" } }
+                    Errors = new Dictionary<string, string> { { $"Suspended {user.LastSuspendedDate} - only active user accounts can be suspended", "" } }
                 };
             }
 
@@ -100,12 +100,12 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
                 return new ResumeUserResponse();
             }
 
-            if (!user.IsActive)
+            if (!user.IsSuspended)
             {
                 return new ResumeUserResponse
                 {
                     Id = id,
-                    Errors = new Dictionary<string, string> { { $"Active - only suspended accounts can be reinstated", "" } }
+                    Errors = new Dictionary<string, string> { { "Active - only suspended accounts can be reinstated", "" } }
                 };
             }
 

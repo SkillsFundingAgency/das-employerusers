@@ -1,58 +1,71 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Http.Results;
+using AutoFixture.NUnit3;
+using AutoMapper;
 using FluentAssertions;
+using MediatR;
 using Moq;
+using NLog;
 using NUnit.Framework;
+using SFA.DAS.EmployerUsers.Api.Controllers;
+using SFA.DAS.EmployerUsers.Api.DependencyResolution;
+using SFA.DAS.EmployerUsers.Api.Orchestrators;
 using SFA.DAS.EmployerUsers.Api.Types;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.Domain;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerUsers.Api.UnitTests.UserControllerTests
 {
     [TestFixture]
-    public class WhenIGetAUser : UserControllerTestsBase
+    public class WhenIGetAUser
     {
-        [Test]
-        public async Task ThenTheUsersDetailsAreReturned()
+        [Test, MoqAutoData]
+        public async Task ThenTheUsersDetailsAreReturned(
+           string userId,
+           User user,
+           [Frozen] Mock<ILogger> loggerMock,
+           [Frozen] Mock<IMediator> mediator,
+           [Frozen] Mock<IMapper> mapperMock,
+           UserOrchestrator userOrchestrator)
         {
-            var userId = "124";
+            // Arrange
+            var mapperReal = new MapperConfiguration(c => c.AddProfile<DefaultProfile>()).CreateMapper();
 
-            var user = new User
-            {
-                Email = "a@b.com",
-                LastName = "Bloggs",
-                FirstName = "Joe",
-                Id = userId,
-                FailedLoginAttempts = 2,
-                IsActive = true,
-                IsLocked = true,
-                Password = "********",
-                Salt = "ABC123",
-                PasswordProfileId = "ZZZ999"
-            };
-            
-            Mediator.Setup(x => x.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == userId))).ReturnsAsync(user);
+            user.Id = userId;
+            var controller = new UserController(userOrchestrator);
+            mediator.Setup(x => x.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == userId))).ReturnsAsync(user);
+            mapperMock.Setup(mock => mock.Map<UserViewModel>(It.Is<User>(u => user.Id == userId))).Returns(mapperReal.Map<UserViewModel>(user));
 
-            var response = await Controller.Show(userId);
+            // Act
+            var response = await controller.Show(userId);
 
+            // Assert
             Assert.IsNotNull(response);
             Assert.IsInstanceOf<OkNegotiatedContentResult<UserViewModel>>(response);
             var model = response as OkNegotiatedContentResult<UserViewModel>;
 
             model.Content.ShouldBeEquivalentTo(user, options => options.ExcludingMissingMembers());
 
-            Logger.Verify(x => x.Info($"Getting user account {userId}."), Times.Once);
+            loggerMock.Verify(x => x.Info($"Getting user account {userId}."), Times.Once);
         }
 
-        [Test]
-        public async Task AndTheUserDoesntExistThenTheUserIsNotFound()
+        [Test, MoqAutoData]
+        public async Task AndTheUserDoesntExistThenTheUserIsNotFound(
+          string userId,
+          [Frozen] Mock<IMediator> mediator,
+          [Frozen] Mock<IMapper> mapper,
+          UserOrchestrator userOrchestrator)
         {
-            var userId = "999";
+            // Arrange
+            var controller = new UserController(userOrchestrator);
+            mediator.Setup(x => x.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == userId))).ReturnsAsync((User)null);
+            mapper.Setup(x => x.Map<UserViewModel>(It.Is<User>(u => u == null))).Returns((UserViewModel)null);
 
-            Mediator.Setup(x => x.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == userId))).ReturnsAsync((User)null);
+            // Act
+            var response = await controller.Show(userId);
 
-            var response = await Controller.Show(userId);
-
+            // Assert
             Assert.IsNotNull(response);
             Assert.IsInstanceOf<NotFoundResult>(response);
         }
