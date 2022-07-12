@@ -124,7 +124,7 @@
       <Name>SFA.DAS.EmployerUsers.Support.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.Support.Infrastructure\SFA.DAS.EmployerUsers.Support.Infrastructure.csproj">
-      <Project>{4cc506ae-f6bc-46b2-910a-d6bf29da8d90}</Project>
+      <Project>{4CC506AE-F6BC-46B2-910A-D6BF29DA8D90}</Project>
       <Name>SFA.DAS.EmployerUsers.Support.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
