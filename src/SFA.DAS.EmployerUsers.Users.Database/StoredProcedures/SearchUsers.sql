@@ -16,7 +16,8 @@ AS
 		IsActive,
 		FailedLoginAttempts,
 		IsLocked,
-		IsSuspended
+		IsSuspended,
+		LastSuspendedDate
 	INTO #resultSet
 	FROM dbo.[User]
 	WHERE FirstName LIKE @criteria 

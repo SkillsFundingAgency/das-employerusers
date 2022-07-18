@@ -1,58 +1,71 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Http.Results;
+using AutoFixture.NUnit3;
+using AutoMapper;
 using FluentAssertions;
+using MediatR;
 using Moq;
+using NLog;
 using NUnit.Framework;
+using SFA.DAS.EmployerUsers.Api.Controllers;
+using SFA.DAS.EmployerUsers.Api.DependencyResolution;
+using SFA.DAS.EmployerUsers.Api.Orchestrators;
 using SFA.DAS.EmployerUsers.Api.Types;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserByEmailAddress;
 using SFA.DAS.EmployerUsers.Domain;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerUsers.Api.UnitTests.UserControllerTests
 {
     [TestFixture]
-    public class WhenIGetAUserByEmailAddress : UserControllerTestsBase
+    public class WhenIGetAUserByEmailAddress
     {
-        [Test]
-        public async Task ThenTheUsersDetailsAreReturned()
+        [Test, MoqAutoData]
+        public async Task ThenTheUsersDetailsAreReturned(
+           string userEmail,
+           User user,
+           [Frozen] Mock<ILogger> loggerMock,
+           [Frozen] Mock<IMediator> mediator,
+           [Frozen] Mock<IMapper> mapperMock,
+           UserOrchestrator userOrchestrator)
         {
-            var emailAddress = "a@b.com";
+            // Arrange
+            var mapperReal = new MapperConfiguration(c => c.AddProfile<DefaultProfile>()).CreateMapper();
 
-            var user = new User
-            {
-                Email = emailAddress,
-                LastName = "Bloggs",
-                FirstName = "Joe",
-                Id = "1234",
-                FailedLoginAttempts = 2,
-                IsActive = true,
-                IsLocked = true,
-                Password = "********",
-                Salt = "ABC123",
-                PasswordProfileId = "ZZZ999"
-            };
-            
-            Mediator.Setup(x => x.SendAsync(It.Is<GetUserByEmailAddressQuery>(q => q.EmailAddress == emailAddress))).ReturnsAsync(user);
+            user.Email = userEmail;
+            var controller = new UserController(userOrchestrator);
+            mediator.Setup(x => x.SendAsync(It.Is<GetUserByEmailAddressQuery>(q => q.EmailAddress == userEmail))).ReturnsAsync((User)null);
+            mapperMock.Setup(mock => mock.Map<UserViewModel>(It.Is<User>(u => user.Email == userEmail))).Returns(mapperReal.Map<UserViewModel>(user));
 
-            var response = await Controller.Email(emailAddress);
+            // Act
+            var response = await controller.Email(userEmail);
 
+            // Assert
             Assert.IsNotNull(response);
             Assert.IsInstanceOf<OkNegotiatedContentResult<UserViewModel>>(response);
             var model = response as OkNegotiatedContentResult<UserViewModel>;
 
             model.Content.ShouldBeEquivalentTo(user, options => options.ExcludingMissingMembers());
 
-            Logger.Verify(x => x.Info($"Getting user account for email address {emailAddress}."), Times.Once);
+            loggerMock.Verify(x => x.Info($"Getting user account for email address {userEmail}."), Times.Once);
         }
 
-        [Test]
-        public async Task AndTheUserDoesntExistThenTheUserIsNotFound()
+        [Test, MoqAutoData]
+        public async Task AndTheUserDoesntExistThenTheUserIsNotFound(
+          string userEmail,
+          [Frozen] Mock<IMediator> mediator,
+          [Frozen] Mock<IMapper> mapper,
+          UserOrchestrator userOrchestrator)
         {
-            var emailAddress = "x@y.com";
+            // Arrange
+            var controller = new UserController(userOrchestrator);
+            mediator.Setup(x => x.SendAsync(It.Is<GetUserByEmailAddressQuery>(u => u.EmailAddress == userEmail))).ReturnsAsync((User)null);
+            mapper.Setup(x => x.Map<UserViewModel>(It.Is<User>(u => u == null))).Returns((UserViewModel)null);
 
-            Mediator.Setup(x => x.SendAsync(It.Is<GetUserByEmailAddressQuery>(q => q.EmailAddress == emailAddress))).ReturnsAsync((User) null);
+            // Act
+            var response = await controller.Email(userEmail);
 
-            var response = await Controller.Email(emailAddress);
-
+            // Assert
             Assert.IsNotNull(response);
             Assert.IsInstanceOf<NotFoundResult>(response);
         }

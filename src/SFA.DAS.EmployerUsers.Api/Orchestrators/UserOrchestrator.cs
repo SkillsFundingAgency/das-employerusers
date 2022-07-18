@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
@@ -62,39 +63,57 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
             };
         }
 
-        public async Task<SuspendUserResponse> Suspend(string id)
+        public async Task<SuspendUserResponse> Suspend(string id, ChangedByUserInfo changedByUserInfo)
         {
-            var user = await _mediator.SendAsync(new GetUserByIdQuery() { UserId = id });
+            var user = await _mediator.SendAsync(new GetUserByIdQuery { UserId = id });
 
             if (user == null)
             {
                 return new SuspendUserResponse();
             }
 
+            if(user.IsSuspended)
+            {
+                return new SuspendUserResponse
+                {
+                    Id = id,
+                    Errors = new Dictionary<string, string> { { $"Suspended {user.LastSuspendedDate} - only active user accounts can be suspended", "" } }
+                };
+            }
+
             _logger.Info($"Suspending user account with Id {id}.");
 
-            await _mediator.SendAsync(new SuspendUserCommand() { User = new User() { Id = id } } );
+            await _mediator.SendAsync(new SuspendUserCommand(new User { Id = id, Email = user.Email }, changedByUserInfo));
 
-            return new SuspendUserResponse()
+            return new SuspendUserResponse
             {
                 Id = id
             };
         }
 
-        public async Task<ResumeUserResponse> Resume(string id)
+        public async Task<ResumeUserResponse> Resume(string id, ChangedByUserInfo changedByUserInfo)
         {
-            var user = await _mediator.SendAsync(new GetUserByIdQuery() { UserId = id });
+            var user = await _mediator.SendAsync(new GetUserByIdQuery { UserId = id });
 
             if (user == null)
             {
                 return new ResumeUserResponse();
             }
 
+            if (!user.IsSuspended)
+            {
+                return new ResumeUserResponse
+                {
+                    Id = id,
+                    Errors = new Dictionary<string, string> { { "Active - only suspended accounts can be reinstated", "" } }
+                };
+            }
+
             _logger.Info($"Resuming user account with Id {id}.");
 
-            await _mediator.SendAsync(new ResumeUserCommand() { User = new User() { Id = id } });
+            await _mediator.SendAsync(new ResumeUserCommand(new User { Id = id, Email = user.Email }, changedByUserInfo));
 
-            return new ResumeUserResponse()
+            return new ResumeUserResponse
             {
                 Id = id
             };

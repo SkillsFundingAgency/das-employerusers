@@ -149,9 +149,10 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
         {
             try
             {
+                var now = DateTime.Now;
                 await _unitOfWork.BeginTransaction();
                 
-                await _unitOfWork.Execute("UpdateUserSuspension @Id, @state", new { user.Id, state = true });
+                await _unitOfWork.Execute("UpdateUserSuspension @Id, @state, @suspendedDate", new { user.Id, state = true, suspendedDate = now });
                 
                 _unitOfWork.CommitChanges();
             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SFA.DAS.EmployerUsers.Api.Types;
@@ -24,13 +25,6 @@ namespace SFA.DAS.EmployerUsers.Api.Client
             _secureHttpClient = secureHttpClient;
         }
 
-        public async Task<T> GetResource<T>(string resourceUri) where T : IEmployerUsersResource
-        {
-            var absoluteUri = Combine(_configuration.ApiBaseUrl, resourceUri);
-            var json = await _secureHttpClient.GetAsync(absoluteUri);
-            return JsonConvert.DeserializeObject<T>(json);
-        }
-
         public async Task<PagedApiResponseViewModel<UserSummaryViewModel>> GetPageOfEmployerUsers(int pageNumber = 1, int pageSize = 1000)
         {
             return await GetResource<PagedApiResponseViewModel<UserSummaryViewModel>>($"/api/users?pageNumber={pageNumber}&pageSize={pageSize}");
@@ -53,20 +47,32 @@ namespace SFA.DAS.EmployerUsers.Api.Client
             return $"{uri1}/{uri2}";
         }
 
-        public async Task<SuspendUserResponse> SuspendUser(string id)
+        public async Task<SuspendUserResponse> SuspendUser(string id, ChangedByUserInfo changedByUserInfo)
         {
             var absoluteUri = Combine(_configuration.ApiBaseUrl, $"/api/users/{id}/suspend");
-            var response = await _secureHttpClient.PostAsync(absoluteUri, new StringContent(JsonConvert.SerializeObject(new { Id = id })));
+            var response = await _secureHttpClient.PostAsync(absoluteUri, new StringContent(JsonConvert.SerializeObject(changedByUserInfo), Encoding.UTF8, "application/json"));
 
             return JsonConvert.DeserializeObject<SuspendUserResponse>(response);
         }
 
-        public async Task<ResumeUserResponse> ResumeUser(string id)
+        public async Task<ResumeUserResponse> ResumeUser(string id, ChangedByUserInfo changedByUserInfo)
         {
             var absoluteUri = Combine(_configuration.ApiBaseUrl, $"/api/users/{id}/resume");
-            var response = await _secureHttpClient.PostAsync(absoluteUri, new StringContent(JsonConvert.SerializeObject(new { Id = id })));
+            var response = await _secureHttpClient.PostAsync(absoluteUri, new StringContent(JsonConvert.SerializeObject(changedByUserInfo), Encoding.UTF8, "application/json"));
 
             return JsonConvert.DeserializeObject<ResumeUserResponse>(response);
+        }
+
+        public async Task<UserViewModel> GetUserById(string id)
+        {
+            return await GetResource<UserViewModel>($"/api/users/{id}");
+        }
+
+        public async Task<T> GetResource<T>(string resourceUri) where T : IEmployerUsersResource
+        {
+            var absoluteUri = Combine(_configuration.ApiBaseUrl, resourceUri);
+            var json = await _secureHttpClient.GetAsync(absoluteUri);
+            return JsonConvert.DeserializeObject<T>(json);
         }
     }
 }

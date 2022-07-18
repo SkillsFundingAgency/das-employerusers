@@ -1,72 +1,182 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Threading.Tasks;
 using System.Web.Http.Results;
+using AutoFixture.NUnit3;
 using FluentAssertions;
-using FluentAssertions.Common;
 using MediatR;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.EmployerUsers.Api.Controllers;
+using SFA.DAS.EmployerUsers.Api.Orchestrators;
 using SFA.DAS.EmployerUsers.Api.Types;
 using SFA.DAS.EmployerUsers.Application.Commands.ResumeUser;
-using SFA.DAS.EmployerUsers.Application.Commands.SuspendUser;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
-using SFA.DAS.EmployerUsers.Application.Queries.GetUsers;
 using SFA.DAS.EmployerUsers.Domain;
-using SFA.DAS.EmployerUsers.TestCommon.Extensions;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerUsers.Api.UnitTests.UserControllerTests
 {
     [TestFixture]
-    public class WhenIResumeAUser : UserControllerTestsBase
+    public class WhenIResumeAUser
     {
-        [Test]
-        public async Task ThenNoErrorIsReturned_WhenTheRequestIsValid()
+        [Test, MoqAutoData]
+        public async Task WhenException_ThenInternalServerError(
+            string userId,
+            ChangedByUserInfo changedByUserInfo,
+            [Frozen] Mock<IMediator> mediator,
+            UserOrchestrator userOrchestrator)
         {
-            var userId = "ABC123";
-            var userResponse = new User()
-            {
-                Id = userId,
-                Email = "t@t.com",
-                FirstName = "test",
-                LastName = "user",
-                IsActive = true,
-                IsLocked = false,
-                IsSuspended = false,
-            };
+            // Arrange
+            var controller = new UserController(userOrchestrator);
+            mediator.Setup(x => x.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == userId)))
+                .Throws(new Exception("Fail"));
 
-            Mediator.Setup(x => x.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == userId))).ReturnsAsync(userResponse);
-            Mediator.Setup(x => x.SendAsync(It.Is<ResumeUserCommand>(c => c.User != null && c.User.Id == userId))).ReturnsAsync(new Unit());
+            // Act
+            var response = await controller.Resume(userId, changedByUserInfo);
 
-            var response = await Controller.Resume(userId);
-
-            Assert.IsNotNull(response);
-            Assert.IsInstanceOf<OkNegotiatedContentResult<ResumeUserResponse>>(response);
-            var model = response as OkNegotiatedContentResult<ResumeUserResponse>;
-
-            model?.Content.Should().NotBeNull();
-            model?.Content.Id.Should().Be(userId);
-            
-            Mediator.Verify(x => x.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == userId)), Times.Once);
-            Mediator.Verify(x => x.SendAsync(It.Is<ResumeUserCommand>(c => c.User != null && c.User.Id == userId)), Times.Once);
+            // Assert
+            response.Should().BeOfType<InternalServerErrorResult>();
         }
 
-        [Test]
-        public async Task AndTheUserDoesNotExist_ThenANotFoundResultIsReturned()
+        [Test, MoqAutoData]
+        public async Task WhenUserDoesNotExist_ThenANotFoundResultIsReturned(
+            string userId,
+            [Frozen] Mock<IMediator> mediator,
+            ChangedByUserInfo changedByUserInfo,
+            UserOrchestrator userOrchestrator)
         {
-            var userId = "ABC123";
+            // Arrange
+            var controller = new UserController(userOrchestrator);
 
-            Mediator.Setup(x => x.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == userId)))
+            mediator.Setup(x => x.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == userId)))
                 .ReturnsAsync((User)null);
-            Mediator.Setup(x => x.SendAsync(It.Is<ResumeUserCommand>(c => c.User != null && c.User.Id == userId)))
-                .ReturnsAsync(new Unit());
 
-            var response = await Controller.Suspend(userId);
+            // Act
+            var response = await controller.Resume(userId, changedByUserInfo);
 
-            Assert.IsNotNull(response);
+            // Assert
             response.Should().BeOfType<NotFoundResult>();
+        }
 
-            Mediator.Verify(x => x.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == userId)), Times.Once);
-            Mediator.Verify(x => x.SendAsync(It.Is<ResumeUserCommand>(c => c.User != null && c.User.Id == userId)), Times.Never);
+        [Test, MoqAutoData]
+        public async Task ThenShouldFetchUser(
+            User user,
+           string userId,
+           [Frozen] Mock<IMediator> mediator,
+           ChangedByUserInfo changedByUserInfo,
+           UserOrchestrator userOrchestrator)
+        {
+            // Arrange
+            var controller = new UserController(userOrchestrator);
+
+            mediator.Setup(x => x.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == userId)))
+                .ReturnsAsync(user)
+                .Verifiable();
+
+            // Act
+            var response = await controller.Resume(userId, changedByUserInfo);
+
+            // Assert
+            mediator.Verify(x => x.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == userId)), Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task WhenUserNotFound_ThenShouldNotResume(
+          string userId,
+          [Frozen] Mock<IMediator> mediator,
+          ChangedByUserInfo changedByUserInfo,
+          UserOrchestrator userOrchestrator)
+        {
+            // Arrange
+            var controller = new UserController(userOrchestrator);
+
+            mediator.Setup(x => x.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == userId)))
+                .ReturnsAsync((User)null)
+                .Verifiable();
+
+            // Act
+            var response = await controller.Resume(userId, changedByUserInfo);
+
+            // Assert
+            mediator.Verify(x => x.SendAsync(It.IsAny<ResumeUserCommand>()), Times.Never);
+        }
+
+        [Test, MoqAutoData]
+        public async Task WhenSuspendedUserFound_ThenShouldResume(
+         User user,
+         string userId,
+         DateTime lastSuspendedDate,
+         [Frozen] Mock<IMediator> mediator,
+         ChangedByUserInfo changedByUserInfo,
+         UserOrchestrator userOrchestrator)
+        {
+            // Arrange
+            user.IsLocked = false;
+            user.IsActive = true;
+            user.IsSuspended = true;
+            user.LastSuspendedDate = lastSuspendedDate;
+            var controller = new UserController(userOrchestrator);
+
+            mediator.Setup(x => x.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == userId)))
+                .ReturnsAsync(user);
+
+            // Act
+            var response = await controller.Resume(userId, changedByUserInfo);
+
+            // Assert
+            mediator.Verify(x => x.SendAsync(It.Is<ResumeUserCommand>(c => c.User.Id == userId)), Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task WhenLockedUserFound_ThenShouldNotResumeWithError(
+         User user,
+         string userId,
+         [Frozen] Mock<IMediator> mediator,
+         ChangedByUserInfo changedByUserInfo,
+         UserOrchestrator userOrchestrator)
+        {
+            // Arrange
+            user.IsLocked = true;
+            user.IsActive = true;
+            user.IsSuspended = false;
+            var controller = new UserController(userOrchestrator);
+
+            mediator.Setup(x => x.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == userId)))
+                .ReturnsAsync(user)
+                .Verifiable();
+
+            // Act
+            var response = await controller.Resume(userId, changedByUserInfo) as OkNegotiatedContentResult<ResumeUserResponse>;
+
+            // Assert
+            mediator.Verify(x => x.SendAsync(It.Is<ResumeUserCommand>(c => c.User.Id == userId)), Times.Never);
+            response.Content.Errors.Should().ContainKey("Active - only suspended accounts can be reinstated");
+        }
+
+        [Test, MoqAutoData]
+        public async Task WhenActiveUsedFound_ThenShouldNotResumeWithError(
+         User user,
+         string userId,
+         [Frozen] Mock<IMediator> mediator,
+         ChangedByUserInfo changedByUserInfo,
+         UserOrchestrator userOrchestrator)
+        {
+            // Arrange
+            user.IsLocked = false;
+            user.IsActive = true;
+            user.IsSuspended = false;
+            var controller = new UserController(userOrchestrator);
+
+            mediator.Setup(x => x.SendAsync(It.Is<GetUserByIdQuery>(q => q.UserId == userId)))
+                .ReturnsAsync(user)
+                .Verifiable();
+
+            // Act
+            var response = await controller.Resume(userId, changedByUserInfo) as OkNegotiatedContentResult<ResumeUserResponse>;
+
+            // Assert
+            mediator.Verify(x => x.SendAsync(It.Is<ResumeUserCommand>(c => c.User.Id == userId)), Times.Never);
+            response.Content.Errors.Should().ContainKey("Active - only suspended accounts can be reinstated");
         }
     }
 }
