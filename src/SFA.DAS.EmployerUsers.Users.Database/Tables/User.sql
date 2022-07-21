@@ -10,6 +10,7 @@ CREATE TABLE dbo.[User] (
 	[FailedLoginAttempts]	int				NOT NULL DEFAULT(0),
 	[IsLocked]				bit				NOT NULL DEFAULT(0),
 	[IsSuspended]			bit				NOT NULL DEFAULT(0)
-	CONSTRAINT [PK_User] PRIMARY KEY (Id),
+	CONSTRAINT [PK_User] PRIMARY KEY (Id), 
+    [LastSuspendedDate] DATETIME NULL,
 	INDEX [IX_User_Email] NONCLUSTERED(Email)
 )

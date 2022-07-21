@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -59,24 +58,17 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
         [Route("{id}/suspend")]
         [HttpPost]
         [Authorize(Roles = "UpdateEmployerUsers")]
-        public async Task<IHttpActionResult> Suspend(string id)
+        public async Task<IHttpActionResult> Suspend(string id, [FromBody]ChangedByUserInfo changedByUserInfo)
         {
             SuspendUserResponse response = null;
 
             try
             {
-                response = await _orchestrator.Suspend(id);
+                response = await _orchestrator.Suspend(id, changedByUserInfo);
             }
             catch (Exception e)
             {
                 return InternalServerError(e);
-            }
-
-            if (response.HasError)
-            {
-                var modelState = new ModelStateDictionary();
-                response.Errors.ToList().ForEach(error => modelState.AddModelError(error.Key, error.Value));
-                return BadRequest(modelState);
             }
 
             if(string.IsNullOrEmpty(response.Id))
@@ -90,24 +82,17 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
         [Route("{id}/resume")]
         [HttpPost]
         [Authorize(Roles = "UpdateEmployerUsers")]
-        public async Task<IHttpActionResult> Resume(string id)
+        public async Task<IHttpActionResult> Resume(string id, [FromBody] ChangedByUserInfo changedByUserInfo)
         {
             ResumeUserResponse response = null;
 
             try
             {
-                response = await _orchestrator.Resume(id);
+                response = await _orchestrator.Resume(id, changedByUserInfo);
             }
             catch (Exception)
             {
                 return InternalServerError();
-            }
-
-            if (response.HasError)
-            {
-                var modelState = new ModelStateDictionary();
-                response.Errors.ToList().ForEach(error => modelState.AddModelError(error.Key, error.Value));
-                return BadRequest(modelState);
             }
 
             if (string.IsNullOrEmpty(response.Id))

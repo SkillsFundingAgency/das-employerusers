@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
@@ -22,7 +23,9 @@ namespace SFA.DAS.EmployerUsers.Api.Client.UnitTests.EmployerUsersApiClientTests
                 Email = "test@email.com",
                 IsActive = true,
                 IsLocked = true,
-                FailedLoginAttempts = 3
+                FailedLoginAttempts = 3,
+                IsSuspended = true,
+                LastSuspendedDate = new DateTime(2022, 6, 29)
             };
 
             HttpClient.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(JsonConvert.SerializeObject(expectedResult));

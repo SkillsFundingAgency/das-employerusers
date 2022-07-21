@@ -9,6 +9,7 @@ CREATE PROCEDURE UpdateUser
 	@IsActive bit,
 	@FailedLoginAttempts int,
 	@IsLocked bit
+	
 AS
 	UPDATE [User]
 	SET FirstName = @FirstName, 
