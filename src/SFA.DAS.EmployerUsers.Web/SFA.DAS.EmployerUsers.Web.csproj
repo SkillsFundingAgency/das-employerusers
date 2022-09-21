@@ -758,9 +758,6 @@
     <Content Include="src\govuk_template\assets\stylesheets\images\open-government-licence.png" />
     <Content Include="src\govuk_template\assets\stylesheets\images\open-government-licence_2x.png" />
     <Content Include="src\govuk_template\views\layouts\govuk_template.html" />
-    <Content Include="StartUp\FindPrivateKey.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -860,15 +857,6 @@
     <Content Include="Views\Login\Logout.cshtml" />
     <Content Include="Views\Shared\_InfoMessages.cshtml" />
     <Content Include="Views\Shared\BadRequest.cshtml" />
-    <Content Include="StartUp\IIS.bat">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="StartUp\IIS.PS1">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="StartUp\Powershell.msi">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Views\Home\Help.cshtml" />
     <Content Include="Views\Home\Privacy.cshtml" />
     <Content Include="Views\Account\RequestUnlockCode.cshtml" />
