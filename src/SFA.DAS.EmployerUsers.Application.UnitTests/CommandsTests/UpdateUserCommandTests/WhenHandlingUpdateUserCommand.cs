@@ -91,5 +91,21 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UpdateUserCo
             _userRepository.Verify(x => x.UpdateWithGovIdentifier(It.IsAny<User>()), Times.Never);
             Assert.IsNull(actual.User);
         }
+        
+        [Test]
+        public async Task ThenTheUserIsNotUpdatedIfAlreadyHasIdentifier()
+        {
+            //Arrange
+            _expectedUser.GovUkIdentifier = ExpectedGovIdentifier;
+            var unlockUserCommand = new UpdateUserCommand { Email = ExpectedEmail, GovUkIdentifier = ExpectedGovIdentifier };
+
+            //Act
+            var actual = await _updateUserCommandHandler.Handle(unlockUserCommand);
+
+            //Assert
+            _userRepository.Verify(x => x.UpdateWithGovIdentifier(It.IsAny<User>()), Times.Never);
+            Assert.AreEqual(_expectedUser.Id, actual.User.Id);
+            Assert.AreEqual(_expectedUser.Email, actual.User.Email);
+        }
     }
 }

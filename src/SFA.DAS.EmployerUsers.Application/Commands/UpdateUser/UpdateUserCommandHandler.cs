@@ -33,8 +33,11 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UpdateUser
                 return new UpdateUserCommandResponse();
             }
 
-            user.GovUkIdentifier = message.GovUkIdentifier;
-            await _userRepository.UpdateWithGovIdentifier(user);
+            if (string.IsNullOrEmpty(user.GovUkIdentifier))
+            {
+                user.GovUkIdentifier = message.GovUkIdentifier;
+                await _userRepository.UpdateWithGovIdentifier(user);
+            }
             
             return new UpdateUserCommandResponse
             {
