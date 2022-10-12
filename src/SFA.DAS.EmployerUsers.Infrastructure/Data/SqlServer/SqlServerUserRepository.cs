@@ -179,6 +179,24 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
                 throw;
             }
         }
+        
+        public async Task UpdateWithGovIdentifier(User user)
+        {
+            try
+            {
+                await _unitOfWork.BeginTransaction();
+                
+                await _unitOfWork.Execute("UpdateUserGovUkIdentifier @email, @govUkIdentifier", new { user.Email, user.GovUkIdentifier });
+                
+                _unitOfWork.CommitChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                throw;
+            }
+        }
+
 
         private async Task<SecurityCode[]> GetUserSecurityCodes(User user)
         {

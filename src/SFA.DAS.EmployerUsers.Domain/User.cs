@@ -18,5 +18,6 @@ namespace SFA.DAS.EmployerUsers.Domain
         public DateTime? LastSuspendedDate { get; set; }
         public SecurityCode[] SecurityCodes { get; set; }
         public HistoricalPassword[] PasswordHistory { get; set; }
+        public string GovUkIdentifier { get; set; }
     }
 }

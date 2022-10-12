@@ -17,5 +17,6 @@ namespace SFA.DAS.EmployerUsers.Domain.Data
 
         Task Suspend(User user);
         Task Resume(User user);
+        Task UpdateWithGovIdentifier(User user);
     }
 }
