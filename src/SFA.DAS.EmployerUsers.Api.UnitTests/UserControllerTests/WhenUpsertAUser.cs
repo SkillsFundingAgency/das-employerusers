@@ -12,6 +12,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerUsers.Api.UnitTests.UserControllerTests
 {
+    [TestFixture]
     public class WhenUpsertAUser
     {
         [Test, MoqAutoData]
@@ -36,7 +37,7 @@ namespace SFA.DAS.EmployerUsers.Api.UnitTests.UserControllerTests
             //Assert
             Assert.IsNotNull(actual);
             Assert.IsInstanceOf<CreatedNegotiatedContentResult<UserViewModel>>(actual);
-            var model = response as CreatedNegotiatedContentResult<UserViewModel>;
+            var model = actual as CreatedNegotiatedContentResult<UserViewModel>;
             Assert.IsNotNull(model);
         }
     }
