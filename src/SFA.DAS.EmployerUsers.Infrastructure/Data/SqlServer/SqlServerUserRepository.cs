@@ -21,14 +21,18 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
 
         public async Task<User> GetById(string id)
         {
-            var user = await _unitOfWork.QuerySingle<User>("GetUserById @id", new { id });
+            var user = await _unitOfWork.QuerySingle<User>("GetUserByGovIdentifier @id", new { id });
             if (user == null)
             {
-                return null;
+                user = await _unitOfWork.QuerySingle<User>("GetUserById @id", new { id });
+                if (user == null)
+                {
+                    return null;    
+                }
+                user.SecurityCodes = await GetUserSecurityCodes(user);
+                user.PasswordHistory = await GetUserPasswordHistory(user);
             }
 
-            user.SecurityCodes = await GetUserSecurityCodes(user);
-            user.PasswordHistory = await GetUserPasswordHistory(user);
             return user;
         }
 

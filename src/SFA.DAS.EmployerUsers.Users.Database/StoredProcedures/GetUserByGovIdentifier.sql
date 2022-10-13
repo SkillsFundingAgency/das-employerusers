@@ -1,5 +1,5 @@
-CREATE PROCEDURE GetUserById
-	@UserId varchar(50)
+CREATE PROCEDURE GetUserByGovIdentifier
+	@UserId varchar(150)
 AS
 	SELECT
 		Id,
@@ -16,5 +16,5 @@ AS
 		LastSuspendedDate,
 		GovUkIdentifier
 	FROM dbo.[User]
-	WHERE Id = @UserId
+	WHERE GovUkIdentifier = @UserId
 GO
