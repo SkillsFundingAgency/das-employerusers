@@ -25,7 +25,8 @@ namespace SFA.DAS.EmployerUsers.Api.Client.UnitTests.EmployerUsersApiClientTests
                 IsLocked = true,
                 FailedLoginAttempts = 3,
                 IsSuspended = true,
-                LastSuspendedDate = new DateTime(2022, 6, 29)
+                LastSuspendedDate = new DateTime(2022, 6, 29),
+                GovUkIdentifier = "some-value"
             };
 
             HttpClient.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(JsonConvert.SerializeObject(expectedResult));
