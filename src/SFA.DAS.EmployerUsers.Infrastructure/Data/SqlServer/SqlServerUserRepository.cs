@@ -180,13 +180,13 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
             }
         }
         
-        public async Task UpdateWithGovIdentifier(User user)
+        public async Task UpsertWithGovIdentifier(User user)
         {
             try
             {
                 await _unitOfWork.BeginTransaction();
                 
-                await _unitOfWork.Execute("UpdateUserGovUkIdentifier @email, @govUkIdentifier", new { user.Email, user.GovUkIdentifier });
+                await _unitOfWork.Execute("UpsertUserGovUkIdentifier @email, @govUkIdentifier, @firstName, @lastName", new { user.Email, user.GovUkIdentifier, user.FirstName, user.LastName });
                 
                 _unitOfWork.CommitChanges();
             }

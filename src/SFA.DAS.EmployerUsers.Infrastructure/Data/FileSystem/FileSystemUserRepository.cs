@@ -119,7 +119,7 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.FileSystem
             await Task.FromResult(0);
         }
 
-        public async Task UpdateWithGovIdentifier(User user)
+        public async Task UpsertWithGovIdentifier(User user)
         {
             await Task.FromResult(0);
         }

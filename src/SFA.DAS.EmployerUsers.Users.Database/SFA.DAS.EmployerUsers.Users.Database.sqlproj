@@ -62,7 +62,7 @@
     <Folder Include="Tables" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="StoredProcedures\UpdateUserGovIdentifier.sql" />
+    <Build Include="StoredProcedures\UpsertUserGovUkIdentifier.sql" />
     <Build Include="Tables\RelyingParty.sql" />
     <Build Include="Tables\User.sql" />
     <Build Include="Tables\UserPasswordHistory.sql" />

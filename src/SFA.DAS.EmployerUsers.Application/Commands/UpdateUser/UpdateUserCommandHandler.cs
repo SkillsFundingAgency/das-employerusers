@@ -3,6 +3,7 @@ using MediatR;
 using SFA.DAS.EmployerUsers.Application.Commands.ActivateUser;
 using SFA.DAS.EmployerUsers.Application.Exceptions;
 using SFA.DAS.EmployerUsers.Application.Validation;
+using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Domain.Data;
 
 namespace SFA.DAS.EmployerUsers.Application.Commands.UpdateUser
@@ -26,18 +27,16 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UpdateUser
                 throw new InvalidRequestException(validationResult.ValidationDictionary);
             }
 
-            var user = await _userRepository.GetByEmailAddress(message.Email);
-
-            if (user == null)
+            var user = new User
             {
-                return new UpdateUserCommandResponse();
-            }
-
-            if (string.IsNullOrEmpty(user.GovUkIdentifier))
-            {
-                user.GovUkIdentifier = message.GovUkIdentifier;
-                await _userRepository.UpdateWithGovIdentifier(user);
-            }
+                GovUkIdentifier = message.GovUkIdentifier,
+                Email = message.Email,
+                FirstName = message.FirstName,
+                LastName = message.LastName
+            };
+            await _userRepository.UpsertWithGovIdentifier(user);
+            
+            user = await _userRepository.GetByEmailAddress(message.Email);
             
             return new UpdateUserCommandResponse
             {

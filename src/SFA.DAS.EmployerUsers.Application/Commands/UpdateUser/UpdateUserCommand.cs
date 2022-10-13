@@ -6,5 +6,7 @@ namespace SFA.DAS.EmployerUsers.Application.Commands.UpdateUser
     {
         public string Email { get; set; }
         public string GovUkIdentifier { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
     }
 }

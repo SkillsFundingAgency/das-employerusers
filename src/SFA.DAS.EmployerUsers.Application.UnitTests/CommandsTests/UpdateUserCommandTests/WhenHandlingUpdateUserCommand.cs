@@ -17,6 +17,8 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UpdateUserCo
         private Mock<IUserRepository> _userRepository;
         private User _expectedUser;
         private const string ExpectedEmail = "test@user.local";
+        private const string ExpectedFirstName = "test";
+        private const string ExpectedLastName = "tester";
         private const string ExpectedGovIdentifier = "identifier:1231asd123";
         private const string NotAUser = "not@user.local";
 
@@ -40,19 +42,6 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UpdateUserCo
         }
 
         [Test]
-        public async Task ThenTheCommandIsCheckedToSeeIfItIsValid()
-        {
-            //Arrange
-            var unlockUserCommand = new UpdateUserCommand { Email = ExpectedEmail };
-
-            //Act
-            await _updateUserCommandHandler.Handle(unlockUserCommand);
-
-            //Assert
-            _updateUserCommandValidator.Verify(x => x.ValidateAsync(unlockUserCommand), Times.Once);
-        }
-
-        [Test]
         public void ThenAnInvalidRequestExceptionIsThrownIfTheCommandIsNotValid()
         {
             //Arrange
@@ -66,44 +55,43 @@ namespace SFA.DAS.EmployerUsers.Application.UnitTests.CommandsTests.UpdateUserCo
         public async Task ThenTheUserIsRetrievedFromTheUserRepositoryAndUpdated()
         {
             //Arrange
-            var unlockUserCommand = new UpdateUserCommand { Email = ExpectedEmail, GovUkIdentifier = ExpectedGovIdentifier};
+            var updateUserCommand = new UpdateUserCommand
+            {
+                Email = ExpectedEmail, 
+                GovUkIdentifier = ExpectedGovIdentifier,
+                FirstName = ExpectedFirstName,
+                LastName = ExpectedLastName
+            };
 
             //Act
-            var actual = await _updateUserCommandHandler.Handle(unlockUserCommand);
+            var actual = await _updateUserCommandHandler.Handle(updateUserCommand);
 
             //Assert
             _userRepository.Verify(x => x.GetByEmailAddress(ExpectedEmail), Times.Once);
-            _userRepository.Verify(x => x.UpdateWithGovIdentifier(It.Is<User>(c=>c.Email.Equals(ExpectedEmail)&& c.GovUkIdentifier.Equals(ExpectedGovIdentifier))), Times.Once);
+            _userRepository.Verify(x => x.UpsertWithGovIdentifier(
+                It.Is<User>(c=>
+                    c.Email.Equals(ExpectedEmail) 
+                    && c.GovUkIdentifier.Equals(ExpectedGovIdentifier)
+                    && c.FirstName.Equals(ExpectedFirstName)
+                    && c.LastName.Equals(ExpectedLastName)
+                )), Times.Once);
             Assert.AreEqual(_expectedUser.Id, actual.User.Id);
             Assert.AreEqual(_expectedUser.Email, actual.User.Email);
         }
 
-        [Test]
-        public async Task ThenTheUserIsNotUpdatedIfNotFoundInRepository()
-        {
-            //Arrange
-            var unlockUserCommand = new UpdateUserCommand { Email = NotAUser, GovUkIdentifier = ExpectedGovIdentifier };
-
-            //Act
-            var actual = await _updateUserCommandHandler.Handle(unlockUserCommand);
-
-            //Assert
-            _userRepository.Verify(x => x.UpdateWithGovIdentifier(It.IsAny<User>()), Times.Never);
-            Assert.IsNull(actual.User);
-        }
         
         [Test]
-        public async Task ThenTheUserIsNotUpdatedIfAlreadyHasIdentifier()
+        public async Task TheTheUserIsReturnedByEmail()
         {
             //Arrange
             _expectedUser.GovUkIdentifier = ExpectedGovIdentifier;
-            var unlockUserCommand = new UpdateUserCommand { Email = ExpectedEmail, GovUkIdentifier = ExpectedGovIdentifier };
+            var updateUserCommand = new UpdateUserCommand { Email = ExpectedEmail, GovUkIdentifier = ExpectedGovIdentifier };
 
             //Act
-            var actual = await _updateUserCommandHandler.Handle(unlockUserCommand);
+            var actual = await _updateUserCommandHandler.Handle(updateUserCommand);
 
             //Assert
-            _userRepository.Verify(x => x.UpdateWithGovIdentifier(It.IsAny<User>()), Times.Never);
+            _userRepository.Verify(x => x.UpsertWithGovIdentifier(It.Is<User>(c=>c.GovUkIdentifier.Equals(ExpectedGovIdentifier))), Times.Once);
             Assert.AreEqual(_expectedUser.Id, actual.User.Id);
             Assert.AreEqual(_expectedUser.Email, actual.User.Email);
         }
