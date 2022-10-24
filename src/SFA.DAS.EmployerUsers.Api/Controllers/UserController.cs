@@ -55,6 +55,13 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
 
             return Ok(user.Data);
         }
+        
+        [Route("govuk", Name = "Show"), HttpGet]
+        [Authorize(Roles = "ReadEmployerUsers")]
+        public async Task<IHttpActionResult> ById([FromUri]string id)
+        {
+            return await Show(id);
+        }
 
         [Route("{id}/suspend")]
         [HttpPost]
