@@ -14,8 +14,8 @@ AS
             UPDATE [User]
             SET
                 [User].[GovUkIdentifier] = @govUkIdentifier,
-                [User].[FirstName] = @firstName,
-                [User].[LastName] = @lastName
+                [User].[FirstName] = ISNULL(@firstName, [User].[FirstName]),
+                [User].[LastName] = ISNULL(@lastName,[User].[LastName])
             WHERE [User].[email] = @email
         END
 RETURN 0
