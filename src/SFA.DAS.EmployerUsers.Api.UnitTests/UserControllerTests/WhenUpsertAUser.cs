@@ -32,7 +32,7 @@ namespace SFA.DAS.EmployerUsers.Api.UnitTests.UserControllerTests
                     c.Email.Equals(email) && c.GovUkIdentifier.Equals(govUkIdentifier)))).ReturnsAsync(response);
 
             //Act
-            var actual = await controller.Update(email, new UpdateUser(govUkIdentifier, firstName, lastName));
+            var actual = await controller.Update(new UpdateUser(govUkIdentifier, firstName, lastName, email));
 
             //Assert
             Assert.IsNotNull(actual);

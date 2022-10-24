@@ -111,11 +111,11 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
             return Ok(response);
         }
 
-        [Route("{email}", Name = "Update"), HttpPut]
+        [Route("", Name = "Update"), HttpPut]
         [Authorize(Roles = "UpdateEmployerUsers")]
-        public async Task<IHttpActionResult> Update(string email, [FromBody] UpdateUser updateUser)
+        public async Task<IHttpActionResult> Update([FromBody] UpdateUser updateUser)
         {
-            var userResponse = await _orchestrator.UpdateUser(email, updateUser.GovUkIdentifier);
+            var userResponse = await _orchestrator.UpdateUser(updateUser.Email, updateUser.GovUkIdentifier);
 
             return Created($"{userResponse.GovUkIdentifier}", userResponse);
         }
