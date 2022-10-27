@@ -7,6 +7,7 @@ using NLog;
 using SFA.DAS.EmployerUsers.Api.Types;
 using SFA.DAS.EmployerUsers.Application.Commands.ResumeUser;
 using SFA.DAS.EmployerUsers.Application.Commands.SuspendUser;
+using SFA.DAS.EmployerUsers.Application.Commands.UpdateUser;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserByEmailAddress;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUserById;
 using SFA.DAS.EmployerUsers.Application.Queries.GetUsers;
@@ -117,6 +118,18 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
             {
                 Id = id
             };
+        }
+
+        public async Task<UserViewModel> UpdateUser(string email, string govUkIdentifier)
+        {
+            var response = await _mediator.SendAsync(new UpdateUserCommand { Email = email, GovUkIdentifier = govUkIdentifier});
+
+            if (response == null)
+            {
+                return new UserViewModel();
+            }
+
+            return _mapper.Map<UserViewModel>(response.User);
         }
     }
 }

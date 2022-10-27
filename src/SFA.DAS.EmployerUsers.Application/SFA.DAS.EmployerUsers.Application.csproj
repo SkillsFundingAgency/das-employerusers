@@ -94,6 +94,10 @@
     <Compile Include="Commands\PasswordReset\ValidatePasswordResetCodeCommand.cs" />
     <Compile Include="Commands\PasswordReset\ValidatePasswordResetCodeCommandHandler.cs" />
     <Compile Include="Commands\PasswordReset\ValidatePasswordResetCodeCommandValidator.cs" />
+    <Compile Include="Commands\UpdateUser\UpdateUserCommand.cs" />
+    <Compile Include="Commands\UpdateUser\UpdateUserCommandHandler.cs" />
+    <Compile Include="Commands\UpdateUser\UpdateUserCommandResponse.cs" />
+    <Compile Include="Commands\UpdateUser\UpdateUserCommandValidator.cs" />
     <Compile Include="Exceptions\AccountSuspendedException.cs" />
     <Compile Include="Exceptions\AccountLockedException.cs" />
     <Compile Include="ApplicationExtensions.cs" />
@@ -203,7 +207,6 @@
       <Name>SFA.DAS.EmployerUsers.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -59,10 +59,11 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="StoredProcedures" />
     <Folder Include="Tables" />
   </ItemGroup>
   <ItemGroup>
+    <Build Include="StoredProcedures\GetUserByGovIdentifier.sql" />
+    <Build Include="StoredProcedures\UpsertUserGovUkIdentifier.sql" />
     <Build Include="Tables\RelyingParty.sql" />
     <Build Include="Tables\User.sql" />
     <Build Include="Tables\UserPasswordHistory.sql" />

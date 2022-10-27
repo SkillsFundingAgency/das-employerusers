@@ -21,14 +21,18 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
 
         public async Task<User> GetById(string id)
         {
-            var user = await _unitOfWork.QuerySingle<User>("GetUserById @id", new { id });
+            var user = await _unitOfWork.QuerySingle<User>("GetUserByGovIdentifier @id", new { id });
             if (user == null)
             {
-                return null;
+                user = await _unitOfWork.QuerySingle<User>("GetUserById @id", new { id });
+                if (user == null)
+                {
+                    return null;    
+                }
+                user.SecurityCodes = await GetUserSecurityCodes(user);
+                user.PasswordHistory = await GetUserPasswordHistory(user);
             }
 
-            user.SecurityCodes = await GetUserSecurityCodes(user);
-            user.PasswordHistory = await GetUserPasswordHistory(user);
             return user;
         }
 
@@ -179,6 +183,24 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.SqlServer
                 throw;
             }
         }
+        
+        public async Task UpsertWithGovIdentifier(User user)
+        {
+            try
+            {
+                await _unitOfWork.BeginTransaction();
+                
+                await _unitOfWork.Execute("UpsertUserGovUkIdentifier @email, @govUkIdentifier, @firstName, @lastName", new { user.Email, user.GovUkIdentifier, user.FirstName, user.LastName });
+                
+                _unitOfWork.CommitChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                throw;
+            }
+        }
+
 
         private async Task<SecurityCode[]> GetUserSecurityCodes(User user)
         {

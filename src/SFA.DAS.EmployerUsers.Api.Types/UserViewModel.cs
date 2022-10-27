@@ -13,5 +13,6 @@ namespace SFA.DAS.EmployerUsers.Api.Types
         public bool IsLocked { get; set; }
         public bool IsSuspended { get; set; }
         public DateTime? LastSuspendedDate { get; set; }
+        public string GovUkIdentifier { get; set; }
     }
 }

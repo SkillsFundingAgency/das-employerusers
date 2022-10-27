@@ -150,6 +150,7 @@
     <Compile Include="UserControllerTests\WhenIResumeAUser.cs" />
     <Compile Include="UserControllerTests\WhenISuspendAUser.cs" />
     <Compile Include="UserControllerTests\WhenIGetUsers.cs" />
+    <Compile Include="UserControllerTests\WhenUpsertAUser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

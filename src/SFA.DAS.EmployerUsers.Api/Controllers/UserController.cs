@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
@@ -54,6 +55,13 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
 
             return Ok(user.Data);
         }
+        
+        [Route("govuk", Name = "GovUk"), HttpGet]
+        [Authorize(Roles = "ReadEmployerUsers")]
+        public async Task<IHttpActionResult> ById([FromUri]string id)
+        {
+            return await Show(id);
+        }
 
         [Route("{id}/suspend")]
         [HttpPost]
@@ -101,6 +109,15 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
             }
 
             return Ok(response);
+        }
+
+        [Route("", Name = "Update"), HttpPut]
+        [Authorize(Roles = "UpdateEmployerUsers")]
+        public async Task<IHttpActionResult> Update([FromBody] UpdateUser updateUser)
+        {
+            var userResponse = await _orchestrator.UpdateUser(updateUser.Email, updateUser.GovUkIdentifier);
+
+            return Created($"{userResponse.GovUkIdentifier}", userResponse);
         }
     }
 }

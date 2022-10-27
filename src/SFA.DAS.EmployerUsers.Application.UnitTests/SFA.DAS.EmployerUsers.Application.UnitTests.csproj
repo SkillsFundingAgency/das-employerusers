@@ -166,6 +166,8 @@
     <Compile Include="CommandsTests\SuspendUserTests\SuspendUserCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="CommandsTests\UnlockUserTests\UnlockUserCommandTests\WhenHandlingTheCommand.cs" />
     <Compile Include="CommandsTests\UnlockUserTests\UnlockUserCommandValidatorTests\WhenValidatingTheCommand.cs" />
+    <Compile Include="CommandsTests\UpdateUserCommandTests\WhenHandlingUpdateUserCommand.cs" />
+    <Compile Include="CommandsTests\UpdateUserCommandTests\WhenValidatingUpdateUserCommand.cs" />
     <Compile Include="EventsTests\AccountLockedTests\GenerateAndEmailAccountLockedEmailHandlerTests\WhenHandling.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueriesTests\GetRelyingPartyTests\GetRelyingPartyQueryHandlerTests\WhenHandlingGetRelyingPartyQuery.cs" />
@@ -221,7 +223,6 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

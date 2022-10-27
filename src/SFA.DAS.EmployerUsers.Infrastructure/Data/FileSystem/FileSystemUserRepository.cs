@@ -119,6 +119,11 @@ namespace SFA.DAS.EmployerUsers.Infrastructure.Data.FileSystem
             await Task.FromResult(0);
         }
 
+        public async Task UpsertWithGovIdentifier(User user)
+        {
+            await Task.FromResult(0);
+        }
+
         private bool UserMatchesSearchCriteria(User user, string criteria)
         {
             if (user.Email.IndexOf(criteria, StringComparison.OrdinalIgnoreCase) != -1)
