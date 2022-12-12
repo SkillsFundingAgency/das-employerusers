@@ -2,8 +2,12 @@ namespace SFA.DAS.EmployerProfiles.Domain.UserProfiles;
 
 public class UserProfile
 {
-    public static implicit operator UserProfile(UserProfileEntity source)
+    public static implicit operator UserProfile?(UserProfileEntity? source)
     {
+        if (source == null)
+        {
+            return null;
+        }
         return new UserProfile
         {
             Email = source.Email,
