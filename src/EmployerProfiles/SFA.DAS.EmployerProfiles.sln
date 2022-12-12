@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerProfiles.Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerProfiles.Domain", "SFA.DAS.EmployerProfiles.Domain\SFA.DAS.EmployerProfiles.Domain.csproj", "{3C69536E-F02B-4DEF-8B5C-63967554AB0C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerProfiles.Domain.Tests", "SFA.DAS.EmployerProfiles.Domain.Tests\SFA.DAS.EmployerProfiles.Domain.Tests.csproj", "{ECA6B3D9-5E9E-4EAB-8A1B-B791E65AD6AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,8 +28,13 @@ Global
 		{3C69536E-F02B-4DEF-8B5C-63967554AB0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C69536E-F02B-4DEF-8B5C-63967554AB0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C69536E-F02B-4DEF-8B5C-63967554AB0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECA6B3D9-5E9E-4EAB-8A1B-B791E65AD6AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECA6B3D9-5E9E-4EAB-8A1B-B791E65AD6AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECA6B3D9-5E9E-4EAB-8A1B-B791E65AD6AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECA6B3D9-5E9E-4EAB-8A1B-B791E65AD6AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{606E5EF5-5F74-498B-8393-B8DBD2C4F599} = {71AC5090-1362-45A2-AB37-85E21C32933A}
+		{ECA6B3D9-5E9E-4EAB-8A1B-B791E65AD6AE} = {71AC5090-1362-45A2-AB37-85E21C32933A}
 	EndGlobalSection
 EndGlobal
