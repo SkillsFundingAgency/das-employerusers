@@ -236,3 +236,7 @@ src/Tools/PhantomJS/tools/phantomjs/ChangeLog
 src/SFA.DAS.EmployerUsers.Web/package-lock.json
 
 src/.idea/.idea.SFA.DAS.EmployerUsers/.idea/
+
+src/EmployerProfiles/.idea/.idea.SFA.DAS.EmployerProfiles/.idea/
+
+src/.DS_Store
