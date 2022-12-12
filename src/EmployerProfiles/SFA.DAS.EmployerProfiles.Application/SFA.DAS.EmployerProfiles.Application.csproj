@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Users\Handlers\Queries\GetUserByGovIdentifier" />
       <Folder Include="Users\Handlers\Queries\GetUserById" />
     </ItemGroup>
 
