@@ -1,5 +1,9 @@
+using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByGovIdentifier;
+using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserById;
+using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
 
 namespace SFA.DAS.EmployerProfiles.Api.Controllers;
 
@@ -9,16 +13,57 @@ namespace SFA.DAS.EmployerProfiles.Api.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly ILogger<UsersController> _logger;
 
-    public UsersController(IMediator mediator)
+    public UsersController(IMediator mediator, ILogger<UsersController> logger)
     {
         _mediator = mediator;
+        _logger = logger;
     }
     
     [HttpGet]
-    [Route("email/{email}")]
-    public async Task<IActionResult> GetUserByEmail([FromRoute] string email)
+    [Route("")]
+    public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
     {
         return Ok();
+    }
+    
+    [HttpGet]
+    [Route("id/{id}")]
+    public async Task<IActionResult> GetUserById(string id)
+    {
+        try
+        {
+            UserProfile? userProfile = null;
+            if (Guid.TryParse(id, out var userId))
+            {
+                var result = await _mediator.Send(new GetUserByIdQuery()
+                {
+                    Id = userId
+                });
+                userProfile = result.UserProfile;
+            }
+            else
+            {
+                var result = await _mediator.Send(new GetUserByGovIdentifierQuery
+                {
+                    GovIdentifier = id
+                });
+                userProfile = result.UserProfile;
+            }
+
+            if (userProfile == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(userProfile);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "An error occurred");
+            return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+        }
+        
     }
 }
