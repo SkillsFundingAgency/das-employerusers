@@ -242,3 +242,5 @@ src/EmployerProfiles/.idea/.idea.SFA.DAS.EmployerProfiles/.idea/
 src/.DS_Store
 
 src/EmployerProfiles/.DS_Store
+
+src/EmployerProfiles/SFA.DAS.EmployerProfiles.Api/appsettings.Development.json
