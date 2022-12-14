@@ -20,21 +20,13 @@ public class UsersController : ControllerBase
         _mediator = mediator;
         _logger = logger;
     }
-    
-    [HttpGet]
-    [Route("")]
-    public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
-    {
-        return Ok();
-    }
-    
     [HttpGet]
     [Route("id/{id}")]
     public async Task<IActionResult> GetUserById(string id)
     {
         try
         {
-            UserProfile? userProfile = null;
+            UserProfile? userProfile;
             if (Guid.TryParse(id, out var userId))
             {
                 var result = await _mediator.Send(new GetUserByIdQuery()

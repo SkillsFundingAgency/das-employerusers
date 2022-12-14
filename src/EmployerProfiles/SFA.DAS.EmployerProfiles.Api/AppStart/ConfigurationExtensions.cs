@@ -4,7 +4,7 @@ namespace SFA.DAS.EmployerProfiles.Api.AppStart;
 
 public static class ConfigurationExtensions
 {
-    public static void LoadConfiguration(this IConfiguration config)
+    public static IConfigurationRoot LoadConfiguration(this IConfiguration config)
     {
         var configBuilder = new ConfigurationBuilder()
             .AddConfiguration(config)
@@ -31,6 +31,6 @@ public static class ConfigurationExtensions
             );
         }
 
-        configBuilder.Build();
+        return configBuilder.Build();
     }
 }
