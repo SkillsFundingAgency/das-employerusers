@@ -11,11 +11,13 @@ public class WhenHandlingGetUserByGovIdentifier
 {
     [Test, RecursiveMoqAutoData]
     public async Task Then_The_Query_Is_Handled_And_User_Returned(
+        Guid id,
         GetUserByGovIdentifierQuery request,
         UserProfileEntity user,
         [Frozen] Mock<IUserProfileRepository> repository,
         GetUserByGovIdentifierQueryHandler handler)
     {
+        user.Id = id.ToString();
         repository.Setup(x => x.GetByGovIdentifier(request.GovIdentifier)).ReturnsAsync(user);
         
         var actual = await handler.Handle(request, CancellationToken.None);

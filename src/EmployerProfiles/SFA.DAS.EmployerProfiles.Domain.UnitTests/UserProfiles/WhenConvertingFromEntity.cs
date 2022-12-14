@@ -2,7 +2,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
 
-namespace SFA.DAS.EmployerProfiles.Domain.Tests.UserProfiles;
+namespace SFA.DAS.EmployerProfiles.Domain.UnitTests.UserProfiles;
 
 public class WhenConvertingFromEntity
 {

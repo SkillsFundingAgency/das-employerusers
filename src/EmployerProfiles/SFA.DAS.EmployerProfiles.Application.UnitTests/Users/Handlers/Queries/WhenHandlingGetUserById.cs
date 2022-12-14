@@ -12,10 +12,12 @@ public class WhenHandlingGetUserById
     [Test, RecursiveMoqAutoData]
     public async Task Then_The_Query_Is_Handled_And_User_Returned(
         GetUserByIdQuery request,
+        Guid id,
         UserProfileEntity user,
         [Frozen] Mock<IUserProfileRepository> repository,
         GetUserByIdQueryHandler handler)
     {
+        user.Id = id.ToString();
         repository.Setup(x => x.GetById(request.Id)).ReturnsAsync(user);
         
         var actual = await handler.Handle(request, CancellationToken.None);
