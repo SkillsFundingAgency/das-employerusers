@@ -64,6 +64,15 @@ jobs:
       configuration: '$(buildConfiguration)'
       clean: true
       vsVersion: '16.0'
+  
+  - task: VSBuild@1
+    displayName: 'Build SFA.DAS.EmployerProfiles.sln'
+    inputs:
+      solution: 'src/EmployerProfiles/SFA.DAS.EmployerProfiles.sln'
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
+      clean: true
+      vsVersion: '16.0'
 
   - task: VSTest@2
     displayName: 'Run NUnit Tests'
@@ -151,6 +160,23 @@ jobs:
       includeRootFolder: false
       rootFolderOrFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Support.Web'
       archiveFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Support.Web/SFA.DAS.EmployerUsers.Support.Web.zip'
+  
+   - task: VSBuild@1
+    displayName: 'Publish Profiles API'
+    inputs:
+      solution: src/EmployerProfiles/SFA.DAS.EmployerProfiles.Api/SFA.DAS.EmployerProfiles.Api.csproj
+      vsVersion: '16.0'
+      msbuildArgs: '/p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:SkipInvalidConfigurations=true /p:publishUrl="$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerProfiles.Api/"'
+      platform: 'anycpu'
+      configuration: '$(buildConfiguration)'
+      clean: true
+
+  - task: ArchiveFiles@2
+    displayName: 'Archive Profiles API'
+    inputs:
+      includeRootFolder: false
+      rootFolderOrFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerProfiles.Api'
+      archiveFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerProfiles.Api/SFA.DAS.EmployerProfiles.Api.zip'
 
   - task: CopyFiles@2
     displayName: 'Copy dacpac Files to: $(Build.ArtifactStagingDirectory)'
