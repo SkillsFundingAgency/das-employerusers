@@ -23,11 +23,12 @@ public class WhenUpdatingUserSuspendedFlag
         employerProfileDataContext.Setup(x => x.UserProfileEntities).ReturnsDbSet(new List<UserProfileEntity>{userProfileEntity});
         
         //Act
-        await repository.UpdateUserSuspendedFlag(id, true);
+        var actual = await repository.UpdateUserSuspendedFlag(id, true);
         
         //Assert
         employerProfileDataContext.Verify(x => x.SaveChanges(), Times.Once);
         userProfileEntity.IsSuspended.Should().BeTrue();
+        actual.Should().BeTrue();
     }
     
     [Test, RecursiveMoqAutoData]
@@ -40,9 +41,10 @@ public class WhenUpdatingUserSuspendedFlag
         employerProfileDataContext.Setup(x => x.UserProfileEntities).ReturnsDbSet(new List<UserProfileEntity>{entity});
         
         //Act
-        await repository.UpdateUserSuspendedFlag(Guid.NewGuid(), true);
+        var actual = await repository.UpdateUserSuspendedFlag(Guid.NewGuid(), true);
         
         //Assert
         employerProfileDataContext.Verify(x => x.SaveChanges(), Times.Never);
+        actual.Should().BeFalse();
     }
 }

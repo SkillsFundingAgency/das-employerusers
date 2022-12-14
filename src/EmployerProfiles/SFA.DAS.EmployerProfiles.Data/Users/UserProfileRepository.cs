@@ -46,14 +46,15 @@ public class UserProfileRepository : IUserProfileRepository
         return userProfileUpdate;
     }
 
-    public async Task UpdateUserSuspendedFlag(Guid id, bool isSuspended)
+    public async Task<bool> UpdateUserSuspendedFlag(Guid id, bool isSuspended)
     {
         var userProfileUpdate = await GetById(id);
         if (userProfileUpdate == null)
         {
-            return;
+            return false;
         }   
         userProfileUpdate.IsSuspended = isSuspended;
         _employerProfilesDataContext.SaveChanges();
+        return true;
     }
 }

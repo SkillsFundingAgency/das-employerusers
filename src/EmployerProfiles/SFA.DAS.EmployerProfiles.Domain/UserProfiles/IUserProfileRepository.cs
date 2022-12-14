@@ -6,5 +6,5 @@ public interface IUserProfileRepository
     Task<UserProfileEntity?> GetById(Guid id);
     Task<UserProfileEntity?> GetByGovIdentifier(string govUkIdentifier);
     Task<UserProfileEntity> Upsert(UserProfileEntity entity);
-    Task UpdateUserSuspendedFlag(Guid id, bool isSuspended);
+    Task<bool> UpdateUserSuspendedFlag(Guid id, bool isSuspended);
 }
