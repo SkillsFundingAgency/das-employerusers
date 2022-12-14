@@ -30,7 +30,7 @@ public class UserProfileRepository : IUserProfileRepository
         return singleOrDefaultAsync;
     }
 
-    public async Task<UserProfileEntity?> Upsert(UserProfileEntity entity)
+    public async Task<UserProfileEntity> Upsert(UserProfileEntity entity)
     {
         var userProfileUpdate = await GetById(Guid.Parse(entity.Id));
         if (userProfileUpdate == null)
