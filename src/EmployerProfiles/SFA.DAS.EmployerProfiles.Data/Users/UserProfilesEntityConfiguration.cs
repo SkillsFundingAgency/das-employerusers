@@ -16,6 +16,7 @@ public class UserProfilesEntityConfiguration : IEntityTypeConfiguration<UserProf
         builder.Property(x => x.LastName).HasColumnName("LastName").HasColumnType("varchar").HasMaxLength(50).IsRequired(false);
         builder.Property(x => x.Email).HasColumnName("Email").HasColumnType("varchar").HasMaxLength(255).IsRequired();
         builder.Property(x => x.GovUkIdentifier).HasColumnName("GovUkIdentifier").HasColumnType("varchar").HasMaxLength(150).IsRequired(false);
+        builder.Property(x => x.IsSuspended).HasColumnName("IsSuspended").HasColumnType("bit");
         
         builder.HasIndex(x => x.GovUkIdentifier).IsUnique();
         builder.HasIndex(x => x.Email).IsUnique();

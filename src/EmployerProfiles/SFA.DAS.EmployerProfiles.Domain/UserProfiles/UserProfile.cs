@@ -15,9 +15,12 @@ public class UserProfile
             DisplayName = $"{source.FirstName} {source.LastName}",
             FirstName = source.FirstName,
             LastName = source.LastName,
-            GovUkIdentifier = source.GovUkIdentifier
+            GovUkIdentifier = source.GovUkIdentifier,
+            IsSuspended = source.IsSuspended
         };
     }
+
+    public bool IsSuspended { get; set; }
 
     public Guid Id { get; set; }
     public string DisplayName { get; set; }
