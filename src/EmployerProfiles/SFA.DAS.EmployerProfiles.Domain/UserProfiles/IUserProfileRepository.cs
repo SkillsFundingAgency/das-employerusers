@@ -5,4 +5,5 @@ public interface IUserProfileRepository
     Task<UserProfileEntity?> GetByEmail(string searchEntityEmail);
     Task<UserProfileEntity?> GetById(Guid id);
     Task<UserProfileEntity?> GetByGovIdentifier(string govUkIdentifier);
+    Task<UserProfileEntity?> Upsert(UserProfileEntity entity);
 }

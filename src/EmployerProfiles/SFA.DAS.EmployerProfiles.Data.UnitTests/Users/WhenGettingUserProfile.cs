@@ -55,7 +55,5 @@ public class WhenGettingUserProfile
         var actual = await userProfileRepository.GetByGovIdentifier(searchEntity.GovUkIdentifier);
         
         actual.Should().BeEquivalentTo(searchEntity);
-        
-        
     }
 }

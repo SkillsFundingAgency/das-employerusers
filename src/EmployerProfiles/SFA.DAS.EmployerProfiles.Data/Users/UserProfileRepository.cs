@@ -29,4 +29,18 @@ public class UserProfileRepository : IUserProfileRepository
             c.GovUkIdentifier == govUkIdentifier);
         return singleOrDefaultAsync;
     }
+
+    public async Task<UserProfileEntity?> Upsert(UserProfileEntity entity)
+    {
+        var userProfileUpdate = await GetById(Guid.Parse(entity.Id));
+        if (userProfileUpdate == null)
+        {
+            return null;
+        }
+        userProfileUpdate.FirstName = entity.FirstName ?? userProfileUpdate.FirstName;
+        userProfileUpdate.LastName = entity.LastName ?? userProfileUpdate.LastName;
+        userProfileUpdate.GovUkIdentifier = entity.GovUkIdentifier ?? userProfileUpdate.GovUkIdentifier;
+        _employerProfilesDataContext.SaveChanges();
+        return userProfileUpdate;
+    }
 }

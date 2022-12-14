@@ -11,6 +11,7 @@ namespace SFA.DAS.EmployerProfiles.Data;
 public interface IEmployerProfilesDataContext
 {
     DbSet<UserProfileEntity> UserProfileEntities { get; set; }
+    int SaveChanges();
 }
 
 public class EmployerProfilesDataContext : DbContext, IEmployerProfilesDataContext
