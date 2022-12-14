@@ -11,7 +11,7 @@ public class UserProfile
         return new UserProfile
         {
             Email = source.Email,
-            Id = source.Id,
+            Id = Guid.Parse(source.Id),
             DisplayName = $"{source.FirstName} {source.LastName}",
             FirstName = source.FirstName,
             LastName = source.LastName,

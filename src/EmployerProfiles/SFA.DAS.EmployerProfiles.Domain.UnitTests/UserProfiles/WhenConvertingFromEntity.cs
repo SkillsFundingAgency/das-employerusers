@@ -7,11 +7,13 @@ namespace SFA.DAS.EmployerProfiles.Domain.Tests.UserProfiles;
 public class WhenConvertingFromEntity
 {
     [Test, AutoData]
-    public void Then_The_Fields_Are_Mapped(UserProfileEntity source)
+    public void Then_The_Fields_Are_Mapped(UserProfileEntity source, Guid id)
     {
+        source.Id = id.ToString();
         var actual = (UserProfile) source!;
 
-        actual.Should().BeEquivalentTo(source);
+        actual.Should().BeEquivalentTo(source, options=>options.Excluding(c=>c.Id));
+        actual.Id.Should().Be(id);
         actual.DisplayName.Should().Be($"{source.FirstName} {source.LastName}");
     }
 

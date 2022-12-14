@@ -27,15 +27,17 @@ public class WhenGettingUserProfile
     
     [Test, RecursiveMoqAutoData]
     public async Task Then_The_Item_Is_Returned_By_Id(
+        Guid id,
         List<UserProfileEntity> userProfiles,
         UserProfileEntity searchEntity,
         [Frozen] Mock<IEmployerProfilesDataContext> employerProfileDataContext,
         UserProfileRepository userProfileRepository)
     {
+        searchEntity.Id = id.ToString();
         userProfiles.Add(searchEntity);
         employerProfileDataContext.Setup(x => x.UserProfileEntities).ReturnsDbSet(userProfiles);
         
-        var actual = await userProfileRepository.GetById(searchEntity.Id);
+        var actual = await userProfileRepository.GetById(Guid.Parse(searchEntity.Id));
         
         actual.Should().BeEquivalentTo(searchEntity);
     }

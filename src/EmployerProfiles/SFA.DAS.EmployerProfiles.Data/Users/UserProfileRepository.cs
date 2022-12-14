@@ -20,12 +20,13 @@ public class UserProfileRepository : IUserProfileRepository
 
     public async Task<UserProfileEntity?> GetById(Guid id)
     {
-        return await _employerProfilesDataContext.UserProfileEntities.SingleOrDefaultAsync(c => c!.Id.Equals(id));
+        return await _employerProfilesDataContext.UserProfileEntities.SingleOrDefaultAsync(c => c!.Id == id.ToString());
     }
 
     public async Task<UserProfileEntity?> GetByGovIdentifier(string govUkIdentifier)
     {
-        return await _employerProfilesDataContext.UserProfileEntities.SingleOrDefaultAsync(c =>
-            c!.GovUkIdentifier.Equals(govUkIdentifier, StringComparison.CurrentCultureIgnoreCase));
+        var singleOrDefaultAsync = await _employerProfilesDataContext.UserProfileEntities.SingleOrDefaultAsync(c =>
+            c.GovUkIdentifier == govUkIdentifier);
+        return singleOrDefaultAsync;
     }
 }
