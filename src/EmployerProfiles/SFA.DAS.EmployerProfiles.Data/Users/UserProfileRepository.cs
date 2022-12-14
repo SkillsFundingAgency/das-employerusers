@@ -35,12 +35,25 @@ public class UserProfileRepository : IUserProfileRepository
         var userProfileUpdate = await GetById(Guid.Parse(entity.Id));
         if (userProfileUpdate == null)
         {
-            return null;
+            _employerProfilesDataContext.UserProfileEntities.Add(entity);
+            _employerProfilesDataContext.SaveChanges();
+            return entity;
         }
         userProfileUpdate.FirstName = entity.FirstName ?? userProfileUpdate.FirstName;
         userProfileUpdate.LastName = entity.LastName ?? userProfileUpdate.LastName;
         userProfileUpdate.GovUkIdentifier = entity.GovUkIdentifier ?? userProfileUpdate.GovUkIdentifier;
         _employerProfilesDataContext.SaveChanges();
         return userProfileUpdate;
+    }
+
+    public async Task UpdateUserSuspendedFlag(Guid id, bool isSuspended)
+    {
+        var userProfileUpdate = await GetById(id);
+        if (userProfileUpdate == null)
+        {
+            return;
+        }   
+        userProfileUpdate.IsSuspended = isSuspended;
+        _employerProfilesDataContext.SaveChanges();
     }
 }
