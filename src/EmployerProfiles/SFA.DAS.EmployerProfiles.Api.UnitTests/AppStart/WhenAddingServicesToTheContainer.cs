@@ -4,8 +4,10 @@ using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using SFA.DAS.EmployerProfiles.Api.AppStart;
+using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Commands.UpsertUser;
 using SFA.DAS.EmployerProfiles.Data;
 using SFA.DAS.EmployerProfiles.Domain.Configuration;
+using SFA.DAS.EmployerProfiles.Domain.RequestHandlers;
 using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
 
 namespace SFA.DAS.EmployerProfiles.Api.UnitTests.AppStart;
@@ -14,6 +16,7 @@ public class WhenAddingServicesToTheContainer
 {
         [TestCase(typeof(IEmployerProfilesDataContext))]
         [TestCase(typeof(IUserProfileRepository))]
+        [TestCase(typeof(IValidator<UpsertUserRequest>))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
         {
             var hostEnvironment = new Mock<IWebHostEnvironment>();
