@@ -31,7 +31,7 @@ public class WhenHandlingUpsertingUser
                     && c.GovUkIdentifier.Equals(request.GovUkIdentifier)
                     && c.Id.Equals(request.Id.ToString())
                     )))
-            .ReturnsAsync(result);
+            .ReturnsAsync(new Tuple<UserProfileEntity, bool>(result, true));
         
         //Act
         var actual = await handler.Handle(request, CancellationToken.None);
@@ -39,6 +39,7 @@ public class WhenHandlingUpsertingUser
         //Assert
         actual.UserProfile.Should().BeEquivalentTo(result, options=>options.Excluding(c=>c.Id));
         actual.UserProfile.Id.Should().Be(request.Id);
+        actual.IsCreated.Should().BeTrue();
     }
 
     [Test, MoqAutoData]

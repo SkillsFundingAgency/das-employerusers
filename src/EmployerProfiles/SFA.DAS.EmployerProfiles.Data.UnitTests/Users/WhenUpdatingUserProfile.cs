@@ -31,9 +31,10 @@ public class WhenUpdatingUserProfile
         
         //Assert
         employerProfileDataContext.Verify(x => x.SaveChanges(), Times.Once);
-        actual.Should().BeEquivalentTo(userProfileEntity, c => c.Excluding(o => o.GovUkIdentifier));
+        actual.Item1.Should().BeEquivalentTo(userProfileEntity, c => c.Excluding(o => o.GovUkIdentifier));
         userProfileEntity.FirstName.Should().Be(userProfileEntity.FirstName);
         userProfileEntity.GovUkIdentifier.Should().Be(govIdentifier);
+        actual.Item2.Should().BeFalse();
     }
     
     [Test, RecursiveMoqAutoData]
@@ -52,6 +53,7 @@ public class WhenUpdatingUserProfile
         
         //Assert
         employerProfileDataContext.Verify(x => x.SaveChanges(), Times.Once);
-        actual.Should().BeEquivalentTo(updateEntity);
+        actual.Item1.Should().BeEquivalentTo(updateEntity);
+        actual.Item2.Should().BeTrue();
     }
 }

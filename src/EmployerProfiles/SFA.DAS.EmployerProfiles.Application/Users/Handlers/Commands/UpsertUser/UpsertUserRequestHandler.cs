@@ -35,7 +35,8 @@ public class UpsertUserRequestHandler : IRequestHandler<UpsertUserRequest, Upser
 
         return new UpsertUserResult
         {
-            UserProfile = result!
+            UserProfile = result.Item1!,
+            IsCreated = result.Item2
         };
     }
 }

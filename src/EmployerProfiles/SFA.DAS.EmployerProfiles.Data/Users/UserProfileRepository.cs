@@ -30,20 +30,20 @@ public class UserProfileRepository : IUserProfileRepository
         return singleOrDefaultAsync;
     }
 
-    public async Task<UserProfileEntity> Upsert(UserProfileEntity entity)
+    public async Task<Tuple<UserProfileEntity,bool>> Upsert(UserProfileEntity entity)
     {
         var userProfileUpdate = await GetById(Guid.Parse(entity.Id));
         if (userProfileUpdate == null)
         {
             _employerProfilesDataContext.UserProfileEntities.Add(entity);
             _employerProfilesDataContext.SaveChanges();
-            return entity;
+            return new Tuple<UserProfileEntity, bool>(entity, true);
         }
         userProfileUpdate.FirstName = entity.FirstName ?? userProfileUpdate.FirstName;
         userProfileUpdate.LastName = entity.LastName ?? userProfileUpdate.LastName;
         userProfileUpdate.GovUkIdentifier = entity.GovUkIdentifier ?? userProfileUpdate.GovUkIdentifier;
         _employerProfilesDataContext.SaveChanges();
-        return userProfileUpdate;
+        return new Tuple<UserProfileEntity, bool>(userProfileUpdate, false);
     }
 
     public async Task<bool> UpdateUserSuspendedFlag(Guid id, bool isSuspended)
