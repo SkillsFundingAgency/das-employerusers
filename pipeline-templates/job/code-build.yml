@@ -1,7 +1,3 @@
-parameters:
-  SolutionBaseName:
-  buildConfiguration:
-
 jobs:
 - job: CodeBuild
   pool:
@@ -163,7 +159,7 @@ jobs:
     inputs:
       command: publish
       publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
-      projects: src/EmployerProfiles/${{ parameters.SolutionBaseName }}.Api/${{ parameters.SolutionBaseName }}.Api.csproj
+      projects: src/EmployerProfiles/SFA.DAS.EmployerProfiles.Api/SFA.DAS.EmployerProfiles.Api.csproj
       arguments: -o $(build.artifactstagingdirectory)/publish -c ${{ parameters.buildConfiguration }} --no-build
       modifyOutputPath: true
       zipAfterPublish: true

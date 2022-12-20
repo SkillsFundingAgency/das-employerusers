@@ -5,8 +5,6 @@ trigger:
       - "master"
 
 variables:
-- name: SolutionBaseName
-  value: SFA.DAS.EmployerProfiles
 - name: buildConfiguration
   value: 'release'
 - name: buildPlatform
@@ -26,8 +24,5 @@ stages:
 - stage: Build
   jobs:
   - template: pipeline-templates/job/code-build.yml
-    parameters:
-      SolutionBaseName: $(SolutionBaseName)
-      buildConfiguration: $(buildConfiguration)
 
 - template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks
