@@ -208,6 +208,7 @@
         "workerAppServiceName": "[concat(variables('resourceNamePrefix'), 'wkr-as')]",
         "workerAppServicePlanName": "[concat(variables('resourceNamePrefix'), 'wkr-asp')]",
         "supportAppServiceName": "[concat(variables('supportResourceNamePrefix'), '-as')]",
+        "profilesResourceGroupName": "[concat(variables('profilesResourceNamePrefix'), '-rg')]",
         "profilesAppServiceName": "[concat(variables('profilesResourceNamePrefix'), 'api-as')]",
         "databaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-users-db'))]"
     },
@@ -215,6 +216,15 @@
         {
             "apiVersion": "2021-04-01",
             "name": "[variables('resourceGroupName')]",
+            "type": "Microsoft.Resources/resourceGroups",
+            "location": "[parameters('resourceGroupLocation')]",
+            "tags": "[parameters('tags')]",
+            "properties": {
+            }
+        },
+        {
+            "apiVersion": "2021-04-01",
+            "name": "[variables('profilesResourceGroupName')]",
             "type": "Microsoft.Resources/resourceGroups",
             "location": "[parameters('resourceGroupLocation')]",
             "tags": "[parameters('tags')]",
@@ -800,7 +810,7 @@
             "apiVersion": "2021-04-01",
             "name": "[concat(variables('profilesAppServiceName'), '-application-insights-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[variables('resourceGroupName')]",
+            "resourceGroup": "[variables('profilesResourceGroupName')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -817,7 +827,7 @@
                 }
             },
             "dependsOn": [
-                "[variables('resourceGroupName')]"
+                "[variables('profilesResourceGroupName')]"
             ]
         },
         {
@@ -848,7 +858,7 @@
             "apiVersion": "2021-04-01",
             "name": "[concat(variables('profilesAppServiceName'), '-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[variables('resourceGroupName')]",
+            "resourceGroup": "[variables('profilesResourceGroupName')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -908,10 +918,7 @@
                         "value": "[parameters('backEndAccessRestrictions')]"
                     }
                 }
-            },
-            "dependsOn": [
-                "[variables('resourceGroupName')]"
-            ]
+            }
         },
         {
             "apiVersion": "2021-04-01",
