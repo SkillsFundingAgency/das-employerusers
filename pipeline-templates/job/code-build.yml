@@ -151,6 +151,18 @@ jobs:
       includeRootFolder: false
       rootFolderOrFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Support.Web'
       archiveFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Support.Web/SFA.DAS.EmployerUsers.Support.Web.zip'
+  
+  - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks 
+
+  - task: DotNetCoreCLI@2
+    displayName: Publish Employer Profiles API
+    inputs:
+      command: publish
+      publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
+      projects: src/EmployerProfiles/SFA.DAS.EmployerProfiles.Api/SFA.DAS.EmployerProfiles.Api.csproj
+      arguments: -o $(build.artifactstagingdirectory)/publish -c ${{ parameters.buildConfiguration }} --no-build
+      modifyOutputPath: true
+      zipAfterPublish: true
 
   - task: CopyFiles@2
     displayName: 'Copy dacpac Files to: $(Build.ArtifactStagingDirectory)'
