@@ -181,7 +181,7 @@ jobs:
         src/SFA.DAS.EmployerUsers.Api.Client/SFA.DAS.EmployerUsers.Api.Client.csproj;
         src/SFA.DAS.EmployerUsers.Api.Types/SFA.DAS.EmployerUsers.Api.Types.csproj;
 
-- job: NET Core CodeBuild
+- job: 'NET Core CodeBuild'
   pool:
     name: DAS - Continuous Integration Agent.OS
   variables:
