@@ -183,7 +183,7 @@ jobs:
 
 - job: NET_Core_CodeBuild
   pool:
-    name: DAS - Continuous Integration Agent.OS
+    name: DAS - Continuous Integration Agents
   variables:
   - group: BUILD Management Resources
   workspace:
