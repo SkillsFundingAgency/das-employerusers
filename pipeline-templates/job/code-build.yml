@@ -152,21 +152,6 @@ jobs:
       rootFolderOrFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Support.Web'
       archiveFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerUsers.Support.Web/SFA.DAS.EmployerUsers.Support.Web.zip'
 
-  - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
-    parameters:
-      TargetProjects: 'src/EmployerProfiles/**/*.csproj'
-      UnitTestProjects: 'src/EmployerProfiles/**/*UnitTests.csproj'
-
-  - task: DotNetCoreCLI@2
-    displayName: Publish Employer Profiles API
-    inputs:
-      command: publish
-      publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
-      projects: src/EmployerProfiles/SFA.DAS.EmployerProfiles.Api/SFA.DAS.EmployerProfiles.Api.csproj
-      arguments: -o $(build.artifactstagingdirectory)/publish -c ${{ parameters.buildConfiguration }} --no-build
-      modifyOutputPath: true
-      zipAfterPublish: true
-
   - task: CopyFiles@2
     displayName: 'Copy dacpac Files to: $(Build.ArtifactStagingDirectory)'
     inputs:
@@ -174,6 +159,7 @@ jobs:
         src/**/*.dacpac
       flattenFolders: true
       targetFolder: '$(Build.ArtifactStagingDirectory)/publish/dacpacs/'
+
   - task: CopyFiles@2
     displayName: 'Copy azure Files to: $(Build.ArtifactStagingDirectory)'
     inputs:
@@ -194,3 +180,39 @@ jobs:
       DotNetStandardPackagesToPack: |
         src/SFA.DAS.EmployerUsers.Api.Client/SFA.DAS.EmployerUsers.Api.Client.csproj;
         src/SFA.DAS.EmployerUsers.Api.Types/SFA.DAS.EmployerUsers.Api.Types.csproj;
+
+- job: NET Core CodeBuild
+  pool:
+    name: DAS - Continuous Integration Agent.OS
+  variables:
+  - group: BUILD Management Resources
+  workspace:
+    clean: all
+  steps:
+  - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
+    parameters:
+      TargetProjects: 'src/EmployerProfiles/**/*.csproj'
+      UnitTestProjects: 'src/EmployerProfiles/**/*UnitTests.csproj'
+
+  - task: DotNetCoreCLI@2
+    displayName: Publish Employer Profiles API
+    inputs:
+      command: publish
+      publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
+      projects: src/EmployerProfiles/SFA.DAS.EmployerProfiles.Api/SFA.DAS.EmployerProfiles.Api.csproj
+      arguments: -o $(build.artifactstagingdirectory)/publish -c ${{ parameters.buildConfiguration }} --no-build
+      modifyOutputPath: true
+      zipAfterPublish: true
+
+  - task: CopyFiles@2
+    displayName: 'Copy azure Files to: $(Build.ArtifactStagingDirectory)'
+    inputs:
+      contents: |
+        azure/**
+      targetFolder: '$(Build.ArtifactStagingDirectory)/publish'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Publish'
+    inputs:
+      ArtifactName: Publish
+      pathtoPublish: '$(build.artifactstagingdirectory)/publish'
