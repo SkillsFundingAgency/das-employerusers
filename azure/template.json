@@ -965,6 +965,10 @@
             "type": "string",
             "value": "[variables('resourceGroupName')]"
         },
+        "ProfilesResourceGroupName": {
+            "type": "string",
+            "value": "[variables('profilesResourceGroupName')]"
+        },
         "ApiAppServiceName": {
             "type": "string",
             "value": "[variables('apiAppServiceName')]"
