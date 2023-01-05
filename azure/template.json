@@ -210,7 +210,8 @@
         "supportAppServiceName": "[concat(variables('supportResourceNamePrefix'), '-as')]",
         "profilesResourceGroupName": "[concat(variables('profilesResourceNamePrefix'), '-rg')]",
         "profilesAppServiceName": "[concat(variables('profilesResourceNamePrefix'), 'api-as')]",
-        "databaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-users-db'))]"
+        "databaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-users-db'))]",
+        "configNames": "SFA.DAS.EmployerProfiles.Api"
     },
     "resources": [
         {
@@ -888,6 +889,10 @@
                                 {
                                     "name": "ConfigurationStorageConnectionString",
                                     "value": "[parameters('configurationStorageConnectionString')]"
+                                },
+                                {
+                                    "name": "ConfigNames",
+                                    "value": "[variables('configNames')]"
                                 },
                                 {
                                     "name": "Version",
