@@ -31,7 +31,7 @@ public class WhenAddingServicesToTheContainer
             var apimDeveloperApiConfiguration = configuration
                 .GetSection(nameof(EmployerProfilesConfiguration))
                 .Get<EmployerProfilesConfiguration>();
-            serviceCollection.AddDatabaseRegistration(apimDeveloperApiConfiguration, configuration["Environment"]);
+            serviceCollection.AddDatabaseRegistration(apimDeveloperApiConfiguration, configuration["EnvironmentName"]);
 
             var provider = serviceCollection.BuildServiceProvider();
 
@@ -46,7 +46,7 @@ public class WhenAddingServicesToTheContainer
                 InitialData = new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>("EmployerProfilesConfiguration:ConnectionString", "test"),
-                    new KeyValuePair<string, string>("Environment", "test")
+                    new KeyValuePair<string, string>("EnvironmentName", "test")
                 }
             };
 

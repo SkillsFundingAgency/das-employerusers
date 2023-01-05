@@ -16,10 +16,10 @@ builder.Services.AddServiceRegistration();
 var employerProfilesConfiguration = rootConfiguration
     .GetSection(nameof(EmployerProfilesConfiguration))
     .Get<EmployerProfilesConfiguration>();
-builder.Services.AddDatabaseRegistration(employerProfilesConfiguration, rootConfiguration["Environment"]);
+builder.Services.AddDatabaseRegistration(employerProfilesConfiguration, rootConfiguration["EnvironmentName"]);
 builder.Services.AddMediatR(typeof(GetUserByEmailQuery));
 
-if (rootConfiguration["Environment"] != "DEV")
+if (rootConfiguration["EnvironmentName"] != "DEV")
 {
     builder.Services.AddHealthChecks()
         .AddDbContextCheck<EmployerProfilesDataContext>();
@@ -28,8 +28,8 @@ if (rootConfiguration["Environment"] != "DEV")
 builder.Services
     .AddMvc(o =>
     {
-        if (!(rootConfiguration["Environment"]!.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase) ||
-              rootConfiguration["Environment"]!.Equals("DEV", StringComparison.CurrentCultureIgnoreCase)))
+        if (!(rootConfiguration["EnvironmentName"]!.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase) ||
+              rootConfiguration["EnvironmentName"]!.Equals("DEV", StringComparison.CurrentCultureIgnoreCase)))
         {
             o.Conventions.Add(new AuthorizeControllerModelConvention(new List<string> { "" }));
         }
@@ -68,7 +68,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthentication();
 
-if (!app.Configuration["Environment"]!.Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
+if (!app.Configuration["EnvironmentName"]!.Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
 {
     app.UseHealthChecks();
 }

@@ -12,7 +12,7 @@ public static class ConfigurationExtensions
             .AddEnvironmentVariables();
 
 
-        if (!config["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
+        if (!config["EnvironmentName"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
         {
 
 #if DEBUG
@@ -25,7 +25,7 @@ public static class ConfigurationExtensions
                 {
                     options.ConfigurationKeys = config["ConfigNames"].Split(",");
                     options.StorageConnectionString = config["ConfigurationStorageConnectionString"];
-                    options.EnvironmentName = config["Environment"];
+                    options.EnvironmentName = config["EnvironmentName"];
                     options.PreFixConfigurationKeys = false;
                 }
             );
