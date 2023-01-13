@@ -47,6 +47,7 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
         private const string AzureResource = "https://database.windows.net/";
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
+
         public DefaultRegistry()
         {
             try
@@ -127,11 +128,14 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
             For<IPasswordProfileRepository>().Use<InMemoryPasswordProfileRepository>();
             For<IAuditApiClient>().Use<AuditApiClient>();
-            For<IAuditApiConfiguration>().Use(() => new AuditApiConfiguration
+            For<IAuditApiConfiguration>().Use($"Audit API", c =>
             {
-                ApiBaseUrl = ConfigurationManager.AppSettings["AuditApiBaseUrl"],
-                IdentifierUri = ConfigurationManager.AppSettings["AuditApiIdentifierUri"],
-                Tenant = ConfigurationManager.AppSettings["AuditApiTenant"]
+                var employerUsersConfig = c.GetInstance<EmployerUsersConfiguration>();
+                return new AuditApiConfiguration
+                {
+                    ApiBaseUrl = employerUsersConfig.Audit.ApiBaseUrl,
+                    IdentifierUri = employerUsersConfig.Audit.IdentifierUri
+                };
             });
         }
 

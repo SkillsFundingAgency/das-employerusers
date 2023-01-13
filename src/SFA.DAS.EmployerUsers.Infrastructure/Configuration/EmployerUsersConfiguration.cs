@@ -8,5 +8,7 @@
         public string AllowedHashstringCharacters { get; set; }
         public string EmployerAccountsBaseUrl { get; set; }
         public string SqlConnectionString { get; set; }
+
+        public virtual AuditConfiguaration Audit { get; set; }
     }
 }

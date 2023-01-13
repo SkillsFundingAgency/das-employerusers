@@ -109,6 +109,7 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Auditing\AuditService.cs" />
+    <Compile Include="Configuration\AuditConfiguaration.cs" />
     <Compile Include="Configuration\EmployerUsersConfiguration.cs" />
     <Compile Include="Configuration\IdentityServerConfiguration.cs" />
     <Compile Include="Configuration\AccountConfiguration.cs" />

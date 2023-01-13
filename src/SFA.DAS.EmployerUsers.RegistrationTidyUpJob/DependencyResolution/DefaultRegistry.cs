@@ -88,13 +88,14 @@ namespace SFA.DAS.EmployerUsers.RegistrationTidyUpJob.DependencyResolution
             For<IUserRepository>().Use<SqlServerUserRepository>();
             For<IAuditApiClient>().Use<AuditApiClient>();
             For<IAuditMessageFactory>().Use<AuditMessageFactory>().Singleton();
-            For<IAuditApiConfiguration>().Use(() => new AuditApiConfiguration
+            For<IAuditApiConfiguration>().Use($"Audit API", c =>
             {
-                ApiBaseUrl = ConfigurationManager.AppSettings["AuditApiBaseUrl"],
-                ClientId = ConfigurationManager.AppSettings["AuditApiClientId"],
-                ClientSecret = ConfigurationManager.AppSettings["AuditApiSecret"],
-                IdentifierUri = ConfigurationManager.AppSettings["AuditApiIdentifierUri"],
-                Tenant = ConfigurationManager.AppSettings["AuditApiTenant"]
+                var employerUsersConfig = c.GetInstance<EmployerUsersConfiguration>();
+                return new AuditApiConfiguration
+                {
+                    ApiBaseUrl = employerUsersConfig.Audit.ApiBaseUrl,
+                    IdentifierUri = employerUsersConfig.Audit.IdentifierUri
+                };
             });
         }
 
