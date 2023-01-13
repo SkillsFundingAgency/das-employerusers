@@ -31,7 +31,7 @@ builder.Services
         if (!(rootConfiguration["EnvironmentName"]!.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase) ||
               rootConfiguration["EnvironmentName"]!.Equals("DEV", StringComparison.CurrentCultureIgnoreCase)))
         {
-            o.Conventions.Add(new AuthorizeControllerModelConvention(new List<string> { "" }));
+            o.Conventions.Add(new AuthorizeControllerModelConvention(new List<string> ()));
         }
         o.Conventions.Add(new ApiExplorerGroupPerVersionConvention());
     })
