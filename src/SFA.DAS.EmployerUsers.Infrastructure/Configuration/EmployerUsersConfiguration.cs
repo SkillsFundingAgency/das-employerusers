@@ -9,6 +9,6 @@
         public string EmployerAccountsBaseUrl { get; set; }
         public string SqlConnectionString { get; set; }
 
-        public virtual AuditConfiguaration Audit { get; set; }
+        public virtual AuditConfiguaration AuditApi { get; set; }
     }
 }

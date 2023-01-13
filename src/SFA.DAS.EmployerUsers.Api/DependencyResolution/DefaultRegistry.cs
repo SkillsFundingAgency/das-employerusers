@@ -100,8 +100,8 @@ namespace SFA.DAS.EmployerUsers.Api.DependencyResolution
                 var employerUsersConfig = c.GetInstance<EmployerUsersConfiguration>();
                 return new AuditApiConfiguration
                 {
-                    ApiBaseUrl = employerUsersConfig.Audit.ApiBaseUrl,
-                    IdentifierUri = employerUsersConfig.Audit.IdentifierUri
+                    ApiBaseUrl = employerUsersConfig.AuditApi.ApiBaseUrl,
+                    IdentifierUri = employerUsersConfig.AuditApi.IdentifierUri
                 };
             });
         }
