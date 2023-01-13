@@ -130,8 +130,6 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             For<IAuditApiConfiguration>().Use(() => new AuditApiConfiguration
             {
                 ApiBaseUrl = ConfigurationManager.AppSettings["AuditApiBaseUrl"],
-                ClientId = ConfigurationManager.AppSettings["AuditApiClientId"],
-                ClientSecret = ConfigurationManager.AppSettings["AuditApiSecret"],
                 IdentifierUri = ConfigurationManager.AppSettings["AuditApiIdentifierUri"],
                 Tenant = ConfigurationManager.AppSettings["AuditApiTenant"]
             });
