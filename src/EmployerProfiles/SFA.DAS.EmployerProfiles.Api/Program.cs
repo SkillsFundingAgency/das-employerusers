@@ -2,6 +2,8 @@ using System.Text.Json.Serialization;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.OpenApi.Models;
+using SFA.DAS.Api.Common.AppStart;
+using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.EmployerProfiles.Api.AppStart;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByEmail;
@@ -25,6 +27,21 @@ if (rootConfiguration["EnvironmentName"] != "DEV")
         .AddDbContextCheck<EmployerProfilesDataContext>();
 
 }
+
+if (!(rootConfiguration["EnvironmentName"]!.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase) ||
+      rootConfiguration["EnvironmentName"]!.Equals("DEV", StringComparison.CurrentCultureIgnoreCase)))
+{
+    var azureAdConfiguration = rootConfiguration
+        .GetSection("AzureAd")
+        .Get<AzureActiveDirectoryConfiguration>();
+
+    var policies = new Dictionary<string, string>
+    {
+        {PolicyNames.Default, RoleNames.Default},
+    };
+    builder.Services.AddAuthentication(azureAdConfiguration, policies);
+}
+
 builder.Services
     .AddMvc(o =>
     {
