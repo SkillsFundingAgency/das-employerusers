@@ -1,3 +1,4 @@
+using Azure.Identity;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.EmployerProfiles.Data;
 using SFA.DAS.EmployerProfiles.Domain.Configuration;
@@ -26,6 +27,11 @@ public static class DatabaseExtensions
 
         services.AddTransient<IEmployerProfilesDataContext, EmployerProfilesDataContext>(provider => provider.GetService<EmployerProfilesDataContext>()!);
         services.AddTransient(provider => new Lazy<EmployerProfilesDataContext>(provider.GetService<EmployerProfilesDataContext>()!));
-            
+        services.AddSingleton(new ChainedTokenCredential(
+            new ManagedIdentityCredential(),
+            new AzureCliCredential(),
+            new VisualStudioCodeCredential(),
+            new VisualStudioCredential())
+        );
     }
 }
