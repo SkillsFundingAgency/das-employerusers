@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
@@ -13,6 +14,10 @@ using SFA.DAS.EmployerProfiles.Domain.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 
 var rootConfiguration = builder.Configuration.LoadConfiguration();
+
+builder.Services.AddOptions();
+builder.Services.Configure<EmployerProfilesConfiguration>(rootConfiguration.GetSection(nameof(EmployerProfilesConfiguration)));
+builder.Services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesConfiguration>>().Value);
 
 builder.Services.AddServiceRegistration();
 var employerProfilesConfiguration = rootConfiguration
