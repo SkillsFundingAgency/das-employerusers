@@ -21,6 +21,7 @@ using System.Data.SqlClient;
 using System.Web;
 using MediatR;
 using Microsoft.Azure.Services.AppAuthentication;
+using Microsoft.Extensions.Configuration;
 using NLog;
 using SFA.DAS.Audit.Client;
 using SFA.DAS.AutoConfiguration;
@@ -38,6 +39,7 @@ using SFA.DAS.HashingService;
 using SFA.DAS.Notifications.Api.Client;
 using SFA.DAS.Notifications.Api.Client.Configuration;
 using StructureMap;
+using StructureMap.Building.Interception;
 using StructureMap.Web.Pipeline;
 
 namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
@@ -119,7 +121,13 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
             For<IUserRepository>().Use<SqlServerUserRepository>();
             For<IRelyingPartyRepository>().Use<SqlServerRelyingPartyRepository>();
             For<IPasswordProfileRepository>().Use<InMemoryPasswordProfileRepository>();
-            For<IAuditApiClient>().Use<StubAuditApiClient>().Ctor<string>().Is(string.Format(@"{0}\App_Data\Audit\", AppDomain.CurrentDomain.BaseDirectory));
+            //For<IAuditApiClient>().Use<StubAuditApiClient>().Ctor<string>().Is(string.Format(@"{0}\App_Data\Audit\", AppDomain.CurrentDomain.BaseDirectory));
+            Toggle<IAuditApiClient, StubAuditApiClient>("UseStubAuditClient");
+        }
+
+        private void Toggle<TPluginType, TConcreteType>(string configurationKey) where TConcreteType : TPluginType
+        {
+            For<TPluginType>().InterceptWith(new FuncInterceptor<TPluginType>((c, o) => c.GetInstance<IConfiguration>().GetValue<bool>(configurationKey) ? c.GetInstance<TConcreteType>() : o));
         }
 
         private void AddProductionRegistrations()
