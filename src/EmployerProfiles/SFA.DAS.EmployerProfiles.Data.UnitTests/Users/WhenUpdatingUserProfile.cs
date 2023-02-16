@@ -12,7 +12,7 @@ public class WhenUpdatingUserProfile
 {
     [Test, RecursiveMoqAutoData]
     public async Task Then_If_The_Record_Exists_Then_It_Is_Updated(
-        Guid id,
+        string email,
         string govIdentifier,
         UserProfileEntity updateEntity,
         UserProfileEntity userProfileEntity,
@@ -20,8 +20,9 @@ public class WhenUpdatingUserProfile
         UserProfileRepository repository)
     {
         //Arrange
-        userProfileEntity.Id = id.ToString();
-        updateEntity.Id = id.ToString();
+        userProfileEntity.Email = email;
+        updateEntity.Id = Guid.NewGuid().ToString();
+        updateEntity.Email = email;
         updateEntity.FirstName = null;
         updateEntity.GovUkIdentifier = govIdentifier;
         employerProfileDataContext.Setup(x => x.UserProfileEntities).ReturnsDbSet(new List<UserProfileEntity>{userProfileEntity});
