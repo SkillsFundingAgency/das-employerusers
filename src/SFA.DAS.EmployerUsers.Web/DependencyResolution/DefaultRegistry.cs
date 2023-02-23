@@ -64,11 +64,16 @@ namespace SFA.DAS.EmployerUsers.Web.DependencyResolution
 
                 For<IOwinWrapper>().Transient().Use(() => new OwinWrapper(HttpContext.Current.GetOwinContext())).SetLifecycleTo(new HttpContextLifecycle());
 
-                For<IdentityServerConfiguration>().Transient().Use(() => new IdentityServerConfiguration
-                {
-                    ApplicationBaseUrl = ConfigurationManager.AppSettings["BaseExternalUrl"],
-                    EmployerPortalUrl = ConfigurationManager.AppSettings["EmployerPortalUrl"]
-                });
+                For<IdentityServerConfiguration>().Transient().Use("IdentityServer", c =>
+                { 
+                        var employerConfig = c.GetInstance<EmployerUsersConfiguration>();
+                        return new IdentityServerConfiguration
+                        {
+                            ApplicationBaseUrl = employerConfig.IdentityServer.ApplicationBaseUrl,
+                            EmployerPortalUrl = employerConfig.IdentityServer.EmployerPortalUrl
+
+                        };
+                    });
 
                 For<IAuditMessageFactory>().Use<AuditMessageFactory>().Singleton();
                 For<IAuditService>().Use<AuditService>();
