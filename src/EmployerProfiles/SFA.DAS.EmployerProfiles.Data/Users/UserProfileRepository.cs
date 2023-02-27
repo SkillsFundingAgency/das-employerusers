@@ -15,14 +15,14 @@ public class UserProfileRepository : IUserProfileRepository
     public async Task<UserProfileEntity?> GetByEmail(string searchEntityEmail)
     {
         return await _employerProfilesDataContext.UserProfileEntities.SingleOrDefaultAsync(c =>
-            c!.Email.Equals(searchEntityEmail, StringComparison.CurrentCultureIgnoreCase));
+            c!.Email == searchEntityEmail);
     }
 
     public async Task<UserProfileEntity?> GetById(Guid id)
     {
         return await _employerProfilesDataContext.UserProfileEntities.SingleOrDefaultAsync(c => c!.Id == id.ToString());
     }
-
+    
     public async Task<UserProfileEntity?> GetByGovIdentifier(string govUkIdentifier)
     {
         var singleOrDefaultAsync = await _employerProfilesDataContext.UserProfileEntities.SingleOrDefaultAsync(c =>
@@ -32,7 +32,7 @@ public class UserProfileRepository : IUserProfileRepository
 
     public async Task<Tuple<UserProfileEntity,bool>> Upsert(UserProfileEntity entity)
     {
-        var userProfileUpdate = await GetById(Guid.Parse(entity.Id));
+        var userProfileUpdate = await GetByEmail(entity.Email);
         if (userProfileUpdate == null)
         {
             _employerProfilesDataContext.UserProfileEntities.Add(entity);

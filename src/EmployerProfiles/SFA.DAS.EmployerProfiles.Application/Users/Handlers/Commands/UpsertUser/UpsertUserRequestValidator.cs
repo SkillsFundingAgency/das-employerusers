@@ -30,7 +30,7 @@ public class UpsertUserRequestValidator : IValidator<UpsertUserRequest>
 
         if (item.Id == Guid.Empty)
         {
-            result.AddError(nameof(item.Email));
+            result.AddError(nameof(item.Id));
         }
         return Task.FromResult(result);
     }
