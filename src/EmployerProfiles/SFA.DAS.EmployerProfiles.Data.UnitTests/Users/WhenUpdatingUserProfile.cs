@@ -1,10 +1,12 @@
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
+using Newtonsoft.Json.Linq;
 using SFA.DAS.EmployerProfiles.Data.UnitTests.DatabaseMock;
 using SFA.DAS.EmployerProfiles.Data.Users;
 using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
 using SFA.DAS.Testing.AutoFixture;
+using System.Reflection.Metadata;
 
 namespace SFA.DAS.EmployerProfiles.Data.UnitTests.Users;
 
@@ -68,12 +70,12 @@ public class WhenUpdatingUserProfile
         updateEntity.Id = null;
 
         //Act
-        var exception = Assert.ThrowsAsync<NullReferenceException>(
+        var exception = Assert.ThrowsAsync<ArgumentNullException>(
             async () => await repository.Upsert(updateEntity),
-            "Id");
+            "Value cannot be null. (Parameter 'Id')");
 
         //Assert
-        Assert.That(exception?.Message, Is.EqualTo("Id"));
+        Assert.That(exception?.Message, Is.EqualTo("Value cannot be null. (Parameter 'Id')"));
     }
 
     [Test, RecursiveMoqAutoData]
@@ -86,11 +88,11 @@ public class WhenUpdatingUserProfile
         updateEntity.Email = string.Empty;
 
         //Act
-        var exception = Assert.ThrowsAsync<NullReferenceException>(
+        var exception = Assert.ThrowsAsync<ArgumentNullException>(
             async () => await repository.Upsert(updateEntity),
-            "Email");
+            "Value cannot be null. (Parameter 'Email')");
 
         //Assert
-        Assert.That(exception?.Message, Is.EqualTo("Email"));
+        Assert.That(exception?.Message, Is.EqualTo("Value cannot be null. (Parameter 'Email')"));
     }
 }

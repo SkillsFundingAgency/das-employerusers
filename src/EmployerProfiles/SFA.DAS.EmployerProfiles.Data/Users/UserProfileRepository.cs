@@ -33,10 +33,10 @@ public class UserProfileRepository : IUserProfileRepository
     public async Task<Tuple<UserProfileEntity,bool>> Upsert(UserProfileEntity entity)
     {
         if (string.IsNullOrEmpty(entity.Id))
-            throw new NullReferenceException(nameof(entity.Id));
+            throw new ArgumentNullException(nameof(entity.Id));
 
         if (string.IsNullOrEmpty(entity.Email))
-            throw new NullReferenceException(nameof(entity.Email));
+            throw new ArgumentNullException(nameof(entity.Email));
 
         var userProfileUpdate = await GetById(new Guid(entity.Id));
         if (userProfileUpdate == null)
