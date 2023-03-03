@@ -12,6 +12,7 @@ public class WhenUpdatingUserProfile
 {
     [Test, RecursiveMoqAutoData]
     public async Task Then_If_The_Record_Exists_Then_It_Is_Updated(
+        Guid id,
         string email,
         string govIdentifier,
         UserProfileEntity updateEntity,
@@ -20,8 +21,8 @@ public class WhenUpdatingUserProfile
         UserProfileRepository repository)
     {
         //Arrange
-        userProfileEntity.Email = email;
-        updateEntity.Id = Guid.NewGuid().ToString();
+        userProfileEntity.Id = id.ToString();
+        updateEntity.Id = id.ToString();
         updateEntity.Email = email;
         updateEntity.FirstName = null;
         updateEntity.GovUkIdentifier = govIdentifier;
@@ -56,5 +57,40 @@ public class WhenUpdatingUserProfile
         employerProfileDataContext.Verify(x => x.SaveChanges(), Times.Once);
         actual.Item1.Should().BeEquivalentTo(updateEntity);
         actual.Item2.Should().BeTrue();
+    }
+
+    [Test, RecursiveMoqAutoData]
+    public void Throw_Exception_If_The_Id_Does_Not_Given(
+        UserProfileEntity updateEntity,
+        UserProfileRepository repository)
+    {
+        //Arrange
+        updateEntity.Id = null;
+
+        //Act
+        var exception = Assert.ThrowsAsync<NullReferenceException>(
+            async () => await repository.Upsert(updateEntity),
+            "Id");
+
+        //Assert
+        Assert.That(exception?.Message, Is.EqualTo("Id"));
+    }
+
+    [Test, RecursiveMoqAutoData]
+    public void Throw_Exception_If_The_Email_Does_Not_Given(
+        UserProfileEntity updateEntity,
+        UserProfileRepository repository)
+    {
+        //Arrange
+        updateEntity.Id = new Guid().ToString();
+        updateEntity.Email = string.Empty;
+
+        //Act
+        var exception = Assert.ThrowsAsync<NullReferenceException>(
+            async () => await repository.Upsert(updateEntity),
+            "Email");
+
+        //Assert
+        Assert.That(exception?.Message, Is.EqualTo("Email"));
     }
 }
