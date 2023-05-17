@@ -32,13 +32,21 @@ public class UserProfileRepository : IUserProfileRepository
 
     public async Task<Tuple<UserProfileEntity,bool>> Upsert(UserProfileEntity entity)
     {
-        var userProfileUpdate = await GetByEmail(entity.Email);
+        if (string.IsNullOrEmpty(entity.Id))
+            throw new ArgumentNullException(nameof(entity.Id));
+
+        if (string.IsNullOrEmpty(entity.Email))
+            throw new ArgumentNullException(nameof(entity.Email));
+
+        var userProfileUpdate = await GetById(new Guid(entity.Id));
         if (userProfileUpdate == null)
         {
             _employerProfilesDataContext.UserProfileEntities.Add(entity);
             _employerProfilesDataContext.SaveChanges();
             return new Tuple<UserProfileEntity, bool>(entity, true);
         }
+
+        userProfileUpdate.Email = entity.Email ?? entity.Email;
         userProfileUpdate.FirstName = entity.FirstName ?? userProfileUpdate.FirstName;
         userProfileUpdate.LastName = entity.LastName ?? userProfileUpdate.LastName;
         userProfileUpdate.GovUkIdentifier = entity.GovUkIdentifier ?? userProfileUpdate.GovUkIdentifier;
