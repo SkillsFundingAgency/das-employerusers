@@ -1,7 +1,0 @@
-﻿{
-  "Id": "employerportal",
-  "Name": "Employer Portal",
-  "RequireConsent": false,
-  "ApplicationUrl": "http://localhost:58887/",
-  "LogoutUrl": "http://localhost:58887/"
-}
