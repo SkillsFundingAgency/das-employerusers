@@ -38,7 +38,7 @@ public class UserProfileRepository : IUserProfileRepository
         if (string.IsNullOrEmpty(entity.Email))
             throw new ArgumentNullException(nameof(entity.Email));
 
-        var userProfileUpdate = await GetById(new Guid(entity.Id));
+        var userProfileUpdate = await GetById(new Guid(entity.Id)) ?? await GetByEmail(entity.Email);
         if (userProfileUpdate == null)
         {
             _employerProfilesDataContext.UserProfileEntities.Add(entity);

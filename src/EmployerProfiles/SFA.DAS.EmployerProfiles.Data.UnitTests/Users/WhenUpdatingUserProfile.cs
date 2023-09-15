@@ -40,6 +40,34 @@ public class WhenUpdatingUserProfile
         userProfileEntity.GovUkIdentifier.Should().Be(govIdentifier);
         actual.Item2.Should().BeFalse();
     }
+    [Test, RecursiveMoqAutoData]
+    public async Task Then_If_The_Record_Exists_By_Email_Then_It_Is_Updated(
+        Guid id,
+        string email,
+        string govIdentifier,
+        UserProfileEntity updateEntity,
+        UserProfileEntity userProfileEntity,
+        [Frozen] Mock<IEmployerProfilesDataContext> employerProfileDataContext,
+        UserProfileRepository repository)
+    {
+        //Arrange
+        userProfileEntity.Email = email;
+        updateEntity.Id = id.ToString();
+        updateEntity.Email = email;
+        updateEntity.FirstName = null;
+        updateEntity.GovUkIdentifier = govIdentifier;
+        employerProfileDataContext.Setup(x => x.UserProfileEntities).ReturnsDbSet(new List<UserProfileEntity>{userProfileEntity});
+        
+        //Act
+        var actual = await repository.Upsert(updateEntity);
+        
+        //Assert
+        employerProfileDataContext.Verify(x => x.SaveChanges(), Times.Once);
+        actual.Item1.Should().BeEquivalentTo(userProfileEntity, c => c.Excluding(o => o.GovUkIdentifier));
+        userProfileEntity.FirstName.Should().Be(userProfileEntity.FirstName);
+        userProfileEntity.GovUkIdentifier.Should().Be(govIdentifier);
+        actual.Item2.Should().BeFalse();
+    }
     
     [Test, RecursiveMoqAutoData]
     public async Task Then_If_The_Record_Does_Not_Exist_Then_Inserted_And_Returned(
