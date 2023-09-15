@@ -1,0 +1,46 @@
+﻿<Project Sdk="MsBuild.Sdk.SqlProj/2.5.0">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAureV12DatabaseSchemaProvider</DSP>
+    <SqlServerVersion>SqlAzure</SqlServerVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="Database.publish.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment1.sql" />
+    <Content Remove="Script.PostDeployment1.sql" />
+    <None Include="Script.PostDeployment1.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="StoredProcedures\CreateHistoricalPassword.sql" />
+    <Content Include="StoredProcedures\CreateUser.sql" />
+    <Content Include="StoredProcedures\CreateUserSecurityCode.sql" />
+    <Content Include="StoredProcedures\DeleteAllUserSecurityCodes.sql" />
+    <Content Include="StoredProcedures\DeleteHistoricalPassword.sql" />
+    <Content Include="StoredProcedures\DeleteUser.sql" />
+    <Content Include="StoredProcedures\DeleteUserPasswordHistory.sql" />
+    <Content Include="StoredProcedures\DeleteUserSecurityCode.sql" />
+    <Content Include="StoredProcedures\GetAllPasswordProfiles.sql" />
+    <Content Include="StoredProcedures\GetAllRelyingParties.sql" />
+    <Content Include="StoredProcedures\GetUserByEmail.sql" />
+    <Content Include="StoredProcedures\GetUserByGovIdentifier.sql" />
+    <Content Include="StoredProcedures\GetUserById.sql" />
+    <Content Include="StoredProcedures\GetUserPasswordHistory.sql" />
+    <Content Include="StoredProcedures\GetUsers.sql" />
+    <Content Include="StoredProcedures\GetUserSecurityCodes.sql" />
+    <Content Include="StoredProcedures\GetUsersWithExpiredRegistrations.sql" />
+    <Content Include="StoredProcedures\SearchUsers.sql" />
+    <Content Include="StoredProcedures\UpdateUser.sql" />
+    <Content Include="StoredProcedures\UpdateUserSuspension.sql" />
+    <Content Include="StoredProcedures\UpsertUserGovUkIdentifier.sql" />
+    <Content Include="StoredProcedures\UserCount.sql" />
+    <Content Include="Tables\PasswordProfile.sql" />
+    <Content Include="Tables\RelyingParty.sql" />
+    <Content Include="Tables\User.sql" />
+    <Content Include="Tables\UserPasswordHistory.sql" />
+    <Content Include="Tables\UserSecurityCode.sql" />
+  </ItemGroup>
+</Project>

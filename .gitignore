@@ -246,3 +246,7 @@ src/EmployerProfiles/.DS_Store
 src/EmployerProfiles/SFA.DAS.EmployerProfiles.Api/appsettings.Development.json
 
 src/**/.DS_Store
+
+src/.idea/.idea.SFA.DAS.EmployerProfiles/.idea/
+
+.DS_Store
