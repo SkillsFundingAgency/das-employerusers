@@ -447,6 +447,10 @@
   <ItemGroup />
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.EmployerUsers.Domain\SFA.DAS.EmployerUsers.Domain.csproj">
+      <Project>{2686243c-201a-45c1-adbc-99b05bd83d73}</Project>
+      <Name>SFA.DAS.EmployerUsers.Domain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.Support.Application\SFA.DAS.EmployerUsers.Support.Application.csproj">
       <Project>{CE85AAE2-BD07-45F0-A642-4FA376ED9BF1}</Project>
       <Name>SFA.DAS.EmployerUsers.Support.Application</Name>

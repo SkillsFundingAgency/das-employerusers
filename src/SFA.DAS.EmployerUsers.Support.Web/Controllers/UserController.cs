@@ -10,12 +10,10 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
     public class UserController : Controller
     {
         private readonly IEmployerUserRepository _repository;
-        private readonly IServiceConfiguration _serviceConfiguration;
 
-        public UserController(IEmployerUserRepository repository, IServiceConfiguration serviceConfiguration)
+        public UserController(IEmployerUserRepository repository)
         {
             _repository = repository;
-            _serviceConfiguration = serviceConfiguration;
         }
 
         public async Task<ActionResult> Header(string id)
