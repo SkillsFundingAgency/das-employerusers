@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.ModelBinding;
 using SFA.DAS.EmployerUsers.Api.Orchestrators;
 using SFA.DAS.EmployerUsers.Api.Types;
 
@@ -68,7 +65,7 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
         [Authorize(Roles = "UpdateEmployerUsers")]
         public async Task<IHttpActionResult> Suspend(string id, [FromBody]ChangedByUserInfo changedByUserInfo)
         {
-            SuspendUserResponse response = null;
+            SuspendUserResponse response;
 
             try
             {
@@ -92,7 +89,7 @@ namespace SFA.DAS.EmployerUsers.Api.Controllers
         [Authorize(Roles = "UpdateEmployerUsers")]
         public async Task<IHttpActionResult> Resume(string id, [FromBody] ChangedByUserInfo changedByUserInfo)
         {
-            ResumeUserResponse response = null;
+            ResumeUserResponse response;
 
             try
             {

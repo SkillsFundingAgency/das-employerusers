@@ -111,7 +111,7 @@ namespace SFA.DAS.EmployerUsers.Support.Infrastructure
             }
         }
 
-        private EmployerUser MapToEmployerUser(UserViewModel data)
+        private static EmployerUser MapToEmployerUser(UserViewModel data)
         {
             return new EmployerUser
             {
@@ -126,7 +126,7 @@ namespace SFA.DAS.EmployerUsers.Support.Infrastructure
             };
         }
 
-        private EmployerUser MapToEmployerUser(UserSummaryViewModel data)
+        private static EmployerUser MapToEmployerUser(UserSummaryViewModel data)
         {
             return new EmployerUser
             {
