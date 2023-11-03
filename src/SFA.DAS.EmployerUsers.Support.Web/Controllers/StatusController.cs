@@ -11,7 +11,6 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
     [RoutePrefix("api/status")]
     public class StatusController : ApiController
     {
-        // GET: Status
         [AllowAnonymous]
         public IHttpActionResult Get()
         {
@@ -24,7 +23,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
             });
         }
 
-        private string AddServiceVersion()
+        private static string AddServiceVersion()
         {
             try
             {
@@ -36,7 +35,7 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
             }
         }
 
-        private string AddRequestContext()
+        private static string AddRequestContext()
         {
             try
             {
@@ -48,12 +47,12 @@ namespace SFA.DAS.EmployerUsers.Support.Web.Controllers
             }
         }
 
-        private DateTimeOffset AddServerTime()
+        private static DateTimeOffset AddServerTime()
         {
             return DateTimeOffset.UtcNow;
         }
 
-        private string AddServiceName()
+        private static string AddServiceName()
         {
             try
             {

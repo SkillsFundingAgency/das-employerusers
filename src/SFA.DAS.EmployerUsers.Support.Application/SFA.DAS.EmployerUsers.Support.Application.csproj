@@ -58,9 +58,6 @@
     <Reference Include="SFA.DAS.NLog.Logger, Version=1.0.0.47445, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.NLog.Logger.1.0.0.47445\lib\net45\SFA.DAS.NLog.Logger.dll</HintPath>
     </Reference>
-    <Reference Include="SFA.DAS.Support.Shared, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Support.Shared.2.1.180-prerelease-2\lib\net462\SFA.DAS.Support.Shared.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -119,6 +116,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.EmployerUsers.Domain\SFA.DAS.EmployerUsers.Domain.csproj">
+      <Project>{2686243c-201a-45c1-adbc-99b05bd83d73}</Project>
+      <Name>SFA.DAS.EmployerUsers.Domain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.EmployerUsers.Support.Core\SFA.DAS.EmployerUsers.Support.Core.csproj">
       <Project>{9CF7EBA9-983F-450D-8F90-D5CA64AF21B1}</Project>
       <Name>SFA.DAS.EmployerUsers.Support.Core</Name>

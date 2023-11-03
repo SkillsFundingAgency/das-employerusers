@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerUsers.Domain;
 using SFA.DAS.EmployerUsers.Support.Core.Domain.Model;
 using SFA.DAS.EmployerUsers.Support.Infrastructure;
-using SFA.DAS.Support.Shared.SearchIndexModel;
 using SFA.DAS.NLog.Logger;
 
 namespace SFA.DAS.EmployerUsers.Support.Application.Handlers

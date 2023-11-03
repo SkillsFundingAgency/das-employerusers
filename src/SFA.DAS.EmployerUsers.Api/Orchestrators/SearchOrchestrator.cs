@@ -38,17 +38,16 @@ namespace SFA.DAS.EmployerUsers.Api.Orchestrators
             };
         }
 
-        private int GetNoOfTotalPages(int pageSize, SearchUsersQueryResponse response)
+        private static int GetNoOfTotalPages(int pageSize, SearchUsersQueryResponse response)
         {
-            if (pageSize < response.RecordCount)
+            if (pageSize >= response.RecordCount)
             {
-                var remainingResultCountForFinalPage = response.RecordCount % pageSize;
-                var totalPages = response.RecordCount / pageSize;
-                return (remainingResultCountForFinalPage > 0 ? totalPages + 1 : totalPages);
+                return 1;
             }
-
-            return 1;
+            
+            var remainingResultCountForFinalPage = response.RecordCount % pageSize;
+            var totalPages = response.RecordCount / pageSize;
+            return remainingResultCountForFinalPage > 0 ? totalPages + 1 : totalPages;
         }
     }
-
 }
