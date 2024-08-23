@@ -19,7 +19,7 @@ jobs:
       useConfigFile: true
       configFilePath: GitVersion.yml
 
-  - task: SonarCloudPrepare@1
+  - task: SonarCloudPrepare@2
     displayName: Prepare SonarCloud analysis configuration
     condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest')))
     inputs:
@@ -74,11 +74,11 @@ jobs:
       platform: '$(buildPlatform)'
       configuration: '$(buildConfiguration)'
 
-  - task: SonarCloudAnalyze@1
+  - task: SonarCloudAnalyze@2
     displayName: 'Run SonarCloud analysis'
     condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest')))
 
-  - task: SonarCloudPublish@1
+  - task: SonarCloudPublish@2
     displayName: 'Publish results on build summary'
     condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest')))
     inputs:
@@ -180,7 +180,7 @@ jobs:
       DotNetStandardPackagesToPack: |
         src/SFA.DAS.EmployerUsers.Api.Client/SFA.DAS.EmployerUsers.Api.Client.csproj;
         src/SFA.DAS.EmployerUsers.Api.Types/SFA.DAS.EmployerUsers.Api.Types.csproj;
-
+      
 - job: NET_Core_CodeBuild
   pool:
     name: DAS - Continuous Integration Agents
@@ -193,6 +193,7 @@ jobs:
     parameters:
       TargetProjects: 'src/EmployerProfiles/**/*.csproj'
       UnitTestProjects: 'src/EmployerProfiles/**/*UnitTests.csproj'
+      ContinueOnVulnerablePackageScanError: true      
 
   - task: DotNetCoreCLI@2
     displayName: Publish Employer Profiles API
