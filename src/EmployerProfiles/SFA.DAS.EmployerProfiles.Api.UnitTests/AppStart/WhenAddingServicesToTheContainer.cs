@@ -14,44 +14,45 @@ namespace SFA.DAS.EmployerProfiles.Api.UnitTests.AppStart;
 
 public class WhenAddingServicesToTheContainer
 {
-        [TestCase(typeof(IEmployerProfilesDataContext))]
-        [TestCase(typeof(IUserProfileRepository))]
-        [TestCase(typeof(IValidator<UpsertUserRequest>))]
-        public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
+    [TestCase(typeof(IEmployerProfilesDataContext))]
+    [TestCase(typeof(IUserProfileRepository))]
+    [TestCase(typeof(IValidator<UpsertUserRequest>))]
+    public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
+    {
+        var hostEnvironment = new Mock<IWebHostEnvironment>();
+        var serviceCollection = new ServiceCollection();
+
+        var configuration = GenerateConfiguration();
+        serviceCollection.AddLogging();
+        serviceCollection.AddSingleton(hostEnvironment.Object);
+        serviceCollection.AddSingleton(Mock.Of<IConfiguration>());
+        serviceCollection.AddDistributedMemoryCache();
+        serviceCollection.AddServiceRegistration();
+
+        var apimDeveloperApiConfiguration = configuration
+            .GetSection(nameof(EmployerProfilesConfiguration))
+            .Get<EmployerProfilesConfiguration>();
+        serviceCollection.AddDatabaseRegistration(apimDeveloperApiConfiguration, configuration["EnvironmentName"]);
+
+        var provider = serviceCollection.BuildServiceProvider();
+
+        var type = provider.GetService(toResolve);
+        Assert.IsNotNull(type);
+    }
+
+    private static IConfigurationRoot GenerateConfiguration()
+    {
+        var configSource = new MemoryConfigurationSource
         {
-            var hostEnvironment = new Mock<IWebHostEnvironment>();
-            var serviceCollection = new ServiceCollection();
-
-            var configuration = GenerateConfiguration();
-            serviceCollection.AddSingleton(hostEnvironment.Object);
-            serviceCollection.AddSingleton(Mock.Of<IConfiguration>());
-            serviceCollection.AddDistributedMemoryCache();
-            serviceCollection.AddServiceRegistration();
-
-            var apimDeveloperApiConfiguration = configuration
-                .GetSection(nameof(EmployerProfilesConfiguration))
-                .Get<EmployerProfilesConfiguration>();
-            serviceCollection.AddDatabaseRegistration(apimDeveloperApiConfiguration, configuration["EnvironmentName"]);
-
-            var provider = serviceCollection.BuildServiceProvider();
-
-            var type = provider.GetService(toResolve);
-            Assert.IsNotNull(type);
-        }
-
-        private static IConfigurationRoot GenerateConfiguration()
-        {
-            var configSource = new MemoryConfigurationSource
+            InitialData = new List<KeyValuePair<string, string>>
             {
-                InitialData = new List<KeyValuePair<string, string>>
-                {
-                    new KeyValuePair<string, string>("EmployerProfilesConfiguration:ConnectionString", "test"),
-                    new KeyValuePair<string, string>("EnvironmentName", "test")
-                }
-            };
+                new KeyValuePair<string, string>("EmployerProfilesConfiguration:ConnectionString", "test"),
+                new KeyValuePair<string, string>("EnvironmentName", "test")
+            }
+        };
 
-            var provider = new MemoryConfigurationProvider(configSource);
+        var provider = new MemoryConfigurationProvider(configSource);
 
-            return new ConfigurationRoot(new List<IConfigurationProvider> { provider });
-        }
+        return new ConfigurationRoot(new List<IConfigurationProvider> { provider });
+    }
 }
