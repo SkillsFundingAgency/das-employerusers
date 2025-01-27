@@ -48,7 +48,7 @@ public class UserProfileRepository : IUserProfileRepository
         _logger.LogWarning("UserProfileRepository-Upsert getById {Id} result: {Data}", entity.Id, JsonSerializer.Serialize(userById));
         _logger.LogWarning("UserProfileRepository-Upsert getByEmail {Id} result: {Data}", entity.Email, JsonSerializer.Serialize(userByEmail));
         
-        var userProfileUpdate = userById ?? userByEmail;
+        var userProfileUpdate = await GetById(new Guid(entity.Id)) ?? await GetByEmail(entity.Email);
         _logger.LogWarning("UserProfileRepository-Upsert userProfileUpdate is null {Result}", userProfileUpdate == null);
         
         if (userProfileUpdate == null)
