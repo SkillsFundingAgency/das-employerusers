@@ -1,4 +1,6 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
 
 namespace SFA.DAS.EmployerProfiles.Data.Users;
@@ -6,10 +8,12 @@ namespace SFA.DAS.EmployerProfiles.Data.Users;
 public class UserProfileRepository : IUserProfileRepository
 {
     private readonly IEmployerProfilesDataContext _employerProfilesDataContext;
+    private readonly ILogger<UserProfileRepository> _logger;
 
-    public UserProfileRepository(IEmployerProfilesDataContext employerProfilesDataContext)
+    public UserProfileRepository(IEmployerProfilesDataContext employerProfilesDataContext, ILogger<UserProfileRepository> logger)
     {
         _employerProfilesDataContext = employerProfilesDataContext;
+        _logger = logger;
     }
 
     public async Task<UserProfileEntity?> GetByEmail(string searchEntityEmail)
@@ -37,8 +41,16 @@ public class UserProfileRepository : IUserProfileRepository
 
         if (string.IsNullOrEmpty(entity.Email))
             throw new ArgumentNullException(nameof(entity.Email));
-
-        var userProfileUpdate = await GetById(new Guid(entity.Id)) ?? await GetByEmail(entity.Email);
+        
+        var userById = await GetById(new Guid(entity.Id));
+        var userByEmail = await GetByEmail(entity.Email);
+        
+        _logger.LogWarning("UserProfileRepository-Upsert getById {Id} result: {Data}", entity.Id, JsonSerializer.Serialize(userById));
+        _logger.LogWarning("UserProfileRepository-Upsert getByEmail {Id} result: {Data}", entity.Email, JsonSerializer.Serialize(userByEmail));
+        
+        var userProfileUpdate = userById ?? userByEmail;
+        _logger.LogWarning("UserProfileRepository-Upsert userProfileUpdate is null {Result}", userProfileUpdate == null);
+        
         if (userProfileUpdate == null)
         {
             _employerProfilesDataContext.UserProfileEntities.Add(entity);
@@ -50,7 +62,9 @@ public class UserProfileRepository : IUserProfileRepository
         userProfileUpdate.FirstName = entity.FirstName ?? userProfileUpdate.FirstName;
         userProfileUpdate.LastName = entity.LastName ?? userProfileUpdate.LastName;
         userProfileUpdate.GovUkIdentifier = entity.GovUkIdentifier ?? userProfileUpdate.GovUkIdentifier;
+        
         _employerProfilesDataContext.SaveChanges();
+        
         return new Tuple<UserProfileEntity, bool>(userProfileUpdate, false);
     }
 
