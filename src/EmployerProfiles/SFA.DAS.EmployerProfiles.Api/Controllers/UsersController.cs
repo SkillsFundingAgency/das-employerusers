@@ -2,11 +2,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using SFA.DAS.EmployerProfiles.Api.ApiRequests;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Commands.UpsertUser;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByGovIdentifier;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserById;
 using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace SFA.DAS.EmployerProfiles.Api.Controllers;
 
@@ -65,6 +67,8 @@ public class UsersController : ControllerBase
     [Route("{id}")]
     public async Task<IActionResult> PutUser([FromRoute]Guid id, UserProfileRequest userProfileRequest)
     {
+        _logger.LogInformation("UsersController-PutUser request: {Data}", JsonSerializer.Serialize(userProfileRequest));
+        
         try
         {
             var result = await _mediator.Send(new UpsertUserRequest

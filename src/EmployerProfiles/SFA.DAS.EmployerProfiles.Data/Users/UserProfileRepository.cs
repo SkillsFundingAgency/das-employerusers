@@ -19,7 +19,7 @@ public class UserProfileRepository : IUserProfileRepository
     public async Task<UserProfileEntity?> GetByEmail(string searchEntityEmail)
     {
         return await _employerProfilesDataContext.UserProfileEntities.SingleOrDefaultAsync(c =>
-            c!.Email == searchEntityEmail);
+            c.Email == searchEntityEmail);
     }
 
     public async Task<UserProfileEntity?> GetById(Guid id)
@@ -37,11 +37,15 @@ public class UserProfileRepository : IUserProfileRepository
     public async Task<Tuple<UserProfileEntity,bool>> Upsert(UserProfileEntity entity)
     {
         if (string.IsNullOrEmpty(entity.Id))
+        {
             throw new ArgumentNullException(nameof(entity.Id));
+        }
 
         if (string.IsNullOrEmpty(entity.Email))
+        {
             throw new ArgumentNullException(nameof(entity.Email));
-        
+        }
+
         var userById = await GetById(new Guid(entity.Id));
         var userByEmail = await GetByEmail(entity.Email);
         
