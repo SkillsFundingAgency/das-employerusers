@@ -326,6 +326,10 @@
                                     "value": "[reference(concat(variables('apiAppServiceName'), '-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                                 },
                                 {
+                                    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                                    "value": "[reference(concat(variables('apiAppServiceName'), '-application-insights-', parameters('utcValue'))).outputs.ConnectionString.value]"
+                                },                                
+                                {
                                     "name": "idaAudience",
                                     "value": "[parameters('idaAudience')]"
                                 },
@@ -441,6 +445,10 @@
                                     "name": "InstrumentationKey",
                                     "value": "[reference(concat(variables('webAppServiceName'), '-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                                 },
+                                {
+                                    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                                    "value": "[reference(concat(variables('webAppServiceName'), '-application-insights-', parameters('utcValue'))).outputs.ConnectionString.value]"
+                                },                                
                                 {
                                     "name": "AuditApiBaseUrl",
                                     "value": "[parameters('auditApiBaseUrl')]"
@@ -665,6 +673,10 @@
                                     "name": "InstrumentationKey",
                                     "value": "[reference(concat(variables('workerAppServiceName'), '-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                                 },
+                                {
+                                    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                                    "value": "[reference(concat(variables('workerAppServiceName'), '-application-insights-', parameters('utcValue'))).outputs.ConnectionString.value]"
+                                },                                
                                 {
                                     "name": "AuditApiBaseUrl",
                                     "value": "[parameters('auditApiBaseUrl')]"
@@ -902,6 +914,10 @@
                                     "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                                     "value": "[reference(concat(variables('profilesAppServiceName'), '-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                                 },
+                                {
+                                    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                                    "value": "[reference(concat(variables('profilesAppServiceName'), '-application-insights-', parameters('utcValue'))).outputs.ConnectionString.value]"
+                                },                                
                                 {
                                     "name": "LoggingRedisConnectionString",
                                     "value": "[parameters('loggingRedisConnectionString')]"
