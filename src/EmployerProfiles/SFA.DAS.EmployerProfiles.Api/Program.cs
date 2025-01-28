@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
@@ -18,6 +19,12 @@ var rootConfiguration = builder.Configuration.LoadConfiguration();
 builder.Services.AddOptions();
 builder.Services.Configure<EmployerProfilesConfiguration>(rootConfiguration.GetSection(nameof(EmployerProfilesConfiguration)));
 builder.Services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesConfiguration>>().Value);
+
+builder.Services.AddLogging(builder =>
+{
+    builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
+    builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
+});
 
 builder.Services.AddServiceRegistration();
 var employerProfilesConfiguration = rootConfiguration
