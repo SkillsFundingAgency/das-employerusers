@@ -45,11 +45,11 @@ public class UserProfileRepository : IUserProfileRepository
         var userById = await GetById(new Guid(entity.Id));
         var userByEmail = await GetByEmail(entity.Email);
         
-        _logger.LogWarning("UserProfileRepository-Upsert getById {Id} result: {Data}", entity.Id, JsonSerializer.Serialize(userById));
-        _logger.LogWarning("UserProfileRepository-Upsert getByEmail {Id} result: {Data}", entity.Email, JsonSerializer.Serialize(userByEmail));
+        _logger.LogInformation("UserProfileRepository-Upsert getById {Id} result: {Data}", entity.Id, JsonSerializer.Serialize(userById));
+        _logger.LogInformation("UserProfileRepository-Upsert getByEmail {Id} result: {Data}", entity.Email, JsonSerializer.Serialize(userByEmail));
         
         var userProfileUpdate = await GetById(new Guid(entity.Id)) ?? await GetByEmail(entity.Email);
-        _logger.LogWarning("UserProfileRepository-Upsert userProfileUpdate is null {Result}", userProfileUpdate == null);
+        _logger.LogInformation("UserProfileRepository-Upsert userProfileUpdate is null {Result}", userProfileUpdate == null);
         
         if (userProfileUpdate == null)
         {

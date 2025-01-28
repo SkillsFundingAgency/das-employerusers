@@ -20,10 +20,10 @@ builder.Services.AddOptions();
 builder.Services.Configure<EmployerProfilesConfiguration>(rootConfiguration.GetSection(nameof(EmployerProfilesConfiguration)));
 builder.Services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesConfiguration>>().Value);
 
-builder.Services.AddLogging(builder =>
+builder.Services.AddLogging(logBuilder =>
 {
-    builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
-    builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
+    logBuilder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
+    logBuilder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
 });
 
 builder.Services.AddServiceRegistration();
