@@ -49,23 +49,28 @@ public class UserProfileRepository : IUserProfileRepository
         var userById = await GetById(new Guid(entity.Id));
         var userByEmail = await GetByEmail(entity.Email);
         
+        _logger.LogInformation("UserProfileRepository-Upsert entity: {Data}", JsonSerializer.Serialize(entity));
         _logger.LogInformation("UserProfileRepository-Upsert getById {Id} result: {Data}", entity.Id, JsonSerializer.Serialize(userById));
         _logger.LogInformation("UserProfileRepository-Upsert getByEmail {Id} result: {Data}", entity.Email, JsonSerializer.Serialize(userByEmail));
         
         var userProfileUpdate = await GetById(new Guid(entity.Id)) ?? await GetByEmail(entity.Email);
-        _logger.LogInformation("UserProfileRepository-Upsert userProfileUpdate is null {Result}", userProfileUpdate == null);
+        _logger.LogInformation("UserProfileRepository-Upsert userProfileUpdate : {Data}", JsonSerializer.Serialize(userProfileUpdate));
         
         if (userProfileUpdate == null)
         {
+            _logger.LogInformation("UserProfileRepository-Upsert adding new user profile");
+            
             _employerProfilesDataContext.UserProfileEntities.Add(entity);
             _employerProfilesDataContext.SaveChanges();
             return new Tuple<UserProfileEntity, bool>(entity, true);
         }
-
+        
         userProfileUpdate.Email = entity.Email ?? entity.Email;
         userProfileUpdate.FirstName = entity.FirstName ?? userProfileUpdate.FirstName;
         userProfileUpdate.LastName = entity.LastName ?? userProfileUpdate.LastName;
         userProfileUpdate.GovUkIdentifier = entity.GovUkIdentifier ?? userProfileUpdate.GovUkIdentifier;
+        
+        _logger.LogInformation("UserProfileRepository-Upsert updating existing user profile with data: {Data}",JsonSerializer.Serialize(userProfileUpdate));
         
         _employerProfilesDataContext.SaveChanges();
         
