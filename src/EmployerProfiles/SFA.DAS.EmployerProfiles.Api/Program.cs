@@ -35,9 +35,9 @@ builder.Services.AddMediatR(typeof(GetUserByEmailQuery));
 
 if (rootConfiguration["EnvironmentName"] != "DEV")
 {
-    builder.Services.AddHealthChecks()
+    builder.Services
+        .AddHealthChecks()
         .AddDbContextCheck<EmployerProfilesDataContext>();
-
 }
 
 if (!(rootConfiguration["EnvironmentName"]!.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase) ||
@@ -49,8 +49,9 @@ if (!(rootConfiguration["EnvironmentName"]!.Equals("LOCAL", StringComparison.Cur
 
     var policies = new Dictionary<string, string>
     {
-        {PolicyNames.Default, RoleNames.Default},
+        { PolicyNames.Default, RoleNames.Default },
     };
+
     builder.Services.AddAuthentication(azureAdConfiguration, policies);
 }
 
@@ -60,14 +61,12 @@ builder.Services
         if (!(rootConfiguration["EnvironmentName"]!.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase) ||
               rootConfiguration["EnvironmentName"]!.Equals("DEV", StringComparison.CurrentCultureIgnoreCase)))
         {
-            o.Conventions.Add(new AuthorizeControllerModelConvention(new List<string> ()));
+            o.Conventions.Add(new AuthorizeControllerModelConvention(new List<string>()));
         }
+
         o.Conventions.Add(new ApiExplorerGroupPerVersionConvention());
     })
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
+    .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
 builder.Services.AddApplicationInsightsTelemetry();
 
@@ -76,10 +75,8 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployerProfilesApi", Version = "v1" });
     c.OperationFilter<SwaggerVersionHeaderFilter>();
 });
-            
-builder.Services.AddApiVersioning(opt => {
-    opt.ApiVersionReader = new HeaderApiVersionReader("X-Version");
-});
+
+builder.Services.AddApiVersioning(opt => { opt.ApiVersionReader = new HeaderApiVersionReader("X-Version"); });
 
 var app = builder.Build();
 
@@ -89,7 +86,7 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "EmployerProfilesApi v1");
     c.RoutePrefix = string.Empty;
 });
-            
+
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
