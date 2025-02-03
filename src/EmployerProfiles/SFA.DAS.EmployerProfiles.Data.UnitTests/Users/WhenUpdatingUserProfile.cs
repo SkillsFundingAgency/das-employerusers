@@ -40,6 +40,7 @@ public class WhenUpdatingUserProfile
         userProfileEntity.GovUkIdentifier.Should().Be(govIdentifier);
         actual.Item2.Should().BeFalse();
     }
+    
     [Test, RecursiveMoqAutoData]
     public async Task Then_If_The_Record_Exists_By_Email_Then_It_Is_Updated(
         Guid id,
