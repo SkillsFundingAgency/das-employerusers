@@ -4,6 +4,7 @@ using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using SFA.DAS.EmployerProfiles.Api.ApiResponses;
 using SFA.DAS.EmployerProfiles.Api.Controllers;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByEmail;
 using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
@@ -32,8 +33,8 @@ public class WhenGettingUsersByEmail
         
         //Assert
         var result = actual as OkObjectResult;
-        var actualResult = result.Value as List<UserProfile>;
-        actualResult.Should().BeEquivalentTo(expected);
+        var actualResult = result.Value as UsersQueryResponse;
+        actualResult.Users.Should().BeEquivalentTo(expected);
     }
     
     [Test, MoqAutoData]
@@ -54,8 +55,8 @@ public class WhenGettingUsersByEmail
 
         //Assert
         var result = actual as OkObjectResult;
-        var actualResult = result.Value as List<UserProfile>;
-        actualResult.Count.Should().Be(0);
+        var actualResult = result.Value as UsersQueryResponse;
+        actualResult.Users.Count.Should().Be(0);
     }
 
     [Test, MoqAutoData]

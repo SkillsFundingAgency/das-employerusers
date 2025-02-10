@@ -3,6 +3,7 @@ using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerProfiles.Api.ApiRequests;
+using SFA.DAS.EmployerProfiles.Api.ApiResponses;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Commands.UpsertUser;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByEmail;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByGovIdentifier;
@@ -79,7 +80,7 @@ public class UsersController : ControllerBase
                 users.Add(result.UserProfile);
             }
 
-            return Ok(users);
+            return Ok(new UsersQueryResponse { Users = users });
         }
         catch (Exception e)
         {
