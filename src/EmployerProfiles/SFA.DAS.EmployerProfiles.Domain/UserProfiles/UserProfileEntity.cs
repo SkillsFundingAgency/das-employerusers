@@ -8,4 +8,6 @@ public class UserProfileEntity
     public string? Email { get; set; }
     public string? GovUkIdentifier { get; set; }
     public bool IsSuspended { get; set; }
+    public bool IsActive { get; set; }
+    public bool IsLocked { get; set; }
 }
