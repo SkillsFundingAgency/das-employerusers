@@ -16,11 +16,15 @@ public class UserProfile
             FirstName = source.FirstName,
             LastName = source.LastName,
             GovUkIdentifier = source.GovUkIdentifier,
-            IsSuspended = source.IsSuspended
+            IsSuspended = source.IsSuspended,
+            IsLocked = source.IsLocked,
+            IsActive = source.IsActive
         };
     }
 
     public bool IsSuspended { get; set; }
+    public bool IsActive{ get; set; }
+    public bool IsLocked { get; set; }
 
     public Guid Id { get; set; }
     public string DisplayName { get; set; }
