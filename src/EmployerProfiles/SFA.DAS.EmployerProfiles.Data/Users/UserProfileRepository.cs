@@ -14,7 +14,7 @@ public class UserProfileRepository : IUserProfileRepository
 
     public async Task<UserProfileEntity?> GetByEmail(string searchEntityEmail)
     {
-        return await _employerProfilesDataContext.UserProfileEntities.SingleOrDefaultAsync(c =>
+        return await _employerProfilesDataContext.UserProfileEntities.FirstOrDefaultAsync(c =>
             c.Email == searchEntityEmail);
     }
 
