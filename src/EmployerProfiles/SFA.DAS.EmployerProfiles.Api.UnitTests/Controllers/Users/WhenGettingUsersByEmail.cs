@@ -12,21 +12,18 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerProfiles.Api.UnitTests.Controllers.Users;
 
-public class WhenGettingUsersByEmail
+public class WhenGettingUsersProfilesForEmail
 {
     [Test, MoqAutoData]
     public async Task Then_If_Email_Found_The_Record_Is_Returned(
         string email,
-        GetUserByEmailQueryResult getResult,
+        GetUsersByEmailQueryResult getResult,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] UsersController controller)
     {
         //Arrange
-        mediator.Setup(x => x.Send(It.Is<GetUserByEmailQuery>(c => c.Email.Equals(email)),
+        mediator.Setup(x => x.Send(It.Is<GetUsersByEmailQuery>(c => c.Email.Equals(email)),
             CancellationToken.None)).ReturnsAsync(getResult);
-
-        var expected = new List<UserProfile>();
-        expected.Add(getResult.UserProfile);
 
         //Act
         var actual = await controller.GetUsersByQuery(email : email);
@@ -34,7 +31,7 @@ public class WhenGettingUsersByEmail
         //Assert
         var result = actual as OkObjectResult;
         var actualResult = result.Value as UsersQueryResponse;
-        actualResult.Users.Should().BeEquivalentTo(expected);
+        actualResult.Users.Should().BeEquivalentTo(getResult.UserProfiles);
     }
     
     [Test, MoqAutoData]
@@ -44,10 +41,10 @@ public class WhenGettingUsersByEmail
         [Greedy] UsersController controller)
     {
         //Arrange
-        mediator.Setup(x => x.Send(It.Is<GetUserByEmailQuery>(c => c.Email.Equals(email)),
-            CancellationToken.None)).ReturnsAsync(new GetUserByEmailQueryResult
-            {
-            UserProfile = null
+        mediator.Setup(x => x.Send(It.Is<GetUsersByEmailQuery>(c => c.Email.Equals(email)),
+            CancellationToken.None)).ReturnsAsync(new GetUsersByEmailQueryResult
+        {
+            UserProfiles = new List<UserProfile>()
         });
         
         //Act
@@ -66,7 +63,7 @@ public class WhenGettingUsersByEmail
         [Greedy] UsersController controller)
     {
         //Arrange
-        mediator.Setup(x => x.Send(It.Is<GetUserByEmailQuery>(c => c.Email.Equals(email)),
+        mediator.Setup(x => x.Send(It.Is<GetUsersByEmailQuery>(c => c.Email.Equals(email)),
             CancellationToken.None)).ThrowsAsync(new Exception("Error"));
         
         //Act

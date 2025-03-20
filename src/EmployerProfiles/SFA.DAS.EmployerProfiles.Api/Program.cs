@@ -31,7 +31,7 @@ var employerProfilesConfiguration = rootConfiguration
     .GetSection(nameof(EmployerProfilesConfiguration))
     .Get<EmployerProfilesConfiguration>();
 builder.Services.AddDatabaseRegistration(employerProfilesConfiguration, rootConfiguration["EnvironmentName"]);
-builder.Services.AddMediatR(typeof(GetUserByEmailQuery));
+builder.Services.AddMediatR(typeof(GetUsersByEmailQuery));
 
 if (rootConfiguration["EnvironmentName"] != "DEV")
 {

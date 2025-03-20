@@ -14,8 +14,14 @@ public class UserProfileRepository : IUserProfileRepository
 
     public async Task<UserProfileEntity?> GetByEmail(string searchEntityEmail)
     {
-        return await _employerProfilesDataContext.UserProfileEntities.FirstOrDefaultAsync(c =>
+        return await _employerProfilesDataContext.UserProfileEntities.SingleOrDefaultAsync(c =>
             c.Email == searchEntityEmail);
+    }
+
+    public Task<List<UserProfileEntity>> GetAllProfilesForEmailAddress(string searchEntityEmail)
+    {
+        return _employerProfilesDataContext.UserProfileEntities.Where(c =>
+            c.Email == searchEntityEmail).ToListAsync();
     }
 
     public async Task<UserProfileEntity?> GetById(Guid id)
