@@ -71,16 +71,12 @@ public class UsersController : ControllerBase
         try
         {
             List<UserProfile> users = new List<UserProfile>();
-            var result = await _mediator.Send(new GetUserByEmailQuery()
+            var result = await _mediator.Send(new GetUsersByEmailQuery()
             {
                 Email = email
             });
-            if (result.UserProfile != null)
-            {
-                users.Add(result.UserProfile);
-            }
 
-            return Ok(new UsersQueryResponse { Users = users });
+            return Ok(new UsersQueryResponse { Users = result.UserProfiles });
         }
         catch (Exception e)
         {

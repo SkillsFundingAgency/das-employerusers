@@ -11,18 +11,18 @@ namespace SFA.DAS.EmployerProfiles.Application.UnitTests.Users.Handlers.Queries;
 public class WhenHandlingGetUserByEmail
 {
     [Test, RecursiveMoqAutoData]
-    public async Task Then_The_Query_Is_Handled_And_User_Returned(
+    public async Task Then_The_Query_Is_Handled_And_Users_Returned(
         Guid id,
-        GetUserByEmailQuery request,
-        UserProfileEntity user,
+        GetUsersByEmailQuery request,
+        List<UserProfileEntity> users,
         [Frozen] Mock<IUserProfileRepository> repository,
-        GetUserByEmailQueryHandler handler)
+        GetUsersByEmailQueryHandler handler)
     {
-        user.Id = id.ToString();
-        repository.Setup(x => x.GetByEmail(request.Email)).ReturnsAsync(user);
+        users.ForEach(user => user.Id = Guid.NewGuid().ToString());
+        repository.Setup(x => x.GetAllProfilesForEmailAddress(request.Email)).ReturnsAsync(users);
         
         var actual = await handler.Handle(request, CancellationToken.None);
 
-        actual.UserProfile.Should().BeEquivalentTo((UserProfile) user!);
+        actual.UserProfiles.Should().BeEquivalentTo(users.Select(x=>(UserProfile)x!));
     }
 }

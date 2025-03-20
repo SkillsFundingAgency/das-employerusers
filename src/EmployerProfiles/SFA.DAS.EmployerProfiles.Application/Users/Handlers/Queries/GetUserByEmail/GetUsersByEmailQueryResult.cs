@@ -2,7 +2,7 @@ using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
 
 namespace SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByEmail;
 
-public class GetUserByEmailQueryResult
+public class GetUsersByEmailQueryResult
 {
-    public UserProfile? UserProfile { get; set; }
+    public List<UserProfile> UserProfiles { get; set; }
 }
