@@ -195,6 +195,19 @@
         "utcValue": {
             "type": "string",
             "defaultValue": "[utcNow()]"
+        },
+        "EnableRouteTableAssociation": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Determines whether to enable route table association on subnet"
+            }
+        },
+        "SharedRouteTableName": {
+            "type": "string",
+            "metadata": {
+                "description": "Determines whether to enable route table association on subnet"
+            }
         }
     },
     "variables": {
@@ -211,7 +224,11 @@
         "profilesResourceGroupName": "[concat(variables('profilesResourceNamePrefix'), '-rg')]",
         "profilesAppServiceName": "[concat(variables('profilesResourceNamePrefix'), 'api-as')]",
         "databaseName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-users-db'))]",
-        "configNames": "SFA.DAS.EmployerProfiles.Api"
+        "configNames": "SFA.DAS.EmployerProfiles.Api",
+        "routeTableId": {
+            "id": "[resourceId(subscription().subscriptionId, parameters('sharedEnvResourceGroup'), 'Microsoft.Network/routeTables', parameters('SharedRouteTableName'))]"
+        },
+        "emptyObject": {}
     },
     "resources": [
         {
@@ -220,8 +237,7 @@
             "type": "Microsoft.Resources/resourceGroups",
             "location": "[parameters('resourceGroupLocation')]",
             "tags": "[parameters('tags')]",
-            "properties": {
-            }
+            "properties": {}
         },
         {
             "apiVersion": "2021-04-01",
@@ -229,8 +245,7 @@
             "type": "Microsoft.Resources/resourceGroups",
             "location": "[parameters('resourceGroupLocation')]",
             "tags": "[parameters('tags')]",
-            "properties": {
-            }
+            "properties": {}
         },
         {
             "apiVersion": "2021-04-01",
@@ -572,6 +587,9 @@
                     },
                     "delegations": {
                         "value": "[parameters('subnetDelegations')]"
+                    },
+                    "routeTable": {
+                        "value": "[if(parameters('enableRouteTableAssociation'), variables('routeTableId') , variables('emptyObject'))]"
                     }
                 }
             }
