@@ -826,7 +826,7 @@
             }
         },
         {
-            "condition": "[parameters('deployPrivateLinkedScopedResource')]",
+            "condition": "[and(parameters('deploySupportApp'), parameters('deployPrivateLinkedScopedResource'))]",
             "apiVersion": "2021-04-01",
             "name": "[concat(variables('supportAppServiceName'), '-private-link-scoped-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
