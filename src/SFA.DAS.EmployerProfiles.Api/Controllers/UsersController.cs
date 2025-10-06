@@ -3,7 +3,9 @@ using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerProfiles.Api.ApiRequests;
+using SFA.DAS.EmployerProfiles.Api.ApiResponses;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Commands.UpsertUser;
+using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByEmail;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByGovIdentifier;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserById;
 using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
@@ -23,6 +25,7 @@ public class UsersController : ControllerBase
         _mediator = mediator;
         _logger = logger;
     }
+
     [HttpGet]
     [Route("{id}")]
     public async Task<IActionResult> GetUserById(string id)
@@ -58,6 +61,27 @@ public class UsersController : ControllerBase
         {
             _logger.LogError(e, "GetUserById : An error occurred");
             return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpGet]
+    [Route("query")]
+    public async Task<IActionResult> GetUsersByQuery(string email)
+    {
+        try
+        {
+            List<UserProfile> users = new List<UserProfile>();
+            var result = await _mediator.Send(new GetUsersByEmailQuery()
+            {
+                Email = email
+            });
+
+            return Ok(new UsersQueryResponse { Users = result.UserProfiles });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "GetUsersByQuery : An error occurred");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
 
