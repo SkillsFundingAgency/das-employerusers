@@ -1,0 +1,17 @@
+﻿<Project Sdk="MsBuild.Sdk.SqlProj/2.5.0">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAureV12DatabaseSchemaProvider</DSP>
+    <SqlServerVersion>SqlAzure</SqlServerVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="Database.publish.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment1.sql" />
+    <Content Remove="Script.PostDeployment1.sql" />
+    <None Include="Script.PostDeployment1.sql" />
+  </ItemGroup>
+</Project>
