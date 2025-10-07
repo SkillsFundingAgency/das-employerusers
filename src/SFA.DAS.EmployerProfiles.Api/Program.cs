@@ -1,3 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System.Text.Json.Serialization;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -31,7 +41,7 @@ var employerProfilesConfiguration = rootConfiguration
     .GetSection(nameof(EmployerProfilesConfiguration))
     .Get<EmployerProfilesConfiguration>();
 builder.Services.AddDatabaseRegistration(employerProfilesConfiguration, rootConfiguration["EnvironmentName"]);
-builder.Services.AddMediatR(typeof(GetUsersByEmailQuery));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetUsersByEmailQuery).Assembly));
 
 if (rootConfiguration["EnvironmentName"] != "DEV")
 {

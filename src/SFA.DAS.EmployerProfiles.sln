@@ -18,8 +18,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerProfiles.Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerProfiles.Api.UnitTests", "SFA.DAS.EmployerProfiles.Api.UnitTests\SFA.DAS.EmployerProfiles.Api.UnitTests.csproj", "{014CC686-55A4-437F-B982-323F690C155A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerUsers.Users.Database", "SFA.DAS.EmployerUsers.Users.Database\SFA.DAS.EmployerUsers.Users.Database.csproj", "{2EDD330A-7B82-49E6-AA43-3D7F17569C08}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,8 +56,6 @@ Global
 		{014CC686-55A4-437F-B982-323F690C155A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{014CC686-55A4-437F-B982-323F690C155A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{014CC686-55A4-437F-B982-323F690C155A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2EDD330A-7B82-49E6-AA43-3D7F17569C08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2EDD330A-7B82-49E6-AA43-3D7F17569C08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{606E5EF5-5F74-498B-8393-B8DBD2C4F599} = {71AC5090-1362-45A2-AB37-85E21C32933A}
