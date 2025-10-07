@@ -21,39 +21,23 @@ jobs:
     displayName: Publish - dotnet publish ${{ parameters.SolutionBaseName }}.Api
     inputs:
       command: publish
-      publishWebProjects: false
+      publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
       projects: src/${{ parameters.SolutionBaseName }}.Api/${{ parameters.SolutionBaseName }}.Api.csproj
       arguments: -o $(build.artifactstagingdirectory)/publish -c ${{ parameters.BuildConfiguration }} --no-build
       modifyOutputPath: true
       zipAfterPublish: true
 
-  - task: VSBuild@1
-    displayName: 'Build Database Project'
-    inputs:
-      solution: 'src/SFA.DAS.EmployerUsers.Users.Database/SFA.DAS.EmployerUsers.Users.Database.sqlproj'
-      platform: '$(buildPlatform)'
-      configuration: '$(buildConfiguration)'
-      clean: true
-
   - task: CopyFiles@2
-    displayName: 'Copy dacpac Files to: $(Build.ArtifactStagingDirectory)'
+    displayName: Copy Files to $(build.artifactstagingdirectory)/publish
     inputs:
-      contents: |
-        src/**/*.dacpac
-      flattenFolders: true
-      targetFolder: '$(Build.ArtifactStagingDirectory)/publish/dacpacs/'
-
-  - task: CopyFiles@2
-    displayName: 'Copy azure Files to: $(Build.ArtifactStagingDirectory)'
-    inputs:
-      contents: |
+      Contents: |
         azure/**
-      targetFolder: '$(Build.ArtifactStagingDirectory)/publish'
+      TargetFolder: $(build.artifactstagingdirectory)/publish
 
   - task: PublishPipelineArtifact@1
-    displayName: 'Publish Build Artifact'
+    displayName: Publish Build Artifact
     inputs:
-      targetPath: '$(build.artifactstagingdirectory)/publish'
+      targetPath: $(build.artifactstagingdirectory)/publish
       artifactName: ${{ parameters.SolutionBaseName }}
       
 - job: NET_Core_CodeBuild
