@@ -93,6 +93,15 @@ jobs:
       rootFolderOrFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerProfiles.Api'
       archiveFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.EmployerProfiles.Api/SFA.DAS.EmployerProfiles.Api.zip'
 
+  - task: VSBuild@1
+    displayName: 'Build Database Project'
+    inputs:
+      solution: 'src/SFA.DAS.EmployerUsers.Users.Database/SFA.DAS.EmployerUsers.Users.Database.sqlproj'
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
+      clean: true
+      vsVersion: '16.0'
+
 
   - task: CopyFiles@2
     displayName: 'Copy dacpac Files to: $(Build.ArtifactStagingDirectory)'
