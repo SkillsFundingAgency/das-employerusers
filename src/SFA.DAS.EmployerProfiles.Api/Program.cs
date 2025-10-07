@@ -1,18 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System.Text.Json.Serialization;
-using MediatR;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Logging.ApplicationInsights;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
@@ -20,7 +8,6 @@ using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.EmployerProfiles.Api.AppStart;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByEmail;
 using SFA.DAS.EmployerProfiles.Data;
-using SFA.DAS.EmployerProfiles.Domain.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 

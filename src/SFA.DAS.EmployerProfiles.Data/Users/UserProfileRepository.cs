@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
 
 namespace SFA.DAS.EmployerProfiles.Data.Users;
 

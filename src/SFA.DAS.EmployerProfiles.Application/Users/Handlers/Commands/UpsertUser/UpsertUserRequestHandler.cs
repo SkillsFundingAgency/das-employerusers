@@ -1,13 +1,5 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
 using SFA.DAS.EmployerProfiles.Domain.RequestHandlers;
-using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
 
 namespace SFA.DAS.EmployerProfiles.Application.Users.Handlers.Commands.UpsertUser;
 
