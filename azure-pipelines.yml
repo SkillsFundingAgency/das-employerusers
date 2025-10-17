@@ -13,7 +13,7 @@ trigger:
 
 variables:
 - name: SolutionBaseName
-  value: __SolutionBaseName__ #PLACEHOLDER
+  value: SFA.DAS.EmployerProfiles
 - name: BuildConfiguration
   value: release
 - name: BuildPlatform
@@ -62,6 +62,7 @@ stages:
   variables:
   - group: DevTest Management Resources
   - group: AT DevTest Shared Resources
+  - group: AT das-employerusers
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
@@ -76,6 +77,7 @@ stages:
   variables:
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
+  - group: TEST das-employerusers-v2
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
@@ -90,6 +92,7 @@ stages:
   variables:
   - group: DevTest Management Resources
   - group: TEST2 DevTest Shared Resources
+  - group: TEST2 das-employerusers
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
@@ -104,6 +107,7 @@ stages:
   variables:
   - group: PreProd Management Resources
   - group: PreProd Shared Resources
+  - group: PP das-employerusers
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
@@ -147,6 +151,7 @@ stages:
   variables:
   - group: DevTest Management Resources
   - group: DEMO DevTest Shared Resources
+  - group: DEMO das-employerusers
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
