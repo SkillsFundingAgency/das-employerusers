@@ -288,11 +288,11 @@
         }
     ],
     "outputs": {
-        "ProfilesResourceGroupName": {
+        "ResourceGroupName": {
             "type": "string",
             "value": "[variables('profilesResourceGroupName')]"
         },
-        "ProfilesAppServiceName": {
+        "AppServiceName": {
             "type": "string",
             "value": "[variables('profilesAppServiceName')]"
         },
