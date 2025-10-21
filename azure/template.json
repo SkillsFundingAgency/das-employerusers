@@ -21,7 +21,8 @@
             "type": "securestring"
         },
         "elasticPoolName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },
         "environmentName": {
             "type": "string"

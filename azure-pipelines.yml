@@ -110,7 +110,7 @@ stages:
   variables:
   - group: PreProd Management Resources
   - group: PreProd Shared Resources
-  - group: PP das-employerusers
+  - group: PREPROD das-employerusers
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
