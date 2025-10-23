@@ -19,8 +19,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerProfiles.Api.UnitTests", "SFA.DAS.EmployerProfiles.Api.UnitTests\SFA.DAS.EmployerProfiles.Api.UnitTests.csproj", "{014CC686-55A4-437F-B982-323F690C155A}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SFA.DAS.EmployerUsers.Users.Database", "SFA.DAS.EmployerUsers.Users.Database\SFA.DAS.EmployerUsers.Users.Database.sqlproj", "{2EDD330A-7B82-49E6-AA43-3D7F17569C08}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

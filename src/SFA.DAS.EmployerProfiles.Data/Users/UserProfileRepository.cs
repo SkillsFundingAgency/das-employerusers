@@ -77,4 +77,21 @@ public class UserProfileRepository : IUserProfileRepository
         _employerProfilesDataContext.SaveChanges();
         return true;
     }
+
+    public async Task<GetAllUsersResult> GetAllUsers(int pageSize, int pageNumber)
+    {
+        var skip = (pageNumber - 1) * pageSize;
+        
+        var totalCount = await _employerProfilesDataContext.UserProfileEntities.CountAsync();
+        var userProfiles = await _employerProfilesDataContext.UserProfileEntities
+            .Skip(skip)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new GetAllUsersResult
+        {
+            UserProfiles = userProfiles,
+            TotalCount = totalCount
+        };
+    }
 }

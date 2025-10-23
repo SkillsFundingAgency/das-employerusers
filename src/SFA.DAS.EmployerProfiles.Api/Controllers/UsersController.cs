@@ -14,10 +14,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerProfiles.Api.ApiRequests;
 using SFA.DAS.EmployerProfiles.Api.ApiResponses;
+using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Commands.UpdateUserSuspended;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Commands.UpsertUser;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByEmail;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByGovIdentifier;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserById;
+using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUsers;
 using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
 
 namespace SFA.DAS.EmployerProfiles.Api.Controllers;
@@ -95,6 +97,26 @@ public class UsersController : ControllerBase
         }
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetUsers(int pageSize = 1000, int pageNumber = 1)
+    {
+        try
+        {
+            var result = await _mediator.Send(new GetUsersQuery()
+            {
+                PageSize = pageSize,
+                PageNumber = pageNumber
+            });
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "GetUsers : An error occurred");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
     [HttpPut]
     [Route("{id}")]
     public async Task<IActionResult> PutUser([FromRoute]Guid id, UserProfileRequest userProfileRequest)
@@ -124,6 +146,58 @@ public class UsersController : ControllerBase
         {
             _logger.LogError(e, "UpsertUser : An error occurred");
             return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpPost]
+    [Route("{id}/suspend")]
+    public async Task<IActionResult> SuspendUser(Guid id)
+    {
+        try
+        {
+            var result = await _mediator.Send(new UpdateUserSuspendedRequest
+            {
+                Id = id,
+                UserSuspended = true
+            });
+
+            if (!result.Updated)
+            {
+                return NotFound();
+            }
+
+            return Ok(new { message = "User suspended successfully" });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "SuspendUser : An error occurred");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpPost]
+    [Route("{id}/resume")]
+    public async Task<IActionResult> ResumeUser(Guid id)
+    {
+        try
+        {
+            var result = await _mediator.Send(new UpdateUserSuspendedRequest
+            {
+                Id = id,
+                UserSuspended = false
+            });
+
+            if (!result.Updated)
+            {
+                return NotFound();
+            }
+
+            return Ok(new { message = "User resumed successfully" });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "ResumeUser : An error occurred");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
 }
