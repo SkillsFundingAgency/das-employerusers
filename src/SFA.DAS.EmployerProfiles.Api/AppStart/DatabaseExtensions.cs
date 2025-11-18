@@ -1,12 +1,6 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Azure.Identity;
+using Microsoft.EntityFrameworkCore;
 using SFA.DAS.EmployerProfiles.Data;
-using SFA.DAS.EmployerProfiles.Domain.Configuration;
 
 namespace SFA.DAS.EmployerProfiles.Api.AppStart;
 
@@ -19,10 +13,6 @@ public static class DatabaseExtensions
         {
             services.AddDbContext<EmployerProfilesDataContext>(options => options.UseInMemoryDatabase("SFA.DAS.EmployerProfiles"), ServiceLifetime.Transient);
         }
-        else if (environmentName.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase))
-        {
-            services.AddDbContext<EmployerProfilesDataContext>(options=>options.UseSqlServer(config.ConnectionString),ServiceLifetime.Transient);
-        }
         else
         {
             services.AddDbContext<EmployerProfilesDataContext>(ServiceLifetime.Transient);    
@@ -32,11 +22,17 @@ public static class DatabaseExtensions
 
         services.AddTransient<IEmployerProfilesDataContext, EmployerProfilesDataContext>(provider => provider.GetService<EmployerProfilesDataContext>()!);
         services.AddTransient(provider => new Lazy<EmployerProfilesDataContext>(provider.GetService<EmployerProfilesDataContext>()!));
+#if DEBUG
+        services.AddSingleton(new ChainedTokenCredential(
+            new AzureCliCredential(),
+            new VisualStudioCodeCredential(),
+            new VisualStudioCredential()));
+#else
         services.AddSingleton(new ChainedTokenCredential(
             new ManagedIdentityCredential(),
             new AzureCliCredential(),
             new VisualStudioCodeCredential(),
-            new VisualStudioCredential())
-        );
+            new VisualStudioCredential()));
+#endif
     }
 }

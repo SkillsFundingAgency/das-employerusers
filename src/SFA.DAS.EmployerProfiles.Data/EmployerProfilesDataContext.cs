@@ -1,10 +1,8 @@
 ﻿using Azure.Core;
 using Azure.Identity;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SFA.DAS.EmployerProfiles.Domain.Configuration;
-using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
 
 namespace SFA.DAS.EmployerProfiles.Data;
 
@@ -40,21 +38,20 @@ public class EmployerProfilesDataContext : DbContext, IEmployerProfilesDataConte
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseLazyLoadingProxies();
-            
-        if (_configuration == null 
-            || _environmentConfiguration.EnvironmentName.Equals("DEV", StringComparison.CurrentCultureIgnoreCase)
-            || _environmentConfiguration.EnvironmentName.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase))
+
+        if (_configuration == null)
         {
             return;
         }
-            
-        var connection = new SqlConnection
+
+        if (_environmentConfiguration.EnvironmentName.Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
         {
-            ConnectionString = _configuration.ConnectionString,
-            AccessToken = _azureServiceTokenProvider.GetTokenAsync(new TokenRequestContext(scopes: new string[] { AzureResource })).Result.Token,
-        };
-            
-        optionsBuilder.UseSqlServer(connection,options=>
+            return;
+        }
+
+        var connection = CreateSqlConnection(_configuration.ConnectionString);
+
+        optionsBuilder.UseSqlServer(connection, options =>
             options.EnableRetryOnFailure(
                 5,
                 TimeSpan.FromSeconds(20),
@@ -67,5 +64,26 @@ public class EmployerProfilesDataContext : DbContext, IEmployerProfilesDataConte
         modelBuilder.ApplyConfiguration(new Users.UserProfilesEntityConfiguration());
         
         base.OnModelCreating(modelBuilder);
+    }
+
+    private SqlConnection CreateSqlConnection(string connectionString)
+    {
+        var builder = new SqlConnectionStringBuilder(connectionString);
+        var requiresAccessToken = !builder.IntegratedSecurity && string.IsNullOrEmpty(builder.UserID);
+
+        if (!requiresAccessToken)
+        {
+            return new SqlConnection(connectionString);
+        }
+
+        var token = _azureServiceTokenProvider
+            .GetToken(new TokenRequestContext(scopes: [AzureResource]))
+            .Token;
+
+        return new SqlConnection
+        {
+            ConnectionString = connectionString,
+            AccessToken = token
+        };
     }
 }

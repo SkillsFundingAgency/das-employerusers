@@ -1,17 +1,6 @@
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
-using System.Threading.Tasks;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerProfiles.Api.ApiRequests;
 using SFA.DAS.EmployerProfiles.Api.ApiResponses;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Commands.UpdateUserSuspended;
@@ -20,24 +9,14 @@ using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByEmail
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByGovIdentifier;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserById;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUsers;
-using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
 
 namespace SFA.DAS.EmployerProfiles.Api.Controllers;
 
 [ApiVersion("1.0")]
 [ApiController]
 [Route("api/[controller]/")]
-public class UsersController : ControllerBase
+public class UsersController(IMediator mediator, ILogger<UsersController> logger) : ControllerBase
 {
-    private readonly IMediator _mediator;
-    private readonly ILogger<UsersController> _logger;
-
-    public UsersController(IMediator mediator, ILogger<UsersController> logger)
-    {
-        _mediator = mediator;
-        _logger = logger;
-    }
-
     [HttpGet]
     [Route("{id}")]
     public async Task<IActionResult> GetUserById(string id)
@@ -47,7 +26,7 @@ public class UsersController : ControllerBase
             UserProfile? userProfile;
             if (Guid.TryParse(id, out var userId))
             {
-                var result = await _mediator.Send(new GetUserByIdQuery()
+                var result = await mediator.Send(new GetUserByIdQuery()
                 {
                     Id = userId
                 });
@@ -55,7 +34,7 @@ public class UsersController : ControllerBase
             }
             else
             {
-                var result = await _mediator.Send(new GetUserByGovIdentifierQuery
+                var result = await mediator.Send(new GetUserByGovIdentifierQuery
                 {
                     GovIdentifier = id
                 });
@@ -71,7 +50,7 @@ public class UsersController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "GetUserById : An error occurred");
+            logger.LogError(e, "GetUserById : An error occurred");
             return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
         }
     }
@@ -83,7 +62,7 @@ public class UsersController : ControllerBase
         try
         {
             List<UserProfile> users = new List<UserProfile>();
-            var result = await _mediator.Send(new GetUsersByEmailQuery()
+            var result = await mediator.Send(new GetUsersByEmailQuery()
             {
                 Email = email
             });
@@ -92,7 +71,7 @@ public class UsersController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "GetUsersByQuery : An error occurred");
+            logger.LogError(e, "GetUsersByQuery : An error occurred");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -102,7 +81,7 @@ public class UsersController : ControllerBase
     {
         try
         {
-            var result = await _mediator.Send(new GetUsersQuery()
+            var result = await mediator.Send(new GetUsersQuery()
             {
                 PageSize = pageSize,
                 PageNumber = pageNumber
@@ -112,7 +91,7 @@ public class UsersController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "GetUsers : An error occurred");
+            logger.LogError(e, "GetUsers : An error occurred");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -123,7 +102,7 @@ public class UsersController : ControllerBase
     {
         try
         {
-            var result = await _mediator.Send(new UpsertUserRequest
+            var result = await mediator.Send(new UpsertUserRequest
             {
                 Email = userProfileRequest.Email,
                 Id = id,
@@ -144,47 +123,59 @@ public class UsersController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "UpsertUser : An error occurred");
+            logger.LogError(e, "UpsertUser : An error occurred");
             return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
         }
     }
 
     [HttpPost]
     [Route("{id}/suspend")]
-    public async Task<IActionResult> SuspendUser(Guid id)
+    public async Task<IActionResult> SuspendUser(string id, [FromBody] ChangeUserStatusRequest request)
     {
-        try
-        {
-            var result = await _mediator.Send(new UpdateUserSuspendedRequest
-            {
-                Id = id,
-                UserSuspended = true
-            });
-
-            if (!result.Updated)
-            {
-                return NotFound();
-            }
-
-            return Ok(new { message = "User suspended successfully" });
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "SuspendUser : An error occurred");
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-        }
+        return await ChangeUserSuspensionState(id, request, true);
     }
 
     [HttpPost]
     [Route("{id}/resume")]
-    public async Task<IActionResult> ResumeUser(Guid id)
+    public async Task<IActionResult> ResumeUser(string id, [FromBody] ChangeUserStatusRequest request)
     {
+        return await ChangeUserSuspensionState(id, request, false);
+    }
+
+    private async Task<IActionResult> ChangeUserSuspensionState(string identifier, ChangeUserStatusRequest request, bool suspend)
+    {
+        if (request == null)
+        {
+            return BadRequest("Request body is required.");
+        }
+
         try
         {
-            var result = await _mediator.Send(new UpdateUserSuspendedRequest
+            var userProfile = await GetUserProfile(identifier);
+
+            if (userProfile == null)
             {
-                Id = id,
-                UserSuspended = false
+                logger.LogInformation("User {Identifier} not found while attempting to update suspension", identifier);
+                return NotFound();
+            }
+
+            if (suspend && userProfile.IsSuspended)
+            {
+                return BadRequest(ChangeUserStatusResponse.Failure(userProfile.Id, "Suspended - only active user accounts can be suspended"));
+            }
+
+            if (!suspend && !userProfile.IsSuspended)
+            {
+                return BadRequest(ChangeUserStatusResponse.Failure(userProfile.Id, "Active - only suspended accounts can be reinstated"));
+            }
+
+            logger.LogInformation("User {UserId} suspension status set to {Suspended} by {ChangedByUserId} ({ChangedByEmail})",
+                userProfile.Id, suspend, request.ChangedByUserId, request.ChangedByEmail);
+
+            var result = await mediator.Send(new UpdateUserSuspendedRequest
+            {
+                Id = userProfile.Id,
+                UserSuspended = suspend
             });
 
             if (!result.Updated)
@@ -192,12 +183,32 @@ public class UsersController : ControllerBase
                 return NotFound();
             }
 
-            return Ok(new { message = "User resumed successfully" });
+            return Ok(ChangeUserStatusResponse.Success(userProfile.Id));
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "ResumeUser : An error occurred");
+            logger.LogError(e, "ChangeUserSuspensionState : An error occurred for identifier {Identifier}", identifier);
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
+    }
+
+    private async Task<UserProfile?> GetUserProfile(string identifier)
+    {
+        if (Guid.TryParse(identifier, out var userId))
+        {
+            var result = await mediator.Send(new GetUserByIdQuery
+            {
+                Id = userId
+            });
+
+            return result.UserProfile;
+        }
+
+        var govResult = await mediator.Send(new GetUserByGovIdentifierQuery
+        {
+            GovIdentifier = identifier
+        });
+
+        return govResult.UserProfile;
     }
 }
