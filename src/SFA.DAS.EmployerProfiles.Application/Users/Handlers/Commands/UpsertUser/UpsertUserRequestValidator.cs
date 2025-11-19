@@ -1,6 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Net.Mail;
 using SFA.DAS.EmployerProfiles.Domain.RequestHandlers;
 

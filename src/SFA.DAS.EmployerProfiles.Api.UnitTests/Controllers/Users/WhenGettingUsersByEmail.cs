@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerProfiles.Api.ApiResponses;
 using SFA.DAS.EmployerProfiles.Api.Controllers;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByEmail;
-using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
 
 namespace SFA.DAS.EmployerProfiles.Api.UnitTests.Controllers.Users;
 

@@ -2,5 +2,5 @@ namespace SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByI
 
 public class GetUserByIdQuery : IRequest<GetUserByIdQueryResult>
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 }

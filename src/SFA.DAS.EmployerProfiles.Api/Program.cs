@@ -46,7 +46,7 @@ if (!(rootConfiguration["EnvironmentName"]!.Equals("LOCAL", StringComparison.Cur
 
     var policies = new Dictionary<string, string>
     {
-        { PolicyNames.Default, RoleNames.Default },
+        { PolicyNames.Default, RoleNames.Default }
     };
 
     builder.Services.AddAuthentication(azureAdConfiguration, policies);

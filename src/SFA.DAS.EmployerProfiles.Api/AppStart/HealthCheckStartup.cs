@@ -15,8 +15,8 @@ public static class HealthCheckStartup
             
         app.UseHealthChecks("/ping", new HealthCheckOptions
         {
-            Predicate = (_) => false,
-            ResponseWriter = (context, report) => 
+            Predicate = _ => false,
+            ResponseWriter = (context, _) => 
             {
                 context.Response.ContentType = "application/json";
                 return context.Response.WriteAsync("");

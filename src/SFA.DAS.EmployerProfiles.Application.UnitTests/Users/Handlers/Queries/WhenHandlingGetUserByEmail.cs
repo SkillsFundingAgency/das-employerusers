@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByEmail;
 using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
 

@@ -26,7 +26,7 @@ public class UsersController(IMediator mediator, ILogger<UsersController> logger
             UserProfile? userProfile;
             if (Guid.TryParse(id, out var userId))
             {
-                var result = await mediator.Send(new GetUserByIdQuery()
+                var result = await mediator.Send(new GetUserByIdQuery
                 {
                     Id = userId
                 });
@@ -61,7 +61,6 @@ public class UsersController(IMediator mediator, ILogger<UsersController> logger
     {
         try
         {
-            List<UserProfile> users = new List<UserProfile>();
             var result = await mediator.Send(new GetUsersByEmailQuery()
             {
                 Email = email
@@ -81,7 +80,7 @@ public class UsersController(IMediator mediator, ILogger<UsersController> logger
     {
         try
         {
-            var result = await mediator.Send(new GetUsersQuery()
+            var result = await mediator.Send(new GetUsersQuery
             {
                 PageSize = pageSize,
                 PageNumber = pageNumber
@@ -97,7 +96,7 @@ public class UsersController(IMediator mediator, ILogger<UsersController> logger
     }
 
     [HttpPut]
-    [Route("{id}")]
+    [Route("{id:guid}")]
     public async Task<IActionResult> PutUser([FromRoute]Guid id, UserProfileRequest userProfileRequest)
     {
         try
