@@ -169,8 +169,8 @@ public class UsersController(IMediator mediator, ILogger<UsersController> logger
                 return BadRequest(ChangeUserStatusResponse.Failure(userProfile.Id, "Active - only suspended accounts can be reinstated"));
             }
 
-            logger.LogInformation("User {UserId} suspension status set to {Suspended} by {ChangedByUserId} ({ChangedByEmail})",
-                userProfile.Id, suspend, request.ChangedByUserId, request.ChangedByEmail);
+            logger.LogInformation("User {UserId} suspension status set to {Suspended} by {ChangedByUserId}",
+                userProfile.Id, suspend, request.ChangedByUserId);
 
             var result = await mediator.Send(new UpdateUserSuspendedRequest
             {

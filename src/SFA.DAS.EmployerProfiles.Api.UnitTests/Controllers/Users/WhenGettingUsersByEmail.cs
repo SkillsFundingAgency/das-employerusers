@@ -1,14 +1,9 @@
-using System.Net;
-using AutoFixture.NUnit3;
-using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using SFA.DAS.EmployerProfiles.Api.ApiResponses;
 using SFA.DAS.EmployerProfiles.Api.Controllers;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByEmail;
 using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerProfiles.Api.UnitTests.Controllers.Users;
 

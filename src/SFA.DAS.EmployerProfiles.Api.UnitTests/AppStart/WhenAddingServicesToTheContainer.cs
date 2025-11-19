@@ -1,9 +1,7 @@
-using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using SFA.DAS.EmployerProfiles.Api.AppStart;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Commands.UpsertUser;
 using SFA.DAS.EmployerProfiles.Data;
