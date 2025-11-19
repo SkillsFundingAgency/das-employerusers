@@ -60,8 +60,6 @@ public abstract class TestQueryProvider<T> : IOrderedQueryable<T>, IQueryProvide
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        if (_enumerable == null)
-            _enumerable = CompileExpressionItem<IEnumerable<T>>(Expression);
         return _enumerable.GetEnumerator();
     }
 

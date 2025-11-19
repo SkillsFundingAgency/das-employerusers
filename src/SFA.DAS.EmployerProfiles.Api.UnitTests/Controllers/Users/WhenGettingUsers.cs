@@ -15,8 +15,8 @@ public class WhenGettingUsers
         [Greedy] UsersController controller)
     {
         //Arrange
-        var pageSize = 100;
-        var pageNumber = 1;
+        const int pageSize = 100;
+        const int pageNumber = 1;
         mediator.Setup(x => x.Send(It.Is<GetUsersQuery>(c => c.PageSize == pageSize && c.PageNumber == pageNumber),
             CancellationToken.None)).ReturnsAsync(getResult);
 
@@ -35,12 +35,12 @@ public class WhenGettingUsers
         [Greedy] UsersController controller)
     {
         //Arrange
-        var pageSize = 100;
-        var pageNumber = 1;
+        const int pageSize = 100;
+        const int pageNumber = 1;
         mediator.Setup(x => x.Send(It.Is<GetUsersQuery>(c => c.PageSize == pageSize && c.PageNumber == pageNumber),
             CancellationToken.None)).ReturnsAsync(new GetUsersQueryResult
         {
-            UserProfiles = new List<UserProfile>(),
+            UserProfiles = [],
             TotalCount = 0,
             PageNumber = pageNumber,
             PageSize = pageSize
@@ -62,8 +62,8 @@ public class WhenGettingUsers
         [Greedy] UsersController controller)
     {
         //Arrange
-        var pageSize = 100;
-        var pageNumber = 1;
+        const int pageSize = 100;
+        const int pageNumber = 1;
         mediator.Setup(x => x.Send(It.Is<GetUsersQuery>(c => c.PageSize == pageSize && c.PageNumber == pageNumber),
             CancellationToken.None)).ThrowsAsync(new Exception("Error"));
         

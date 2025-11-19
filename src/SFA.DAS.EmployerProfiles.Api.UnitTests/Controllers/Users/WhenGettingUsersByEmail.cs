@@ -39,7 +39,7 @@ public class WhenGettingUsersProfilesForEmail
         mediator.Setup(x => x.Send(It.Is<GetUsersByEmailQuery>(c => c.Email.Equals(email)),
             CancellationToken.None)).ReturnsAsync(new GetUsersByEmailQueryResult
         {
-            UserProfiles = new List<UserProfile>()
+            UserProfiles = []
         });
         
         //Act

@@ -1,14 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUsers;
 using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerProfiles.Application.UnitTests.Users.Handlers.Queries;
 
@@ -57,7 +48,7 @@ public class WhenHandlingGetUsers
         // Arrange
         var getAllUsersResult = new GetAllUsersResult
         {
-            UserProfiles = new List<UserProfileEntity>(),
+            UserProfiles = [],
             TotalCount = 0
         };
         

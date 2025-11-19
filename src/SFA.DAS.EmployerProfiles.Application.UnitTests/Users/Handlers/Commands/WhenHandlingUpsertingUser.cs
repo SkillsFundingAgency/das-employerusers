@@ -1,11 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Commands.UpsertUser;
 using SFA.DAS.EmployerProfiles.Domain.RequestHandlers;
 using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
-using SFA.DAS.Testing.AutoFixture;
 using ValidationResult = SFA.DAS.EmployerProfiles.Domain.RequestHandlers.ValidationResult;
 
 namespace SFA.DAS.EmployerProfiles.Application.UnitTests.Users.Handlers.Commands;

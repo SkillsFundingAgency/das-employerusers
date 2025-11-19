@@ -46,9 +46,9 @@ public class WhenAddingServicesToTheContainer
         {
             InitialData = new List<KeyValuePair<string, string>>
             {
-                new KeyValuePair<string, string>("EmployerProfilesConfiguration:ConnectionString", "test"),
-                new KeyValuePair<string, string>("EnvironmentName", "test")
-            }
+                new("EmployerProfilesConfiguration:ConnectionString", "test"),
+                new("EnvironmentName", "test")
+            }!
         };
 
         var provider = new MemoryConfigurationProvider(configSource);

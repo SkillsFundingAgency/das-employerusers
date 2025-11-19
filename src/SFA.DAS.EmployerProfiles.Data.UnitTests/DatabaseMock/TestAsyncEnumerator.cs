@@ -1,13 +1,8 @@
 ﻿namespace SFA.DAS.EmployerProfiles.Data.UnitTests.DatabaseMock;
 
-public class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
+public class TestAsyncEnumerator<T>(IEnumerator<T> enumerator) : IAsyncEnumerator<T>
 {
-    private readonly IEnumerator<T> _enumerator;
-
-    public TestAsyncEnumerator(IEnumerator<T> enumerator)
-    {
-        _enumerator = enumerator ?? throw new ArgumentNullException();
-    }
+    private readonly IEnumerator<T> _enumerator = enumerator ?? throw new ArgumentNullException();
 
     public T Current => _enumerator.Current;
 

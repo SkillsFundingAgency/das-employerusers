@@ -1,7 +1,4 @@
-using AutoFixture.NUnit3;
-using FluentAssertions;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Commands.UpsertUser;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerProfiles.Application.UnitTests.Users.Handlers.Commands;
 

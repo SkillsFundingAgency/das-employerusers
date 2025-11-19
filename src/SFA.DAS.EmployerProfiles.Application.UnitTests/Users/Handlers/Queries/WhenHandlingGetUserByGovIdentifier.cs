@@ -1,9 +1,5 @@
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
 using SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByGovIdentifier;
 using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerProfiles.Application.UnitTests.Users.Handlers.Queries;
 

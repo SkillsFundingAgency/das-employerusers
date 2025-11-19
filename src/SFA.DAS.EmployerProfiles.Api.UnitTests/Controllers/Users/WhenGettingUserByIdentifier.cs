@@ -78,8 +78,9 @@ public class WhenGettingUserByIdentifier
         [Greedy] UsersController controller)
     {
         //Arrange
-        mediator.Setup(x => x.Send(It.Is<GetUserByIdQuery>(c => c.Id.Equals(id)),
-            CancellationToken.None)).ReturnsAsync(new GetUserByIdQueryResult()
+        mediator
+            .Setup(x => x.Send(It.Is<GetUserByIdQuery>(c => c.Id.Equals(id)), CancellationToken.None))
+            .ReturnsAsync(new GetUserByIdQueryResult()
         {
             UserProfile = null
         });
@@ -99,8 +100,9 @@ public class WhenGettingUserByIdentifier
         [Greedy] UsersController controller)
     {
         //Arrange
-        mediator.Setup(x => x.Send(It.Is<GetUserByGovIdentifierQuery>(c => c.GovIdentifier.Equals(govIdentifier)),
-            CancellationToken.None)).ThrowsAsync(new Exception("Error"));
+        mediator
+            .Setup(x => x.Send(It.Is<GetUserByGovIdentifierQuery>(c => c.GovIdentifier.Equals(govIdentifier)), CancellationToken.None))
+            .ThrowsAsync(new Exception("Error"));
         
         //Act
         var actual = await controller.GetUserById(govIdentifier);

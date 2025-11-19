@@ -1,10 +1,6 @@
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
 using SFA.DAS.EmployerProfiles.Data.UnitTests.DatabaseMock;
 using SFA.DAS.EmployerProfiles.Data.Users;
 using SFA.DAS.EmployerProfiles.Domain.UserProfiles;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerProfiles.Data.UnitTests.Users;
 
