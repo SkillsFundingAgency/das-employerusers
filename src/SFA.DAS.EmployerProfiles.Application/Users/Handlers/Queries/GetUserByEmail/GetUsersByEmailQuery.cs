@@ -2,5 +2,5 @@ namespace SFA.DAS.EmployerProfiles.Application.Users.Handlers.Queries.GetUserByE
 
 public class GetUsersByEmailQuery : IRequest<GetUsersByEmailQueryResult>
 {
-    public string Email { get; set; }
+    public string Email { get; init; }
 }
