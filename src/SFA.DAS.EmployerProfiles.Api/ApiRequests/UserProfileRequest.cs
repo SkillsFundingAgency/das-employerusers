@@ -1,13 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 
-    namespace SFA.DAS.EmployerProfiles.Api.ApiRequests;
+namespace SFA.DAS.EmployerProfiles.Api.ApiRequests;
 
 public class UserProfileRequest
 {
     [Required]
-    public string Email { get; }
-    public string? FirstName { get; }
-    public string? LastName { get; }
+    public string Email { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
     [Required]
-    public string GovIdentifier { get; }
+    public string GovIdentifier { get; set; }
 }
