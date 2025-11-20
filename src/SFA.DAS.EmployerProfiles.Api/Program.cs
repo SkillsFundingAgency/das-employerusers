@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Mvc.Versioning;
+using Asp.Versioning;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
@@ -53,7 +53,7 @@ if (!(rootConfiguration["EnvironmentName"]!.Equals("LOCAL", StringComparison.Cur
 }
 
 builder.Services
-    .AddMvc(o =>
+    .AddControllers(o =>
     {
         if (!(rootConfiguration["EnvironmentName"]!.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase) ||
               rootConfiguration["EnvironmentName"]!.Equals("DEV", StringComparison.CurrentCultureIgnoreCase)))
@@ -65,15 +65,23 @@ builder.Services
     })
     .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
+builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployerProfilesApi", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployerProfilesApi", Version = "1.0" });
     c.OperationFilter<SwaggerVersionHeaderFilter>();
 });
 
-builder.Services.AddApiVersioning(opt => { opt.ApiVersionReader = new HeaderApiVersionReader("X-Version"); });
+builder.Services.AddApiVersioning(opt =>
+{
+    opt.DefaultApiVersion = new ApiVersion(1, 0);
+    opt.AssumeDefaultVersionWhenUnspecified = true;
+    opt.ReportApiVersions = true;
+    opt.ApiVersionReader = new HeaderApiVersionReader("X-Version");
+});
 
 var app = builder.Build();
 
@@ -99,11 +107,6 @@ if (!app.Configuration["EnvironmentName"]!.Equals("DEV", StringComparison.Curren
 app.UseRouting();
 app.UseAuthorization();
 
-app.UseEndpoints(endpointBuilder =>
-{
-    endpointBuilder.MapControllerRoute(
-        name: "default",
-        pattern: "api/{controller=Users}/{action=Index}/{id?}");
-});
+app.MapControllers();
 
 app.Run();
