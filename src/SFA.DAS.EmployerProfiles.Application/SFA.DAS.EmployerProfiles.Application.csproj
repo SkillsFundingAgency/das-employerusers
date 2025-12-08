@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <OutputPath>bin\</OutputPath>
+        <LangVersion>latestmajor</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MediatR" Version="13.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
+      <PackageReference Include="SFA.DAS.UnitOfWork" Version="9.0.28" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SFA.DAS.EmployerProfiles.Domain\SFA.DAS.EmployerProfiles.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

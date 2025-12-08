@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentAssertions" Version="[7.1.0]" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
+        <PackageReference Include="NUnit" Version="4.4.0" />
+        <PackageReference Include="NUnit3TestAdapter" Version="5.2.0" />
+        <PackageReference Include="NUnit.Analyzers" Version="4.10.0" />
+        <PackageReference Include="coverlet.collector" Version="6.0.4" />
+        <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="17.1.146" />
+        <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" /> 
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SFA.DAS.EmployerProfiles.Data\SFA.DAS.EmployerProfiles.Data.csproj" />
+      <ProjectReference Include="..\SFA.DAS.EmployerProfiles.Domain\SFA.DAS.EmployerProfiles.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

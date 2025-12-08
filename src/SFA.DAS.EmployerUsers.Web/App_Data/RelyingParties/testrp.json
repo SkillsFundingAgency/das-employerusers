@@ -1,7 +1,0 @@
-﻿{
-  "Id": "testrp",
-  "Name": "Test relying party",
-  "RequireConsent": false,
-  "ApplicationUrl": "http://localhost:17995/",
-  "LogoutUrl": "http://localhost:17995/"
-}
