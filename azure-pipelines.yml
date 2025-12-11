@@ -19,7 +19,7 @@ variables:
 - name: BuildPlatform
   value: any cpu
 - group: RELEASE Management Resources
-- group: RELEASE das-employerusers
+- group: RELEASE das-employer-profiles-api
 - name: Deploy
   value: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.Reason'], 'Manual'), eq(variables['Build.Reason'], 'PullRequest'))]
 
@@ -62,7 +62,7 @@ stages:
   variables:
   - group: DevTest Management Resources
   - group: AT DevTest Shared Resources
-  - group: AT das-employerusers
+  - group: AT das-employer-profiles-api
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
@@ -78,7 +78,7 @@ stages:
   variables:
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
-  - group: TEST das-employerusers-v2
+  - group: TEST das-employer-profiles-api
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
@@ -94,7 +94,7 @@ stages:
   variables:
   - group: DevTest Management Resources
   - group: TEST2 DevTest Shared Resources
-  - group: TEST2 das-employerusers
+  - group: TEST2 das-employer-profiles-api
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
@@ -110,7 +110,7 @@ stages:
   variables:
   - group: PreProd Management Resources
   - group: PreProd Shared Resources
-  - group: PREPROD das-employerusers
+  - group: PREPROD das-employer-profiles-api
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
@@ -126,7 +126,7 @@ stages:
   variables:
   - group: PROD Management Resources
   - group: PROD Shared Resources
-  - group: PROD das-employerusers
+  - group: PROD das-employer-profiles-api
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
@@ -142,7 +142,7 @@ stages:
   variables:
   - group: MO Management Resources
   - group: MO Shared Resources
-  - group: MO das-employerusers
+  - group: MO das-employer-profiles-api
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
@@ -158,7 +158,7 @@ stages:
   variables:
   - group: DevTest Management Resources
   - group: DEMO DevTest Shared Resources
-  - group: DEMO das-employerusers
+  - group: DEMO das-employer-profiles-api
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
